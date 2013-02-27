@@ -23,12 +23,12 @@ Installation & Setup
     instead [add bugsnag as a dependency](http://mvnrepository.com/artifact/com.bugsnag/bugsnag)
     in your pom.xml.*
 
--   Import the `Bugsnag` class in your code and register to begin capturing
-    exceptions:
+-   Import the Bugsnag `Client` class in your code and create an instance to 
+    begin capturing exceptions:
 
     ```java
-    import com.bugsnag.Bugsnag;
-    Bugsnag.register("your-api-key-goes-here");
+    import com.bugsnag.Client;
+    Client bugsnag = new Client("your-api-key-goes-here");
     ```
 
 
@@ -39,7 +39,7 @@ If you would like to send non-fatal exceptions to Bugsnag, you can pass any
 `Throwable` object to the `notify` method:
 
 ```java
-Bugsnag.notify(new RuntimeException("Non-fatal"));
+bugsnag.notify(new RuntimeException("Non-fatal"));
 ```
 
 You can also send additional meta-data with your exception:
@@ -49,7 +49,7 @@ Map<String,String> metaData = new HashMap<String,String>();
 extraData.put("username", "bob-hoskins");
 extraData.put("registered_user", "yes");
 
-Bugsnag.notify(new RuntimeException("Non-fatal"), metaData);
+bugsnag.notify(new RuntimeException("Non-fatal"), metaData);
 ```
 
 
@@ -63,7 +63,7 @@ errors. Contexts represent what was happening in your application at the
 time an error occurs.
 
 ```java
-Bugsnag.setContext("MyActivity");
+bugsnag.setContext("MyActivity");
 ```
 
 ###setUserId
@@ -76,7 +76,7 @@ If you would like to enable this, set the `userId`, for example to set it to
 be a username of your currently logged in user, you can call `setUserId`:
 
 ```java
-Bugsnag.setUserId("leeroy-jenkins");
+bugsnag.setUserId("leeroy-jenkins");
 ```
 
 ###setReleaseStage
@@ -86,7 +86,7 @@ stages of the application release process (development, production, etc)
 you can set the `releaseStage` that is reported to Bugsnag.
 
 ```java
-Bugsnag.setReleaseStage("development");
+bugsnag.setReleaseStage("development");
 ```
 
 By default this is set to be "production".
@@ -99,7 +99,7 @@ change which release stages notify Bugsnag of exceptions you can
 call `setNotifyReleaseStages`:
 
 ```java
-Bugsnag.setNotifyReleaseStages(new String[]{"production", "development"});
+bugsnag.setNotifyReleaseStages(new String[]{"production", "development"});
 ```
 
 ###setAutoNotify
@@ -109,7 +109,7 @@ in your application. If you want to stop this from happening, you can call
 `setAutoNotify`:
 
 ```java
-Bugsnag.setAutoNotify(false);
+bugsnag.setAutoNotify(false);
 ```
 
 ###setFilters
@@ -120,7 +120,7 @@ sensitive data such as passwords, and credit card numbers to our
 servers. Any keys which contain these strings will be filtered.
 
 ```java
-Bugsnag.setFilters(new String[]{"password", "credit_card_number"});
+bugsnag.setFilters(new String[]{"password", "credit_card_number"});
 ```
 
 By default, `filters` is set to `new String[] {"password"};`
