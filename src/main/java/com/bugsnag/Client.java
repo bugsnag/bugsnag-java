@@ -21,6 +21,7 @@ public class Client {
         }
         this.apiKey = apiKey;
 
+        // Install a default exception handler with this client
         ExceptionHandler.install(this);
     }
 
