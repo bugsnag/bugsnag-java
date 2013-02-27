@@ -34,35 +34,40 @@ class Util {
         arr.put(val);
     }
 
-    static JSONArray listToJSONArray(List<Object> source) {
+    static JSONArray listToJSONArray(List<Object> source, String[] filters) {
         if(source == null) return null;
 
         JSONArray returnValue = new JSONArray();
         for (Object value : source) {
             if(value instanceof Map) {
-                returnValue.put(mapToJSONObject((Map<String,Object>)value));
+                returnValue.put(mapToJSONObject((Map<String,Object>)value, filters));
             } else if(value instanceof List) {
-                returnValue.put(listToJSONArray((List<Object>)value));
+                returnValue.put(listToJSONArray((List<Object>)value, filters));
             } else {
                 returnValue.put(value);
             }
         }
         return returnValue;
     }
-    
-    static JSONObject mapToJSONObject(Map<String,Object> source) {
+
+    static JSONObject mapToJSONObject(Map<String,Object> source, String[] filters) {
         if(source == null) return null;
 
         JSONObject returnValue = new JSONObject();
         for (Map.Entry<String, Object> entry : source.entrySet()) {
             String key = entry.getKey();
             Object value = entry.getValue();
-            if(value instanceof Map) {
-                addToJSONObject(returnValue, key, mapToJSONObject((Map<String,Object>)value));
-            } else if(value instanceof List) {
-                addToJSONObject(returnValue, key, listToJSONArray((List<Object>)value));
+
+            if(matchesFilter(key, filters)) {
+                addToJSONObject(returnValue, key, "[FILTERED]");
             } else {
-                addToJSONObject(returnValue, key, value);
+                if(value instanceof Map) {
+                    addToJSONObject(returnValue, key, mapToJSONObject((Map<String,Object>)value, filters));
+                } else if(value instanceof List) {
+                    addToJSONObject(returnValue, key, listToJSONArray((List<Object>)value, filters));
+                } else {
+                    addToJSONObject(returnValue, key, value);
+                }
             }
         }
         return returnValue;
@@ -92,5 +97,19 @@ class Util {
             }
         }
         return dest;
+    }
+
+    private static boolean matchesFilter(String key, String[] filters) {
+        if(filters == null || key == null) {
+            return false;
+        }
+
+        for(String filter : filters) {
+            if(key.contains(filter)) {
+                return true;
+            }
+        }
+        
+        return false;
     }
 }

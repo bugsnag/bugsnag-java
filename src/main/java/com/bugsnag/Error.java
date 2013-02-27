@@ -44,10 +44,15 @@ class Error {
                     Util.addToJSONObject(line, "file", el.getFileName() == null ? "Unknown" : el.getFileName());
                     Util.addToJSONObject(line, "lineNumber", el.getLineNumber());
 
-                    // TODO: Set inProject packages, use config.getProjectPackages();
-                    // if(el.getClassName().startsWith(packageName)) {
-                    //     line.put("inProject", true);
-                    // }
+                    // Check if line is inProject
+                    if(config.getProjectPackages() != null) {
+                        for(String packageName : config.getProjectPackages()) {
+                            if(packageName != null && el.getClassName().startsWith(packageName)) {
+                                line.put("inProject", true);
+                                break;
+                            }
+                        }
+                    }
 
                     Util.addToJSONArray(stacktrace, line);
                 } catch(Exception lineEx) {
@@ -62,15 +67,29 @@ class Error {
         Util.addToJSONObject(error, "exceptions", exceptions);
 
         // Merge config.metaData with this.metaData and add to this error
-        JSONObject globalMetaData = Util.mapToJSONObject(config.getMetaData());
-        JSONObject localMetaData = Util.mapToJSONObject(this.metaData);
+        JSONObject globalMetaData = Util.mapToJSONObject(config.getMetaData(), config.getFilters());
+        JSONObject localMetaData = Util.mapToJSONObject(this.metaData, config.getFilters());
         Util.addToJSONObject(error, "metaData", Util.mergeJSONObjects(globalMetaData, localMetaData));
-        // TODO: Apply filters config.getFilters()
 
         return error;
     }
 
     public String toString() {
         return toJSON().toString();
+    }
+
+    private boolean shouldFilter(String key) {
+        String[] filters = config.getFilters();
+        if(filters == null || key == null) {
+            return false;
+        }
+
+        for(String filter : filters) {
+            if(key.contains(filter)) {
+                return true;
+            }
+        }
+        
+        return false;
     }
 }

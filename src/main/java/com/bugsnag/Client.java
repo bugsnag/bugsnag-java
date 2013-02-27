@@ -61,6 +61,9 @@ public class Client {
     }
 
     public void notify(Throwable e, Map<String, Object> metaData) {
+        if(!Arrays.asList(config.getNotifyReleaseStages()).contains(config.getReleaseStage()))
+            return;
+
         String url = (this.useSSL ? "https://" : "http://") + this.endpoint;
         Notification notif = new Notification(apiKey, new Error(e, metaData, config));
         boolean sent = request(url, notif.toString(), "application/json");
@@ -70,15 +73,12 @@ public class Client {
     }
 
     public void notify(Throwable e) {
-        if(Arrays.asList(config.getNotifyReleaseStages()).contains(config.getReleaseStage())) {
-            notify(e, null);
-        }
+        notify(e, null);
     }
 
     public void autoNotify(Throwable e) {
-        if(this.autoNotify) {
+        if(this.autoNotify) 
             notify(e);
-        }
     }
 
     public void addToTab(String tab, String key, Object value) {
