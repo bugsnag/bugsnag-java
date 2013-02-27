@@ -2,14 +2,15 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
+  <!-- Package details -->
   <groupId>com.bugsnag</groupId>
   <artifactId>bugsnag</artifactId>
   <packaging>jar</packaging>
   <version>1.0-SNAPSHOT</version>
-
   <name>bugsnag</name>
-  <url>http://maven.apache.org</url>
+  <url>https://bugsnag.com</url>
 
+  <!-- Dependencies -->
   <dependencies>
     <dependency>
       <groupId>junit</groupId>
@@ -24,4 +25,42 @@
       <version>20090211</version>
     </dependency>
   </dependencies>
+
+  <!-- Use apache pom as parent, so we can release to the remote repo -->
+  <parent>
+    <groupId>org.apache</groupId>
+    <artifactId>apache</artifactId>
+    <version>10</version>
+  </parent>
+
+  <!-- Build settings and plugins -->
+  <build>
+    <plugins>
+      <!-- Require Java 1.5+ -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>2.5.1</version>
+        <configuration>
+          <source>1.5</source>
+          <target>1.5</target>
+        </configuration>
+      </plugin>
+
+      <!-- Sign packages for release -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-gpg-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>sign-artifacts</id>
+            <phase>verify</phase>
+            <goals>
+              <goal>sign</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
 </project>
