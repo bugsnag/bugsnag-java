@@ -6,7 +6,7 @@ import java.util.List;
 import org.json.JSONObject;
 import org.json.JSONArray;
 
-class Notification {
+public class Notification {
     private static final String NOTIFIER_NAME = "Java Bugsnag Notifier";
     private static final String NOTIFIER_VERSION = "2.0.0";
     private static final String NOTIFIER_URL = "https://bugsnag.com";

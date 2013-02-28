@@ -9,7 +9,7 @@ import org.json.JSONObject;
 import org.json.JSONArray;
 import org.json.JSONException;
 
-class Util {
+public class Util {
     static byte[] stringToByteArray(String str) {
         byte[] bytes = null;
 

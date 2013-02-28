@@ -3,7 +3,7 @@ package com.bugsnag;
 import java.util.HashMap;
 import java.util.Map;
 
-class Configuration {
+public class Configuration {
     private String context;
     private String userId;
     private String releaseStage = "production";

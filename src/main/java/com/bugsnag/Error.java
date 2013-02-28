@@ -5,7 +5,7 @@ import java.util.Map;
 import org.json.JSONObject;
 import org.json.JSONArray;
 
-class Error {
+public class Error {
     private Throwable exception;
     private Configuration config;
     private Map<String, Object> metaData;
