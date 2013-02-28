@@ -1,9 +1,17 @@
 package com.bugsnag;
 
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class Configuration {
+    protected static final String DEFAULT_ENDPOINT = "notify.bugsnag.com";
+
+    private String apiKey;
+    private boolean autoNotify = true;
+    private boolean useSSL = false;
+    private String endpoint = DEFAULT_ENDPOINT;
     private String context;
     private String userId;
     private String releaseStage = "production";
@@ -18,6 +26,42 @@ public class Configuration {
     public Configuration() {
         this.logger = new Logger();
         this.metaData = new HashMap<String, Object>();
+    }
+
+    public Configuration setApiKey(String apiKey) {
+        this.apiKey = apiKey;
+        return this;
+    }
+
+    public String getApiKey() {
+        return this.apiKey;
+    }
+
+    public Configuration setAutoNotify(boolean autoNotify) {
+        this.autoNotify = autoNotify;
+        return this;
+    }
+
+    public boolean getAutoNotify() {
+        return this.autoNotify;
+    }
+
+    public Configuration setUseSSL(boolean useSSL) {
+        this.useSSL = useSSL;
+        return this;
+    }
+
+    public boolean getUseSSL() {
+        return this.useSSL;
+    }
+
+    public Configuration setEndpoint(String endpoint) {
+        this.endpoint = endpoint;
+        return this;
+    }
+
+    public String getEndpoint() {
+        return (this.useSSL ? "https://" : "http://") + this.endpoint;
     }
 
     public Configuration setContext(String context) {
@@ -121,5 +165,13 @@ public class Configuration {
 
     public Map<String, Object> getMetaData() {
         return this.metaData;
+    }
+
+    public boolean shouldNotify() {
+        if(this.notifyReleaseStages == null)
+            return false;
+
+        List<String> stages = Arrays.asList(this.notifyReleaseStages);
+        return stages.contains(this.releaseStage);
     }
 }

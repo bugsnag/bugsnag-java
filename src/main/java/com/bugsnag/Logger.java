@@ -14,4 +14,9 @@ public class Logger {
     public void warn(String message) {
         System.err.println(String.format("[%s] WARNING: %s", LOG_PREFIX, message));
     }
+
+    public void warn(String message, Throwable e) {
+        warn(message);
+        e.printStackTrace(System.err);
+    }
 }
