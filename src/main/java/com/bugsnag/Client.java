@@ -7,13 +7,14 @@ import java.util.Arrays;
 import java.util.Map;
 
 public class Client {
-    private static final String DEFAULT_ENDPOINT = "notify.bugsnag.com";
+    protected static final String DEFAULT_ENDPOINT = "notify.bugsnag.com";
 
-    private String apiKey;
-    private boolean autoNotify = true;
-    private String endpoint = DEFAULT_ENDPOINT;
-    private boolean useSSL = false;
-    private Configuration config = new Configuration();
+    protected String apiKey;
+    protected boolean autoNotify = true;
+    protected String endpoint = DEFAULT_ENDPOINT;
+    protected boolean useSSL = false;
+
+    protected Configuration config = new Configuration();
 
     public Client(String apiKey) {
         if(apiKey == null) {
