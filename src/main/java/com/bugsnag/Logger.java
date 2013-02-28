@@ -1,6 +1,6 @@
 package com.bugsnag;
 
-class Logger {
+public class Logger {
     protected static final String LOG_PREFIX = "Bugsnag";
 
     public void debug(String message) {
