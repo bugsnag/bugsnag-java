@@ -61,6 +61,10 @@ public class Client {
         config.setProjectPackages(packages);
     }
 
+    public void setLogger(Logger logger) {
+        config.setLogger(logger);
+    }
+
     public void notify(Throwable e, Map<String, Object> metaData) {
         if(!Arrays.asList(config.getNotifyReleaseStages()).contains(config.getReleaseStage()))
             return;

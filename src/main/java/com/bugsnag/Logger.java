@@ -1,7 +1,7 @@
 package com.bugsnag;
 
 class Logger {
-    private static final String LOG_PREFIX = "Bugsnag";
+    protected static final String LOG_PREFIX = "Bugsnag";
 
     public void debug(String message) {
         System.out.println(String.format("[%s] DEBUG: %s", LOG_PREFIX, message));
