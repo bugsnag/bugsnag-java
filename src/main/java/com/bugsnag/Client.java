@@ -1,7 +1,5 @@
 package com.bugsnag;
 
-import java.util.Map;
-
 public class Client {
     protected Configuration config = new Configuration();
 
@@ -63,7 +61,7 @@ public class Client {
         config.setLogger(logger);
     }
 
-    public void notify(Throwable e, Map<String, Object> metaData) {
+    public void notify(Throwable e, MetaData metaData) {
         Notification notif = new Notification(config, new Error(e, metaData, config));
         notif.deliver();
     }

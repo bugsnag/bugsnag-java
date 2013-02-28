@@ -1,19 +1,21 @@
 package com.bugsnag;
 
-import java.util.Map;
-
 import org.json.JSONObject;
 import org.json.JSONArray;
 
 public class Error {
     private Throwable exception;
     private Configuration config;
-    private Map<String, Object> metaData;
+    private MetaData metaData;
 
-    public Error(Throwable exception, Map<String, Object> metaData, Configuration config) {
+    public Error(Throwable exception, MetaData metaData, Configuration config) {
         this.exception = exception;
         this.config = config;
         this.metaData = metaData;
+
+        if(this.metaData == null) {
+            this.metaData = new MetaData();
+        }
     }
 
     public JSONObject toJSON() {
@@ -54,7 +56,7 @@ public class Error {
                         }
                     }
 
-                    Util.addToJSONArray(stacktrace, line);
+                    stacktrace.put(line);
                 } catch(Exception lineEx) {
                     lineEx.printStackTrace(System.err);
                 }
@@ -62,13 +64,13 @@ public class Error {
             Util.addToJSONObject(exception, "stacktrace", stacktrace);
 
             currentEx = currentEx.getCause();
-            Util.addToJSONArray(exceptions, exception);
+            exceptions.put(exception);
         }
         Util.addToJSONObject(error, "exceptions", exceptions);
 
-        // Merge config.metaData with this.metaData and add to this error
-        JSONObject globalMetaData = Util.mapToJSONObject(config.getMetaData(), config.getFilters());
-        JSONObject localMetaData = Util.mapToJSONObject(this.metaData, config.getFilters());
+        // Merge global metaData with local metaData, apply filters, and add to this error
+        JSONObject globalMetaData = config.getMetaData().toJSON(config.getFilters());
+        JSONObject localMetaData = metaData.toJSON(config.getFilters());
         Util.addToJSONObject(error, "metaData", Util.mergeJSONObjects(globalMetaData, localMetaData));
 
         return error;
@@ -76,6 +78,10 @@ public class Error {
 
     public String toString() {
         return toJSON().toString();
+    }
+
+    public void addToTab(String tabName, String key, Object value) {
+        metaData.addToTab(tabName, key, value);
     }
 
     private boolean shouldFilter(String key) {

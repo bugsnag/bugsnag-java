@@ -45,7 +45,7 @@ public class Notification {
         // Error array
         JSONArray errors = new JSONArray();
         for(Error error : errorList) {
-            Util.addToJSONArray(errors, error.toJSON());
+            errors.put(error.toJSON());
         }
         Util.addToJSONObject(notification, "events", errors);
 

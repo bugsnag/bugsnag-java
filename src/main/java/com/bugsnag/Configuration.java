@@ -1,9 +1,7 @@
 package com.bugsnag;
 
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class Configuration {
     protected static final String DEFAULT_ENDPOINT = "notify.bugsnag.com";
@@ -20,12 +18,12 @@ public class Configuration {
     private String[] projectPackages;
     private String appVersion;
     private String osVersion;
-    private Map<String, Object> metaData;
+    private MetaData metaData;
     private Logger logger;
 
     public Configuration() {
         this.logger = new Logger();
-        this.metaData = new HashMap<String, Object>();
+        this.metaData = new MetaData();
     }
 
     public Configuration setApiKey(String apiKey) {
@@ -146,24 +144,14 @@ public class Configuration {
     }
 
     public void addToTab(String tabName, String key, Object value) {
-        Object tab = this.metaData.get(tabName);
-        if(tab == null || !(tab instanceof Map)) {
-            tab = new HashMap<String, Object>();
-            this.metaData.put(tabName, tab);
-        }
-
-        if(value != null) {
-            ((Map)tab).put(key, value);
-        } else {
-            ((Map)tab).remove(key);
-        }
+        this.metaData.addToTab(tabName, key, value);
     }
     
     public void clearTab(String tabName){
-        this.metaData.remove(tabName);
+        this.metaData.clearTab(tabName);
     }
 
-    public Map<String, Object> getMetaData() {
+    public MetaData getMetaData() {
         return this.metaData;
     }
 
