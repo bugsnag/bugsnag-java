@@ -92,6 +92,11 @@ class Configuration {
         return this.osVersion;
     }
 
+    public Configuration setLogger(logger) {
+        this.logger = logger;
+        return this;
+    }
+
     public Logger getLogger() {
         return this.logger;
     }
