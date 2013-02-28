@@ -92,7 +92,7 @@ class Configuration {
         return this.osVersion;
     }
 
-    public Configuration setLogger(logger) {
+    public Configuration setLogger(Logger logger) {
         this.logger = logger;
         return this;
     }
