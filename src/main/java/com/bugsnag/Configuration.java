@@ -3,7 +3,7 @@ package com.bugsnag;
 import java.util.Arrays;
 import java.util.List;
 
-public class Configuration {
+class Configuration {
     protected static final String DEFAULT_ENDPOINT = "notify.bugsnag.com";
 
     private String apiKey;
