@@ -1,6 +1,7 @@
 package com.bugsnag.utils;
 
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import org.json.JSONArray;
@@ -106,6 +107,14 @@ public class JSONUtils {
 
             Object[] array = (Object[])value;
             for(Object val : array) {
+                dest.put(objectForJSON(val));
+            }
+            return dest;
+        } else if(value instanceof List) {
+            JSONArray dest = new JSONArray();
+
+            List list = (List)value;
+            for(Object val : list) {
                 dest.put(objectForJSON(val));
             }
             return dest;
