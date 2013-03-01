@@ -73,29 +73,25 @@ public class Notification {
         return toJSON().toString();
     }
 
-    public boolean deliver() {
+    public void deliver() throws IOException {
         if(errorList.isEmpty() && errorStrings.isEmpty())
-            return true;
+            return;
 
         String url = config.getEndpoint();
-        boolean sent = request(url, this.toString(), "application/json");
-        if(sent) {
-            config.getLogger().info(String.format("Sent error(s) to %s", url));
-        }
+        request(url, this.toString(), "application/json");
 
-        return sent;
+        config.getLogger().info(String.format("Sent error(s) to %s", url));
     }
 
     public int size() {
         return errorList.size() + errorStrings.size();
     }
 
-    private boolean request(String urlString, String payload, String contentType) {
-        return request(urlString, StringUtils.stringToByteArray(payload), contentType);
+    private void request(String urlString, String payload, String contentType) throws IOException {
+        request(urlString, StringUtils.stringToByteArray(payload), contentType);
     }
 
-    private boolean request(String urlString, byte[] payload, String contentType) {
-        boolean sent = false;
+    private void request(String urlString, byte[] payload, String contentType) throws IOException {
         HttpURLConnection conn = null;
         try {
             URL url = new URL(urlString);
@@ -116,17 +112,10 @@ public class Notification {
             if(status / 100 != 2) {
                 config.getLogger().warn(String.format("Got non-200 response code from %s: %d", urlString, status));
             }
-
-            // The request was sent if we didn't have an exception
-            sent = true;
-        } catch (IOException e) {
-            config.getLogger().warn("Connection error when making request to " + urlString);
         } finally {
             if(conn != null) {
                 conn.disconnect();
             }
         }
-
-        return sent;
     }
 }

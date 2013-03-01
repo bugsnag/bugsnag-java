@@ -1,5 +1,7 @@
 package com.bugsnag;
 
+import java.io.IOException;
+
 public class Client {
     protected Configuration config = new Configuration();
 
@@ -69,8 +71,12 @@ public class Client {
 
     public void notify(Throwable e, MetaData metaData) {
         if(config.shouldNotify()) {
-            Notification notif = new Notification(config, new Error(e, metaData, config));
-            notif.deliver();
+            try {
+                Notification notif = new Notification(config, new Error(e, metaData, config));
+                notif.deliver();
+            } catch (IOException ex) {
+                config.getLogger().warn("Error notifying Bugsnag", ex);
+            }
         }
     }
 
