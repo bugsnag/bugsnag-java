@@ -62,8 +62,10 @@ public class Client {
     }
 
     public void notify(Throwable e, MetaData metaData) {
-        Notification notif = new Notification(config, new Error(e, metaData, config));
-        notif.deliver();
+        if(config.shouldNotify()) {
+            Notification notif = new Notification(config, new Error(e, metaData, config));
+            notif.deliver();
+        }
     }
 
     public void notify(Throwable e) {
@@ -71,8 +73,9 @@ public class Client {
     }
 
     public void autoNotify(Throwable e) {
-        if(config.getAutoNotify()) 
+        if(config.getAutoNotify()) {
             notify(e);
+        }
     }
 
     public void addToTab(String tab, String key, Object value) {
