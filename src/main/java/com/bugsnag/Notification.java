@@ -80,7 +80,7 @@ public class Notification {
         String url = config.getEndpoint();
         request(url, this.toString(), "application/json");
 
-        config.getLogger().info(String.format("Sent %d error(s) to %s", size(), url));
+        config.getLogger().info(String.format("Sent %d error(s) to Bugsnag (%s)", size(), url));
     }
 
     public int size() {
@@ -110,7 +110,7 @@ public class Notification {
             // End the request, get the response code
             int status = conn.getResponseCode();
             if(status / 100 != 2) {
-                config.getLogger().warn(String.format("Got non-200 response code from %s: %d", urlString, status));
+                config.getLogger().warn(String.format("Got non-200 response code (%d) from %s", status, urlString));
             }
         } finally {
             if(conn != null) {
