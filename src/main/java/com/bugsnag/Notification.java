@@ -120,7 +120,7 @@ public class Notification {
             // The request was sent if we didn't have an exception
             sent = true;
         } catch (IOException e) {
-            config.getLogger().warn("Connection error when making request to " + urlString, e);
+            config.getLogger().warn("Connection error when making request to " + urlString);
         } finally {
             if(conn != null) {
                 conn.disconnect();
