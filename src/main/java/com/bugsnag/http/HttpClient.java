@@ -5,9 +5,16 @@ import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+import org.json.JSONObject;
+import org.json.JSONException;
+
 public class HttpClient {
-    public static void post(String urlString, String payload, String contentType) throws NetworkException {
-        post(urlString, stringToByteArray(payload), contentType);
+    public static void post(String url, JSONObject payload) throws NetworkException, JSONException {
+        post(url, payload.toString(), "application/json");
+    }
+
+    public static void post(String url, String payload, String contentType) throws NetworkException {
+        post(url, stringToByteArray(payload), contentType);
     }
 
     public static void post(String urlString, byte[] payload, String contentType) throws NetworkException {
