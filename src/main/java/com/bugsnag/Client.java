@@ -4,13 +4,19 @@ public class Client {
     protected Configuration config = new Configuration();
 
     public Client(String apiKey) {
+        this(apiKey, true);
+    }
+
+    public Client(String apiKey, boolean installHandler) {
         if(apiKey == null) {
             throw new RuntimeException("You must provide a Bugsnag API key");
         }
         config.setApiKey(apiKey);
 
         // Install a default exception handler with this client
-        ExceptionHandler.install(this);
+        if(installHandler) {
+            ExceptionHandler.install(this);
+        }
     }
 
     public void setContext(String context) {
