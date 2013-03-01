@@ -80,6 +80,10 @@ public class Error {
         return toJSON().toString();
     }
 
+    public void setContext(String context) {
+        config.setContext(context);
+    }
+
     public void addToTab(String tabName, String key, Object value) {
         metaData.addToTab(tabName, key, value);
     }
