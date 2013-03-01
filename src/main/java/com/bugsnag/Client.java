@@ -70,13 +70,13 @@ public class Client {
     }
 
     public void notify(Throwable e, MetaData metaData) {
-        if(config.shouldNotify()) {
-            try {
-                Notification notif = new Notification(config, new Error(e, metaData, config));
-                notif.deliver();
-            } catch (IOException ex) {
-                config.getLogger().warn("Error notifying Bugsnag", ex);
-            }
+        if(!config.shouldNotify()) return;
+
+        try {
+            Notification notif = new Notification(config, new Error(e, metaData, config));
+            notif.deliver();
+        } catch (IOException ex) {
+            config.getLogger().warn("Error notifying Bugsnag", ex);
         }
     }
 
