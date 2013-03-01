@@ -1,14 +1,16 @@
 package com.bugsnag.utils;
 
 import java.util.Iterator;
+import java.util.Map;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.json.JSONException;
 
 public class JSONUtils {
     public static void safePut(JSONObject obj, String key, Object val) {
         try {
-            obj.put(key, val);
+            obj.put(key, objectForJSON(val));
         } catch (JSONException e) {
             e.printStackTrace(System.err);
         }
@@ -84,5 +86,31 @@ public class JSONUtils {
         }
         
         return false;
+    }
+
+    private static Object objectForJSON(Object value) {
+        if(value == null) return null;
+
+        if(value instanceof Map) {
+            JSONObject dest = new JSONObject();
+
+            @SuppressWarnings("unchecked")
+            Map<String, Object> map = (Map)value;
+
+            for (Map.Entry<String, Object> entry : map.entrySet()) {
+                safePut(dest, entry.getKey(), objectForJSON(entry.getValue()));
+            }
+            return dest;
+        } else if(value instanceof Object[]) {
+            JSONArray dest = new JSONArray();
+
+            Object[] array = (Object[])value;
+            for(Object val : array) {
+                dest.put(objectForJSON(val));
+            }
+            return dest;
+        } else {
+            return value;
+        }
     }
 }
