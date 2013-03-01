@@ -8,6 +8,7 @@ import java.util.List;
 
 import org.json.JSONObject;
 import org.json.JSONArray;
+import org.json.JSONException;
 
 import com.bugsnag.utils.StringUtils;
 import com.bugsnag.utils.JSONUtils;
@@ -19,6 +20,7 @@ public class Notification {
 
     private Configuration config;
     private List<Error> errorList = new ArrayList<Error>();
+    private List<String> errorStrings = new ArrayList<String>();
 
     public Notification(Configuration config) {
         this.config = config;
@@ -31,6 +33,10 @@ public class Notification {
 
     public void addError(Error error) {
         errorList.add(error);
+    }
+
+    public void addError(String errorString) {
+        errorStrings.add(errorString);
     }
 
     public JSONObject toJSON() {
@@ -50,6 +56,14 @@ public class Notification {
         for(Error error : errorList) {
             errors.put(error.toJSON());
         }
+        for(String errorString : errorStrings) {
+            try {
+                JSONObject error = new JSONObject(errorString);
+                errors.put(error);
+            } catch(JSONException e) {
+                config.getLogger().warn("Error when parsing error json string", e);
+            }
+        }
         JSONUtils.safePut(notification, "events", errors);
 
         return notification;
@@ -60,7 +74,7 @@ public class Notification {
     }
 
     public boolean deliver() {
-        if(errorList.isEmpty())
+        if(errorList.isEmpty() && errorStrings.isEmpty())
             return true;
 
         String url = config.getEndpoint();
@@ -70,6 +84,10 @@ public class Notification {
         }
 
         return sent;
+    }
+
+    public int size() {
+        return errorList.size() + errorStrings.size();
     }
 
     private boolean request(String urlString, String payload, String contentType) {
@@ -102,7 +120,7 @@ public class Notification {
             // The request was sent if we didn't have an exception
             sent = true;
         } catch (IOException e) {
-            config.getLogger().warn("Connection error when making request to " + urlString, e);
+            config.getLogger().warn("Connection error when making request to " + urlString);
         } finally {
             if(conn != null) {
                 conn.disconnect();
