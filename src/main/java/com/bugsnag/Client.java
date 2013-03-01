@@ -45,6 +45,10 @@ public class Client {
         config.setUseSSL(useSSL);
     }
 
+    public boolean getUseSSL() {
+        return config.getUseSSL();
+    }
+
     public void setEndpoint(String endpoint) {
         config.setEndpoint(endpoint);
     }

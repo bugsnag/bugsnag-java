@@ -10,7 +10,8 @@ import org.json.JSONObject;
 import org.json.JSONArray;
 import org.json.JSONException;
 
-import com.bugsnag.utils.StringUtils;
+import com.bugsnag.http.HttpClient;
+import com.bugsnag.http.NetworkException;
 import com.bugsnag.utils.JSONUtils;
 
 public class Notification {
@@ -73,49 +74,17 @@ public class Notification {
         return toJSON().toString();
     }
 
-    public void deliver() throws IOException {
+    public void deliver() throws NetworkException {
         if(errorList.isEmpty() && errorStrings.isEmpty())
             return;
 
         String url = config.getEndpoint();
-        request(url, this.toString(), "application/json");
+        HttpClient.post(url, this.toString(), "application/json");
 
         config.getLogger().info(String.format("Sent %d error(s) to Bugsnag (%s)", size(), url));
     }
 
     public int size() {
         return errorList.size() + errorStrings.size();
-    }
-
-    private void request(String urlString, String payload, String contentType) throws IOException {
-        request(urlString, StringUtils.stringToByteArray(payload), contentType);
-    }
-
-    private void request(String urlString, byte[] payload, String contentType) throws IOException {
-        HttpURLConnection conn = null;
-        try {
-            URL url = new URL(urlString);
-            conn = (HttpURLConnection) url.openConnection();
-            conn.setDoOutput(true); 
-            conn.setFixedLengthStreamingMode(payload.length);
-
-            // Set the content type header
-            if(contentType != null) {
-                conn.addRequestProperty("Content-Type", contentType);
-            }
-
-            // Send request headers and body
-            conn.getOutputStream().write(payload);
-
-            // End the request, get the response code
-            int status = conn.getResponseCode();
-            if(status / 100 != 2) {
-                config.getLogger().warn(String.format("Got non-200 response code (%d) from %s", status, urlString));
-            }
-        } finally {
-            if(conn != null) {
-                conn.disconnect();
-            }
-        }
     }
 }
