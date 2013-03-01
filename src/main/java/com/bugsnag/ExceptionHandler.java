@@ -2,7 +2,7 @@ package com.bugsnag;
 
 import java.lang.Thread.UncaughtExceptionHandler;
 
-public class ExceptionHandler implements UncaughtExceptionHandler {
+class ExceptionHandler implements UncaughtExceptionHandler {
     private UncaughtExceptionHandler originalHandler;
     private Client client;
 
