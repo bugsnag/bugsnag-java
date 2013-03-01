@@ -18,7 +18,7 @@ public class MetaData extends JSONObject {
 
     public MetaData(MetaData source) {
         super();
-        Iterator<String> keys = source.keys();
+        Iterator keys = source.keys();
 
         while(keys.hasNext()) {
             String key = (String)keys.next();
@@ -43,7 +43,9 @@ public class MetaData extends JSONObject {
     public void addToTab(String tabName, Object value) {
         if(value instanceof Map) {
             JSONObject tab = getTab(tabName);
-            for (Map.Entry<String, Object> entry : ((Map<String, Object>)value).entrySet()) {
+            @SuppressWarnings("unchecked")
+            Map<String, Object> mapValue = (Map<String, Object>)value;
+            for (Map.Entry<String, Object> entry : mapValue.entrySet()) {
                 JSONUtils.safePut(tab, entry.getKey(), entry.getValue());
             }
         } else {

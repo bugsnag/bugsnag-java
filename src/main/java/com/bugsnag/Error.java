@@ -70,7 +70,7 @@ public class Error {
         JSONUtils.safePut(error, "exceptions", exceptions);
 
         // Merge global metaData with local metaData, apply filters, and add to this error
-        MetaData errorMetaData = config.getMetaData().duplicate().merge(metaData).filter(config.getFilters());
+        MetaData errorMetaData = config.getMetaData().merge(metaData).filter(config.getFilters());
         JSONUtils.safePut(error, "metaData", errorMetaData);
 
         return error;

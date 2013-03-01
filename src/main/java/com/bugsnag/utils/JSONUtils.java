@@ -17,7 +17,7 @@ public class JSONUtils {
     public static void filter(JSONObject object, String[] filters) {
         if(object == null) return;
 
-        Iterator<String> keys = object.keys();
+        Iterator keys = object.keys();
 
         while(keys.hasNext()) {
             String key = (String)keys.next();
@@ -37,7 +37,7 @@ public class JSONUtils {
 
         JSONObject dest = new JSONObject();
 
-        Iterator<String> keys = source.keys();
+        Iterator keys = source.keys();
 
         while(keys.hasNext()) {
             String key = (String)keys.next();
@@ -56,7 +56,7 @@ public class JSONUtils {
     public static void merge(JSONObject dest, JSONObject source) {
         if(dest == null || source == null) return;
 
-        Iterator<String> keys = source.keys();
+        Iterator keys = source.keys();
 
         while(keys.hasNext()) {
             String key = (String)keys.next();

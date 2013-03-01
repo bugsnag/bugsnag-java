@@ -152,7 +152,7 @@ public class Configuration {
     }
 
     public MetaData getMetaData() {
-        return this.metaData;
+        return this.metaData.duplicate();
     }
 
     public boolean shouldNotify() {
