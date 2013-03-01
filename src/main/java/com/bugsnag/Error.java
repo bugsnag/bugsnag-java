@@ -69,9 +69,8 @@ public class Error {
         Util.addToJSONObject(error, "exceptions", exceptions);
 
         // Merge global metaData with local metaData, apply filters, and add to this error
-        JSONObject globalMetaData = config.getMetaData().toJSON(config.getFilters());
-        JSONObject localMetaData = metaData.toJSON(config.getFilters());
-        Util.addToJSONObject(error, "metaData", Util.mergeJSONObjects(globalMetaData, localMetaData));
+        MetaData errorMetaData = config.getMetaData().duplicate().merge(metaData).filter(config.getFilters());
+        Util.addToJSONObject(error, "metaData", errorMetaData);
 
         return error;
     }

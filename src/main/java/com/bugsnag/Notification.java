@@ -57,9 +57,6 @@ public class Notification {
     }
 
     public boolean deliver() {
-        if(!config.shouldNotify())
-            return true;
-
         String url = config.getEndpoint();
         boolean sent = request(url, this.toString(), "application/json");
         if(sent) {

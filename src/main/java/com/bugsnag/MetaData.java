@@ -8,18 +8,41 @@ import org.json.JSONObject;
 import org.json.JSONArray;
 import org.json.JSONException;
 
-public class MetaData extends HashMap<String, Object> {
-    public void addToTab(String tabName, String key, Object value) {
-        Object tab = get(tabName);
-        if(tab == null || !(tab instanceof Map)) {
-            tab = new HashMap<String, Object>();
-            put(tabName, tab);
-        }
+public class MetaData extends JSONObject {
+    public MetaData() {
+        super();
+    }
 
+    public MetaData(MetaData source) throws JSONException {
+        super(source, getNames(source));
+        String[] names = getNames(source);
+
+        for (int i = 0; i < names.length; i++) {
+            String key = names[i];
+            Object value = get(key);
+            if( value instanceof JSONObject ){
+                JSONObject newValue = deepCloneJSONObject((JSONObject)value);
+                put(key, newValue);
+            }
+        }
+    }
+
+    public void addToTab(String tabName, String key, Object value) {
         if(value != null) {
-            ((Map)tab).put(key, value);
+            Util.addToJSONObject(getTab(tabName), key, value);
         } else {
-            ((Map)tab).remove(key);
+            getTab(tabName).remove(key);
+        }
+    }
+
+    public void addToTab(String tabName, Object value) {
+        if(value instanceof Map) {
+            JSONObject tab = getTab(tabName);
+            for (Map.Entry<String, Object> entry : ((Map<String, Object>)value).entrySet()) {
+                Util.addToJSONObject(tab, entry.getKey(), entry.getValue());
+            }
+        } else {
+            addToTab("Custom Data", tabName, value);
         }
     }
 
@@ -27,8 +50,33 @@ public class MetaData extends HashMap<String, Object> {
         remove(tabName);
     }
 
-    public JSONObject toJSON(String[] filters) {
-        return mapToJSONObject(this, filters);
+    public MetaData duplicate() {
+        try {
+            return new MetaData(this);
+        } catch (JSONException e) {
+            e.printStackTrace(System.err);
+            return new MetaData();
+        }
+    }
+
+    public MetaData filter(String[] filters) {
+        filter(this, filters);
+        return this;
+    }
+
+    public MetaData merge(JSONObject source) {
+        mergeJSONObjects(this, source);
+        return this;
+    }
+
+    private JSONObject getTab(String tabName) {
+        Object tab = opt(tabName);
+
+        if(tab == null || !(tab instanceof JSONObject)) {
+            tab = new JSONObject();
+            Util.addToJSONObject(this, tabName, tab);
+        }
+        return (JSONObject)tab;
     }
 
     private static boolean matchesFilter(String key, String[] filters) {
@@ -45,42 +93,59 @@ public class MetaData extends HashMap<String, Object> {
         return false;
     }
 
-    private static JSONArray listToJSONArray(List<Object> source, String[] filters) {
-        if(source == null) return null;
+    private static void filter(JSONObject object, String[] filters) {
+        String[] names = getNames(object);
 
-        JSONArray returnValue = new JSONArray();
-        for (Object value : source) {
-            if(value instanceof Map) {
-                returnValue.put(mapToJSONObject((Map<String,Object>)value, filters));
-            } else if(value instanceof List) {
-                returnValue.put(listToJSONArray((List<Object>)value, filters));
+        for (int i = 0; i < names.length; i++) {
+            String key = names[i];
+            if( matchesFilter(key, filters) ){
+                Util.addToJSONObject(object, key, "[FILTERED]");
             } else {
-                returnValue.put(value);
-            }
-        }
-        return returnValue;
-    }
-
-    private static  JSONObject mapToJSONObject(Map<String,Object> source, String[] filters) {
-        if(source == null) return null;
-
-        JSONObject returnValue = new JSONObject();
-        for (Map.Entry<String, Object> entry : source.entrySet()) {
-            String key = entry.getKey();
-            Object value = entry.getValue();
-
-            if(matchesFilter(key, filters)) {
-                Util.addToJSONObject(returnValue, key, "[FILTERED]");
-            } else {
-                if(value instanceof Map) {
-                    Util.addToJSONObject(returnValue, key, mapToJSONObject((Map<String,Object>)value, filters));
-                } else if(value instanceof List) {
-                    Util.addToJSONObject(returnValue, key, listToJSONArray((List<Object>)value, filters));
-                } else {
-                    Util.addToJSONObject(returnValue, key, value);
+                Object value = object.opt(key);
+                if(value != null && value instanceof JSONObject) {
+                    filter((JSONObject)value, filters);
                 }
             }
         }
-        return returnValue;
+    }
+
+    private static JSONObject deepCloneJSONObject(JSONObject source) {
+        String[] names = getNames(source);
+        JSONObject dest;
+
+        try {
+            dest = new JSONObject(source, names);
+        } catch (JSONException e) {
+            e.printStackTrace(System.err);
+            return new JSONObject();
+        }
+
+        for (int i = 0; i < names.length; i++) {
+            String key = names[i];
+            Object value = source.opt(key);
+            if( value != null && value instanceof JSONObject ){
+                JSONObject newValue = deepCloneJSONObject((JSONObject)value);
+                Util.addToJSONObject((JSONObject)dest, key, newValue);
+            }
+        }
+
+        return dest;
+    }
+
+    private static void mergeJSONObjects(JSONObject dest, JSONObject source) {
+        String[] names = getNames(source);
+
+        for (int i = 0; i < names.length; i++) {
+            String key = names[i];
+            Object sourceValue = source.opt(key);
+            if(sourceValue != null) {
+                Object destValue = dest.opt(key);
+                if( destValue != null && sourceValue instanceof JSONObject && destValue instanceof JSONObject ){
+                    mergeJSONObjects((JSONObject)destValue, (JSONObject)sourceValue);
+                } else {
+                    Util.addToJSONObject(dest, key, sourceValue);
+                }
+            }
+        }
     }
 }
