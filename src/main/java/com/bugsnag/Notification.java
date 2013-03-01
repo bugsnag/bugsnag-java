@@ -80,7 +80,7 @@ public class Notification {
         String url = config.getEndpoint();
         request(url, this.toString(), "application/json");
 
-        config.getLogger().info(String.format("Sent error(s) to %s", url));
+        config.getLogger().info(String.format("Sent %d error(s) to %s", size(), url));
     }
 
     public int size() {
