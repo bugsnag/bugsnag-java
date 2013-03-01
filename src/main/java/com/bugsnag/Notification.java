@@ -61,7 +61,7 @@ public class Notification {
                 JSONObject error = new JSONObject(errorString);
                 errors.put(error);
             } catch(JSONException e) {
-                e.printStackTrace();
+                config.getLogger().warn("Error when parsing error json string", e);
             }
         }
         JSONUtils.safePut(notification, "events", errors);
