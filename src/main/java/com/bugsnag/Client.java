@@ -97,4 +97,16 @@ public class Client {
     public void clearTab(String tab) {
         config.clearTab(tab);
     }
+
+    public Notification createNotification() {
+        return new Notification(config);
+    }
+
+    public Notification createNotification(Error error) {
+        return new Notification(config, error);
+    }
+
+    public Error createError(Throwable e, MetaData metaData) {
+        return new Error(e, metaData, config);
+    }
 }
