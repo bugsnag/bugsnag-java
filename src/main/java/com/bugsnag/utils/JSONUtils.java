@@ -75,7 +75,7 @@ public class JSONUtils {
         }
     }
 
-    private static boolean matchesFilter(String key, String[] filters) {
+    static boolean matchesFilter(String key, String[] filters) {
         if(filters == null || key == null) {
             return false;
         }
@@ -89,7 +89,7 @@ public class JSONUtils {
         return false;
     }
 
-    private static Object objectForJSON(Object value) {
+    static Object objectForJSON(Object value) {
         if(value == null) return null;
 
         if(value instanceof Map) {
