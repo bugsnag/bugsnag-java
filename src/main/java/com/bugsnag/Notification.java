@@ -9,6 +9,9 @@ import java.util.List;
 import org.json.JSONObject;
 import org.json.JSONArray;
 
+import com.bugsnag.utils.StringUtils;
+import com.bugsnag.utils.JSONUtils;
+
 public class Notification {
     private static final String NOTIFIER_NAME = "Java Bugsnag Notifier";
     private static final String NOTIFIER_VERSION = "2.0.0";
@@ -33,21 +36,21 @@ public class Notification {
     public JSONObject toJSON() {
         // Outer payload
         JSONObject notification = new JSONObject();
-        Util.addToJSONObject(notification, "apiKey", config.getApiKey());
+        JSONUtils.safePut(notification, "apiKey", config.getApiKey());
 
         // Notifier info
         JSONObject notifier = new JSONObject();
-        Util.addToJSONObject(notifier, "name", NOTIFIER_NAME);
-        Util.addToJSONObject(notifier, "version", NOTIFIER_VERSION);
-        Util.addToJSONObject(notifier, "url", NOTIFIER_URL);
-        Util.addToJSONObject(notification, "notifier", notifier);
+        JSONUtils.safePut(notifier, "name", NOTIFIER_NAME);
+        JSONUtils.safePut(notifier, "version", NOTIFIER_VERSION);
+        JSONUtils.safePut(notifier, "url", NOTIFIER_URL);
+        JSONUtils.safePut(notification, "notifier", notifier);
 
         // Error array
         JSONArray errors = new JSONArray();
         for(Error error : errorList) {
             errors.put(error.toJSON());
         }
-        Util.addToJSONObject(notification, "events", errors);
+        JSONUtils.safePut(notification, "events", errors);
 
         return notification;
     }
@@ -67,7 +70,7 @@ public class Notification {
     }
 
     private boolean request(String urlString, String payload, String contentType) {
-        return request(urlString, Util.stringToByteArray(payload), contentType);
+        return request(urlString, StringUtils.stringToByteArray(payload), contentType);
     }
 
     private boolean request(String urlString, byte[] payload, String contentType) {

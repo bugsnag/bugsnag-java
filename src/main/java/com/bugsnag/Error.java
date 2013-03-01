@@ -2,6 +2,7 @@ package com.bugsnag;
 
 import org.json.JSONObject;
 import org.json.JSONArray;
+import com.bugsnag.utils.JSONUtils;
 
 public class Error {
     private Throwable exception;
@@ -22,19 +23,19 @@ public class Error {
         JSONObject error = new JSONObject();
 
         // Add basic information
-        Util.addToJSONObject(error, "userId", config.getUserId());
-        Util.addToJSONObject(error, "appVersion", config.getAppVersion());
-        Util.addToJSONObject(error, "osVersion", config.getOsVersion());
-        Util.addToJSONObject(error, "releaseStage", config.getReleaseStage());
-        Util.addToJSONObject(error, "context", config.getContext());
+        JSONUtils.safePut(error, "userId", config.getUserId());
+        JSONUtils.safePut(error, "appVersion", config.getAppVersion());
+        JSONUtils.safePut(error, "osVersion", config.getOsVersion());
+        JSONUtils.safePut(error, "releaseStage", config.getReleaseStage());
+        JSONUtils.safePut(error, "context", config.getContext());
 
         // Unwrap exceptions
         JSONArray exceptions = new JSONArray();
         Throwable currentEx = this.exception;
         while(currentEx != null) {
             JSONObject exception = new JSONObject();
-            Util.addToJSONObject(exception, "errorClass", currentEx.getClass().getName());
-            Util.addToJSONObject(exception, "message", currentEx.getLocalizedMessage());
+            JSONUtils.safePut(exception, "errorClass", currentEx.getClass().getName());
+            JSONUtils.safePut(exception, "message", currentEx.getLocalizedMessage());
 
             // Stacktrace
             JSONArray stacktrace = new JSONArray();
@@ -42,9 +43,9 @@ public class Error {
             for(StackTraceElement el : stackTrace) {
                 try {
                     JSONObject line = new JSONObject();
-                    Util.addToJSONObject(line, "method", el.getClassName() + "." + el.getMethodName());
-                    Util.addToJSONObject(line, "file", el.getFileName() == null ? "Unknown" : el.getFileName());
-                    Util.addToJSONObject(line, "lineNumber", el.getLineNumber());
+                    JSONUtils.safePut(line, "method", el.getClassName() + "." + el.getMethodName());
+                    JSONUtils.safePut(line, "file", el.getFileName() == null ? "Unknown" : el.getFileName());
+                    JSONUtils.safePut(line, "lineNumber", el.getLineNumber());
 
                     // Check if line is inProject
                     if(config.getProjectPackages() != null) {
@@ -61,16 +62,16 @@ public class Error {
                     lineEx.printStackTrace(System.err);
                 }
             }
-            Util.addToJSONObject(exception, "stacktrace", stacktrace);
+            JSONUtils.safePut(exception, "stacktrace", stacktrace);
 
             currentEx = currentEx.getCause();
             exceptions.put(exception);
         }
-        Util.addToJSONObject(error, "exceptions", exceptions);
+        JSONUtils.safePut(error, "exceptions", exceptions);
 
         // Merge global metaData with local metaData, apply filters, and add to this error
         MetaData errorMetaData = config.getMetaData().duplicate().merge(metaData).filter(config.getFilters());
-        Util.addToJSONObject(error, "metaData", errorMetaData);
+        JSONUtils.safePut(error, "metaData", errorMetaData);
 
         return error;
     }
