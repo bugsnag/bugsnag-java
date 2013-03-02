@@ -6,19 +6,33 @@ import java.util.List;
 class Configuration {
     protected static final String DEFAULT_ENDPOINT = "notify.bugsnag.com";
 
+    private static final String DEFAULT_NOTIFIER_NAME = "Java Bugsnag Notifier";
+    private static final String DEFAULT_NOTIFIER_VERSION = "1.0.1";
+    private static final String DEFAULT_NOTIFIER_URL = "https://bugsnag.com";
+
+    // Notifier settings
+    String notifierName = DEFAULT_NOTIFIER_NAME;
+    String notifierVersion = DEFAULT_NOTIFIER_VERSION;
+    String notifierUrl = DEFAULT_NOTIFIER_URL;
+
+    // Notification settings
     String apiKey;
     boolean autoNotify = true;
     boolean useSSL = false;
     String endpoint = DEFAULT_ENDPOINT;
-    String context;
-    String userId;
-    String releaseStage = "production";
     String[] notifyReleaseStages = new String[]{"production"};
     String[] filters = new String[]{"password"};
     String[] projectPackages;
+
+    // Error settings
+    String context;
+    String userId;
+    String releaseStage = "production";
     String appVersion;
     String osVersion;
     MetaData metaData;
+
+    // Logger
     Logger logger;
 
     public Configuration() {

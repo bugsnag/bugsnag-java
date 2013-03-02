@@ -15,10 +15,6 @@ import com.bugsnag.http.NetworkException;
 import com.bugsnag.utils.JSONUtils;
 
 public class Notification {
-    private static final String NOTIFIER_NAME = "Java Bugsnag Notifier";
-    private static final String NOTIFIER_VERSION = "2.0.0";
-    private static final String NOTIFIER_URL = "https://bugsnag.com";
-
     private Configuration config;
     private List<Error> errorList = new ArrayList<Error>();
     private List<String> errorStrings = new ArrayList<String>();
@@ -47,9 +43,9 @@ public class Notification {
 
         // Notifier info
         JSONObject notifier = new JSONObject();
-        JSONUtils.safePut(notifier, "name", NOTIFIER_NAME);
-        JSONUtils.safePut(notifier, "version", NOTIFIER_VERSION);
-        JSONUtils.safePut(notifier, "url", NOTIFIER_URL);
+        JSONUtils.safePut(notifier, "name", config.notifierName);
+        JSONUtils.safePut(notifier, "version", config.notifierVersion);
+        JSONUtils.safePut(notifier, "url", config.notifierUrl);
         JSONUtils.safePut(notification, "notifier", notifier);
 
         // Error array

@@ -69,6 +69,18 @@ public class Client {
         config.appVersion = appVersion;
     }
 
+    public void setNotifierName(String notifierName) {
+        config.notifierName = notifierName;
+    }
+
+    public void setNotifierVersion(String notifierVersion) {
+        config.notifierVersion = notifierVersion;
+    }
+
+    public void setNotifierUrl(String notifierUrl) {
+        config.notifierUrl = notifierUrl;
+    }
+
     public void setLogger(Logger logger) {
         config.logger = logger;
     }
