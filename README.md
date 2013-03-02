@@ -16,8 +16,8 @@ capturing errors from your applications.
 Installation & Setup
 --------------------
 
--   [Download the latest bugsnag.jar file](TODO) and place it in your app's
-    classpath.
+-   Download the [latest bugsnag.jar](http://bugsnagcdn.s3.amazonaws.com/bugsnag-java/bugsnag-1.0.0.jar)
+    and place it in your app's classpath.
 
     *Note: if your project uses [Maven](http://maven.apache.org/) you can 
     instead [add bugsnag as a dependency](http://mvnrepository.com/artifact/com.bugsnag/bugsnag)
@@ -45,9 +45,11 @@ bugsnag.notify(new RuntimeException("Non-fatal"));
 You can also send additional meta-data with your exception:
 
 ```java
-Map<String,String> metaData = new HashMap<String,String>();
-extraData.put("username", "bob-hoskins");
-extraData.put("registered_user", "yes");
+import com.bugsnag.MetaData;
+
+MetaData metaData = new MetaData();
+metaData.addToTab("User", "username", "bob-hoskins");
+metaData.addToTab("User", "email", "bob@example.com");
 
 bugsnag.notify(new RuntimeException("Non-fatal"), metaData);
 ```
