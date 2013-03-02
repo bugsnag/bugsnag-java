@@ -3,9 +3,8 @@ Bugsnag Notifier for Java
 
 The Bugsnag Notifier for Java gives you instant notification of exceptions
 thrown from your Java applications.
-The notifier hooks into `Thread.UncaughtExceptionHandler`, which means any
-uncaught exceptions will trigger a notification to be sent to your Bugsnag
-project.
+The notifier hooks into `Thread.UncaughtExceptionHandler`, so any
+uncaught exceptions in your app will be sent to your Bugsnag dashboard.
 
 [Bugsnag](https://bugsnag.com) captures errors in real-time from your websites
 and mobile applications, helping you to understand and resolve them
