@@ -18,6 +18,9 @@ Installation & Setup
 -   Download the [latest bugsnag.jar](http://bugsnagcdn.s3.amazonaws.com/bugsnag-java/bugsnag-1.0.0.jar)
     and place it in your app's classpath.
 
+    Bugsnag for Java depends only on the `org.json` library,
+    [download the jar here](http://repo1.maven.org/maven2/org/json/json/20090211/json-20090211.jar).
+
     *Note: if your project uses [Maven](http://maven.apache.org/) you can 
     instead [add bugsnag as a dependency](http://mvnrepository.com/artifact/com.bugsnag/bugsnag)
     in your pom.xml.*
