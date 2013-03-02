@@ -13,7 +13,7 @@ public class Client {
         if(apiKey == null) {
             throw new RuntimeException("You must provide a Bugsnag API key");
         }
-        config.setApiKey(apiKey);
+        config.apiKey = apiKey;
 
         // Install a default exception handler with this client
         if(installHandler) {
@@ -22,55 +22,55 @@ public class Client {
     }
 
     public void setContext(String context) {
-        config.setContext(context);
+        config.context = context;
     }
 
     public void setUserId(String userId) {
-        config.setUserId(userId);
+        config.userId = userId;
     }
 
     public void setReleaseStage(String releaseStage) {
-        config.setReleaseStage(releaseStage);
+        config.releaseStage = releaseStage;
     }
 
     public void setNotifyReleaseStages(String... notifyReleaseStages) {
-        config.setNotifyReleaseStages(notifyReleaseStages);
+        config.notifyReleaseStages = notifyReleaseStages;
     }
 
     public void setAutoNotify(boolean autoNotify) {
-        config.setAutoNotify(autoNotify);
+        config.autoNotify = autoNotify;
     }
 
     public void setUseSSL(boolean useSSL) {
-        config.setUseSSL(useSSL);
+        config.useSSL = useSSL;
     }
 
     public boolean getUseSSL() {
-        return config.getUseSSL();
+        return config.useSSL;
     }
 
     public void setEndpoint(String endpoint) {
-        config.setEndpoint(endpoint);
+        config.endpoint = endpoint;
     }
 
     public void setFilters(String... filters) {
-        config.setFilters(filters);
+        config.filters = filters;
     }
 
-    public void setProjectPackages(String... packages) {
-        config.setProjectPackages(packages);
+    public void setProjectPackages(String... projectPackages) {
+        config.projectPackages = projectPackages;
     }
 
     public void setOsVersion(String osVersion) {
-        config.setOsVersion(osVersion);
+        config.osVersion = osVersion;
     }
 
     public void setAppVersion(String appVersion) {
-        config.setAppVersion(appVersion);
+        config.appVersion = appVersion;
     }
 
     public void setLogger(Logger logger) {
-        config.setLogger(logger);
+        config.logger = logger;
     }
 
     public void notify(Throwable e, MetaData metaData) {
@@ -80,7 +80,7 @@ public class Client {
             Notification notif = new Notification(config, new Error(e, metaData, config));
             notif.deliver();
         } catch (IOException ex) {
-            config.getLogger().warn("Error notifying Bugsnag", ex);
+            config.logger.warn("Error notifying Bugsnag", ex);
         }
     }
 
@@ -89,7 +89,7 @@ public class Client {
     }
 
     public void autoNotify(Throwable e) {
-        if(config.getAutoNotify()) {
+        if(config.autoNotify) {
             notify(e);
         }
     }

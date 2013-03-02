@@ -43,7 +43,7 @@ public class Notification {
     public JSONObject toJSON() {
         // Outer payload
         JSONObject notification = new JSONObject();
-        JSONUtils.safePut(notification, "apiKey", config.getApiKey());
+        JSONUtils.safePut(notification, "apiKey", config.apiKey);
 
         // Notifier info
         JSONObject notifier = new JSONObject();
@@ -62,7 +62,7 @@ public class Notification {
                 JSONObject error = new JSONObject(errorString);
                 errors.put(error);
             } catch(JSONException e) {
-                config.getLogger().warn("Error when parsing error json string", e);
+                config.logger.warn("Error when parsing error json string", e);
             }
         }
         JSONUtils.safePut(notification, "events", errors);
@@ -81,7 +81,7 @@ public class Notification {
         String url = config.getEndpoint();
         HttpClient.post(url, this.toString(), "application/json");
 
-        config.getLogger().info(String.format("Sent %d error(s) to Bugsnag (%s)", size(), url));
+        config.logger.info(String.format("Sent %d error(s) to Bugsnag (%s)", size(), url));
     }
 
     public int size() {

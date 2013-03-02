@@ -8,6 +8,7 @@ public class Error {
     private Throwable exception;
     private Configuration config;
     private MetaData metaData;
+    private String context;
 
     public Error(Throwable exception, MetaData metaData, Configuration config) {
         this.exception = exception;
@@ -23,11 +24,11 @@ public class Error {
         JSONObject error = new JSONObject();
 
         // Add basic information
-        JSONUtils.safePut(error, "userId", config.getUserId());
-        JSONUtils.safePut(error, "appVersion", config.getAppVersion());
-        JSONUtils.safePut(error, "osVersion", config.getOsVersion());
-        JSONUtils.safePut(error, "releaseStage", config.getReleaseStage());
-        JSONUtils.safePut(error, "context", config.getContext());
+        JSONUtils.safePut(error, "userId", config.userId);
+        JSONUtils.safePut(error, "appVersion", config.appVersion);
+        JSONUtils.safePut(error, "osVersion", config.osVersion);
+        JSONUtils.safePut(error, "releaseStage", config.releaseStage);
+        JSONUtils.safePut(error, "context", getContext());
 
         // Unwrap exceptions
         JSONArray exceptions = new JSONArray();
@@ -48,8 +49,8 @@ public class Error {
                     JSONUtils.safePut(line, "lineNumber", el.getLineNumber());
 
                     // Check if line is inProject
-                    if(config.getProjectPackages() != null) {
-                        for(String packageName : config.getProjectPackages()) {
+                    if(config.projectPackages != null) {
+                        for(String packageName : config.projectPackages) {
                             if(packageName != null && el.getClassName().startsWith(packageName)) {
                                 line.put("inProject", true);
                                 break;
@@ -70,7 +71,7 @@ public class Error {
         JSONUtils.safePut(error, "exceptions", exceptions);
 
         // Merge global metaData with local metaData, apply filters, and add to this error
-        MetaData errorMetaData = config.getMetaData().merge(metaData).filter(config.getFilters());
+        MetaData errorMetaData = config.getMetaData().merge(metaData).filter(config.filters);
         JSONUtils.safePut(error, "metaData", errorMetaData);
 
         return error;
@@ -81,20 +82,27 @@ public class Error {
     }
 
     public void setContext(String context) {
-        config.setContext(context);
+        this.context = context;
     }
 
     public void addToTab(String tabName, String key, Object value) {
         metaData.addToTab(tabName, key, value);
     }
 
+    private String getContext() {
+        if(context != null) {
+            return context;
+        } else {
+            return config.context;
+        }
+    }
+
     private boolean shouldFilter(String key) {
-        String[] filters = config.getFilters();
-        if(filters == null || key == null) {
+        if(config.filters == null || key == null) {
             return false;
         }
 
-        for(String filter : filters) {
+        for(String filter : config.filters) {
             if(key.contains(filter)) {
                 return true;
             }
