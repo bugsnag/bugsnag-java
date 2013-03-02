@@ -77,13 +77,16 @@
         </configuration>
       </plugin>
 
+      <!-- Proguard -->
       <plugin>
         <groupId>com.pyx4me</groupId>
         <artifactId>proguard-maven-plugin</artifactId>
         <executions>
           <execution>
             <phase>package</phase>
-            <goals><goal>proguard</goal></goals>
+            <goals>
+              <goal>proguard</goal>
+            </goals>
           </execution>
         </executions>
         <configuration>
