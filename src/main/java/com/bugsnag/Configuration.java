@@ -6,14 +6,14 @@ import java.util.List;
 class Configuration {
     protected static final String DEFAULT_ENDPOINT = "notify.bugsnag.com";
 
-    private static final String DEFAULT_NOTIFIER_NAME = "Java Bugsnag Notifier";
-    private static final String DEFAULT_NOTIFIER_VERSION = "1.0.1";
-    private static final String DEFAULT_NOTIFIER_URL = "https://bugsnag.com";
+    private static final String NOTIFIER_NAME = "Java Bugsnag Notifier";
+    private static final String NOTIFIER_VERSION = "1.0.1";
+    private static final String NOTIFIER_URL = "https://bugsnag.com";
 
     // Notifier settings
-    String notifierName = DEFAULT_NOTIFIER_NAME;
-    String notifierVersion = DEFAULT_NOTIFIER_VERSION;
-    String notifierUrl = DEFAULT_NOTIFIER_URL;
+    String notifierName = NOTIFIER_NAME;
+    String notifierVersion = NOTIFIER_VERSION;
+    String notifierUrl = NOTIFIER_URL;
 
     // Notification settings
     String apiKey;
