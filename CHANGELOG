@@ -1,3 +1,7 @@
+1.0.2-SNAPSHOT
+--------------
+-   Add metrics tracking
+
 1.0.1
 -----
 -   Allow changing of notifier name/version
