@@ -1,3 +1,8 @@
+1.0.1
+-----
+-   Allow changing of notifier name/version
+-   Reduced jar size
+
 1.0.0
 -----
 -   Initial release
