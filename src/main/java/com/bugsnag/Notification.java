@@ -74,7 +74,7 @@ public class Notification {
         if(errorList.isEmpty() && errorStrings.isEmpty())
             return;
 
-        String url = config.getEndpoint();
+        String url = config.getNotifyEndpoint();
         HttpClient.post(url, this.toString(), "application/json");
 
         config.logger.info(String.format("Sent %d error(s) to Bugsnag (%s)", size(), url));

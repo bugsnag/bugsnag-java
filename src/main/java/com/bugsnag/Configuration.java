@@ -40,8 +40,12 @@ class Configuration {
         this.metaData = new MetaData();
     }
 
-    public String getEndpoint() {
-        return (this.useSSL ? "https://" : "http://") + this.endpoint;
+    public String getNotifyEndpoint() {
+        return String.format("%s://%s", getProtocol(), endpoint);
+    }
+
+    public String getMetricsEndpoint() {
+        return String.format("%s://%s/metrics", getProtocol(), endpoint);
     }
 
     public void addToTab(String tabName, String key, Object value) {
@@ -62,5 +66,9 @@ class Configuration {
 
         List<String> stages = Arrays.asList(this.notifyReleaseStages);
         return stages.contains(this.releaseStage);
+    }
+
+    private String getProtocol() {
+        return (this.useSSL ? "https" : "http");
     }
 }

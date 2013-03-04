@@ -1,6 +1,6 @@
 package com.bugsnag;
 
-import java.io.IOException;
+import com.bugsnag.http.NetworkException;
 
 public class Client {
     protected Configuration config = new Configuration();
@@ -91,7 +91,7 @@ public class Client {
         try {
             Notification notif = new Notification(config, new Error(e, metaData, config));
             notif.deliver();
-        } catch (IOException ex) {
+        } catch (NetworkException ex) {
             config.logger.warn("Error notifying Bugsnag", ex);
         }
     }
@@ -124,5 +124,14 @@ public class Client {
 
     public Error createError(Throwable e, MetaData metaData) {
         return new Error(e, metaData, config);
+    }
+
+    public void trackUser(String userId) {
+        try {
+            Metrics metrics = new Metrics(config, userId);
+            metrics.deliver();
+        } catch (NetworkException ex) {
+            config.logger.warn("Error sending metrics to Bugsnag", ex);
+        }
     }
 }
