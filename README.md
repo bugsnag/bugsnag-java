@@ -45,6 +45,7 @@ use `addToTab`:
 ```java
 bugsnag.addToTab("User", "Name", "Bob Hoskins");
 bugsnag.addToTab("User", "Paying Customer?", true);
+```
 
 
 Send Non-Fatal Exceptions to Bugsnag
