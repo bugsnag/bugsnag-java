@@ -114,6 +114,16 @@ public class Client {
         config.clearTab(tab);
     }
 
+    public void trackUser(String userId) {
+        try {
+            Metrics metrics = new Metrics(config, userId);
+            metrics.deliver();
+        } catch (NetworkException ex) {
+            config.logger.warn("Error sending metrics to Bugsnag", ex);
+        }
+    }
+
+    // Factory methods so we don't have to expose the Configuration class
     public Notification createNotification() {
         return new Notification(config);
     }
@@ -122,16 +132,11 @@ public class Client {
         return new Notification(config, error);
     }
 
-    public Error createError(Throwable e, MetaData metaData) {
-        return new Error(e, metaData, config);
+    public Metrics createMetrics(String userId) {
+        return new Metrics(config, userId);
     }
 
-    public void trackUser(String userId) {
-        try {
-            Metrics metrics = new Metrics(config, userId);
-            metrics.deliver();
-        } catch (NetworkException ex) {
-            config.logger.warn("Error sending metrics to Bugsnag", ex);
-        }
+    public Error createError(Throwable e, MetaData metaData) {
+        return new Error(e, metaData, config);
     }
 }
