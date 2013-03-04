@@ -23,7 +23,7 @@ Installation & Setup
 
     *Note: if your project uses [Maven](http://maven.apache.org/) you can 
     instead [add bugsnag as a dependency](http://mvnrepository.com/artifact/com.bugsnag/bugsnag)
-    in your pom.xml.*
+    in your `pom.xml`.*
 
 -   Import the Bugsnag `Client` class in your code and create an instance to 
     begin capturing exceptions:
