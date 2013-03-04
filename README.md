@@ -34,6 +34,19 @@ Installation & Setup
     ```
 
 
+Sending Custom Data With Exceptions
+-----------------------------------
+
+It is often useful to send additional meta-data about your app, such as
+information about the currently logged in user, along with any exceptions,
+to help debug problems. To add custom data to every exception you can
+use `addToTab`:
+
+```java
+bugsnag.addToTab("User", "Name", "Bob Hoskins");
+bugsnag.addToTab("User", "Paying Customer?", true);
+
+
 Send Non-Fatal Exceptions to Bugsnag
 ------------------------------------
 
