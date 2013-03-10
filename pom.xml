@@ -90,7 +90,7 @@
           </execution>
         </executions>
         <configuration>
-          <proguardInclude>${basedir}/proguard.config</proguardInclude>
+          <proguardInclude>${basedir}/proguard.cfg</proguardInclude>
         </configuration>
       </plugin>
     </plugins>
