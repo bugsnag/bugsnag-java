@@ -23,6 +23,7 @@ class Configuration {
     String[] notifyReleaseStages = new String[]{"production"};
     String[] filters = new String[]{"password"};
     String[] projectPackages;
+    String[] ignoreClasses;
 
     // Error settings
     String context;

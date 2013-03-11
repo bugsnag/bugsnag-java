@@ -96,18 +96,4 @@ public class Error {
             return config.context;
         }
     }
-
-    private boolean shouldFilter(String key) {
-        if(config.filters == null || key == null) {
-            return false;
-        }
-
-        for(String filter : config.filters) {
-            if(key.contains(filter)) {
-                return true;
-            }
-        }
-        
-        return false;
-    }
 }

@@ -81,6 +81,10 @@ public class Client {
         config.notifierUrl = notifierUrl;
     }
 
+    public void setIgnoreClasses(String... ignoreClasses) {
+        config.ignoreClasses = ignoreClasses;
+    }
+
     public void setLogger(Logger logger) {
         config.logger = logger;
     }
