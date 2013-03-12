@@ -89,6 +89,10 @@ public class Error {
         metaData.addToTab(tabName, key, value);
     }
 
+    public boolean shouldIgnore() {
+        return config.shouldIgnore(exception.getClass().getName());
+    }
+
     private String getContext() {
         if(context != null) {
             return context;

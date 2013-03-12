@@ -69,6 +69,14 @@ class Configuration {
         return stages.contains(this.releaseStage);
     }
 
+    public boolean shouldIgnore(String className) {
+        if(this.ignoreClasses == null)
+            return false;
+
+        List<String> classes = Arrays.asList(this.ignoreClasses);
+        return classes.contains(className);
+    }
+
     private String getProtocol() {
         return (this.useSSL ? "https" : "http");
     }

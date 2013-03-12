@@ -153,6 +153,14 @@ packages.
 bugsnag.setProjectPackages("com.company.package1", "com.company.package2");
 ```
 
+###setIgnoreClasses
+
+Sets for which exception classes we should not send exceptions to Bugsnag.
+
+```java
+bugsnag.setIgnoreClasses("java.io.IOException", "com.example.Custom");
+```
+
 
 Reporting Bugs or Feature Requests
 ----------------------------------

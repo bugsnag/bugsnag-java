@@ -89,15 +89,21 @@ public class Client {
         config.logger = logger;
     }
 
-    public void notify(Throwable e, MetaData metaData) {
+    public void notify(Error error) {
         if(!config.shouldNotify()) return;
+        if(error.shouldIgnore()) return;
 
         try {
-            Notification notif = new Notification(config, new Error(e, metaData, config));
+            Notification notif = new Notification(config, error);
             notif.deliver();
         } catch (NetworkException ex) {
             config.logger.warn("Error notifying Bugsnag", ex);
         }
+    }
+
+    public void notify(Throwable e, MetaData metaData) {
+        Error error = new Error(e, metaData, config);
+        notify(error);
     }
 
     public void notify(Throwable e) {
