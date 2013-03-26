@@ -6,32 +6,20 @@ import com.bugsnag.http.HttpClient;
 import com.bugsnag.http.NetworkException;
 import com.bugsnag.utils.JSONUtils;
 
-public class Metrics {
+public class Metrics extends JSONObject {
     private Configuration config;
-    private String userId;
 
     public Metrics(Configuration config, String userId) {
         this.config = config;
-        this.userId = userId;
+
+        JSONUtils.safePut(this, "apiKey", config.apiKey);
+        JSONUtils.safePut(this, "userId", userId);
     }
 
     public void deliver() throws NetworkException {
         String url = config.getMetricsEndpoint();
         HttpClient.post(url, this.toString(), "application/json");
 
-        config.logger.info(String.format("Sent metrics data for user (%s) to Bugsnag (%s)", userId, url));
-    }
-
-    public JSONObject toJSON() {
-        JSONObject metrics = new JSONObject();
-
-        JSONUtils.safePut(metrics, "apiKey", config.apiKey);
-        JSONUtils.safePut(metrics, "userId", userId);
-
-        return metrics;
-    }
-
-    public String toString() {
-        return toJSON().toString();
+        config.logger.info(String.format("Sent metrics data for user (%s) to Bugsnag (%s)", this.optString("userId"), url));
     }
 }

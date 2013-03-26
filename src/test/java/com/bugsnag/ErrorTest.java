@@ -11,10 +11,8 @@ public class ErrorTest {
         Client bugsnag = new Client("apikey");
         bugsnag.setIgnoreClasses("java.io.IOException");
 
-        Error error = bugsnag.createError(new java.io.IOException("Test"), null);
-        assertThat(error.shouldIgnore(), is(true));
+        assertThat(bugsnag.shouldIgnore(new java.io.IOException("Test")), is(true));
 
-        error = bugsnag.createError(new RuntimeException("Test"), null);
-        assertThat(error.shouldIgnore(), is(false));
+        assertThat(bugsnag.shouldIgnore(new RuntimeException("Test")), is(false));
     }
 }

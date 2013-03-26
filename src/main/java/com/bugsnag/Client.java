@@ -89,21 +89,19 @@ public class Client {
         config.logger = logger;
     }
 
-    public void notify(Error error) {
-        if(!config.shouldNotify()) return;
-        if(error.shouldIgnore()) return;
-
-        try {
-            Notification notif = new Notification(config, error);
-            notif.deliver();
-        } catch (NetworkException ex) {
-            config.logger.warn("Error notifying Bugsnag", ex);
-        }
+    protected void rawNotify(Error error) throws NetworkException {
+        Notification notif = new Notification(config, error);
+        notif.deliver();
     }
 
     public void notify(Throwable e, MetaData metaData) {
-        Error error = new Error(e, metaData, config);
-        notify(error);
+        try {
+            if(shouldIgnore(e)) return;
+
+            rawNotify(new Error(e, metaData, config));
+        } catch (NetworkException ex) {
+            config.logger.warn("Error notifying Bugsnag", ex);
+        }
     }
 
     public void notify(Throwable e) {
@@ -131,6 +129,12 @@ public class Client {
         } catch (NetworkException ex) {
             config.logger.warn("Error sending metrics to Bugsnag", ex);
         }
+    }
+
+    protected boolean shouldIgnore(Throwable exception) {
+        if(!config.shouldNotify()) return true;
+        if(exception == null || config.shouldIgnore(exception.getClass().getName())) return true;
+        return false;
     }
 
     // Factory methods so we don't have to expose the Configuration class

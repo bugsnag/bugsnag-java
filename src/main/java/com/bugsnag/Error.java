@@ -4,39 +4,22 @@ import org.json.JSONObject;
 import org.json.JSONArray;
 import com.bugsnag.utils.JSONUtils;
 
-public class Error {
-    private Throwable exception;
-    private Configuration config;
-    private MetaData metaData;
-    private String context;
-
+public class Error extends JSONObject {
     public Error(Throwable exception, MetaData metaData, Configuration config) {
-        this.exception = exception;
-        this.config = config;
-        this.metaData = metaData;
-
-        if(this.metaData == null) {
-            this.metaData = new MetaData();
-        }
-    }
-
-    public JSONObject toJSON() {
-        JSONObject error = new JSONObject();
-
         // Add basic information
-        JSONUtils.safePut(error, "userId", config.userId);
-        JSONUtils.safePut(error, "appVersion", config.appVersion);
-        JSONUtils.safePut(error, "osVersion", config.osVersion);
-        JSONUtils.safePut(error, "releaseStage", config.releaseStage);
-        JSONUtils.safePut(error, "context", getContext());
+        JSONUtils.safePut(this, "userId", config.userId);
+        JSONUtils.safePut(this, "appVersion", config.appVersion);
+        JSONUtils.safePut(this, "osVersion", config.osVersion);
+        JSONUtils.safePut(this, "releaseStage", config.releaseStage);
+        JSONUtils.safePut(this, "context", config.context);
 
         // Unwrap exceptions
         JSONArray exceptions = new JSONArray();
-        Throwable currentEx = this.exception;
+        Throwable currentEx = exception;
         while(currentEx != null) {
-            JSONObject exception = new JSONObject();
-            JSONUtils.safePut(exception, "errorClass", currentEx.getClass().getName());
-            JSONUtils.safePut(exception, "message", currentEx.getLocalizedMessage());
+            JSONObject exceptionObject = new JSONObject();
+            JSONUtils.safePut(exceptionObject, "errorClass", currentEx.getClass().getName());
+            JSONUtils.safePut(exceptionObject, "message", currentEx.getLocalizedMessage());
 
             // Stacktrace
             JSONArray stacktrace = new JSONArray();
@@ -63,41 +46,19 @@ public class Error {
                     lineEx.printStackTrace(System.err);
                 }
             }
-            JSONUtils.safePut(exception, "stacktrace", stacktrace);
+            JSONUtils.safePut(exceptionObject, "stacktrace", stacktrace);
 
             currentEx = currentEx.getCause();
-            exceptions.put(exception);
+            exceptions.put(exceptionObject);
         }
-        JSONUtils.safePut(error, "exceptions", exceptions);
+        JSONUtils.safePut(this, "exceptions", exceptions);
 
         // Merge global metaData with local metaData, apply filters, and add to this error
         MetaData errorMetaData = config.getMetaData().merge(metaData).filter(config.filters);
-        JSONUtils.safePut(error, "metaData", errorMetaData);
-
-        return error;
-    }
-
-    public String toString() {
-        return toJSON().toString();
+        JSONUtils.safePut(this, "metaData", errorMetaData);
     }
 
     public void setContext(String context) {
-        this.context = context;
-    }
-
-    public void addToTab(String tabName, String key, Object value) {
-        metaData.addToTab(tabName, key, value);
-    }
-
-    public boolean shouldIgnore() {
-        return config.shouldIgnore(exception.getClass().getName());
-    }
-
-    private String getContext() {
-        if(context != null) {
-            return context;
-        } else {
-            return config.context;
-        }
+        JSONUtils.safePut(this, "context", context);
     }
 }
