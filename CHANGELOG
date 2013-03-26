@@ -1,3 +1,7 @@
+1.0.5
+-----
+-   Expose the `Configuration` class
+
 1.0.4
 -----
 -   Added support for `setIgnoreClasses` to set which exception classes 
