@@ -16,11 +16,13 @@ import com.bugsnag.utils.JSONUtils;
 
 public class Notification extends JSONObject {
     private Configuration config;
-    private List<Error> errorList = new ArrayList<Error>();
-    private List<String> errorStrings = new ArrayList<String>();
+    private int stringEventCount;
+    private StringBuilder stringEvents;
 
     public Notification(Configuration config) {
         this.config = config;
+        this.stringEvents = new StringBuilder();
+        this.stringEventCount = 0;
 
         // Outer payload
         JSONUtils.safePut(this, "apiKey", config.apiKey);
@@ -42,22 +44,17 @@ public class Notification extends JSONObject {
     }
 
     public void addError(Error error) {
-        errorList.add(error);
-
         events().put(error);
     }
 
     public void addError(String errorString) {
-        try {
-            events().put(new JSONObject(errorString));
-        } catch(JSONException e) {
-            config.logger.warn("Error when parsing error json string", e);
-        }
+        if(stringEventCount > 0) stringEvents.append(",");
+        stringEventCount++;
+        stringEvents.append(errorString);
     }
 
     public void deliver() throws NetworkException {
-        if(errorList.isEmpty() && errorStrings.isEmpty())
-            return;
+        if(size() == 0) return;
 
         String url = config.getNotifyEndpoint();
         HttpClient.post(url, this.toString(), "application/json");
@@ -65,8 +62,25 @@ public class Notification extends JSONObject {
         config.logger.info(String.format("Sent %d error(s) to Bugsnag (%s)", size(), url));
     }
 
+    public String toString() {
+        String returnValue = super.toString();
+
+        if(stringEventCount > 0) {
+            int eventArrayLocation = returnValue.indexOf("events:[");
+            StringBuilder returnString = new StringBuilder()
+                .append(returnValue.substring(0, eventArrayLocation + 8))
+                .append(stringEvents)
+                .append(events().length() > 0 ? "," : "")
+                .append(returnValue.substring(eventArrayLocation + 8));
+
+            return returnString.toString();
+        } else {
+            return returnValue;
+        }
+    }
+
     public int size() {
-        return events().length();
+        return events().length() + stringEventCount;
     }
 
     protected JSONArray events() {
