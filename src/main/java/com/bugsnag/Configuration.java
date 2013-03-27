@@ -4,7 +4,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class Configuration {
-    protected static final String DEFAULT_ENDPOINT = "192.168.1.132:8000";
+    protected static final String DEFAULT_ENDPOINT = "notify.bugsnag.com";
 
     private static final String NOTIFIER_NAME = "Java Bugsnag Notifier";
     private static final String NOTIFIER_VERSION = "1.0.4";
