@@ -1,3 +1,7 @@
+1.1.0
+-----
+-   Reduced memory usage, allow streaming errors from a file
+
 1.0.5
 -----
 -   Expose the `Configuration` class
