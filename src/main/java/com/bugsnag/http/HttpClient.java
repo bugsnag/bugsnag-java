@@ -37,14 +37,19 @@ public class HttpClient {
                 conn.addRequestProperty("Content-Type", contentType);
             }
 
-            OutputStream out = conn.getOutputStream();
+            OutputStream out = null;
+            try {
+                out = conn.getOutputStream();
             
-            // Send request headers and body
-            byte[] buffer = new byte[1024];
-            int bytesRead;
-            while ((bytesRead = payload.read(buffer)) != -1)
-            {
-                out.write(buffer, 0, bytesRead);
+                // Send request headers and body
+                byte[] buffer = new byte[1024];
+                int bytesRead;
+                while ((bytesRead = payload.read(buffer)) != -1)
+                {
+                    out.write(buffer, 0, bytesRead);
+                }
+            } finally {
+                out.close();
             }
 
             // End the request, get the response code

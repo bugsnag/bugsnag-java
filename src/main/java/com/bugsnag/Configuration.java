@@ -20,7 +20,7 @@ public class Configuration {
     boolean autoNotify = true;
     boolean useSSL = false;
     String endpoint = DEFAULT_ENDPOINT;
-    String[] notifyReleaseStages = new String[]{"production"};
+    String[] notifyReleaseStages = null;
     String[] filters = new String[]{"password"};
     String[] projectPackages;
     String[] ignoreClasses;
@@ -63,7 +63,7 @@ public class Configuration {
 
     public boolean shouldNotify() {
         if(this.notifyReleaseStages == null)
-            return false;
+            return true;
 
         List<String> stages = Arrays.asList(this.notifyReleaseStages);
         return stages.contains(this.releaseStage);
