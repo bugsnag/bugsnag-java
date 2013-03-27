@@ -1,37 +1,51 @@
 package com.bugsnag.http;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
+import java.io.ByteArrayInputStream;
+import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
 import java.net.URL;
+import java.io.InputStream;
 
 import org.json.JSONObject;
 import org.json.JSONException;
 
 public class HttpClient {
-    public static void post(String url, JSONObject payload) throws NetworkException, JSONException {
+    public static void post(String url, InputStream stream) throws NetworkException {
+        post(url, stream, "application/json");
+    }
+
+    public static void post(String url, JSONObject payload) throws NetworkException, UnsupportedEncodingException {
         post(url, payload.toString(), "application/json");
     }
 
-    public static void post(String url, String payload, String contentType) throws NetworkException {
-        post(url, stringToByteArray(payload), contentType);
+    public static void post(String url, String payload, String contentType) throws NetworkException, UnsupportedEncodingException {
+        post(url, new ByteArrayInputStream(payload.getBytes("UTF-8")), contentType);
     }
 
-    public static void post(String urlString, byte[] payload, String contentType) throws NetworkException {
+    public static void post(String urlString, InputStream payload, String contentType) throws NetworkException {
         HttpURLConnection conn = null;
         try {
             URL url = new URL(urlString);
             conn = (HttpURLConnection) url.openConnection();
             conn.setDoOutput(true); 
-            conn.setFixedLengthStreamingMode(payload.length);
+            conn.setChunkedStreamingMode(0);
 
             // Set the content type header
             if(contentType != null) {
                 conn.addRequestProperty("Content-Type", contentType);
             }
 
+            OutputStream out = conn.getOutputStream();
+            
             // Send request headers and body
-            conn.getOutputStream().write(payload);
+            byte[] buffer = new byte[1024];
+            int bytesRead;
+            while ((bytesRead = payload.read(buffer)) != -1)
+            {
+                out.write(buffer, 0, bytesRead);
+            }
 
             // End the request, get the response code
             int status = conn.getResponseCode();
@@ -45,17 +59,5 @@ public class HttpClient {
                 conn.disconnect();
             }
         }
-    }
-
-    public static byte[] stringToByteArray(String str) {
-        byte[] bytes = null;
-
-        try {
-            bytes = str.getBytes("UTF-8");
-        } catch(UnsupportedEncodingException e) {
-            e.printStackTrace(System.err);
-        }
-
-        return bytes;
     }
 }
