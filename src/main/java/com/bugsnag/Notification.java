@@ -1,10 +1,18 @@
 package com.bugsnag;
 
 import java.io.IOException;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.io.SequenceInputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Vector;
 import java.util.List;
+import java.util.Enumeration;
+import java.io.UnsupportedEncodingException;
 
 import org.json.JSONObject;
 import org.json.JSONArray;
@@ -16,27 +24,13 @@ import com.bugsnag.utils.JSONUtils;
 
 public class Notification {
     private Configuration config;
-    private List<Error> errorList = new ArrayList<Error>();
-    private List<String> errorStrings = new ArrayList<String>();
+    ByteArrayInputStream firstNotificationStream = null;
+    ByteArrayInputStream secondNotificationStream = null;
+    InputStream errorStream;
 
     public Notification(Configuration config) {
         this.config = config;
-    }
 
-    public Notification(Configuration config, Error error) {
-        this(config);
-        addError(error);
-    }
-
-    public void addError(Error error) {
-        errorList.add(error);
-    }
-
-    public void addError(String errorString) {
-        errorStrings.add(errorString);
-    }
-
-    public JSONObject toJSON() {
         // Outer payload
         JSONObject notification = new JSONObject();
         JSONUtils.safePut(notification, "apiKey", config.apiKey);
@@ -49,38 +43,65 @@ public class Notification {
         JSONUtils.safePut(notification, "notifier", notifier);
 
         // Error array
-        JSONArray errors = new JSONArray();
-        for(Error error : errorList) {
-            errors.put(error.toJSON());
-        }
-        for(String errorString : errorStrings) {
-            try {
-                JSONObject error = new JSONObject(errorString);
-                errors.put(error);
-            } catch(JSONException e) {
-                config.logger.warn("Error when parsing error json string", e);
-            }
-        }
-        JSONUtils.safePut(notification, "events", errors);
+        JSONUtils.safePut(notification, "events", new JSONArray());
 
-        return notification;
+        String notificationString = notification.toString();
+        String eventsLocator = "events\":[";
+        int eventsLocation = notificationString.indexOf(eventsLocator);
+        try {
+            firstNotificationStream = new ByteArrayInputStream(notificationString.substring(0, eventsLocation + eventsLocator.length()).getBytes("UTF-8"));
+            secondNotificationStream = new ByteArrayInputStream(notificationString.substring(eventsLocation + eventsLocator.length()).getBytes("UTF-8"));
+        } catch (UnsupportedEncodingException e) {
+            config.logger.warn("Unable to create notification stream", e);
+        }
     }
 
-    public String toString() {
-        return toJSON().toString();
+    public Notification(Configuration config, Error error) {
+        this(config);
+        setError(error);
+    }
+
+    public void setError(Error error) {
+        if(error != null) {
+            try {
+                errorStream = new ByteArrayInputStream(error.toString().getBytes("UTF-8"));
+            } catch (UnsupportedEncodingException e) {
+                config.logger.warn("Unable to stream error to bugsnag", e);
+            }
+        }
+    }
+
+    public void setError(File file) {
+        if(file != null && file.exists() && file.isFile()) {
+            try {
+                errorStream = new FileInputStream(file);
+            } catch (java.io.FileNotFoundException e) {
+                config.logger.warn("Bugsnag error file not found, but file exists...", e);
+            }
+        }
     }
 
     public void deliver() throws NetworkException {
-        if(errorList.isEmpty() && errorStrings.isEmpty())
-            return;
+        if(errorStream != null && firstNotificationStream != null && secondNotificationStream != null) {
+            firstNotificationStream.reset();
+            secondNotificationStream.reset();
 
-        String url = config.getNotifyEndpoint();
-        HttpClient.post(url, this.toString(), "application/json");
+            Vector<InputStream> inputStreams = new Vector<InputStream>();
+            inputStreams.add(firstNotificationStream);
+            inputStreams.add(errorStream);
+            inputStreams.add(secondNotificationStream);
 
-        config.logger.info(String.format("Sent %d error(s) to Bugsnag (%s)", size(), url));
-    }
+            Enumeration<InputStream> enu = inputStreams.elements();
+            SequenceInputStream sis = new SequenceInputStream(enu);
 
-    public int size() {
-        return errorList.size() + errorStrings.size();
+            String url = config.getNotifyEndpoint();
+            HttpClient.post(url, sis, "application/json");
+
+            config.logger.info(String.format("Sent 1 error to Bugsnag (%s)", url));
+
+            try { sis.close(); } catch (java.io.IOException e){config.logger.warn("Unable to close stream in bugsnag", e);}
+            try { errorStream.close(); } catch (java.io.IOException e){config.logger.warn("Unable to close stream in bugsnag", e);}
+            errorStream = null;
+        }
     }
 }
