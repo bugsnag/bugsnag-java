@@ -1,5 +1,7 @@
 package com.bugsnag;
 
+import java.io.FileWriter;
+
 import org.json.JSONObject;
 import org.json.JSONArray;
 import com.bugsnag.utils.JSONUtils;
@@ -91,6 +93,24 @@ public class Error {
 
     public boolean shouldIgnore() {
         return config.shouldIgnore(exception.getClass().getName());
+    }
+
+    public void writeToFile(String filename) throws java.io.IOException {
+        String errorString = toString();
+        if(errorString.length() > 0) {
+            // Write the error to disk
+            FileWriter writer = null;
+            try {
+                writer = new FileWriter(filename);
+                writer.write(errorString);
+                writer.flush();
+                config.logger.debug(String.format("Saved unsent error to disk (%s) ", filename));
+            } finally {
+                if(writer != null) {
+                    writer.close();
+                }
+            }
+        }
     }
 
     private String getContext() {

@@ -17,9 +17,12 @@ public class Metrics {
 
     public void deliver() throws NetworkException {
         String url = config.getMetricsEndpoint();
-        HttpClient.post(url, this.toString(), "application/json");
-
-        config.logger.info(String.format("Sent metrics data for user (%s) to Bugsnag (%s)", userId, url));
+        try {
+            HttpClient.post(url, this.toString(), "application/json");
+            config.logger.info(String.format("Sent metrics data for user (%s) to Bugsnag (%s)", userId, url));
+        } catch(java.io.UnsupportedEncodingException e) {
+            config.logger.warn("Bugsnag unable to send metrics", e);
+        }
     }
 
     public JSONObject toJSON() {
