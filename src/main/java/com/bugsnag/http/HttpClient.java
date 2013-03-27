@@ -49,7 +49,9 @@ public class HttpClient {
                     out.write(buffer, 0, bytesRead);
                 }
             } finally {
-                out.close();
+                if(out != null) {
+                    out.close();
+                }
             }
 
             // End the request, get the response code
