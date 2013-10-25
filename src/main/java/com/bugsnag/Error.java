@@ -11,11 +11,15 @@ public class Error {
     private Configuration config;
     private MetaData metaData;
     private String context;
+    private Diagnostics diagnostics;
+    private String severity;
 
-    public Error(Throwable exception, MetaData metaData, Configuration config) {
+    public Error(Throwable exception, String severity, MetaData metaData, Configuration config, Diagnostics diagnostics) {
         this.exception = exception;
         this.config = config;
         this.metaData = metaData;
+        this.diagnostics = diagnostics;
+        this.severity = severity;
 
         if(this.metaData == null) {
             this.metaData = new MetaData();
@@ -26,11 +30,16 @@ public class Error {
         JSONObject error = new JSONObject();
 
         // Add basic information
-        JSONUtils.safePut(error, "userId", config.userId);
-        JSONUtils.safePut(error, "appVersion", config.appVersion);
-        JSONUtils.safePut(error, "osVersion", config.osVersion);
-        JSONUtils.safePut(error, "releaseStage", config.releaseStage);
+        JSONUtils.safePut(error, "user", config.user);
+
+        JSONUtils.safePutNotNull(error, "app", diagnostics.getApp());
+        JSONUtils.safePutNotNull(error, "appState", diagnostics.getAppState());
+
+        JSONUtils.safePutNotNull(error, "host", diagnostics.getHost());
+        JSONUtils.safePutNotNull(error, "hostState", diagnostics.getHostState());
+        
         JSONUtils.safePut(error, "context", getContext());
+        JSONUtils.safePut(error, "severity", severity);
 
         // Unwrap exceptions
         JSONArray exceptions = new JSONArray();

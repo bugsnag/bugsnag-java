@@ -17,6 +17,14 @@ public class JSONUtils {
         }
     }
 
+    public static void safePutNotNull(JSONObject obj, String key, Object val) {
+        if(val != null) {
+            JSONUtils.safePut(obj, key, val);
+        } else {
+            obj.remove(key);
+        }
+    }
+
     public static void filter(JSONObject object, String[] filters) {
         if(object == null) return;
 

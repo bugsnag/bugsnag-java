@@ -4,6 +4,7 @@ import org.json.JSONObject;
 
 import com.bugsnag.http.HttpClient;
 import com.bugsnag.http.NetworkException;
+
 import com.bugsnag.utils.JSONUtils;
 
 public class Metrics {

@@ -3,6 +3,10 @@ package com.bugsnag;
 import java.util.Arrays;
 import java.util.List;
 
+import org.json.JSONObject;
+
+import com.bugsnag.utils.JSONUtils;
+
 public class Configuration {
     protected static final String DEFAULT_ENDPOINT = "notify.bugsnag.com";
 
@@ -27,11 +31,13 @@ public class Configuration {
 
     // Error settings
     String context;
-    String userId;
     String releaseStage = "production";
     String appVersion;
     String osVersion;
     MetaData metaData;
+
+    // User settings
+    JSONObject user;
 
     // Logger
     Logger logger;
@@ -39,6 +45,7 @@ public class Configuration {
     public Configuration() {
         this.logger = new Logger();
         this.metaData = new MetaData();
+        this.user = new JSONObject();
     }
 
     public String getNotifyEndpoint() {
@@ -59,6 +66,12 @@ public class Configuration {
 
     public MetaData getMetaData() {
         return this.metaData.duplicate();
+    }
+
+    public void setUser(String id, String email, String name) {
+        JSONUtils.safePutNotNull(this.user, "id", id);
+        JSONUtils.safePutNotNull(this.user, "email", email);
+        JSONUtils.safePutNotNull(this.user, "name", name);
     }
 
     public boolean shouldNotify() {

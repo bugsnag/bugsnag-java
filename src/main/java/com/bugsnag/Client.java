@@ -4,6 +4,7 @@ import com.bugsnag.http.NetworkException;
 
 public class Client {
     protected Configuration config = new Configuration();
+    protected Diagnostics diagnostics = new Diagnostics(config);
 
     public Client(String apiKey) {
         this(apiKey, true);
@@ -25,8 +26,12 @@ public class Client {
         config.context = context;
     }
 
-    public void setUserId(String userId) {
-        config.userId = userId;
+    public void setUserId(String id) {
+        config.setUser(id, null, null);
+    }
+
+    public void setUser(String id, String email, String name) {
+        config.setUser(id, email, name);
     }
 
     public void setReleaseStage(String releaseStage) {
@@ -101,19 +106,27 @@ public class Client {
         }
     }
 
-    public void notify(Throwable e, MetaData metaData) {
-        Error error = new Error(e, metaData, config);
+    public void notify(Throwable e, String severity, MetaData metaData) {
+        Error error = new Error(e, severity, metaData, config, diagnostics);
         notify(error);
+    }
+
+    public void notify(Throwable e, String severity) {
+        notify(e, "error", null);
     }
 
     public void notify(Throwable e) {
         notify(e, null);
     }
 
-    public void autoNotify(Throwable e) {
+    public void autoNotify(Throwable e, String severity) {
         if(config.autoNotify) {
-            notify(e);
+            notify(e, severity);
         }
+    }
+
+    public void autoNotify(Throwable e) {
+        autoNotify(e, "fatal");
     }
 
     public void addToTab(String tab, String key, Object value) {
@@ -146,7 +159,7 @@ public class Client {
         return new Metrics(config, userId);
     }
 
-    public Error createError(Throwable e, MetaData metaData) {
-        return new Error(e, metaData, config);
+    public Error createError(Throwable e, String severity, MetaData metaData) {
+        return new Error(e, severity, metaData, config, diagnostics);
     }
 }
