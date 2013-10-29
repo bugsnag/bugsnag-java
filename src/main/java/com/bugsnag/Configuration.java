@@ -8,13 +8,13 @@ import org.json.JSONObject;
 import com.bugsnag.utils.JSONUtils;
 
 public class Configuration {
-    public class DefaultableValue<T> {
+    public class LockableValue<T> {
         private T value;
-        private boolean overridden = false;
+        private boolean locked = false;
 
-        DefaultableValue() {}
+        LockableValue() {}
 
-        DefaultableValue(T initial) {
+        LockableValue(T initial) {
             this.value = initial;
         }
 
@@ -24,7 +24,7 @@ public class Configuration {
 
         public void setOverride(T override) {
             value = override;
-            overridden = true;
+            locked = true;
         }
 
         public T get(T computed) {
@@ -59,10 +59,10 @@ public class Configuration {
     String[] ignoreClasses;
 
     // Error settings
-    DefaultableValue<String> context = new DefaultableValue<String>();
-    DefaultableValue<String> releaseStage = new DefaultableValue<String>("production");
-    DefaultableValue<String> appVersion = new DefaultableValue<String>();
-    DefaultableValue<String> osVersion = new DefaultableValue<String>();
+    LockableValue<String> context = new LockableValue<String>();
+    LockableValue<String> releaseStage = new LockableValue<String>("production");
+    LockableValue<String> appVersion = new LockableValue<String>();
+    LockableValue<String> osVersion = new LockableValue<String>();
     MetaData metaData = new MetaData();
 
     // User settings
@@ -120,19 +120,19 @@ public class Configuration {
         JSONUtils.safePutOpt(this.user, "name", name);
     }
 
-    public DefaultableValue<String> getContext() {
+    public LockableValue<String> getContext() {
         return context;
     }
 
-    public DefaultableValue<String> getOsVersion() {
+    public LockableValue<String> getOsVersion() {
         return osVersion;
     }
 
-    public DefaultableValue<String> getAppVersion() {
+    public LockableValue<String> getAppVersion() {
         return appVersion;
     }
 
-    public DefaultableValue<String> getReleaseStage() {
+    public LockableValue<String> getReleaseStage() {
         return releaseStage;
     }
 

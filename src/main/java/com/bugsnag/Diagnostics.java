@@ -43,7 +43,6 @@ public class Diagnostics {
     public JSONObject getMetrics() {
         JSONObject metrics = new JSONObject();
 
-        JSONUtils.safePutOpt(metrics, "userId", config.user.optString("id"));
         JSONUtils.safePutOpt(metrics, "user", config.user);
         JSONUtils.safePutOpt(metrics, "app", this.getAppData());
         JSONUtils.safePutOpt(metrics, "host", this.getHostData());

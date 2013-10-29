@@ -26,7 +26,9 @@ public class Client {
         config.context.setOverride(context);
     }
 
-    // For backwards compatability
+    /**
+    * @deprecated  Replaced by {@link #setUser()}
+    */
     public void setUserId(String id) {
         config.setUser(id, null, null);
     }
