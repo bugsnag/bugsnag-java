@@ -26,6 +26,7 @@ public class Client {
         config.context = context;
     }
 
+    // For backwards compatability
     public void setUserId(String id) {
         config.setUser(id, null, null);
     }
@@ -111,22 +112,22 @@ public class Client {
         notify(error);
     }
 
+    public void notify(Throwable e, MetaData metaData) {
+        notify(e, null, metaData);
+    }
+
     public void notify(Throwable e, String severity) {
-        notify(e, "error", null);
+        notify(e, severity, null);
     }
 
     public void notify(Throwable e) {
-        notify(e, null);
-    }
-
-    public void autoNotify(Throwable e, String severity) {
-        if(config.autoNotify) {
-            notify(e, severity);
-        }
+        notify(e, null, null);
     }
 
     public void autoNotify(Throwable e) {
-        autoNotify(e, "fatal");
+        if(config.autoNotify) {
+            notify(e, "fatal");
+        }
     }
 
     public void addToTab(String tab, String key, Object value) {
@@ -137,9 +138,9 @@ public class Client {
         config.clearTab(tab);
     }
 
-    public void trackUser(String userId) {
+    public void trackUser() {
         try {
-            Metrics metrics = new Metrics(config, userId);
+            Metrics metrics = new Metrics(config, diagnostics);
             metrics.deliver();
         } catch (NetworkException ex) {
             config.logger.warn("Error sending metrics to Bugsnag", ex);
@@ -155,8 +156,8 @@ public class Client {
         return new Notification(config, error);
     }
 
-    public Metrics createMetrics(String userId) {
-        return new Metrics(config, userId);
+    public Metrics createMetrics() {
+        return new Metrics(config, diagnostics);
     }
 
     public Error createError(Throwable e, String severity, MetaData metaData) {

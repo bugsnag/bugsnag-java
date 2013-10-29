@@ -17,7 +17,7 @@ public class JSONUtils {
         }
     }
 
-    public static void safePutNotNull(JSONObject obj, String key, Object val) {
+    public static void safePutOpt(JSONObject obj, String key, Object val) {
         if(val != null) {
             JSONUtils.safePut(obj, key, val);
         } else {

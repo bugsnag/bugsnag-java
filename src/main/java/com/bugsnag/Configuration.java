@@ -30,17 +30,17 @@ public class Configuration {
     String[] ignoreClasses;
 
     // Error settings
-    String context;
-    String releaseStage = "production";
-    String appVersion;
-    String osVersion;
+    public String context;
+    public String releaseStage;
+    public String appVersion;
+    public String osVersion;
     MetaData metaData;
 
     // User settings
-    JSONObject user;
+    public JSONObject user;
 
     // Logger
-    Logger logger;
+    public Logger logger;
 
     public Configuration() {
         this.logger = new Logger();
@@ -69,9 +69,9 @@ public class Configuration {
     }
 
     public void setUser(String id, String email, String name) {
-        JSONUtils.safePutNotNull(this.user, "id", id);
-        JSONUtils.safePutNotNull(this.user, "email", email);
-        JSONUtils.safePutNotNull(this.user, "name", name);
+        JSONUtils.safePutOpt(this.user, "id", id);
+        JSONUtils.safePutOpt(this.user, "email", email);
+        JSONUtils.safePutOpt(this.user, "name", name);
     }
 
     public boolean shouldNotify() {
@@ -79,7 +79,7 @@ public class Configuration {
             return true;
 
         List<String> stages = Arrays.asList(this.notifyReleaseStages);
-        return stages.contains(this.releaseStage);
+        return stages.contains(this.releaseStage != null ? this.releaseStage : "production");
     }
 
     public boolean shouldIgnore(String className) {

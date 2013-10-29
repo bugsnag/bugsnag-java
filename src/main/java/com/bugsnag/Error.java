@@ -10,7 +10,6 @@ public class Error {
     private Throwable exception;
     private Configuration config;
     private MetaData metaData;
-    private String context;
     private Diagnostics diagnostics;
     private String severity;
 
@@ -19,7 +18,7 @@ public class Error {
         this.config = config;
         this.metaData = metaData;
         this.diagnostics = diagnostics;
-        this.severity = severity;
+        this.setSeverity(severity);
 
         if(this.metaData == null) {
             this.metaData = new MetaData();
@@ -32,13 +31,13 @@ public class Error {
         // Add basic information
         JSONUtils.safePut(error, "user", config.user);
 
-        JSONUtils.safePutNotNull(error, "app", diagnostics.getApp());
-        JSONUtils.safePutNotNull(error, "appState", diagnostics.getAppState());
+        JSONUtils.safePutOpt(error, "app", diagnostics.getAppData());
+        JSONUtils.safePutOpt(error, "appState", diagnostics.getAppState());
 
-        JSONUtils.safePutNotNull(error, "host", diagnostics.getHost());
-        JSONUtils.safePutNotNull(error, "hostState", diagnostics.getHostState());
+        JSONUtils.safePutOpt(error, "host", diagnostics.getHostData());
+        JSONUtils.safePutOpt(error, "hostState", diagnostics.getHostState());
         
-        JSONUtils.safePut(error, "context", getContext());
+        JSONUtils.safePut(error, "context", diagnostics.getContext());
         JSONUtils.safePut(error, "severity", severity);
 
         // Unwrap exceptions
@@ -92,10 +91,6 @@ public class Error {
         return toJSON().toString();
     }
 
-    public void setContext(String context) {
-        this.context = context;
-    }
-
     public void addToTab(String tabName, String key, Object value) {
         metaData.addToTab(tabName, key, value);
     }
@@ -122,11 +117,11 @@ public class Error {
         }
     }
 
-    private String getContext() {
-        if(context != null) {
-            return context;
+    public void setSeverity(String severity) {
+        if(severity == null || (!severity.equals("fatal") && !severity.equals("error") && !severity.equals("warning") && !severity.equals("info"))) {
+            this.severity = "error";
         } else {
-            return config.context;
+            this.severity = severity;
         }
     }
 }
