@@ -23,7 +23,7 @@ public class Client {
     }
 
     public void setContext(String context) {
-        config.context = context;
+        config.context.setOverride(context);
     }
 
     // For backwards compatability
@@ -36,19 +36,19 @@ public class Client {
     }
 
     public void setReleaseStage(String releaseStage) {
-        config.releaseStage = releaseStage;
+        config.releaseStage.setOverride(releaseStage);
     }
 
     public void setNotifyReleaseStages(String... notifyReleaseStages) {
-        config.notifyReleaseStages = notifyReleaseStages;
+        config.setNotifyReleaseStages(notifyReleaseStages);
     }
 
     public void setAutoNotify(boolean autoNotify) {
-        config.autoNotify = autoNotify;
+        config.setAutoNotify(autoNotify);
     }
 
     public void setUseSSL(boolean useSSL) {
-        config.useSSL = useSSL;
+        config.setUseSSL(useSSL);
     }
 
     public boolean getUseSSL() {
@@ -56,43 +56,43 @@ public class Client {
     }
 
     public void setEndpoint(String endpoint) {
-        config.endpoint = endpoint;
+        config.setEndpoint(endpoint);
     }
 
     public void setFilters(String... filters) {
-        config.filters = filters;
+        config.setFilters(filters);
     }
 
     public void setProjectPackages(String... projectPackages) {
-        config.projectPackages = projectPackages;
+        config.setProjectPackages(projectPackages);
     }
 
     public void setOsVersion(String osVersion) {
-        config.osVersion = osVersion;
+        config.osVersion.setOverride(osVersion);
     }
 
     public void setAppVersion(String appVersion) {
-        config.appVersion = appVersion;
+        config.appVersion.setOverride(appVersion);
     }
 
     public void setNotifierName(String notifierName) {
-        config.notifierName = notifierName;
+        config.setNotifierName(notifierName);
     }
 
     public void setNotifierVersion(String notifierVersion) {
-        config.notifierVersion = notifierVersion;
+        config.setNotifierVersion(notifierVersion);
     }
 
     public void setNotifierUrl(String notifierUrl) {
-        config.notifierUrl = notifierUrl;
+        config.setNotifierUrl(notifierUrl);
     }
 
     public void setIgnoreClasses(String... ignoreClasses) {
-        config.ignoreClasses = ignoreClasses;
+        config.setIgnoreClasses(ignoreClasses);
     }
 
     public void setLogger(Logger logger) {
-        config.logger = logger;
+        config.setLogger(logger);
     }
 
     public void notify(Error error) {

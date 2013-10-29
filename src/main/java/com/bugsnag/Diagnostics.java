@@ -18,8 +18,8 @@ public class Diagnostics {
     }
 
     public JSONObject getAppData() {
-        JSONUtils.safePutOpt(appData, "version", config.appVersion);
-        JSONUtils.safePutOpt(appData, "releaseStage", config.releaseStage);
+        JSONUtils.safePutOpt(appData, "version", config.appVersion.get());
+        JSONUtils.safePutOpt(appData, "releaseStage", config.releaseStage.get());
         return appData;
     }
 
@@ -28,7 +28,7 @@ public class Diagnostics {
     }
 
     public JSONObject getHostData() {
-        JSONUtils.safePutOpt(hostData, "osVersion", config.osVersion);
+        JSONUtils.safePutOpt(hostData, "osVersion", config.osVersion.get());
         return hostData;
     }
 
@@ -37,7 +37,7 @@ public class Diagnostics {
     }
 
     public String getContext() {
-        return config.context;
+        return config.context.get();
     }
 
     public JSONObject getMetrics() {
