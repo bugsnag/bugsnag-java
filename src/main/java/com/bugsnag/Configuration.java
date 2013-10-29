@@ -18,17 +18,17 @@ public class Configuration {
             this.value = initial;
         }
 
-        public void setComputed(T computed) {
-            if(!overridden) value = computed;
+        public void setValue(T value) {
+            if(!locked) this.value = value;
         }
 
-        public void setOverride(T override) {
-            value = override;
+        public void setLockedValue(T value) {
+            this.value = value;
             locked = true;
         }
 
-        public T get(T computed) {
-            setComputed(computed);
+        public T get(T value) {
+            setValue(value);
             return get();
         }
 

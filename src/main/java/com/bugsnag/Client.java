@@ -23,7 +23,7 @@ public class Client {
     }
 
     public void setContext(String context) {
-        config.context.setOverride(context);
+        config.context.setLockedValue(context);
     }
 
     /**
@@ -38,7 +38,7 @@ public class Client {
     }
 
     public void setReleaseStage(String releaseStage) {
-        config.releaseStage.setOverride(releaseStage);
+        config.releaseStage.setLockedValue(releaseStage);
     }
 
     public void setNotifyReleaseStages(String... notifyReleaseStages) {
@@ -70,11 +70,11 @@ public class Client {
     }
 
     public void setOsVersion(String osVersion) {
-        config.osVersion.setOverride(osVersion);
+        config.osVersion.setLockedValue(osVersion);
     }
 
     public void setAppVersion(String appVersion) {
-        config.appVersion.setOverride(appVersion);
+        config.appVersion.setLockedValue(appVersion);
     }
 
     public void setNotifierName(String notifierName) {
