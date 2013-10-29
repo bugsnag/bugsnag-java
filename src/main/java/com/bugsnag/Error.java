@@ -1,12 +1,16 @@
 package com.bugsnag;
 
 import java.io.FileWriter;
+import java.util.List;
+import java.util.Arrays;
 
 import org.json.JSONObject;
 import org.json.JSONArray;
 import com.bugsnag.utils.JSONUtils;
 
 public class Error {
+    private static final List<String> ALLOWED_SEVERITIES = Arrays.asList("fatal", "error", "warning", "info");
+
     private Throwable exception;
     private Configuration config;
     private MetaData metaData;
@@ -118,7 +122,7 @@ public class Error {
     }
 
     public void setSeverity(String severity) {
-        if(severity == null || (!severity.equals("fatal") && !severity.equals("error") && !severity.equals("warning") && !severity.equals("info"))) {
+        if(severity == null || !ALLOWED_SEVERITIES.contains(severity)) {
             this.severity = "error";
         } else {
             this.severity = severity;
