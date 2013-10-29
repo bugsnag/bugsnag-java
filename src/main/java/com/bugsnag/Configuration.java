@@ -18,17 +18,17 @@ public class Configuration {
             this.value = initial;
         }
 
-        public void setValue(T value) {
+        public void set(T value) {
             if(!locked) this.value = value;
         }
 
-        public void setLockedValue(T value) {
+        public void setLocked(T value) {
             this.value = value;
             locked = true;
         }
 
         public T get(T value) {
-            setValue(value);
+            set(value);
             return get();
         }
 
