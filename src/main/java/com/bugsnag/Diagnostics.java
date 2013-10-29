@@ -7,14 +7,11 @@ import com.bugsnag.utils.JSONUtils;
 
 public class Diagnostics {
     protected Configuration config;
-    protected JSONObject hostData;
-    protected JSONObject appData;
+    protected JSONObject hostData = new JSONObject();
+    protected JSONObject appData = new JSONObject();
 
     public Diagnostics(Configuration config) {
         this.config = config;
-        
-        hostData = new JSONObject();
-        appData = new JSONObject();
     }
 
     public JSONObject getAppData() {
