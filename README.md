@@ -84,17 +84,18 @@ time an error occurs.
 bugsnag.setContext("MyActivity");
 ```
 
-###setUserId
+###setUser
 
 Bugsnag helps you understand how many of your users are affected by each
-error. In order to do this, we need to send along a userId with every
+error. In order to do this, we need to send along user information with every
 exception.
 
-If you would like to enable this, set the `userId`, for example to set it to
-be a username of your currently logged in user, you can call `setUserId`:
+If you would like to enable this, set the `user`. You can set the user id,
+which should be the unique id to represent that user across all your apps,
+the user's email address and the user's name:
 
 ```java
-bugsnag.setUserId("leeroy-jenkins");
+bugsnag.setUser("userId", "user@email.com", "User Name");
 ```
 
 ###setReleaseStage
