@@ -121,7 +121,7 @@ public class Error {
         }
     }
 
-    public void setSeverity(String severity) {
+    private void setSeverity(String severity) {
         if(severity == null || !ALLOWED_SEVERITIES.contains(severity)) {
             this.severity = "error";
         } else {
