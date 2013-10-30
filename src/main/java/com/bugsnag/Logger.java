@@ -19,4 +19,8 @@ public class Logger {
         warn(message);
         e.printStackTrace(System.err);
     }
+
+    public void warn(Throwable e) {
+        warn("error in bugsnag", e);
+    }
 }
