@@ -7,11 +7,13 @@ import com.bugsnag.utils.JSONUtils;
 
 public class Diagnostics {
     protected Configuration config;
-    protected JSONObject hostData = new JSONObject();
+    protected JSONObject deviceData = new JSONObject();
     protected JSONObject appData = new JSONObject();
 
     public Diagnostics(Configuration config) {
         this.config = config;
+
+        JSONUtils.safePutOpt(deviceData, "osName", System.getProperty("os.name"));
     }
 
     public JSONObject getAppData() {
@@ -24,12 +26,12 @@ public class Diagnostics {
         return new JSONObject();
     }
 
-    public JSONObject getHostData() {
-        JSONUtils.safePutOpt(hostData, "osVersion", config.osVersion.get());
-        return hostData;
+    public JSONObject getDeviceData() {
+        JSONUtils.safePutOpt(deviceData, "osVersion", config.osVersion.get());
+        return deviceData;
     }
 
-    public JSONObject getHostState() {
+    public JSONObject getDeviceState() {
         return new JSONObject();
     }
 
@@ -46,7 +48,7 @@ public class Diagnostics {
 
         JSONUtils.safePutOpt(metrics, "user", getUser());
         JSONUtils.safePutOpt(metrics, "app", getAppData());
-        JSONUtils.safePutOpt(metrics, "host", getHostData());
+        JSONUtils.safePutOpt(metrics, "device", getDeviceData());
 
         return metrics;
     }

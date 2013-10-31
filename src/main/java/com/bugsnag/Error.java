@@ -38,8 +38,8 @@ public class Error {
         JSONUtils.safePutOpt(error, "app", diagnostics.getAppData());
         JSONUtils.safePutOpt(error, "appState", diagnostics.getAppState());
 
-        JSONUtils.safePutOpt(error, "device", diagnostics.getHostData());
-        JSONUtils.safePutOpt(error, "deviceState", diagnostics.getHostState());
+        JSONUtils.safePutOpt(error, "device", diagnostics.getDeviceData());
+        JSONUtils.safePutOpt(error, "deviceState", diagnostics.getDeviceState());
         
         JSONUtils.safePut(error, "context", diagnostics.getContext());
         JSONUtils.safePut(error, "severity", severity);
