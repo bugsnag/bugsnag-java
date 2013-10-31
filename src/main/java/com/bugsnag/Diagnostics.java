@@ -37,12 +37,16 @@ public class Diagnostics {
         return config.context.get();
     }
 
+    public JSONObject getUser() {
+        return config.user;
+    }
+
     public JSONObject getMetrics() {
         JSONObject metrics = new JSONObject();
 
-        JSONUtils.safePutOpt(metrics, "user", config.user);
-        JSONUtils.safePutOpt(metrics, "app", this.getAppData());
-        JSONUtils.safePutOpt(metrics, "host", this.getHostData());
+        JSONUtils.safePutOpt(metrics, "user", getUser());
+        JSONUtils.safePutOpt(metrics, "app", getAppData());
+        JSONUtils.safePutOpt(metrics, "host", getHostData());
 
         return metrics;
     }

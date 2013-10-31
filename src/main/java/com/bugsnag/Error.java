@@ -33,13 +33,13 @@ public class Error {
         JSONObject error = new JSONObject();
 
         // Add basic information
-        JSONUtils.safePut(error, "user", config.user);
+        JSONUtils.safePut(error, "user", diagnostics.getUser());
 
         JSONUtils.safePutOpt(error, "app", diagnostics.getAppData());
         JSONUtils.safePutOpt(error, "appState", diagnostics.getAppState());
 
-        JSONUtils.safePutOpt(error, "host", diagnostics.getHostData());
-        JSONUtils.safePutOpt(error, "hostState", diagnostics.getHostState());
+        JSONUtils.safePutOpt(error, "device", diagnostics.getHostData());
+        JSONUtils.safePutOpt(error, "deviceState", diagnostics.getHostState());
         
         JSONUtils.safePut(error, "context", diagnostics.getContext());
         JSONUtils.safePut(error, "severity", severity);
