@@ -3,7 +3,40 @@ package com.bugsnag;
 import java.util.Arrays;
 import java.util.List;
 
+import org.json.JSONObject;
+
+import com.bugsnag.utils.JSONUtils;
+
 public class Configuration {
+    public class LockableValue<T> {
+        private T value;
+        private boolean locked = false;
+
+        LockableValue() {}
+
+        LockableValue(T initial) {
+            this.value = initial;
+        }
+
+        public void set(T value) {
+            if(!locked) this.value = value;
+        }
+
+        public void setLocked(T value) {
+            this.value = value;
+            locked = true;
+        }
+
+        public T get(T value) {
+            set(value);
+            return get();
+        }
+
+        public T get() {
+            return value;
+        }
+    }
+
     protected static final String DEFAULT_ENDPOINT = "notify.bugsnag.com";
 
     private static final String NOTIFIER_NAME = "Java Bugsnag Notifier";
@@ -26,19 +59,19 @@ public class Configuration {
     String[] ignoreClasses;
 
     // Error settings
-    String context;
-    String userId;
-    String releaseStage = "production";
-    String appVersion;
-    String osVersion;
-    MetaData metaData;
+    LockableValue<String> context = new LockableValue<String>();
+    LockableValue<String> releaseStage = new LockableValue<String>("production");
+    LockableValue<String> appVersion = new LockableValue<String>();
+    LockableValue<String> osVersion = new LockableValue<String>();
+    MetaData metaData = new MetaData();
+
+    // User settings
+    public JSONObject user = new JSONObject();
 
     // Logger
-    Logger logger;
+    public Logger logger = new Logger();
 
     public Configuration() {
-        this.logger = new Logger();
-        this.metaData = new MetaData();
     }
 
     public String getNotifyEndpoint() {
@@ -66,7 +99,7 @@ public class Configuration {
             return true;
 
         List<String> stages = Arrays.asList(this.notifyReleaseStages);
-        return stages.contains(this.releaseStage);
+        return stages.contains(this.releaseStage.get());
     }
 
     public boolean shouldIgnore(String className) {
@@ -79,5 +112,71 @@ public class Configuration {
 
     private String getProtocol() {
         return (this.useSSL ? "https" : "http");
+    }
+
+    public void setUser(String id, String email, String name) {
+        JSONUtils.safePutOpt(this.user, "id", id);
+        JSONUtils.safePutOpt(this.user, "email", email);
+        JSONUtils.safePutOpt(this.user, "name", name);
+    }
+
+    public LockableValue<String> getContext() {
+        return context;
+    }
+
+    public LockableValue<String> getOsVersion() {
+        return osVersion;
+    }
+
+    public LockableValue<String> getAppVersion() {
+        return appVersion;
+    }
+
+    public LockableValue<String> getReleaseStage() {
+        return releaseStage;
+    }
+
+    public void setNotifyReleaseStages(String... notifyReleaseStages) {
+        this.notifyReleaseStages = notifyReleaseStages;
+    }
+
+    public void setAutoNotify(boolean autoNotify) {
+        this.autoNotify = autoNotify;
+    }
+
+    public void setUseSSL(boolean useSSL) {
+        this.useSSL = useSSL;
+    }
+
+    public void setEndpoint(String endpoint) {
+        this.endpoint = endpoint;
+    }
+
+    public void setFilters(String... filters) {
+        this.filters = filters;
+    }
+
+    public void setProjectPackages(String... projectPackages) {
+        this.projectPackages = projectPackages;
+    }
+
+    public void setNotifierName(String notifierName) {
+        this.notifierName = notifierName;
+    }
+
+    public void setNotifierVersion(String notifierVersion) {
+        this.notifierVersion = notifierVersion;
+    }
+
+    public void setNotifierUrl(String notifierUrl) {
+        this.notifierUrl = notifierUrl;
+    }
+
+    public void setIgnoreClasses(String... ignoreClasses) {
+        this.ignoreClasses = ignoreClasses;
+    }
+
+    public void setLogger(Logger logger) {
+        this.logger = logger;
     }
 }

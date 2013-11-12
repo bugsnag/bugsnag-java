@@ -1,21 +1,28 @@
 package com.bugsnag;
 
 import java.io.FileWriter;
+import java.util.List;
+import java.util.Arrays;
 
 import org.json.JSONObject;
 import org.json.JSONArray;
 import com.bugsnag.utils.JSONUtils;
 
 public class Error {
+    private static final List<String> ALLOWED_SEVERITIES = Arrays.asList("fatal", "error", "warning", "info");
+
     private Throwable exception;
     private Configuration config;
     private MetaData metaData;
-    private String context;
+    private Diagnostics diagnostics;
+    private String severity;
 
-    public Error(Throwable exception, MetaData metaData, Configuration config) {
+    public Error(Throwable exception, String severity, MetaData metaData, Configuration config, Diagnostics diagnostics) {
         this.exception = exception;
         this.config = config;
         this.metaData = metaData;
+        this.diagnostics = diagnostics;
+        this.setSeverity(severity);
 
         if(this.metaData == null) {
             this.metaData = new MetaData();
@@ -26,11 +33,16 @@ public class Error {
         JSONObject error = new JSONObject();
 
         // Add basic information
-        JSONUtils.safePut(error, "userId", config.userId);
-        JSONUtils.safePut(error, "appVersion", config.appVersion);
-        JSONUtils.safePut(error, "osVersion", config.osVersion);
-        JSONUtils.safePut(error, "releaseStage", config.releaseStage);
-        JSONUtils.safePut(error, "context", getContext());
+        JSONUtils.safePut(error, "user", diagnostics.getUser());
+
+        JSONUtils.safePutOpt(error, "app", diagnostics.getAppData());
+        JSONUtils.safePutOpt(error, "appState", diagnostics.getAppState());
+
+        JSONUtils.safePutOpt(error, "device", diagnostics.getDeviceData());
+        JSONUtils.safePutOpt(error, "deviceState", diagnostics.getDeviceState());
+        
+        JSONUtils.safePut(error, "context", diagnostics.getContext());
+        JSONUtils.safePut(error, "severity", severity);
 
         // Unwrap exceptions
         JSONArray exceptions = new JSONArray();
@@ -83,10 +95,6 @@ public class Error {
         return toJSON().toString();
     }
 
-    public void setContext(String context) {
-        this.context = context;
-    }
-
     public void addToTab(String tabName, String key, Object value) {
         metaData.addToTab(tabName, key, value);
     }
@@ -113,11 +121,11 @@ public class Error {
         }
     }
 
-    private String getContext() {
-        if(context != null) {
-            return context;
+    private void setSeverity(String severity) {
+        if(severity == null || !ALLOWED_SEVERITIES.contains(severity)) {
+            this.severity = "error";
         } else {
-            return config.context;
+            this.severity = severity;
         }
     }
 }

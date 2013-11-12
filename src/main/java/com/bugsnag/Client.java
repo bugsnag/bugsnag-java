@@ -4,6 +4,7 @@ import com.bugsnag.http.NetworkException;
 
 public class Client {
     protected Configuration config = new Configuration();
+    protected Diagnostics diagnostics = new Diagnostics(config);
 
     public Client(String apiKey) {
         this(apiKey, true);
@@ -22,27 +23,34 @@ public class Client {
     }
 
     public void setContext(String context) {
-        config.context = context;
+        config.context.setLocked(context);
     }
 
-    public void setUserId(String userId) {
-        config.userId = userId;
+    /**
+    * @deprecated  Replaced by {@link #setUser()}
+    */
+    public void setUserId(String id) {
+        config.setUser(id, null, null);
+    }
+
+    public void setUser(String id, String email, String name) {
+        config.setUser(id, email, name);
     }
 
     public void setReleaseStage(String releaseStage) {
-        config.releaseStage = releaseStage;
+        config.releaseStage.setLocked(releaseStage);
     }
 
     public void setNotifyReleaseStages(String... notifyReleaseStages) {
-        config.notifyReleaseStages = notifyReleaseStages;
+        config.setNotifyReleaseStages(notifyReleaseStages);
     }
 
     public void setAutoNotify(boolean autoNotify) {
-        config.autoNotify = autoNotify;
+        config.setAutoNotify(autoNotify);
     }
 
     public void setUseSSL(boolean useSSL) {
-        config.useSSL = useSSL;
+        config.setUseSSL(useSSL);
     }
 
     public boolean getUseSSL() {
@@ -50,43 +58,43 @@ public class Client {
     }
 
     public void setEndpoint(String endpoint) {
-        config.endpoint = endpoint;
+        config.setEndpoint(endpoint);
     }
 
     public void setFilters(String... filters) {
-        config.filters = filters;
+        config.setFilters(filters);
     }
 
     public void setProjectPackages(String... projectPackages) {
-        config.projectPackages = projectPackages;
+        config.setProjectPackages(projectPackages);
     }
 
     public void setOsVersion(String osVersion) {
-        config.osVersion = osVersion;
+        config.osVersion.setLocked(osVersion);
     }
 
     public void setAppVersion(String appVersion) {
-        config.appVersion = appVersion;
+        config.appVersion.setLocked(appVersion);
     }
 
     public void setNotifierName(String notifierName) {
-        config.notifierName = notifierName;
+        config.setNotifierName(notifierName);
     }
 
     public void setNotifierVersion(String notifierVersion) {
-        config.notifierVersion = notifierVersion;
+        config.setNotifierVersion(notifierVersion);
     }
 
     public void setNotifierUrl(String notifierUrl) {
-        config.notifierUrl = notifierUrl;
+        config.setNotifierUrl(notifierUrl);
     }
 
     public void setIgnoreClasses(String... ignoreClasses) {
-        config.ignoreClasses = ignoreClasses;
+        config.setIgnoreClasses(ignoreClasses);
     }
 
     public void setLogger(Logger logger) {
-        config.logger = logger;
+        config.setLogger(logger);
     }
 
     public void notify(Error error) {
@@ -101,18 +109,26 @@ public class Client {
         }
     }
 
-    public void notify(Throwable e, MetaData metaData) {
-        Error error = new Error(e, metaData, config);
+    public void notify(Throwable e, String severity, MetaData metaData) {
+        Error error = new Error(e, severity, metaData, config, diagnostics);
         notify(error);
     }
 
+    public void notify(Throwable e, MetaData metaData) {
+        notify(e, null, metaData);
+    }
+
+    public void notify(Throwable e, String severity) {
+        notify(e, severity, null);
+    }
+
     public void notify(Throwable e) {
-        notify(e, null);
+        notify(e, null, null);
     }
 
     public void autoNotify(Throwable e) {
         if(config.autoNotify) {
-            notify(e);
+            notify(e, "fatal");
         }
     }
 
@@ -124,9 +140,9 @@ public class Client {
         config.clearTab(tab);
     }
 
-    public void trackUser(String userId) {
+    public void trackUser() {
         try {
-            Metrics metrics = new Metrics(config, userId);
+            Metrics metrics = new Metrics(config, diagnostics);
             metrics.deliver();
         } catch (NetworkException ex) {
             config.logger.warn("Error sending metrics to Bugsnag", ex);
@@ -142,11 +158,11 @@ public class Client {
         return new Notification(config, error);
     }
 
-    public Metrics createMetrics(String userId) {
-        return new Metrics(config, userId);
+    public Metrics createMetrics() {
+        return new Metrics(config, diagnostics);
     }
 
-    public Error createError(Throwable e, MetaData metaData) {
-        return new Error(e, metaData, config);
+    public Error createError(Throwable e, String severity, MetaData metaData) {
+        return new Error(e, severity, metaData, config, diagnostics);
     }
 }
