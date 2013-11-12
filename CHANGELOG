@@ -1,3 +1,7 @@
+1.2.0
+-----
+-   Included device and app fields. Transmit appState and deviceState.
+
 1.1.0
 -----
 -   Reduced memory usage, allow streaming errors from a file
