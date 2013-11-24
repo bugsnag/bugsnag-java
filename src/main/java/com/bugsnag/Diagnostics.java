@@ -19,7 +19,7 @@ public class Diagnostics {
 
         try {
             JSONUtils.safePutOpt(deviceData, "name", InetAddress.getLocalHost().getHostName());
-        } catch (UnknownHostException e) {
+        } catch (java.net.UnknownHostException e) {
             config.logger.warn("Unable to determine hostname", e);
         }
     }
