@@ -1,5 +1,7 @@
 package com.bugsnag;
 
+import java.net.InetAddress;
+
 import org.json.JSONObject;
 import org.json.JSONException;
 
@@ -14,6 +16,7 @@ public class Diagnostics {
         this.config = config;
 
         JSONUtils.safePutOpt(deviceData, "osName", System.getProperty("os.name"));
+        JSONUtils.safePutOpt(deviceData, "name", InetAddress.getLocalHost().getHostName());
     }
 
     public JSONObject getAppData() {
