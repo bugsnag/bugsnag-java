@@ -16,7 +16,12 @@ public class Diagnostics {
         this.config = config;
 
         JSONUtils.safePutOpt(deviceData, "osName", System.getProperty("os.name"));
-        JSONUtils.safePutOpt(deviceData, "name", InetAddress.getLocalHost().getHostName());
+
+        try {
+            JSONUtils.safePutOpt(deviceData, "name", InetAddress.getLocalHost().getHostName());
+        } catch (UnknownHostException e) {
+            config.logger.warn("Unable to determine hostname", e);
+        }
     }
 
     public JSONObject getAppData() {
