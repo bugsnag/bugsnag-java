@@ -27,7 +27,7 @@ public class Client {
     }
 
     /**
-    * @deprecated  Replaced by {@link #setUser()}
+    * @deprecated  Replaced by {@link #setUser(String, String, String)}}
     */
     public void setUserId(String id) {
         config.setUser(id, null, null);
