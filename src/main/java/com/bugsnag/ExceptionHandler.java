@@ -9,7 +9,7 @@ class ExceptionHandler implements UncaughtExceptionHandler {
     public static void install(Client client) {
         UncaughtExceptionHandler currentHandler = Thread.getDefaultUncaughtExceptionHandler();
         if(currentHandler instanceof ExceptionHandler) {
-            currentHandler = ((ExceptionHandler)currentHandler).getOriginalHandler();
+            currentHandler = ((ExceptionHandler)currentHandler).originalHandler;
         }
 
         Thread.setDefaultUncaughtExceptionHandler(new ExceptionHandler(currentHandler, client));
@@ -18,7 +18,7 @@ class ExceptionHandler implements UncaughtExceptionHandler {
     public static void remove() {
         UncaughtExceptionHandler currentHandler = Thread.getDefaultUncaughtExceptionHandler();
         if(currentHandler instanceof ExceptionHandler) {
-            Thread.setDefaultUncaughtExceptionHandler(((ExceptionHandler)currentHandler).getOriginalHandler());
+            Thread.setDefaultUncaughtExceptionHandler(((ExceptionHandler)currentHandler).originalHandler);
         }
     }
 
@@ -30,9 +30,5 @@ class ExceptionHandler implements UncaughtExceptionHandler {
     public void uncaughtException(Thread t, Throwable e) {
         client.autoNotify(e);
         originalHandler.uncaughtException(t, e);
-    }
-
-    public UncaughtExceptionHandler getOriginalHandler() {
-        return this.originalHandler;
     }
 }
