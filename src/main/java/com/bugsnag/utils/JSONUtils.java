@@ -57,7 +57,7 @@ public class JSONUtils {
                 if( value instanceof JSONObject ){
                     value = deepClone((JSONObject)value);
                 }
-                safePut((JSONObject)dest, key, value);
+                safePut(dest, key, value);
             }
         }
 
