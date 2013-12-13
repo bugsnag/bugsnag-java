@@ -18,7 +18,7 @@ public class Diagnostics {
         JSONUtils.safePutOpt(deviceData, "osName", System.getProperty("os.name"));
 
         try {
-            JSONUtils.safePutOpt(deviceData, "name", InetAddress.getLocalHost().getHostName());
+            JSONUtils.safePutOpt(deviceData, "hostname", InetAddress.getLocalHost().getHostName());
         } catch (java.net.UnknownHostException e) {
             config.logger.warn("Unable to determine hostname", e);
         }
