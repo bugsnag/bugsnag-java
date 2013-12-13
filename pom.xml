@@ -31,6 +31,10 @@
     </developer>
   </developers>
 
+  <properties>
+    <lb.version>1.0.13</lb.version>
+  </properties>
+
   <!-- Dependencies -->
   <dependencies>
     <dependency>
@@ -51,6 +55,26 @@
       <artifactId>hamcrest-all</artifactId>
       <version>1.3</version>
       <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>ch.qos.logback</groupId>
+      <artifactId>logback-core</artifactId>
+      <version>${lb.version}</version>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>ch.qos.logback</groupId>
+      <artifactId>logback-classic</artifactId>
+      <version>${lb.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>ch.qos.logback</groupId>
+      <artifactId>logback-access</artifactId>
+      <version>${lb.version}</version>
+      <scope>provided</scope>
     </dependency>
   </dependencies>
 

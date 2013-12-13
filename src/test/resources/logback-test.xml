@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<configuration>
+    <appender name="bugsnag"
+              class="com.bugsnag.LogbackAppender">
+        <apiKey>XXX</apiKey>
+    </appender>
+    <root level="trace">
+        <appender-ref ref="bugsnag" />
+    </root>
+</configuration>
