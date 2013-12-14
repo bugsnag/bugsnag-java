@@ -90,8 +90,8 @@ bugsnag.notify(new RuntimeException("Non-fatal"), metaData);
 ```
 
 
-Configuration
--------------
+Additional Configuration
+------------------------
 
 ###setContext
 
