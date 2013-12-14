@@ -32,7 +32,7 @@ How to Install
     $ mvn install
     ```
 
-### Manual Installation
+### Manual Jar Installation
 
 -   Download the [latest bugsnag.jar](http://bugsnagcdn.s3.amazonaws.com/bugsnag-java/bugsnag-1.2.1.jar)
     and place it in your app's classpath.
