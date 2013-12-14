@@ -12,18 +12,37 @@ as fast as possible. [Create a free account](https://bugsnag.com) to start
 capturing errors from your applications.
 
 
-Installation & Setup
---------------------
+How to Install
+--------------
 
--   Download the [latest bugsnag.jar](http://bugsnagcdn.s3.amazonaws.com/bugsnag-java/bugsnag-1.2.0.jar)
+### Using [Maven](http://maven.apache.org/) (Recommended)
+
+-   Add `bugsnag` as a dependency in your `pom.xml`
+
+    ```xml
+    &lt;dependency&gt;
+      &lt;groupId&gt;com.bugsnag&lt;/groupId&gt;
+      &lt;artifactId&gt;bugsnag&lt;/artifactId&gt;
+    &lt;/dependency&gt;
+    ```
+
+-   Install the package
+
+    ```shell
+    $ mvn install
+    ```
+
+### Manual Installation
+
+-   Download the [latest bugsnag.jar](http://bugsnagcdn.s3.amazonaws.com/bugsnag-java/bugsnag-1.2.1.jar)
     and place it in your app's classpath.
 
     Bugsnag for Java depends only on the `org.json` library,
     [download the jar here](http://repo1.maven.org/maven2/org/json/json/20090211/json-20090211.jar).
 
-    *Note: if your project uses [Maven](http://maven.apache.org/) you can 
-    instead [add bugsnag as a dependency](http://mvnrepository.com/artifact/com.bugsnag/bugsnag)
-    in your `pom.xml`.*
+
+Configuration
+-------------
 
 -   Import the Bugsnag `Client` class in your code and create an instance to 
     begin capturing exceptions:
