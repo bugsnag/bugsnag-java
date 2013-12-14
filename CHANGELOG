@@ -1,3 +1,6 @@
+1.2.1
+-   Add hostname to device information
+
 1.2.0
 -----
 -   Included device and app fields. Transmit appState and deviceState.
