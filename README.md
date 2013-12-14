@@ -44,13 +44,13 @@ How to Install
 Configuration
 -------------
 
--   Import the Bugsnag `Client` class in your code and create an instance to 
-    begin capturing exceptions:
+Import the Bugsnag `Client` class in your code and create an instance to 
+begin capturing exceptions:
 
-    ```java
-    import com.bugsnag.Client;
-    Client bugsnag = new Client("your-api-key-goes-here");
-    ```
+```java
+import com.bugsnag.Client;
+Client bugsnag = new Client("your-api-key-goes-here");
+```
 
 
 Sending Custom Data With Exceptions
