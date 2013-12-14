@@ -20,10 +20,10 @@ How to Install
 -   Add `bugsnag` as a dependency in your `pom.xml`
 
     ```xml
-    &lt;dependency&gt;
-      &lt;groupId&gt;com.bugsnag&lt;/groupId&gt;
-      &lt;artifactId&gt;bugsnag&lt;/artifactId&gt;
-    &lt;/dependency&gt;
+    <dependency>
+      <groupId>com.bugsnag</groupId>
+      <artifactId>bugsnag</artifactId>
+    </dependency>
     ```
 
 -   Install the package
