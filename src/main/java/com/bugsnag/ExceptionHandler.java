@@ -29,6 +29,8 @@ class ExceptionHandler implements UncaughtExceptionHandler {
 
     public void uncaughtException(Thread t, Throwable e) {
         client.autoNotify(e);
-        originalHandler.uncaughtException(t, e);
+        if(originalHandler != null) {
+            originalHandler.uncaughtException(t, e);
+        }
     }
 }
