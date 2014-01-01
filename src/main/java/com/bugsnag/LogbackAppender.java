@@ -54,9 +54,8 @@ public class LogbackAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
     super.start();
 
     // FIXME: once bugsnag is fixed we don't need this: https://github.com/bugsnag/bugsnag-java/issues/10
-    if (Thread.getDefaultUncaughtExceptionHandler() == null) {
+    if (installHandler && Thread.getDefaultUncaughtExceptionHandler() == null) {
       Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
-        @Override
         public void uncaughtException(Thread t, Throwable e) {
           System.err.printf("Exception in thread \"%s\" ", t.getName());
           e.printStackTrace(System.err);
