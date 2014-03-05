@@ -34,7 +34,7 @@ How to Install
 
 ### Manual Jar Installation
 
--   Download the [latest bugsnag.jar](http://bugsnagcdn.s3.amazonaws.com/bugsnag-java/bugsnag-1.2.1.jar)
+-   Download the [latest bugsnag.jar](http://bugsnagcdn.s3.amazonaws.com/bugsnag-java/bugsnag-1.2.2.jar)
     and place it in your app's classpath.
 
     Bugsnag for Java depends only on the `org.json` library,
@@ -44,7 +44,7 @@ How to Install
 Configuration
 -------------
 
-Import the Bugsnag `Client` class in your code and create an instance to 
+Import the Bugsnag `Client` class in your code and create an instance to
 begin capturing exceptions:
 
 ```java
@@ -164,7 +164,7 @@ By default, `filters` is set to `new String[] {"password"};`
 
 ###setProjectPackages
 
-Sets which package names Bugsnag should consider as "inProject". We mark 
+Sets which package names Bugsnag should consider as "inProject". We mark
 stacktrace lines as in-project if they originate from any of these
 packages.
 
@@ -193,7 +193,7 @@ project here:
 Contributing
 ------------
 
--   [Fork](https://help.github.com/articles/fork-a-repo) the 
+-   [Fork](https://help.github.com/articles/fork-a-repo) the
     [notifier on github](https://github.com/bugsnag/bugsnag-java)
 -   Commit and push until you are happy with your contribution
 -   Run the tests with `mvn test`.
