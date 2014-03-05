@@ -40,7 +40,7 @@ public class Configuration {
     protected static final String DEFAULT_ENDPOINT = "notify.bugsnag.com";
 
     private static final String NOTIFIER_NAME = "Java Bugsnag Notifier";
-    private static final String NOTIFIER_VERSION = "1.2.1";
+    private static final String NOTIFIER_VERSION = "1.2.2";
     private static final String NOTIFIER_URL = "https://bugsnag.com";
 
     // Notifier settings
@@ -85,7 +85,7 @@ public class Configuration {
     public void addToTab(String tabName, String key, Object value) {
         this.metaData.addToTab(tabName, key, value);
     }
-    
+
     public void clearTab(String tabName){
         this.metaData.clearTab(tabName);
     }
