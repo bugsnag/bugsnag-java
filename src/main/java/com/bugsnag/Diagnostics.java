@@ -1,5 +1,7 @@
 package com.bugsnag;
 
+import java.net.InetAddress;
+
 import org.json.JSONObject;
 import org.json.JSONException;
 
@@ -14,6 +16,12 @@ public class Diagnostics {
         this.config = config;
 
         JSONUtils.safePutOpt(deviceData, "osName", System.getProperty("os.name"));
+
+        try {
+            JSONUtils.safePutOpt(deviceData, "hostname", InetAddress.getLocalHost().getHostName());
+        } catch (java.net.UnknownHostException e) {
+            config.logger.warn("Unable to determine hostname", e);
+        }
     }
 
     public JSONObject getAppData() {
