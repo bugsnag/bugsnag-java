@@ -31,6 +31,9 @@ class ExceptionHandler implements UncaughtExceptionHandler {
         client.autoNotify(e);
         if(originalHandler != null) {
             originalHandler.uncaughtException(t, e);
+        } else {
+            System.err.printf("Exception in thread \"%s\" ", t.getName());
+            e.printStackTrace(System.err);
         }
     }
 }
