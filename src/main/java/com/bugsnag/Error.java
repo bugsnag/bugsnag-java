@@ -9,13 +9,14 @@ import org.json.JSONArray;
 import com.bugsnag.utils.JSONUtils;
 
 public class Error {
-    private static final List<String> ALLOWED_SEVERITIES = Arrays.asList("fatal", "error", "warning", "info");
+    private static final List<String> ALLOWED_SEVERITIES = Arrays.asList("error", "warning", "info");
 
     private Throwable exception;
     private Configuration config;
     private MetaData metaData;
     private Diagnostics diagnostics;
     private String severity;
+    private String payloadVersion = "2";
 
     public Error(Throwable exception, String severity, MetaData metaData, Configuration config, Diagnostics diagnostics) {
         this.exception = exception;
@@ -40,9 +41,11 @@ public class Error {
 
         JSONUtils.safePutOpt(error, "device", diagnostics.getDeviceData());
         JSONUtils.safePutOpt(error, "deviceState", diagnostics.getDeviceState());
-        
+
         JSONUtils.safePut(error, "context", diagnostics.getContext());
         JSONUtils.safePut(error, "severity", severity);
+
+        JSONUtils.safePut(error, "payloadVersion", payloadVersion);
 
         // Unwrap exceptions
         JSONArray exceptions = new JSONArray();
@@ -123,7 +126,7 @@ public class Error {
 
     private void setSeverity(String severity) {
         if(severity == null || !ALLOWED_SEVERITIES.contains(severity)) {
-            this.severity = "error";
+            this.severity = "warning";
         } else {
             this.severity = severity;
         }

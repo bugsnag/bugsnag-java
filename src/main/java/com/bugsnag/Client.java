@@ -128,7 +128,7 @@ public class Client {
 
     public void autoNotify(Throwable e) {
         if(config.autoNotify) {
-            notify(e, "fatal");
+            notify(e, "error");
         }
     }
 
