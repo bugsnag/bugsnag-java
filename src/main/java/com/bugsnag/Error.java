@@ -9,7 +9,7 @@ import org.json.JSONArray;
 import com.bugsnag.utils.JSONUtils;
 
 public class Error {
-    private static final List<String> ALLOWED_SEVERITIES = Arrays.asList("fatal", "error", "warning", "info");
+    private static final List<String> ALLOWED_SEVERITIES = Arrays.asList("error", "warning", "info");
 
     private Throwable exception;
     private Configuration config;
@@ -40,7 +40,7 @@ public class Error {
 
         JSONUtils.safePutOpt(error, "device", diagnostics.getDeviceData());
         JSONUtils.safePutOpt(error, "deviceState", diagnostics.getDeviceState());
-        
+
         JSONUtils.safePut(error, "context", diagnostics.getContext());
         JSONUtils.safePut(error, "severity", severity);
 
