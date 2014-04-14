@@ -126,7 +126,7 @@ public class Error {
 
     private void setSeverity(String severity) {
         if(severity == null || !ALLOWED_SEVERITIES.contains(severity)) {
-            this.severity = "error";
+            this.severity = "warning";
         } else {
             this.severity = severity;
         }
