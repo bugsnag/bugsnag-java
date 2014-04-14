@@ -16,6 +16,7 @@ public class Error {
     private MetaData metaData;
     private Diagnostics diagnostics;
     private String severity;
+    private String payloadVersion = "2";
 
     public Error(Throwable exception, String severity, MetaData metaData, Configuration config, Diagnostics diagnostics) {
         this.exception = exception;
@@ -43,6 +44,8 @@ public class Error {
 
         JSONUtils.safePut(error, "context", diagnostics.getContext());
         JSONUtils.safePut(error, "severity", severity);
+
+        JSONUtils.safePut(error, "payloadVersion", payloadVersion);
 
         // Unwrap exceptions
         JSONArray exceptions = new JSONArray();
