@@ -89,6 +89,21 @@ metaData.addToTab("User", "email", "bob@example.com");
 bugsnag.notify(new RuntimeException("Non-fatal"), metaData);
 ```
 
+### Severity
+
+You can set the severity of an error in Bugsnag by including the severity option when
+notifying bugsnag of the error,
+
+```java
+bugsnag.notify(new RuntimeException("Non-fatal"), "error")
+```
+
+Valid severities are `error`, `warning` and `info`.
+
+Severity is displayed in the dashboard and can be used to filter the error list.
+By default all crashes (or unhandled exceptions) are set to `error` and all
+`bugsnag.notify` calls default to `warning`.
+
 
 Additional Configuration
 ------------------------
