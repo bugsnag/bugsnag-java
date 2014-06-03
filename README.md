@@ -177,7 +177,8 @@ bugsnag.setFilters(new String[]{"password", "credit_card_number"});
 
 By default, `filters` is set to `new String[] {"password"};`
 
-###setProjectPackages
+<!-- Custom anchor for linking from alerts -->
+###setProjectPackages <a name="set-project-root"></a>
 
 Sets which package names Bugsnag should consider as "inProject". We mark
 stacktrace lines as in-project if they originate from any of these
