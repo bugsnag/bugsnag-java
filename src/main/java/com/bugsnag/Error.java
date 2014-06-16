@@ -61,31 +61,8 @@ public class Error {
             JSONUtils.safePut(exception, "message", currentEx.getLocalizedMessage());
 
             // Stacktrace
-            JSONArray stacktrace = new JSONArray();
-            StackTraceElement[] stackTrace = currentEx.getStackTrace();
-            for(StackTraceElement el : stackTrace) {
-                try {
-                    JSONObject line = new JSONObject();
-                    JSONUtils.safePut(line, "method", el.getClassName() + "." + el.getMethodName());
-                    JSONUtils.safePut(line, "file", el.getFileName() == null ? "Unknown" : el.getFileName());
-                    JSONUtils.safePut(line, "lineNumber", el.getLineNumber());
-
-                    // Check if line is inProject
-                    if(config.projectPackages != null) {
-                        for(String packageName : config.projectPackages) {
-                            if(packageName != null && el.getClassName().startsWith(packageName)) {
-                                line.put("inProject", true);
-                                break;
-                            }
-                        }
-                    }
-
-                    stacktrace.put(line);
-                } catch(Exception lineEx) {
-                    lineEx.printStackTrace(System.err);
-                }
-            }
-            JSONUtils.safePut(exception, "stacktrace", stacktrace);
+            JSONArray stacktraceJSON = stacktraceToJSON(currentEx.getStackTrace());
+            JSONUtils.safePut(exception, "stacktrace", stacktraceJSON);
 
             currentEx = currentEx.getCause();
             exceptions.put(exception);
@@ -127,6 +104,35 @@ public class Error {
                 }
             }
         }
+    }
+
+    private JSONArray stacktraceToJSON(StackTraceElement[] stacktrace) {
+        JSONArray stacktraceJson = new JSONArray();
+
+        for(StackTraceElement el : stacktrace) {
+            try {
+                JSONObject line = new JSONObject();
+                JSONUtils.safePut(line, "method", el.getClassName() + "." + el.getMethodName());
+                JSONUtils.safePut(line, "file", el.getFileName() == null ? "Unknown" : el.getFileName());
+                JSONUtils.safePut(line, "lineNumber", el.getLineNumber());
+
+                // Check if line is inProject
+                if(config.projectPackages != null) {
+                    for(String packageName : config.projectPackages) {
+                        if(packageName != null && el.getClassName().startsWith(packageName)) {
+                            line.put("inProject", true);
+                            break;
+                        }
+                    }
+                }
+
+                stacktraceJson.put(line);
+            } catch(Exception lineEx) {
+                lineEx.printStackTrace(System.err);
+            }
+        }
+
+        return stacktraceJson;
     }
 
     public void setSeverity(String severity) {
