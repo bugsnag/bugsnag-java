@@ -3,6 +3,8 @@ package com.bugsnag;
 import java.io.FileWriter;
 import java.util.List;
 import java.util.Arrays;
+import java.util.Iterator;
+import java.util.Map;
 
 import org.json.JSONObject;
 import org.json.JSONArray;
@@ -73,6 +75,9 @@ public class Error {
         MetaData errorMetaData = config.getMetaData().merge(metaData).filter(config.filters);
         JSONUtils.safePut(error, "metaData", errorMetaData);
 
+        // Add thread status to payload
+        JSONUtils.safePut(error, "threads", getThreadStatus());
+
         return error;
     }
 
@@ -104,6 +109,27 @@ public class Error {
                 }
             }
         }
+    }
+
+    private JSONArray getThreadStatus() {
+        JSONArray threads = new JSONArray();
+
+        Map liveThreads = Thread.getAllStackTraces();
+        for(Iterator i = liveThreads.keySet().iterator(); i.hasNext(); ) {
+            JSONObject threadJSON = new JSONObject();
+            Thread thread = (Thread)i.next();
+
+            StackTraceElement[] stacktrace = (StackTraceElement[])liveThreads.get(thread);
+            JSONArray stacktraceJSON = stacktraceToJSON(stacktrace);
+
+            JSONUtils.safePut(threadJSON, "id", thread.getId());
+            JSONUtils.safePut(threadJSON, "name", thread.getName());
+            JSONUtils.safePut(threadJSON, "stacktrace", stacktraceJSON);
+
+            threads.put(threadJSON);
+        }
+
+        return threads;
     }
 
     private JSONArray stacktraceToJSON(StackTraceElement[] stacktrace) {
