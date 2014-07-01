@@ -58,6 +58,10 @@ public class Configuration {
     String[] projectPackages;
     String[] ignoreClasses;
 
+    // Grouping Hash settings
+    GroupingHashCallback groupingHashCallback;
+    String groupingHash;
+
     // Error settings
     LockableValue<String> context = new LockableValue<String>();
     LockableValue<String> releaseStage = new LockableValue<String>("production");
@@ -178,5 +182,21 @@ public class Configuration {
 
     public void setLogger(Logger logger) {
         this.logger = logger;
+    }
+
+    public void setGroupingHashCallback(GroupingHashCallback groupingHashCallback) {
+        this.groupingHashCallback = groupingHashCallback;
+    }
+
+    public void setGroupingHash(String groupingHash) {
+        this.groupingHash = groupingHash;
+    }
+
+    public GroupingHashCallback getGroupingHashCallback() {
+        return groupingHashCallback;
+    }
+
+    public String getGroupingHash() {
+        return groupingHash;
     }
 }

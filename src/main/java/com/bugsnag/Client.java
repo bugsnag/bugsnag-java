@@ -97,6 +97,14 @@ public class Client {
         config.setLogger(logger);
     }
 
+    public void setGroupingHashCallback(GroupingHashCallback groupingHashCallback) {
+        config.setGroupingHashCallback(groupingHashCallback);
+    }
+
+    public void setGroupingHash(String groupingHash) {
+        config.setGroupingHash(groupingHash);
+    }
+
     public void notify(Error error) {
         if(!config.shouldNotify()) return;
         if(error.shouldIgnore()) return;
