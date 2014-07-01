@@ -47,6 +47,28 @@ public class Error {
 
         JSONUtils.safePut(error, "payloadVersion", payloadVersion);
 
+        String groupingHash = null;
+
+        // If a grouping hash is provided, us it as a default
+        if (config.getGroupingHash() != null) {
+            groupingHash = config.getGroupingHash();
+        }
+
+        GroupingHashCallback groupingHasher = config.getGroupingHashCallback();
+        if (groupingHasher != null) {
+            try {
+                // Attempt at retrieving a groupingHash from the callback
+                groupingHash = groupingHasher.run(exception);
+            } catch(Throwable e) {
+                // Here to prevent infinite loop
+                e.printStackTrace(System.err);
+            }
+        }
+
+        if (groupingHash != null) {
+            JSONUtils.safePut(error, "groupingHash", groupingHash);
+        }
+
         // Unwrap exceptions
         JSONArray exceptions = new JSONArray();
         Throwable currentEx = this.exception;
