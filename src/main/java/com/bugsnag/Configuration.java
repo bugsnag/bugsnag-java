@@ -58,6 +58,9 @@ public class Configuration {
     String[] projectPackages;
     String[] ignoreClasses;
 
+    // Before notify settings
+    BeforeNotify beforeNotify;
+
     // Error settings
     LockableValue<String> context = new LockableValue<String>();
     LockableValue<String> releaseStage = new LockableValue<String>("production");
@@ -178,5 +181,9 @@ public class Configuration {
 
     public void setLogger(Logger logger) {
         this.logger = logger;
+    }
+
+    public void setBeforeNotify(BeforeNotify beforeNotify) {
+        this.beforeNotify = beforeNotify;
     }
 }

@@ -97,11 +97,17 @@ public class Client {
         config.setLogger(logger);
     }
 
+    public void setBeforeNotify(BeforeNotify beforeNotify) {
+        config.setBeforeNotify(beforeNotify);
+    }
+
     public void notify(Error error) {
         if(!config.shouldNotify()) return;
-        if(error.shouldIgnore()) return;
 
         try {
+            beforeNotify(error);
+            if(error.shouldIgnore()) return;
+
             Notification notif = new Notification(config, error);
             notif.deliver();
         } catch (NetworkException ex) {
@@ -146,6 +152,12 @@ public class Client {
             metrics.deliver();
         } catch (NetworkException ex) {
             config.logger.warn("Error sending metrics to Bugsnag", ex);
+        }
+    }
+
+    private void beforeNotify(Error error) {
+        if(config.beforeNotify != null) {
+            config.beforeNotify.run(error);
         }
     }
 

@@ -17,6 +17,8 @@ public class Error {
     private Diagnostics diagnostics;
     private String severity;
     private String payloadVersion = "2";
+    private String groupingHash;
+    private boolean ignore;
 
     public Error(Throwable exception, String severity, MetaData metaData, Configuration config, Diagnostics diagnostics) {
         this.exception = exception;
@@ -46,6 +48,10 @@ public class Error {
         JSONUtils.safePut(error, "severity", severity);
 
         JSONUtils.safePut(error, "payloadVersion", payloadVersion);
+
+        if(groupingHash != null) {
+            JSONUtils.safePut(error, "groupingHash", groupingHash);
+        }
 
         // Unwrap exceptions
         JSONArray exceptions = new JSONArray();
@@ -102,8 +108,12 @@ public class Error {
         metaData.addToTab(tabName, key, value);
     }
 
+    public void setIgnore(boolean ignore) {
+        this.ignore = ignore;
+    }
+
     public boolean shouldIgnore() {
-        return config.shouldIgnore(exception.getClass().getName());
+        return ignore || config.shouldIgnore(exception.getClass().getName());
     }
 
     public void writeToFile(String filename) throws java.io.IOException {
@@ -124,11 +134,23 @@ public class Error {
         }
     }
 
-    private void setSeverity(String severity) {
+    public void setSeverity(String severity) {
         if(severity == null || !ALLOWED_SEVERITIES.contains(severity)) {
             this.severity = "warning";
         } else {
             this.severity = severity;
         }
+    }
+
+    public void setGroupingHash(String groupingHash) {
+        this.groupingHash = groupingHash;
+    }
+
+    public Throwable getException() {
+        return exception;
+    }
+
+    public MetaData getMetaData() {
+        return metaData;
     }
 }
