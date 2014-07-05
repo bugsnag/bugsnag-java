@@ -223,6 +223,55 @@ bugsnag.setBeforeNotify(new BeforeNotify() {
 });
 ```
 
+Error Object
+------------
+
+###setGroupingHash
+
+Sets the `groupingHash` used by Bugsnag.com to manually override the default
+grouping technique. This option is not recommended, and should be used carefully
+when used.
+
+Any errors that are sent to Bugsnag, that have the same `groupingHash` will
+be grouped as one. As the name implies, this option accepts a hash of sorts.
+
+```java
+// ... generate the hash
+String groupingHash = "f8803769f3e293dfcabdb6dec5100b8c52c6ae6b";
+
+error.setGroupingHash(groupingHash);
+```
+
+###setIgnore
+
+Useful within a `BeforeNotify` callback, as invoking the following code will stop
+the notifier from sending the error to the specified endpoint (ie. Bugsnag.com).
+
+```java
+error.setIgnore(true);
+```
+
+If set to `false` the notifier will still check to see if the class has been set
+to be ignored (via [`setIgnoreClasses`](#setIgnoreClasses)).
+
+###addToTab
+
+Sets a piece of information to be displayed in the Bugsnag.com error page. The
+first argument is the tab name, the second argument is the key for the data, and
+the third argument is used as the value.
+
+```java
+error.addToTab("user", "role", "Administrator");
+```
+
+###setSeverity
+
+Overrides the severity of the error. See the [Severity](#severity) section for
+valid options.
+
+```java
+error.setSeverity("warning");
+```
 
 Reporting Bugs or Feature Requests
 ----------------------------------
