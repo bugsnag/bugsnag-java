@@ -104,10 +104,10 @@ public class Client {
     public void notify(Error error) {
         if(!config.shouldNotify()) return;
 
-        try {
-            beforeNotify(error);
-            if(error.shouldIgnore()) return;
+        beforeNotify(error);
+        if(error.shouldIgnore()) return;
 
+        try {
             Notification notif = new Notification(config, error);
             notif.deliver();
         } catch (NetworkException ex) {
@@ -157,7 +157,11 @@ public class Client {
 
     private void beforeNotify(Error error) {
         if(config.beforeNotify != null) {
-            config.beforeNotify.run(error);
+            try {
+                config.beforeNotify.run(error);
+            } catch (Throwable ex) {
+                config.logger.warn("BeforeNotify threw an exception", ex);
+            }
         }
     }
 
