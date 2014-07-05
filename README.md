@@ -204,6 +204,9 @@ error to the specified endpoint (ie. Bugsnag.com). This callback has full
 read/write access to the error object, so it has the opportunity to prevent
 the error from being sent all together.
 
+The callback does not get invoked if the Exception name has been set to
+ignored via [setIgnoreClasses](#setignoreclasses).
+
 ```java
 bugsnag.setBeforeNotify(new BeforeNotify() {
     @Override
@@ -250,9 +253,6 @@ the notifier from sending the error to the specified endpoint (ie. Bugsnag.com).
 ```java
 error.setIgnore(true);
 ```
-
-If set to `false` the notifier will still check to see if the class has been set
-to be ignored (via [`setIgnoreClasses`](#setignoreclasses)).
 
 ###addToTab
 
