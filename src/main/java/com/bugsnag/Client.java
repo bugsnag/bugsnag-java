@@ -103,9 +103,8 @@ public class Client {
 
     public void notify(Error error) {
         if(!config.shouldNotify()) return;
-
-        beforeNotify(error);
-        if(error.shouldIgnore()) return;
+        if(config.shouldIgnore(error.getExceptionName())) return;
+        if(beforeNotify(error).shouldIgnore()) return;
 
         try {
             Notification notif = new Notification(config, error);
@@ -155,7 +154,7 @@ public class Client {
         }
     }
 
-    private void beforeNotify(Error error) {
+    private Error beforeNotify(Error error) {
         if(config.beforeNotify != null) {
             try {
                 config.beforeNotify.run(error);
@@ -163,6 +162,9 @@ public class Client {
                 config.logger.warn("BeforeNotify threw an exception", ex);
             }
         }
+
+        // Here for convenience - see notify(Error)
+        return error;
     }
 
     // Factory methods so we don't have to expose the Configuration class

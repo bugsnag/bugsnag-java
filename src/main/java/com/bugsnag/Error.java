@@ -113,7 +113,7 @@ public class Error {
     }
 
     public boolean shouldIgnore() {
-        return ignore || config.shouldIgnore(exception.getClass().getName());
+        return ignore;
     }
 
     public void writeToFile(String filename) throws java.io.IOException {
@@ -148,6 +148,14 @@ public class Error {
 
     public Throwable getException() {
         return exception;
+    }
+
+    public String getExceptionName() {
+        return exception.getClass().getName();
+    }
+
+    public StackTraceElement[] getStackTrace() {
+        return exception.getStackTrace();
     }
 
     public MetaData getMetaData() {
