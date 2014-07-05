@@ -254,6 +254,11 @@ the notifier from sending the error to the specified endpoint (ie. Bugsnag.com).
 error.setIgnore(true);
 ```
 
+###shouldIgnore
+
+Returns whether the error will be ignored by the notifier. See [setIgnore](#setignore)
+for more information.
+
 ###addToTab
 
 Sets a piece of information to be displayed in the Bugsnag.com error page. The
@@ -272,6 +277,18 @@ valid options.
 ```java
 error.setSeverity("warning");
 ```
+
+###getException
+
+Returns the thrown `Throwable`.
+
+###getExceptionName
+
+Returns the full name of the `Throwable`.
+
+###getStackTrace
+
+Returns the `Throwable`'s array of `StackTraceElement`s.
 
 Reporting Bugs or Feature Requests
 ----------------------------------
