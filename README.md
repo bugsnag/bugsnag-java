@@ -252,7 +252,7 @@ error.setIgnore(true);
 ```
 
 If set to `false` the notifier will still check to see if the class has been set
-to be ignored (via [`setIgnoreClasses`](#setIgnoreClasses)).
+to be ignored (via [`setIgnoreClasses`](#setignoreclasses)).
 
 ###addToTab
 
