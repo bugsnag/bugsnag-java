@@ -103,7 +103,11 @@ public class Client {
 
     public void notify(Error error) {
         if(!config.shouldNotify()) return;
-        if(config.shouldIgnore(error.getExceptionName())) return;
+        
+        // Should the error be ignored (because of setIgnoreClasses)
+        if(error.shouldIgnore()) return;
+        
+        // After `beforeNotify`, should the error be ignored?
         if(beforeNotify(error).shouldIgnore()) return;
 
         try {

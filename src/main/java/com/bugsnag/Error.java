@@ -113,7 +113,7 @@ public class Error {
     }
 
     public boolean shouldIgnore() {
-        return ignore;
+        return ignore || config.shouldIgnore(getExceptionName());
     }
 
     public void writeToFile(String filename) throws java.io.IOException {
