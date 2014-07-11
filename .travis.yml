@@ -1,5 +1,5 @@
 language: java
-
 notifications:
   hipchat:
-    secure: "IuIpGONbP1fsa3Gp9YplQZJqGO9fhqXSNzKYku3d6dHBVJKJ5Xnx71f4BDNQ7uD9QqBnzOoFjQtP1wju3EXA2VhBm/QIIN622NeUrZxOA/QkGNsScJ0gpjmz9awbMh2B/RikAHBt8o44wxnxnyTK8COc+CjRmEoA1ZwEtJW3Pyw="
+    rooms:
+      secure: lMmut7IRjYLN0A/+hlS+9C7ZVDrmEKM4yDxpIP+GWBJl5N8TYx0ydHdQzDYgDMcaA0hDf77MOmi/Calth5gAhEES3JBt2Dsn4Bfnt9+zATGeoU8OyhZxhXO/Xt0hrupBB27IZP7GhoSXfh76zB4GdqSbCEf1XIYDPWDsiv6y7ZQ=
