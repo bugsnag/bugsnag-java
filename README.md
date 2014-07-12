@@ -199,7 +199,7 @@ bugsnag.setIgnoreClasses("java.io.IOException", "com.example.Custom");
 
 ###setBeforeNotify
 
-Sets the callback in which to invoke directly before the notifier sends the
+Adds a callback, in which to invoke directly before the notifier sends the
 error to the specified endpoint (ie. Bugsnag.com). This callback has full
 read/write access to the error object, so it has the opportunity to prevent
 the error from being sent all together.
@@ -207,10 +207,14 @@ the error from being sent all together.
 The callback does not get invoked if the Exception name has been set to
 ignored via [setIgnoreClasses](#setignoreclasses).
 
+By returning `false` from this callback, the Bugsnag notifier will prevent
+sending the error to the Bugsnag endpoint. The first callback to return
+`false` will prevent all other subsequent callbacks from being invoked.
+
 ```java
-bugsnag.setBeforeNotify(new BeforeNotify() {
+bugsnag.addBeforeNotify(new BeforeNotify() {
     @Override
-    public void run(Error error) {
+    public boolean run(Error error) {
         // Sets the groupingHash option
         error.setGroupingHash("hello");
 
@@ -221,7 +225,7 @@ bugsnag.setBeforeNotify(new BeforeNotify() {
         error.addToTab("user", "id", 1337);
 
         // Prevents the error from being sent
-        error.setIgnore(true);
+        return false;
     }
 });
 ```
@@ -243,15 +247,6 @@ be grouped as one. As the name implies, this option accepts a hash of sorts.
 String groupingHash = "f8803769f3e293dfcabdb6dec5100b8c52c6ae6b";
 
 error.setGroupingHash(groupingHash);
-```
-
-###setIgnore
-
-Useful within a `BeforeNotify` callback, as invoking the following code will stop
-the notifier from sending the error to the specified endpoint (ie. Bugsnag.com).
-
-```java
-error.setIgnore(true);
 ```
 
 ###shouldIgnore
