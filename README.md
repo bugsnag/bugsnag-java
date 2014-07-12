@@ -197,6 +197,88 @@ Sets for which exception classes we should not send exceptions to Bugsnag.
 bugsnag.setIgnoreClasses("java.io.IOException", "com.example.Custom");
 ```
 
+###addBeforeNotify
+
+Adds a callback, in which to invoke directly before the notifier sends the
+error to the specified endpoint (ie. Bugsnag.com). This callback has full
+read/write access to the error object, so it has the opportunity to prevent
+the error from being sent all together.
+
+The callback does not get invoked if the Exception name has been set to
+ignored via [setIgnoreClasses](#setignoreclasses).
+
+By returning `false` from this callback, the Bugsnag notifier will prevent
+sending the error to the Bugsnag endpoint. The first callback to return
+`false` will prevent all other subsequent callbacks from being invoked.
+
+```java
+bugsnag.addBeforeNotify(new BeforeNotify() {
+    @Override
+    public boolean run(Error error) {
+        // Sets the groupingHash option
+        error.setGroupingHash("hello");
+
+        // Overrides the severity
+        error.setSeverity("warning");
+
+        // Modifies the user information
+        error.addToTab("user", "id", 1337);
+
+        // Prevents the error from being sent
+        return false;
+    }
+});
+```
+
+Error Object
+------------
+
+###setGroupingHash
+
+Sets the `groupingHash` used by Bugsnag.com to manually override the default
+grouping technique. This option is not recommended, and should be used carefully
+when used.
+
+Any errors that are sent to Bugsnag, that have the same `groupingHash` will
+be grouped as one. As the name implies, this option accepts a hash of sorts.
+
+```java
+// ... generate the hash
+String groupingHash = "f8803769f3e293dfcabdb6dec5100b8c52c6ae6b";
+
+error.setGroupingHash(groupingHash);
+```
+
+###addToTab
+
+Sets a piece of information to be displayed in the Bugsnag.com error page. The
+first argument is the tab name, the second argument is the key for the data, and
+the third argument is used as the value.
+
+```java
+error.addToTab("user", "role", "Administrator");
+```
+
+###setSeverity
+
+Overrides the severity of the error. See the [Severity](#severity) section for
+valid options.
+
+```java
+error.setSeverity("warning");
+```
+
+###getException
+
+Returns the thrown `Throwable`.
+
+###getExceptionName
+
+Returns the full name of the `Throwable`.
+
+###getStackTrace
+
+Returns the `Throwable`'s array of `StackTraceElement`s.
 
 Reporting Bugs or Feature Requests
 ----------------------------------

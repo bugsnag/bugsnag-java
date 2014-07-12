@@ -97,9 +97,14 @@ public class Client {
         config.setLogger(logger);
     }
 
+    public void addBeforeNotify(BeforeNotify beforeNotify) {
+        config.addBeforeNotify(beforeNotify);
+    }
+
     public void notify(Error error) {
         if(!config.shouldNotify()) return;
         if(error.shouldIgnore()) return;
+        if(!beforeNotify(error)) return;
 
         try {
             Notification notif = new Notification(config, error);
@@ -147,6 +152,21 @@ public class Client {
         } catch (NetworkException ex) {
             config.logger.warn("Error sending metrics to Bugsnag", ex);
         }
+    }
+
+    private boolean beforeNotify(Error error) {
+        for (BeforeNotify beforeNotify : config.beforeNotify) {
+            try {
+                if (!beforeNotify.run(error)) {
+                    return false;
+                }
+            } catch (Throwable ex) {
+                config.logger.warn("BeforeNotify threw an Exception", ex);
+            }
+        }
+
+        // By default, allow the error to be sent if there were no objections
+        return true;
     }
 
     // Factory methods so we don't have to expose the Configuration class

@@ -1,6 +1,7 @@
 package com.bugsnag;
 
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 
 import org.json.JSONObject;
@@ -57,6 +58,9 @@ public class Configuration {
     String[] filters = new String[]{"password"};
     String[] projectPackages;
     String[] ignoreClasses;
+
+    // Before notify settings
+    List<BeforeNotify> beforeNotify = new LinkedList<BeforeNotify>();
 
     // Error settings
     LockableValue<String> context = new LockableValue<String>();
@@ -178,5 +182,9 @@ public class Configuration {
 
     public void setLogger(Logger logger) {
         this.logger = logger;
+    }
+
+    public void addBeforeNotify(BeforeNotify beforeNotify) {
+        this.beforeNotify.add(beforeNotify);
     }
 }
