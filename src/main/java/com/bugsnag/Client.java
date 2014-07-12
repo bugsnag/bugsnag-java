@@ -97,18 +97,14 @@ public class Client {
         config.setLogger(logger);
     }
 
-    public void setBeforeNotify(BeforeNotify beforeNotify) {
-        config.setBeforeNotify(beforeNotify);
+    public void addBeforeNotify(BeforeNotify beforeNotify) {
+        config.addBeforeNotify(beforeNotify);
     }
 
     public void notify(Error error) {
         if(!config.shouldNotify()) return;
-        
-        // Should the error be ignored (because of setIgnoreClasses)
         if(error.shouldIgnore()) return;
-        
-        // After `beforeNotify`, should the error be ignored?
-        if(beforeNotify(error).shouldIgnore()) return;
+        if(!beforeNotify(error)) return;
 
         try {
             Notification notif = new Notification(config, error);
@@ -158,17 +154,19 @@ public class Client {
         }
     }
 
-    private Error beforeNotify(Error error) {
-        if(config.beforeNotify != null) {
+    private boolean beforeNotify(Error error) {
+        for (BeforeNotify beforeNotify : config.beforeNotify) {
             try {
-                config.beforeNotify.run(error);
+                if (!beforeNotify.run(error)) {
+                    return false;
+                }
             } catch (Throwable ex) {
-                config.logger.warn("BeforeNotify threw an exception", ex);
+                config.logger.warn("BeforeNotify threw an Exception", ex);
             }
         }
 
-        // Here for convenience - see notify(Error)
-        return error;
+        // By default, allow the error to be sent if there were no objections
+        return true;
     }
 
     // Factory methods so we don't have to expose the Configuration class

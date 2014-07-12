@@ -18,7 +18,6 @@ public class Error {
     private String severity;
     private String payloadVersion = "2";
     private String groupingHash;
-    private boolean ignore;
 
     public Error(Throwable exception, String severity, MetaData metaData, Configuration config, Diagnostics diagnostics) {
         this.exception = exception;
@@ -108,12 +107,8 @@ public class Error {
         metaData.addToTab(tabName, key, value);
     }
 
-    public void setIgnore(boolean ignore) {
-        this.ignore = ignore;
-    }
-
     public boolean shouldIgnore() {
-        return ignore || config.shouldIgnore(getExceptionName());
+        return config.shouldIgnore(getExceptionName());
     }
 
     public void writeToFile(String filename) throws java.io.IOException {
