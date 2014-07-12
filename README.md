@@ -197,7 +197,7 @@ Sets for which exception classes we should not send exceptions to Bugsnag.
 bugsnag.setIgnoreClasses("java.io.IOException", "com.example.Custom");
 ```
 
-###setBeforeNotify
+###addBeforeNotify
 
 Adds a callback, in which to invoke directly before the notifier sends the
 error to the specified endpoint (ie. Bugsnag.com). This callback has full
