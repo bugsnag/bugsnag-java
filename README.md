@@ -249,11 +249,6 @@ String groupingHash = "f8803769f3e293dfcabdb6dec5100b8c52c6ae6b";
 error.setGroupingHash(groupingHash);
 ```
 
-###shouldIgnore
-
-Returns whether the error will be ignored by the notifier. See [setIgnore](#setignore)
-for more information.
-
 ###addToTab
 
 Sets a piece of information to be displayed in the Bugsnag.com error page. The
