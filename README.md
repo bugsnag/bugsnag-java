@@ -154,6 +154,16 @@ Bugsnag of exceptions you can call `setNotifyReleaseStages`:
 bugsnag.setNotifyReleaseStages(new String[]{"production", "development"});
 ```
 
+###setEndpoint
+
+By default, we will send errors to your bugsnag.com dashboard. If you are using
+*Bugsnag Enterprise* you'll need to call `setEndpoint` to specify errors be sent
+to your Bugsnag Enterprise endpoint:
+
+```java
+bugsnag.setEndpoint("bugsnag.internal.example.com:49000");
+```
+
 ###setAutoNotify
 
 By default, we will automatically notify Bugsnag of any fatal exceptions
