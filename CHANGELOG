@@ -1,3 +1,7 @@
+1.2.6
+-----
+-   Expose `beforeNotify` callback stack to child classes
+
 1.2.5
 -----
 -   Add support for `beforeNotify` callback
