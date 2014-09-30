@@ -154,7 +154,7 @@ public class Client {
         }
     }
 
-    private boolean beforeNotify(Error error) {
+    protected boolean beforeNotify(Error error) {
         for (BeforeNotify beforeNotify : config.beforeNotify) {
             try {
                 if (!beforeNotify.run(error)) {
