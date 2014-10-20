@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Comparator;
 
 import org.json.JSONObject;
 import org.json.JSONArray;
@@ -114,19 +115,35 @@ public class Error {
     private JSONArray getThreadStatus() {
         JSONArray threads = new JSONArray();
 
-        Map liveThreads = Thread.getAllStackTraces();
-        for(Iterator i = liveThreads.keySet().iterator(); i.hasNext(); ) {
+        long currentId = Thread.currentThread().getId();
+
+        System.out.println("hi");
+        Map<Thread,StackTraceElement[]> liveThreads = Thread.getAllStackTraces();
+        System.out.println("wold");
+
+        Object[] keys = liveThreads.keySet().toArray();
+        Arrays.sort(keys, new Comparator<Object>(){
+            public int compare(Object a, Object b) {
+                return Long.compare(((Thread)a).getId(), ((Thread)b).getId());
+            }
+        });
+
+        for(int i = 0; i < keys.length; i++) {
             JSONObject threadJSON = new JSONObject();
-            Thread thread = (Thread)i.next();
+            Thread thread = (Thread)keys[i];
 
-            StackTraceElement[] stacktrace = (StackTraceElement[])liveThreads.get(thread);
-            JSONArray stacktraceJSON = stacktraceToJSON(stacktrace);
+            // Don't show the current stacktrace here. It'll point at this method
+            // rather than at the point they crashed.
+            if (thread.getId() != currentId) {
+                StackTraceElement[] stacktrace = liveThreads.get(thread);
+                JSONArray stacktraceJSON = stacktraceToJSON(stacktrace);
 
-            JSONUtils.safePut(threadJSON, "id", thread.getId());
-            JSONUtils.safePut(threadJSON, "name", thread.getName());
-            JSONUtils.safePut(threadJSON, "stacktrace", stacktraceJSON);
+                JSONUtils.safePut(threadJSON, "id", thread.getId());
+                JSONUtils.safePut(threadJSON, "name", thread.getName());
+                JSONUtils.safePut(threadJSON, "stacktrace", stacktraceJSON);
 
-            threads.put(threadJSON);
+                threads.put(threadJSON);
+            }
         }
 
         return threads;
