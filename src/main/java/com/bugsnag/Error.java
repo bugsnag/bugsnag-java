@@ -117,9 +117,7 @@ public class Error {
 
         long currentId = Thread.currentThread().getId();
 
-        System.out.println("hi");
         Map<Thread,StackTraceElement[]> liveThreads = Thread.getAllStackTraces();
-        System.out.println("wold");
 
         Object[] keys = liveThreads.keySet().toArray();
         Arrays.sort(keys, new Comparator<Object>(){
