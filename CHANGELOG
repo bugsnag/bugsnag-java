@@ -1,3 +1,8 @@
+1.2.7
+-----
+-   Add support for sending thread state information with `setSendThreads`
+-   Allow chaining of methods on Client
+
 1.2.6
 -----
 -   Expose `beforeNotify` callback stack to child classes
