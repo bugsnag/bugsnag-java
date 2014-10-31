@@ -76,7 +76,9 @@ public class Error {
         JSONUtils.safePut(error, "metaData", errorMetaData);
 
         // Add thread status to payload
-        JSONUtils.safePut(error, "threads", getThreadStatus());
+        if(config.sendThreads) {
+          JSONUtils.safePut(error, "threads", getThreadStatus());
+        }
 
         return error;
     }

@@ -58,6 +58,7 @@ public class Configuration {
     String[] filters = new String[]{"password"};
     String[] projectPackages;
     String[] ignoreClasses;
+    boolean sendThreads = false;
 
     // Before notify settings
     List<BeforeNotify> beforeNotify = new LinkedList<BeforeNotify>();
@@ -182,6 +183,10 @@ public class Configuration {
 
     public void setLogger(Logger logger) {
         this.logger = logger;
+    }
+
+    public void setSendThreads(boolean sendThreads) {
+        this.sendThreads = sendThreads;
     }
 
     public void addBeforeNotify(BeforeNotify beforeNotify) {
