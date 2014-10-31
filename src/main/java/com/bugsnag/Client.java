@@ -22,87 +22,106 @@ public class Client {
         }
     }
 
-    public void setContext(String context) {
+    public Client setContext(String context) {
         config.context.setLocked(context);
+        return this;
     }
 
     /**
     * @deprecated  Replaced by {@link #setUser(String, String, String)}}
     */
-    public void setUserId(String id) {
+    public Client setUserId(String id) {
         config.setUser(id, null, null);
+        return this;
     }
 
-    public void setUser(String id, String email, String name) {
+    public Client setUser(String id, String email, String name) {
         config.setUser(id, email, name);
+        return this;
     }
 
-    public void setReleaseStage(String releaseStage) {
+    public Client setReleaseStage(String releaseStage) {
         config.releaseStage.setLocked(releaseStage);
+        return this;
     }
 
-    public void setNotifyReleaseStages(String... notifyReleaseStages) {
+    public Client setNotifyReleaseStages(String... notifyReleaseStages) {
         config.setNotifyReleaseStages(notifyReleaseStages);
+        return this;
     }
 
-    public void setAutoNotify(boolean autoNotify) {
+    public Client setAutoNotify(boolean autoNotify) {
         config.setAutoNotify(autoNotify);
+        return this;
     }
 
-    public void setUseSSL(boolean useSSL) {
+    public Client setUseSSL(boolean useSSL) {
         config.setUseSSL(useSSL);
+        return this;
     }
 
     public boolean getUseSSL() {
         return config.useSSL;
     }
 
-    public void setEndpoint(String endpoint) {
+    public Client setEndpoint(String endpoint) {
         config.setEndpoint(endpoint);
+        return this;
     }
 
-    public void setFilters(String... filters) {
+    public Client setFilters(String... filters) {
         config.setFilters(filters);
+        return this;
     }
 
-    public void setProjectPackages(String... projectPackages) {
+    public Client setProjectPackages(String... projectPackages) {
         config.setProjectPackages(projectPackages);
+        return this;
     }
 
-    public void setOsVersion(String osVersion) {
+    public Client setOsVersion(String osVersion) {
         config.osVersion.setLocked(osVersion);
+        return this;
     }
 
-    public void setAppVersion(String appVersion) {
+    public Client setAppVersion(String appVersion) {
         config.appVersion.setLocked(appVersion);
+        return this;
     }
 
-    public void setNotifierName(String notifierName) {
+    public Client setNotifierName(String notifierName) {
         config.setNotifierName(notifierName);
+        return this;
     }
 
-    public void setNotifierVersion(String notifierVersion) {
+    public Client setNotifierVersion(String notifierVersion) {
         config.setNotifierVersion(notifierVersion);
+        return this;
     }
 
-    public void setNotifierUrl(String notifierUrl) {
+    public Client setNotifierUrl(String notifierUrl) {
         config.setNotifierUrl(notifierUrl);
+        return this;
     }
 
-    public void setIgnoreClasses(String... ignoreClasses) {
+    public Client setIgnoreClasses(String... ignoreClasses) {
         config.setIgnoreClasses(ignoreClasses);
+        return this;
     }
 
-    public void setLogger(Logger logger) {
+    public Client setLogger(Logger logger) {
         config.setLogger(logger);
+        return this;
     }
 
-    public void setSendThreads(boolean sendThreads) {
+    public Client setSendThreads(boolean sendThreads) {
         config.setSendThreads(sendThreads);
+        return this;
     }
 
-    public void addBeforeNotify(BeforeNotify beforeNotify) {
+    public Client addBeforeNotify(BeforeNotify beforeNotify) {
         config.addBeforeNotify(beforeNotify);
+        return this;
     }
 
     public void notify(Error error) {
@@ -141,8 +160,9 @@ public class Client {
         }
     }
 
-    public void addToTab(String tab, String key, Object value) {
+    public Client addToTab(String tab, String key, Object value) {
         config.addToTab(tab, key, value);
+        return this;
     }
 
     public void clearTab(String tab) {
