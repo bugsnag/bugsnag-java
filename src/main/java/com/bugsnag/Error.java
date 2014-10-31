@@ -124,7 +124,7 @@ public class Error {
         Object[] keys = liveThreads.keySet().toArray();
         Arrays.sort(keys, new Comparator<Object>(){
             public int compare(Object a, Object b) {
-                return Long.compare(((Thread)a).getId(), ((Thread)b).getId());
+                return new Long(((Thread)a).getId()).compareTo(((Thread)b).getId());
             }
         });
 
