@@ -34,7 +34,7 @@ How to Install
 
 ### Manual Jar Installation
 
--   Download the [latest bugsnag.jar](http://bugsnagcdn.s3.amazonaws.com/bugsnag-java/bugsnag-1.2.6.jar)
+-   Download the [latest bugsnag.jar](http://bugsnagcdn.s3.amazonaws.com/bugsnag-java/bugsnag-1.2.7.jar)
     and place it in your app's classpath.
 
     Bugsnag for Java depends only on the `org.json` library,
@@ -205,6 +205,16 @@ Sets for which exception classes we should not send exceptions to Bugsnag.
 
 ```java
 bugsnag.setIgnoreClasses("java.io.IOException", "com.example.Custom");
+```
+
+###setSendThreads
+
+Sets if we should collect and send thread state along with errors.
+
+Bt default `sendThreads` is set to `false`.
+
+```java
+bugsnag.setSendThreads(true);
 ```
 
 ###addBeforeNotify
