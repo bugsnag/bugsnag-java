@@ -1,3 +1,7 @@
+1.2.8
+-----
+-   Revert method chaining support in Client
+
 1.2.7
 -----
 -   Add support for sending thread state information with `setSendThreads`
