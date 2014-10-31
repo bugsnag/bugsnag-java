@@ -97,6 +97,10 @@ public class Client {
         config.setLogger(logger);
     }
 
+    public void setSendThreads(boolean sendThreads) {
+        config.setSendThreads(sendThreads);
+    }
+
     public void addBeforeNotify(BeforeNotify beforeNotify) {
         config.addBeforeNotify(beforeNotify);
     }

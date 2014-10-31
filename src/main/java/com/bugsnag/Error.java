@@ -3,6 +3,9 @@ package com.bugsnag;
 import java.io.FileWriter;
 import java.util.List;
 import java.util.Arrays;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Comparator;
 
 import org.json.JSONObject;
 import org.json.JSONArray;
@@ -61,31 +64,8 @@ public class Error {
             JSONUtils.safePut(exception, "message", currentEx.getLocalizedMessage());
 
             // Stacktrace
-            JSONArray stacktrace = new JSONArray();
-            StackTraceElement[] stackTrace = currentEx.getStackTrace();
-            for(StackTraceElement el : stackTrace) {
-                try {
-                    JSONObject line = new JSONObject();
-                    JSONUtils.safePut(line, "method", el.getClassName() + "." + el.getMethodName());
-                    JSONUtils.safePut(line, "file", el.getFileName() == null ? "Unknown" : el.getFileName());
-                    JSONUtils.safePut(line, "lineNumber", el.getLineNumber());
-
-                    // Check if line is inProject
-                    if(config.projectPackages != null) {
-                        for(String packageName : config.projectPackages) {
-                            if(packageName != null && el.getClassName().startsWith(packageName)) {
-                                line.put("inProject", true);
-                                break;
-                            }
-                        }
-                    }
-
-                    stacktrace.put(line);
-                } catch(Exception lineEx) {
-                    lineEx.printStackTrace(System.err);
-                }
-            }
-            JSONUtils.safePut(exception, "stacktrace", stacktrace);
+            JSONArray stacktraceJSON = stacktraceToJSON(currentEx.getStackTrace());
+            JSONUtils.safePut(exception, "stacktrace", stacktraceJSON);
 
             currentEx = currentEx.getCause();
             exceptions.put(exception);
@@ -95,6 +75,11 @@ public class Error {
         // Merge global metaData with local metaData, apply filters, and add to this error
         MetaData errorMetaData = config.getMetaData().merge(metaData).filter(config.filters);
         JSONUtils.safePut(error, "metaData", errorMetaData);
+
+        // Add thread status to payload
+        if(config.sendThreads) {
+          JSONUtils.safePut(error, "threads", getThreadStatus());
+        }
 
         return error;
     }
@@ -127,6 +112,70 @@ public class Error {
                 }
             }
         }
+    }
+
+    private JSONArray getThreadStatus() {
+        JSONArray threads = new JSONArray();
+
+        long currentId = Thread.currentThread().getId();
+
+        Map<Thread,StackTraceElement[]> liveThreads = Thread.getAllStackTraces();
+
+        Object[] keys = liveThreads.keySet().toArray();
+        Arrays.sort(keys, new Comparator<Object>(){
+            public int compare(Object a, Object b) {
+                return Long.compare(((Thread)a).getId(), ((Thread)b).getId());
+            }
+        });
+
+        for(int i = 0; i < keys.length; i++) {
+            JSONObject threadJSON = new JSONObject();
+            Thread thread = (Thread)keys[i];
+
+            // Don't show the current stacktrace here. It'll point at this method
+            // rather than at the point they crashed.
+            if (thread.getId() != currentId) {
+                StackTraceElement[] stacktrace = liveThreads.get(thread);
+                JSONArray stacktraceJSON = stacktraceToJSON(stacktrace);
+
+                JSONUtils.safePut(threadJSON, "id", thread.getId());
+                JSONUtils.safePut(threadJSON, "name", thread.getName());
+                JSONUtils.safePut(threadJSON, "stacktrace", stacktraceJSON);
+
+                threads.put(threadJSON);
+            }
+        }
+
+        return threads;
+    }
+
+    private JSONArray stacktraceToJSON(StackTraceElement[] stacktrace) {
+        JSONArray stacktraceJson = new JSONArray();
+
+        for(StackTraceElement el : stacktrace) {
+            try {
+                JSONObject line = new JSONObject();
+                JSONUtils.safePut(line, "method", el.getClassName() + "." + el.getMethodName());
+                JSONUtils.safePut(line, "file", el.getFileName() == null ? "Unknown" : el.getFileName());
+                JSONUtils.safePut(line, "lineNumber", el.getLineNumber());
+
+                // Check if line is inProject
+                if(config.projectPackages != null) {
+                    for(String packageName : config.projectPackages) {
+                        if(packageName != null && el.getClassName().startsWith(packageName)) {
+                            line.put("inProject", true);
+                            break;
+                        }
+                    }
+                }
+
+                stacktraceJson.put(line);
+            } catch(Exception lineEx) {
+                lineEx.printStackTrace(System.err);
+            }
+        }
+
+        return stacktraceJson;
     }
 
     public void setSeverity(String severity) {
