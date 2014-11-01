@@ -34,7 +34,7 @@ How to Install
 
 ### Manual Jar Installation
 
--   Download the [latest bugsnag.jar](http://bugsnagcdn.s3.amazonaws.com/bugsnag-java/bugsnag-1.2.7.jar)
+-   Download the [latest bugsnag.jar](http://bugsnagcdn.s3.amazonaws.com/bugsnag-java/bugsnag-1.2.8.jar)
     and place it in your app's classpath.
 
     Bugsnag for Java depends only on the `org.json` library,
