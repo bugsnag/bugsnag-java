@@ -23,13 +23,14 @@ import com.bugsnag.utils.JSONUtils;
 
 public class Notification {
     private Configuration config;
+    private HttpClient httpClient;
     ByteArrayInputStream firstNotificationStream = null;
     ByteArrayInputStream secondNotificationStream = null;
     InputStream errorStream;
 
     public Notification(Configuration config) {
         this.config = config;
-
+        this.httpClient = new HttpClient(config);
         // Outer payload
         JSONObject notification = new JSONObject();
         JSONUtils.safePut(notification, "apiKey", config.apiKey);
@@ -94,7 +95,7 @@ public class Notification {
             SequenceInputStream sis = new SequenceInputStream(enu);
 
             String url = config.getNotifyEndpoint();
-            HttpClient.post(url, sis, "application/json");
+            httpClient.post(url, sis, "application/json");
 
             config.logger.info(String.format("Sent 1 error to Bugsnag (%s)", url));
 

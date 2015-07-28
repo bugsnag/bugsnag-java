@@ -10,16 +10,18 @@ import com.bugsnag.utils.JSONUtils;
 public class Metrics {
     private Configuration config;
     private Diagnostics diagnostics;
+    private HttpClient httpClient;
 
     public Metrics(Configuration config, Diagnostics diagnostics) {
         this.config = config;
         this.diagnostics = diagnostics;
+        this.httpClient = new HttpClient(config);
     }
 
     public void deliver() throws NetworkException {
         String url = config.getMetricsEndpoint();
         try {
-            HttpClient.post(url, this.toString(), "application/json");
+            httpClient.post(url, this.toString(), "application/json");
         } catch(java.io.UnsupportedEncodingException e) {
             config.logger.warn("Bugsnag unable to send metrics", e);
         }
