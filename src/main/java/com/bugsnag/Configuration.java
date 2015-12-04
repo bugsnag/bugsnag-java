@@ -60,6 +60,10 @@ public class Configuration {
     String[] ignoreClasses;
     boolean sendThreads = false;
 
+    // Connection settings, default timeout 60 seconds
+    int connectionTimeout = 60000;
+    int readTimeout = 60000;
+
     // Before notify settings
     List<BeforeNotify> beforeNotify = new LinkedList<BeforeNotify>();
 
@@ -191,5 +195,21 @@ public class Configuration {
 
     public void addBeforeNotify(BeforeNotify beforeNotify) {
         this.beforeNotify.add(beforeNotify);
+    }
+
+    public int getConnectionTimeout() {
+        return connectionTimeout;
+    }
+
+    public void setConnectionTimeout(int connectionTimeout) {
+        this.connectionTimeout = connectionTimeout;
+    }
+
+    public int getReadTimeout() {
+        return readTimeout;
+    }
+
+    public void setReadTimeout(int readTimeout) {
+        this.readTimeout = readTimeout;
     }
 }

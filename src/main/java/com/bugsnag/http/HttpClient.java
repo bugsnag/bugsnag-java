@@ -9,26 +9,36 @@ import java.net.URL;
 import java.io.InputStream;
 
 import org.json.JSONObject;
-import org.json.JSONException;
+
+import com.bugsnag.Configuration;
 
 public class HttpClient {
-    public static void post(String url, InputStream stream) throws NetworkException {
+
+    private Configuration config;
+
+    public HttpClient(Configuration config) {
+        this.config = config;
+    }
+
+    public void post(String url, InputStream stream) throws NetworkException {
         post(url, stream, "application/json");
     }
 
-    public static void post(String url, JSONObject payload) throws NetworkException, UnsupportedEncodingException {
+    public void post(String url, JSONObject payload) throws NetworkException, UnsupportedEncodingException {
         post(url, payload.toString(), "application/json");
     }
 
-    public static void post(String url, String payload, String contentType) throws NetworkException, UnsupportedEncodingException {
+    public void post(String url, String payload, String contentType) throws NetworkException, UnsupportedEncodingException {
         post(url, new ByteArrayInputStream(payload.getBytes("UTF-8")), contentType);
     }
 
-    public static void post(String urlString, InputStream payload, String contentType) throws NetworkException {
+    public void post(String urlString, InputStream payload, String contentType) throws NetworkException {
         HttpURLConnection conn = null;
         try {
             URL url = new URL(urlString);
             conn = (HttpURLConnection) url.openConnection();
+            conn.setConnectTimeout(config.getConnectionTimeout());
+            conn.setReadTimeout(config.getReadTimeout());
             conn.setDoOutput(true); 
             conn.setChunkedStreamingMode(0);
 
