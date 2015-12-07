@@ -1,23 +1,39 @@
-Bugsnag Notifier for Java
+Bugsnag Notifier for Java <img src="https://travis-ci.org/bugsnag/bugsnag-java.svg?branch=master" alt="build status" class="build-status">
 =========================
 
 The Bugsnag Notifier for Java gives you instant notification of exceptions
-thrown from your Java applications.
-The notifier hooks into `Thread.UncaughtExceptionHandler`, so any
-uncaught exceptions in your app will be sent to your Bugsnag dashboard.
+thrown from your Java applications. The notifier hooks into
+`Thread.UncaughtExceptionHandler`, so any uncaught exceptions in your app will
+be sent to your Bugsnag dashboard.
 
 [Bugsnag](https://bugsnag.com) captures errors in real-time from your websites
 and mobile applications, helping you to understand and resolve them
 as fast as possible. [Create a free account](https://bugsnag.com) to start
 capturing errors from your applications.
 
+Contents
+--------
 
-How to Install
---------------
+- [Getting Started](#getting-started)
+    - [Installation](#installation)
+		- [Configuration](#configuration)
+- [Usage](#usage)
+		- [Catching and Reporting Throwables](#catching-and-reporting-throwables)
+		- [Sending Non-fatal Throwables](#sending-non-fatal-throwables)
+		- [Callbacks](#callbacks)
+- [Support](#support)
+- [Contributing](#contributing)
+- [License](#license)
 
-### Using [Maven](http://maven.apache.org/) (Recommended)
 
--   Add `bugsnag` as a dependency in your `pom.xml`
+Getting Started
+---------------
+
+### Installation
+
+#### Using [Maven](http://maven.apache.org/) (Recommended)
+
+1.  Add `bugsnag` as a dependency in your `pom.xml`
 
     ```xml
     <dependency>
@@ -26,23 +42,22 @@ How to Install
     </dependency>
     ```
 
--   Install the package
+2.  Install the package
 
     ```shell
     $ mvn install
     ```
 
-### Manual Jar Installation
+#### Manual Jar Installation
 
--   Download the [latest bugsnag.jar](http://bugsnagcdn.s3.amazonaws.com/bugsnag-java/bugsnag-1.2.8.jar)
+1.  Download the [latest bugsnag.jar](http://bugsnagcdn.s3.amazonaws.com/bugsnag-java/bugsnag-1.2.8.jar)
     and place it in your app's classpath.
 
     Bugsnag for Java depends only on the `org.json` library,
     [download the jar here](http://repo1.maven.org/maven2/org/json/json/20090211/json-20090211.jar).
 
 
-Configuration
--------------
+### Configuration
 
 Import the Bugsnag `Client` class in your code and create an instance to
 begin capturing exceptions:
@@ -300,29 +315,28 @@ Returns the full name of the `Throwable`.
 
 Returns the `Throwable`'s array of `StackTraceElement`s.
 
-Reporting Bugs or Feature Requests
-----------------------------------
+Support
+-------
 
-Please report any bugs or feature requests on the github issues page for this
-project here:
 
-<https://github.com/bugsnag/bugsnag-java/issues>
+* [Additional Documentation](https://github.com/bugsnag/bugsnag-java/tree/master/docs)
+* [Search open and closed issues](https://github.com/bugsnag/bugsnag-java/issues?utf8=✓&q=is%3Aissue) for similar problems
+* [Report a bug or request a feature](https://github.com/bugsnag/bugsnag-java/issues/new)
 
 
 Contributing
 ------------
 
--   [Fork](https://help.github.com/articles/fork-a-repo) the
-    [notifier on github](https://github.com/bugsnag/bugsnag-java)
--   Commit and push until you are happy with your contribution
--   Run the tests with `mvn test`.
--   [Make a pull request](https://help.github.com/articles/using-pull-requests)
--   Thanks!
-
+We'd love you to file issues and send pull requests. The
+[contributing guidelines](https://github.com/bugsnag/bugsnag-java/CONTRIBUTING.md)
+details the process of building and testing `bugsnag-java`, as well as the pull
+request process. Feel free to comment on
+[existing issues](https://github.com/bugsnag/bugsnag-java/issues) for
+clarification or
+starting points.
 
 License
 -------
 
 The Bugsnag Java notifier is free software released under the MIT License.
-See [LICENSE.txt](https://github.com/bugsnag/bugsnag-java/blob/master/LICENSE.txt)
-for details.
+See [LICENSE.txt](LICENSE.txt) for details.
