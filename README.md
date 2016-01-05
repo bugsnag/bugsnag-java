@@ -15,12 +15,12 @@ Contents
 --------
 
 - [Getting Started](#getting-started)
-    - [Installation](#installation)
-		- [Configuration](#configuration)
+  - [Installation](#installation)
+  - [Configuration](#configuration)
 - [Usage](#usage)
-		- [Catching and Reporting Throwables](#catching-and-reporting-throwables)
-		- [Sending Non-fatal Throwables](#sending-non-fatal-throwables)
-		- [Callbacks](#callbacks)
+  - [Catching and Reporting Throwables](#catching-and-reporting-throwables)
+  - [Sending Non-fatal Throwables](#sending-non-fatal-throwables)
+  - [Callbacks](#callbacks)
 - [Support](#support)
 - [Contributing](#contributing)
 - [License](#license)
@@ -318,8 +318,6 @@ Returns the `Throwable`'s array of `StackTraceElement`s.
 Support
 -------
 
-
-* [Additional Documentation](https://github.com/bugsnag/bugsnag-java/tree/master/docs)
 * [Search open and closed issues](https://github.com/bugsnag/bugsnag-java/issues?utf8=✓&q=is%3Aissue) for similar problems
 * [Report a bug or request a feature](https://github.com/bugsnag/bugsnag-java/issues/new)
 
