@@ -1,11 +1,10 @@
 package com.bugsnag;
 
-import java.net.InetAddress;
-
-import org.json.JSONObject;
-import org.json.JSONException;
-
 import com.bugsnag.utils.JSONUtils;
+import org.json.JSONObject;
+
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 
 public class Diagnostics {
     protected Configuration config;
@@ -16,6 +15,7 @@ public class Diagnostics {
         this.config = config;
 
         JSONUtils.safePutOpt(deviceData, "osName", System.getProperty("os.name"));
+        JSONUtils.safePutOpt(deviceData, "hostname", getHostname());
     }
 
     public JSONObject getAppData() {
@@ -53,5 +53,19 @@ public class Diagnostics {
         JSONUtils.safePutOpt(metrics, "device", getDeviceData());
 
         return metrics;
+    }
+
+    private String getHostname() {
+        String hostname = null;
+        try {
+            InetAddress localhost = InetAddress.getLocalHost();
+            if (localhost != null) {
+                hostname = localhost.getHostName();
+            }
+        } catch (UnknownHostException e) {
+            // Unable to resolve hostname - just leave it out of the payload
+        }
+
+        return hostname;
     }
 }
