@@ -3,9 +3,6 @@ package com.bugsnag;
 import com.bugsnag.utils.JSONUtils;
 import org.json.JSONObject;
 
-import java.net.InetAddress;
-import java.net.UnknownHostException;
-
 public class Diagnostics {
     protected Configuration config;
     protected JSONObject deviceData = new JSONObject();
@@ -57,13 +54,19 @@ public class Diagnostics {
 
     private String getHostname() {
         String hostname = null;
+
+        // Try get the hostname from the environment (since using InetAddress.getLocalHost() can cause a buffer overflow on openjdk)
         try {
-            InetAddress localhost = InetAddress.getLocalHost();
-            if (localhost != null) {
-                hostname = localhost.getHostName();
+            hostname = System.getenv("HOSTNAME"); // Unix/Linux
+            if (hostname == null) {
+                hostname = System.getenv("COMPUTERNAME"); // Windows
             }
-        } catch (UnknownHostException e) {
-            // Unable to resolve hostname - just leave it out of the payload
+        } catch (SecurityException e) {
+            config.logger.warn("Unable to obtain hostname for Bugsnag diagnostics", e);
+        }
+
+        if (hostname != null) {
+            hostname = hostname.trim();
         }
 
         return hostname;
