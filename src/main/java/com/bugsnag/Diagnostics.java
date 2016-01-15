@@ -1,11 +1,7 @@
 package com.bugsnag;
 
-import java.net.InetAddress;
-
-import org.json.JSONObject;
-import org.json.JSONException;
-
 import com.bugsnag.utils.JSONUtils;
+import org.json.JSONObject;
 
 public class Diagnostics {
     protected Configuration config;
@@ -16,6 +12,7 @@ public class Diagnostics {
         this.config = config;
 
         JSONUtils.safePutOpt(deviceData, "osName", System.getProperty("os.name"));
+        JSONUtils.safePutOpt(deviceData, "hostname", getHostname());
     }
 
     public JSONObject getAppData() {
@@ -53,5 +50,25 @@ public class Diagnostics {
         JSONUtils.safePutOpt(metrics, "device", getDeviceData());
 
         return metrics;
+    }
+
+    private String getHostname() {
+        String hostname = null;
+
+        // Try get the hostname from the environment (since using InetAddress.getLocalHost() can cause a buffer overflow on openjdk)
+        try {
+            hostname = System.getenv("HOSTNAME"); // Unix/Linux
+            if (hostname == null) {
+                hostname = System.getenv("COMPUTERNAME"); // Windows
+            }
+        } catch (SecurityException e) {
+            config.logger.warn("Unable to obtain hostname for Bugsnag diagnostics", e);
+        }
+
+        if (hostname != null) {
+            hostname = hostname.trim();
+        }
+
+        return hostname;
     }
 }
