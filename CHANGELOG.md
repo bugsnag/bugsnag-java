@@ -1,5 +1,20 @@
 # Changelog
 
+## 1.3.0
+
+This release includes an update to the `org.json` dependency.
+
+### Enhancements
+
+* Add configurable connection and read timeouts
+  [Lauri Lehtinen](https://github.com/llehtinen)
+  [#25](https://github.com/bugsnag/bugsnag-java/pull/25)
+
+* Send the hostname with error reports
+  [Mike Bull](https://github.com/bullmo)
+  [#23](https://github.com/bugsnag/bugsnag-java/issues/23)
+  [#30](https://github.com/bugsnag/bugsnag-java/pull/30)
+
 1.2.8
 -----
 -   Revert method chaining support in Client
