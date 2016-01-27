@@ -76,31 +76,6 @@
           <target>1.5</target>
         </configuration>
       </plugin>
-
-      <!-- Proguard -->
-      <plugin>
-        <groupId>com.github.wvengen</groupId>
-        <artifactId>proguard-maven-plugin</artifactId>
-        <executions>
-          <execution>
-            <phase>package</phase>
-            <goals>
-              <goal>proguard</goal>
-            </goals>
-          </execution>
-        </executions>
-        <configuration>
-          <proguardInclude>${basedir}/proguard.cfg</proguardInclude>
-        </configuration>
-        <dependencies>
-          <dependency>
-            <groupId>net.sf.proguard</groupId>
-            <artifactId>proguard-base</artifactId>
-            <version>4.10</version>
-            <scope>runtime</scope>
-          </dependency>
-        </dependencies>
-      </plugin>
     </plugins>
   </build>
 </project>
