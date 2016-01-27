@@ -1,3 +1,5 @@
+# Changelog
+
 1.2.8
 -----
 -   Revert method chaining support in Client
