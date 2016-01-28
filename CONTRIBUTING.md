@@ -30,7 +30,30 @@ This process is a little ridiculous.
 ### 2. Configure the prerequisites
 
 1. [Create your PGP Signatures](http://central.sonatype.org/pages/working-with-pgp-signatures.html)
-2. [Configure your `~/.m2/settings.xml`](http://central.sonatype.org/pages/apache-maven.html)
+2. [Configure your `~/.m2/settings.xml`](http://central.sonatype.org/pages/apache-maven.html):
+
+   ```xml
+   <settings>
+		<servers>
+			<server>
+				<id>sonatype-nexus-staging</id>
+				<username>your-nexus-username</username>
+				<password>your-nexus-password</password>
+			</server>
+		</servers>
+		<profiles>
+			<profile>
+				<activation>
+					<activeByDefault>true</activeByDefault>
+				</activation>
+				<properties>
+					<gpg.keyname>your-gpg-key-name (8-character hex)</gpg.keyname>
+					<gpg.passphrase>your-gpg-passphrase (optional, requires XML escaping)</gpg.passphrase>
+				</properties>
+			</profile>
+		</profiles>
+	</settings>
+   ```
 
 ### 3. Making a release
 
@@ -55,7 +78,7 @@ This process is a little ridiculous.
    * Click the “release” button in the toolbar
 6. Upload the new jar to S3
    * Log in to the [AWS Console](https://bugsnag.signin.aws.amazon.com/console)
-   * Upload `target/bugsnag-java-x.x.x.jar` to `bugsnagcdn/bugsnag-java` on S3
+   * Upload `target/bugsnag-x.x.x.jar` to `bugsnagcdn/bugsnag-java` on S3
 	 * Ensure file permissions are set to allow anyone to download (click on the
      file, then "Properties")
 7. Update the release link in the README.md to the latest version
