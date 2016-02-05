@@ -214,6 +214,14 @@ packages.
 bugsnag.setProjectPackages("com.company.package1", "com.company.package2");
 ```
 
+### setProxy
+
+Sets the proxy to use when sending requests to Bugsnag.com.
+
+```java
+bugsnag.setProxy(new Proxy(Proxy.Type.HTTP, new InetSocketAddress("example.com", 80));
+```
+
 ###setIgnoreClasses
 
 Sets for which exception classes we should not send exceptions to Bugsnag.

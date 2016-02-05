@@ -1,6 +1,7 @@
 package com.bugsnag;
 
 import com.bugsnag.http.NetworkException;
+import java.net.Proxy;
 
 public class Client {
     protected Configuration config = new Configuration();
@@ -87,6 +88,10 @@ public class Client {
 
     public void setNotifierUrl(String notifierUrl) {
         config.setNotifierUrl(notifierUrl);
+    }
+
+    public void setProxy(Proxy proxy) {
+        config.setProxy(proxy);
     }
 
     public void setIgnoreClasses(String... ignoreClasses) {
