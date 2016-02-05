@@ -1,5 +1,6 @@
 package com.bugsnag;
 
+import java.net.Proxy;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
@@ -60,6 +61,9 @@ public class Configuration {
     String[] ignoreClasses;
     boolean sendThreads = false;
 
+    //Proxy, optional, default null
+    Proxy proxy = null;
+
     // Connection settings, default timeout 60 seconds
     int connectionTimeout = 60000;
     int readTimeout = 60000;
@@ -73,7 +77,6 @@ public class Configuration {
     LockableValue<String> appVersion = new LockableValue<String>();
     LockableValue<String> osVersion = new LockableValue<String>();
     MetaData metaData = new MetaData();
-
     // User settings
     public JSONObject user = new JSONObject();
 
@@ -147,6 +150,14 @@ public class Configuration {
 
     public void setNotifyReleaseStages(String... notifyReleaseStages) {
         this.notifyReleaseStages = notifyReleaseStages;
+    }
+
+    public Proxy getProxy(){
+        return this.proxy;
+    }
+
+    public void setProxy(Proxy proxy){
+        this.proxy = proxy;
     }
 
     public void setAutoNotify(boolean autoNotify) {
