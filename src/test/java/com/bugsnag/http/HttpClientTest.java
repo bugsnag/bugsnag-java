@@ -12,6 +12,7 @@ import org.junit.Test;
 import com.bugsnag.Configuration;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 public class HttpClientTest {
 
@@ -64,6 +65,7 @@ public class HttpClientTest {
 
     try{
       httpClient.post("http://localhost:" + serverSocket.getLocalPort(), new ByteArrayInputStream("foo".getBytes()));
+      fail("Should throw Exception because proxy host is unknown.");
     } catch (NetworkException e){
       assertEquals("notSoLocalHost", e.getCause().getMessage());
     }
