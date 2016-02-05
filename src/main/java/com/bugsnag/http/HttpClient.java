@@ -36,10 +36,12 @@ public class HttpClient {
         HttpURLConnection conn = null;
         try {
             URL url = new URL(urlString);
-            conn = (HttpURLConnection) url.openConnection();
+            conn = config.getProxy() != null ?
+                    (HttpURLConnection) url.openConnection(config.getProxy()) :
+                    (HttpURLConnection) url.openConnection();
             conn.setConnectTimeout(config.getConnectionTimeout());
             conn.setReadTimeout(config.getReadTimeout());
-            conn.setDoOutput(true); 
+            conn.setDoOutput(true);
             conn.setChunkedStreamingMode(0);
 
             // Set the content type header
@@ -50,7 +52,7 @@ public class HttpClient {
             OutputStream out = null;
             try {
                 out = conn.getOutputStream();
-            
+
                 // Send request headers and body
                 byte[] buffer = new byte[1024];
                 int bytesRead;

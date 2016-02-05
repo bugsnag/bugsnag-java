@@ -2,8 +2,7 @@ package com.bugsnag.http;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.net.ServerSocket;
-import java.net.Socket;
+import java.net.*;
 
 import org.junit.After;
 import org.junit.Before;
@@ -13,6 +12,7 @@ import org.junit.Test;
 import com.bugsnag.Configuration;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 public class HttpClientTest {
 
@@ -55,6 +55,19 @@ public class HttpClientTest {
       httpClient.post("http://localhost:" + serverSocket.getLocalPort(), new ByteArrayInputStream("foo".getBytes()));
     } catch (NetworkException e) {
       assertEquals("Read timed out", e.getCause().getMessage());
+    }
+  }
+
+  @Test
+  public void testProxyConnection() throws Exception {
+    Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress("notSoLocalHost", 8080));
+    configuration.setProxy(proxy);
+
+    try{
+      httpClient.post("http://localhost:" + serverSocket.getLocalPort(), new ByteArrayInputStream("foo".getBytes()));
+      fail("Should throw Exception because proxy host is unknown.");
+    } catch (NetworkException e){
+      assertEquals("notSoLocalHost", e.getCause().getMessage());
     }
   }
 }
