@@ -222,6 +222,14 @@ Sets the proxy to use when sending requests to Bugsnag.com.
 bugsnag.setProxy(new Proxy(Proxy.Type.HTTP, new InetSocketAddress("example.com", 80));
 ```
 
+### setUseSSL
+
+Set whether communication with Bugsnag.com should be made via SSL. To use HTTP set it to false.
+
+```java
+bugsnag.setUseSSL(false);
+```
+
 ###setIgnoreClasses
 
 Sets for which exception classes we should not send exceptions to Bugsnag.

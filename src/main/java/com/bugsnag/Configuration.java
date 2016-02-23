@@ -53,7 +53,7 @@ public class Configuration {
     // Notification settings
     String apiKey;
     boolean autoNotify = true;
-    boolean useSSL = false;
+    boolean useSSL = true;
     String endpoint = DEFAULT_ENDPOINT;
     String[] notifyReleaseStages = null;
     String[] filters = new String[]{"password"};
