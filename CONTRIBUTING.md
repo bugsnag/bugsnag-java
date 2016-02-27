@@ -13,7 +13,7 @@ Building and running the test requires [Maven](https://maven.apache.org). To
 test, run:
 
 ```
-maven test
+mvn test
 ```
 
 ## Making a Release
