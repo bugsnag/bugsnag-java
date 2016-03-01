@@ -150,4 +150,43 @@ public class JSONUtilsTest {
 		assertThat(returnValue.optJSONArray("array"), is(instanceOf(JSONArray.class)));
 		assertThat(returnValue.optJSONArray("array").optString(0), is("array"));
 	}
+
+	@Test
+	public void testValuesTruncated() {
+		String returnValue = (String)JSONUtils.objectForJSON(generateTestString(10000));
+
+        String truncatedSuffix = "[TRUNCATED]";
+        assertEquals(4096 + truncatedSuffix.length(), returnValue.length());
+        assertThat(returnValue, endsWith(truncatedSuffix));
+	}
+
+    @Test
+    public void testMultipleValuesTruncated() {
+        HashMap<String, Object> embeddedMap = new HashMap<String, Object>();
+        embeddedMap.put("mapKey", generateTestString(10000));
+
+        ArrayList<String> embeddedArrayList = new ArrayList<String>();
+        embeddedArrayList.add(generateTestString(10000));
+
+        String[] embeddedArray = new String[] { generateTestString(10000) };
+
+        HashMap<String, Object> rootMap = new HashMap<String, Object>();
+        rootMap.put("map", embeddedMap);
+        rootMap.put("arrayList", embeddedArrayList);
+        rootMap.put("array", embeddedArray);
+        rootMap.put("string", generateTestString(10000));
+
+        JSONObject returnValue = (JSONObject)JSONUtils.objectForJSON(rootMap);
+
+        // Contains four large strings truncated to 4096 characters
+        assertEquals(16491, returnValue.toString().length());
+    }
+
+    private String generateTestString(int length) {
+        StringBuilder sb = new StringBuilder(length);
+        for (int i = 0; i < length; i++){
+            sb.append("A");
+        }
+        return sb.toString();
+    }
 }

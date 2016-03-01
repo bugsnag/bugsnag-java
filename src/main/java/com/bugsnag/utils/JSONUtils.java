@@ -9,6 +9,10 @@ import org.json.JSONObject;
 import org.json.JSONException;
 
 public class JSONUtils {
+
+    /** Maximum length of an individual string value */
+    private static int MAX_STRING_LENGTH = 4096;
+
     public static void safePut(JSONObject obj, String key, Object val) {
         try {
             obj.put(key, objectForJSON(val));
@@ -126,8 +130,17 @@ public class JSONUtils {
                 dest.put(objectForJSON(val));
             }
             return dest;
+        } else if(value instanceof String) {
+            return limitStringLength((String) value);
         } else {
             return value;
         }
+    }
+
+    private static String limitStringLength(String value) {
+        if (value == null || value.length() <= MAX_STRING_LENGTH) {
+            return value;
+        }
+        return value.substring(0, MAX_STRING_LENGTH) + "[TRUNCATED]";
     }
 }
