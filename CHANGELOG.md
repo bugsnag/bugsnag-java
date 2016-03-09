@@ -1,6 +1,20 @@
 # Changelog
 
-## 1.3.0
+## 1.4.0 (9 Mar 2016)
+
+### Bug Fixes
+
+* Truncate large payloads to avoid Bad Request errors due to size
+  [Duncan Hewett](https://github.com/duncanhewett)
+  [#35](https://github.com/bugsnag/bugsnag-java/pull/35)
+
+### Enhancements
+
+* Use TLS by default when connecting to Bugsnag
+  [Duncan Hewett](https://github.com/duncanhewett)
+  [#34](https://github.com/bugsnag/bugsnag-java/pull/34)
+
+## 1.3.0 (28 Jan 2016)
 
 This release includes an update to the `org.json` dependency.
 

@@ -42,7 +42,7 @@ public class Configuration {
     protected static final String DEFAULT_ENDPOINT = "notify.bugsnag.com";
 
     private static final String NOTIFIER_NAME = "Java Bugsnag Notifier";
-    private static final String NOTIFIER_VERSION = "1.3.0";
+    private static final String NOTIFIER_VERSION = "1.4.0";
     private static final String NOTIFIER_URL = "https://bugsnag.com";
 
     // Notifier settings
