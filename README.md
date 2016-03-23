@@ -230,6 +230,16 @@ Set whether communication with Bugsnag.com should be made via SSL. To use HTTP s
 bugsnag.setUseSSL(false);
 ```
 
+###setAsynchronousNotification
+
+Sets whether error notifications to Bugsnag.com are sent asynchronously.
+
+By default `asynchronousNotification` is set to `true`.
+
+```java
+bugsnag.setAsynchronousNotification(false);
+```
+
 ###setIgnoreClasses
 
 Sets for which exception classes we should not send exceptions to Bugsnag.
@@ -246,16 +256,6 @@ Bt default `sendThreads` is set to `false`.
 
 ```java
 bugsnag.setSendThreads(true);
-```
-
-###setAsynchronousNotification
-
-Sets if we should notify Bugsnag of exceptions asynchronously.
-
-Bt default `asynchronousNotification` is set to `true`.
-
-```java
-bugsnag.setAsynchronousNotification(false);
 ```
 
 ###addBeforeNotify
