@@ -60,6 +60,7 @@ public class Configuration {
     String[] projectPackages;
     String[] ignoreClasses;
     boolean sendThreads = false;
+    boolean asynchronousNotification = true;
 
     //Proxy, optional, default null
     Proxy proxy = null;
@@ -202,6 +203,10 @@ public class Configuration {
 
     public void setSendThreads(boolean sendThreads) {
         this.sendThreads = sendThreads;
+    }
+
+    public void setAsynchronousNotification(boolean asynchronousNotification) {
+        this.asynchronousNotification = asynchronousNotification;
     }
 
     public void addBeforeNotify(BeforeNotify beforeNotify) {
