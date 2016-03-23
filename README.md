@@ -248,6 +248,16 @@ Bt default `sendThreads` is set to `false`.
 bugsnag.setSendThreads(true);
 ```
 
+###setAsynchronousNotification
+
+Sets if we should notify Bugsnag of exceptions asynchronously.
+
+Bt default `asynchronousNotification` is set to `true`.
+
+```java
+bugsnag.setAsynchronousNotification(false);
+```
+
 ###addBeforeNotify
 
 Adds a callback, in which to invoke directly before the notifier sends the
