@@ -53,15 +53,13 @@ public class NotificationWorker {
     }
 
     public void notifyAsync(Notification notification) {
-        notifyPool.execute(new AsynchronousNotification(config, notification));
+        notifyPool.execute(new AsynchronousNotification(notification));
     }
 
     public class AsynchronousNotification implements Runnable {
-        private Configuration config;
         private Notification notification;
 
-        public AsynchronousNotification(Configuration config, Notification notification) {
-            this.config = config;
+        public AsynchronousNotification(Notification notification) {
             this.notification = notification;
         }
 
