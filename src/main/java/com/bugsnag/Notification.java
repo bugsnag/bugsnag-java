@@ -81,27 +81,39 @@ public class Notification {
         }
     }
 
-    public void deliver() throws NetworkException {
-        if(errorStream != null && firstNotificationStream != null && secondNotificationStream != null) {
-            firstNotificationStream.reset();
-            secondNotificationStream.reset();
+    public void deliver() {
+        try {
+            if (errorStream != null && firstNotificationStream != null && secondNotificationStream != null) {
+                firstNotificationStream.reset();
+                secondNotificationStream.reset();
 
-            Vector<InputStream> inputStreams = new Vector<InputStream>();
-            inputStreams.add(firstNotificationStream);
-            inputStreams.add(errorStream);
-            inputStreams.add(secondNotificationStream);
+                Vector<InputStream> inputStreams = new Vector<InputStream>();
+                inputStreams.add(firstNotificationStream);
+                inputStreams.add(errorStream);
+                inputStreams.add(secondNotificationStream);
 
-            Enumeration<InputStream> enu = inputStreams.elements();
-            SequenceInputStream sis = new SequenceInputStream(enu);
+                Enumeration<InputStream> enu = inputStreams.elements();
+                SequenceInputStream sis = new SequenceInputStream(enu);
 
-            String url = config.getNotifyEndpoint();
-            httpClient.post(url, sis, "application/json");
+                String url = config.getNotifyEndpoint();
+                httpClient.post(url, sis, "application/json");
 
-            config.logger.info(String.format("Sent 1 error to Bugsnag (%s)", url));
+                config.logger.info(String.format("Sent 1 error to Bugsnag (%s)", url));
 
-            try { sis.close(); } catch (java.io.IOException e){config.logger.warn("Unable to close stream in bugsnag", e);}
-            try { errorStream.close(); } catch (java.io.IOException e){config.logger.warn("Unable to close stream in bugsnag", e);}
-            errorStream = null;
+                try {
+                    sis.close();
+                } catch (java.io.IOException e) {
+                    config.logger.warn("Unable to close stream in bugsnag", e);
+                }
+                try {
+                    errorStream.close();
+                } catch (java.io.IOException e) {
+                    config.logger.warn("Unable to close stream in bugsnag", e);
+                }
+                errorStream = null;
+            }
+        } catch (NetworkException ex) {
+            config.logger.warn("Error notifying Bugsnag", ex);
         }
     }
 }

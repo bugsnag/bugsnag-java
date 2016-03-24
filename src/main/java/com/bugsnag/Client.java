@@ -6,6 +6,7 @@ import java.net.Proxy;
 public class Client {
     protected Configuration config = new Configuration();
     protected Diagnostics diagnostics = new Diagnostics(config);
+    protected NotificationWorker notificationWorker;
 
     public Client(String apiKey) {
         this(apiKey, true);
@@ -21,6 +22,8 @@ public class Client {
         if(installHandler) {
             ExceptionHandler.install(this);
         }
+
+        notificationWorker = new NotificationWorker(config);
     }
 
     public void setContext(String context) {
@@ -106,20 +109,24 @@ public class Client {
         config.setSendThreads(sendThreads);
     }
 
+    public void setAsynchronousNotification(boolean asynchronousNotification) {
+        config.setAsynchronousNotification(asynchronousNotification);
+    }
+
     public void addBeforeNotify(BeforeNotify beforeNotify) {
         config.addBeforeNotify(beforeNotify);
     }
 
     public void notify(Error error) {
-        if(!config.shouldNotify()) return;
-        if(error.shouldIgnore()) return;
-        if(!beforeNotify(error)) return;
+        if (!config.shouldNotify()) return;
+        if (error.shouldIgnore()) return;
+        if (!beforeNotify(error)) return;
 
-        try {
-            Notification notif = new Notification(config, error);
+        Notification notif = new Notification(config, error);
+        if (config.asynchronousNotification) {
+            notificationWorker.notifyAsync(notif);
+        } else {
             notif.deliver();
-        } catch (NetworkException ex) {
-            config.logger.warn("Error notifying Bugsnag", ex);
         }
     }
 
