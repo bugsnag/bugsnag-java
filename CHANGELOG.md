@@ -1,5 +1,22 @@
 # Changelog
 
+## 2.0.0 (25 Mar 2016)
+
+This is a major release for the release of the potentially breaking change of
+sending exception reports asynchronously by default.
+
+### Bug Fixes
+
+* Fix potential `NullPointerException` when passing `null` to `Bugsnag.notify()`
+  [Delisa Mason](https://github.com/kattrali)
+  [#38](https://github.com/bugsnag/bugsnag-java/pull/38)
+
+### Enhancements
+
+* Send payloads to Bugsnag asynchronously by default
+  [Mike Bull](https://github.com/bullmo)
+  [#36](https://github.com/bugsnag/bugsnag-java/pull/36)
+
 ## 1.4.0 (9 Mar 2016)
 
 ### Bug Fixes
