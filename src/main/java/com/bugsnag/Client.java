@@ -118,9 +118,13 @@ public class Client {
     }
 
     public void notify(Error error) {
-        if (!config.shouldNotify()) return;
-        if (error.shouldIgnore()) return;
-        if (!beforeNotify(error)) return;
+        if (error == null || error.getException() == null) {
+            config.logger.warn("Report not sent to Bugsnag, Throwable is null");
+            return;
+        }
+        if (!config.shouldNotify() ||
+            error.shouldIgnore() ||
+            !beforeNotify(error)) return;
 
         Notification notif = new Notification(config, error);
         if (config.asynchronousNotification) {
