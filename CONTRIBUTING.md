@@ -87,3 +87,7 @@ This process is a little ridiculous.
    ```
    bugsnag-website/config/notifiers.yml
    ```
+
+### 4. Update docs.bugsnag.com
+
+Update the setup guides for Java (servers) with any new content.
