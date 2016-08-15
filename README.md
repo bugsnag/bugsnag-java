@@ -351,13 +351,11 @@ Support
 Contributing
 ------------
 
-We'd love you to file issues and send pull requests. The
-[contributing guidelines](https://github.com/bugsnag/bugsnag-java/blob/master/CONTRIBUTING.md)
-details the process of building and testing `bugsnag-java`, as well as the pull
-request process. Feel free to comment on
+We'd love you to file issues and send pull requests. The [contributing
+guidelines](CONTRIBUTING.md) details the process of building and testing
+`bugsnag-java`, as well as the pull request process. Feel free to comment on
 [existing issues](https://github.com/bugsnag/bugsnag-java/issues) for
-clarification or
-starting points.
+clarification or starting points.
 
 License
 -------
