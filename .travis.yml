@@ -4,8 +4,3 @@ jdk:
   - oraclejdk8
   - oraclejdk7
   - openjdk6
-
-notifications:
-  hipchat:
-    rooms:
-      secure: lMmut7IRjYLN0A/+hlS+9C7ZVDrmEKM4yDxpIP+GWBJl5N8TYx0ydHdQzDYgDMcaA0hDf77MOmi/Calth5gAhEES3JBt2Dsn4Bfnt9+zATGeoU8OyhZxhXO/Xt0hrupBB27IZP7GhoSXfh76zB4GdqSbCEf1XIYDPWDsiv6y7ZQ=
