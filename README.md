@@ -1,4 +1,4 @@
-Bugsnag Notifier for Java <img src="https://travis-ci.org/bugsnag/bugsnag-java.svg?branch=master" alt="build status" class="build-status">
+Bugsnag Notifier for Java [![Build Status](https://travis-ci.org/bugsnag/bugsnag-java.svg?branch=master)](https://travis-ci.org/bugsnag/bugsnag-java)
 =========================
 
 The Bugsnag Notifier for Java gives you instant notification of exceptions
