@@ -1,6 +1,6 @@
 ## Contributing
 
-1. [Fork](https://help.github.com/articles/fork-a-repo) the [notifier on github](https://github.com/bugsnag/bugsnag-jav)
+1. [Fork](https://help.github.com/articles/fork-a-repo) the [notifier on github](https://github.com/bugsnag/bugsnag-java)
 2. Build and [test](#testing) your changes
 3. Commit and push until you are happy with your contribution
 4. [Make a pull request](https://help.github.com/articles/using-pull-requests)
