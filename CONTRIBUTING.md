@@ -2,15 +2,25 @@
 
 1. [Fork](https://help.github.com/articles/fork-a-repo) the
    [library on GitHub](https://github.com/bugsnag/bugsnag-java)
+2. [Build](#building) and [test](#testing) your changes
 3. Commit and push until you are happy with your contribution
 4. [Make a pull request](https://help.github.com/articles/using-pull-requests)
 
 Thanks!
 
+## Building
+
+Building and running the test requires [Maven](https://maven.apache.org).
+To build, run:
+
+```
+mvn compile
+```
+
 ## Testing
 
-Building and running the test requires [Maven](https://maven.apache.org). To
-test, run:
+Building and running the test requires [Maven](https://maven.apache.org).
+To test, run:
 
 ```
 mvn test
@@ -90,4 +100,5 @@ This process is a little ridiculous.
 
 ### 4. Update docs.bugsnag.com
 
-Update the setup guides for Java (servers) with any new content.
+Update the setup guides for Java with any new content, and bump major version
+numbers in installation instructions if changed.
