@@ -1,0 +1,26 @@
+apply plugin: 'java'
+apply plugin: 'war'
+
+buildscript {
+    repositories {
+        jcenter()
+    }
+
+    dependencies {
+        classpath 'org.akhikhl.gretty:gretty:+'
+    }
+}
+
+repositories {
+    jcenter()
+}
+
+dependencies {
+    compile 'javax.servlet:javax.servlet-api:3.0.1'
+}
+
+dependencies {
+    compile rootProject
+}
+
+apply plugin: 'org.akhikhl.gretty'

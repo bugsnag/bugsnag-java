@@ -1,0 +1,12 @@
+apply plugin: 'application'
+
+repositories {
+    jcenter()
+}
+
+dependencies {
+    compile 'org.slf4j:slf4j-simple:1.+'
+    compile rootProject
+}
+
+mainClassName = "com.bugsnag.example.simple.ExampleApp"

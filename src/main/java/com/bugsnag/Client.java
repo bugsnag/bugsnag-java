@@ -1,208 +1,357 @@
 package com.bugsnag;
 
-import com.bugsnag.http.NetworkException;
+import com.bugsnag.callbacks.Callback;
+import com.bugsnag.delivery.HttpDelivery;
+import com.bugsnag.delivery.Delivery;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.net.Proxy;
 
 public class Client {
-    protected Configuration config = new Configuration();
-    protected Diagnostics diagnostics = new Diagnostics(config);
-    protected NotificationWorker notificationWorker;
+    private static final Logger logger = LoggerFactory.getLogger(Client.class);
 
+    private Configuration config;
+
+    //
+    // Constructors
+    //
+
+    /**
+     * Initialize a Bugsnag client and automatically send uncaught exceptions.
+     *
+     * @param apiKey your Bugsnag API key from your Bugsnag dashboard
+     */
     public Client(String apiKey) {
         this(apiKey, true);
     }
 
-    public Client(String apiKey, boolean installHandler) {
-        if(apiKey == null) {
-            throw new RuntimeException("You must provide a Bugsnag API key");
+    /**
+     * Initialize a Bugsnag client.
+     *
+     * @param apiKey your Bugsnag API key from your Bugsnag dashboard
+     * @param sendUncaughtExceptions should we send uncaught exceptions to Bugsnag
+     */
+    public Client(String apiKey, boolean sendUncaughtExceptions) {
+        if (apiKey == null) {
+            throw new NullPointerException("You must provide a Bugsnag API key");
         }
-        config.apiKey = apiKey;
 
-        // Install a default exception handler with this client
-        if(installHandler) {
-            ExceptionHandler.install(this);
+        config = new Configuration(apiKey);
+
+        // Automatically send unhandled exceptions to Bugsnag using this Client
+        if (sendUncaughtExceptions) {
+            ExceptionHandler.enable(this);
         }
-
-        notificationWorker = new NotificationWorker(config);
     }
 
-    public void setContext(String context) {
-        config.context.setLocked(context);
+
+    //
+    // Configuration
+    //
+
+    /**
+     * Add a callback to execute code before/after every notification to Bugsnag.
+     *
+     * <p>You can use this to add or modify information attached to an error
+     * before it is sent to your dashboard. You can also stop any reports being
+     * sent to Bugsnag completely.
+     *
+     * @param callback a callback to run before sending errors to Bugsnag
+     * @see Callback
+     */
+    public void addCallback(Callback callback) {
+        config.addCallback(callback);
     }
 
     /**
-    * @deprecated  Replaced by {@link #setUser(String, String, String)}}
-    */
-    public void setUserId(String id) {
-        config.setUser(id, null, null);
+     * Get the method of delivery for Bugsnag error reports.
+     *
+     * @param delivery the delivery mechanism in use
+     * @see Delivery
+     */
+    public Delivery getDelivery() {
+        return config.delivery;
     }
 
-    public void setUser(String id, String email, String name) {
-        config.setUser(id, email, name);
+    /**
+     * Set the application type sent to Bugsnag.
+     *
+     * @param appType the app type to send, eg. spring, gradleTask
+     */
+    public void setAppType(String appType) {
+        config.appType = appType;
     }
 
-    public void setReleaseStage(String releaseStage) {
-        config.releaseStage.setLocked(releaseStage);
-    }
-
-    public void setNotifyReleaseStages(String... notifyReleaseStages) {
-        config.setNotifyReleaseStages(notifyReleaseStages);
-    }
-
-    public void setAutoNotify(boolean autoNotify) {
-        config.setAutoNotify(autoNotify);
-    }
-
-    public void setUseSSL(boolean useSSL) {
-        config.setUseSSL(useSSL);
-    }
-
-    public boolean getUseSSL() {
-        return config.useSSL;
-    }
-
-    public void setEndpoint(String endpoint) {
-        config.setEndpoint(endpoint);
-    }
-
-    public void setFilters(String... filters) {
-        config.setFilters(filters);
-    }
-
-    public void setProjectPackages(String... projectPackages) {
-        config.setProjectPackages(projectPackages);
-    }
-
-    public void setOsVersion(String osVersion) {
-        config.osVersion.setLocked(osVersion);
-    }
-
+    /**
+     * Set the application version sent to Bugsnag.
+     *
+     * @param appVersion the app version to send
+     */
     public void setAppVersion(String appVersion) {
-        config.appVersion.setLocked(appVersion);
+        config.appVersion = appVersion;
     }
 
-    public void setNotifierName(String notifierName) {
-        config.setNotifierName(notifierName);
+    /**
+     * Set the method of delivery for Bugsnag error report. By default we'll
+     * send reports asynchronously using a thread pool to
+     * https://notify.bugsnag.com, but you can override this to use a
+     * different sending technique or endpoint (for example, if you are using
+     * Bugsnag On-Premise).
+     *
+     * @param delivery the delivery mechanism to use
+     * @see Delivery
+     */
+    public void setDelivery(Delivery delivery) {
+        config.delivery = delivery;
     }
 
-    public void setNotifierVersion(String notifierVersion) {
-        config.setNotifierVersion(notifierVersion);
+    /**
+     * Set the endpoint to deliver Bugsnag errors report to. This is a convenient
+     * shorthand for client.getDelivery().setEndpoint();
+     *
+     * @param endpoint the endpoint to send reports to
+     * @see #setDelivery
+     */
+    public void setEndpoint(String endpoint) {
+        if(config.delivery instanceof HttpDelivery) {
+            ((HttpDelivery)config.delivery).setEndpoint(endpoint);
+        }
     }
 
-    public void setNotifierUrl(String notifierUrl) {
-        config.setNotifierUrl(notifierUrl);
+    /**
+     * Set which keys should be filtered when sending metaData to Bugsnag.
+     * Use this when you want to ensure sensitive information, such as passwords
+     * or credit card information is stripped from metaData you send to Bugsnag.
+     * Any keys in metaData which contain these strings will be marked as
+     * [FILTERED] when send to Bugsnag.
+     *
+     * @param filters a list of String keys to filter from metaData
+     */
+    public void setFilters(String... filters) {
+        config.filters = filters;
     }
 
-    public void setProxy(Proxy proxy) {
-        config.setProxy(proxy);
-    }
-
+    /**
+     * Set which exception classes should be ignored (not sent) by Bugsnag.
+     *
+     * @param ignoreClasses a list of exception classes to ignore
+     */
     public void setIgnoreClasses(String... ignoreClasses) {
-        config.setIgnoreClasses(ignoreClasses);
+        config.ignoreClasses = ignoreClasses;
     }
 
-    public void setLogger(Logger logger) {
-        config.setLogger(logger);
+    /**
+     * Set for which releaseStages errors should be sent to Bugsnag.
+     * Use this to stop errors from development builds being sent.
+     *
+     * @param notifyReleaseStages a list of releaseStages to notify for
+     * @see #setReleaseStage
+     */
+    public void setNotifyReleaseStages(String... notifyReleaseStages) {
+        config.notifyReleaseStages = notifyReleaseStages;
     }
 
+    /**
+     * Set which packages should be considered part of your application.
+     * Bugsnag uses this to help with error grouping, and stacktrace display.
+     *
+     * @param projectPackages a list of package names
+     */
+    public void setProjectPackages(String... projectPackages) {
+        config.projectPackages = projectPackages;
+    }
+
+    /**
+     * Set a proxy to use when delivering Bugsnag error reports. This is a convenient
+     * shorthand for client.getDelivery().setProxy();
+     *
+     * @param endpoint the endpoint to send reports to
+     * @see #setDelivery
+     */
+    public void setProxy(Proxy proxy) {
+        if(config.delivery instanceof HttpDelivery) {
+            ((HttpDelivery)config.delivery).setProxy(proxy);
+        }
+    }
+
+    /**
+     * Set the current "release stage" of your application.
+     *
+     * @param releaseStage  the release stage of the app
+     * @see #setNotifyReleaseStages
+     */
+    public void setReleaseStage(String releaseStage) {
+        config.releaseStage = releaseStage;
+    }
+
+    /**
+     * Set whether Bugsnag should capture and report thread-state for all
+     * running threads. This is often not useful for Java web apps, since
+     * there could be thousands of active threads depending on your
+     * environment.
+     *
+     * @param sendThreads  should we send thread state with error reports
+     * @see #setNotifyReleaseStages
+     */
     public void setSendThreads(boolean sendThreads) {
-        config.setSendThreads(sendThreads);
+        config.sendThreads = sendThreads;
     }
 
-    public void setAsynchronousNotification(boolean asynchronousNotification) {
-        config.setAsynchronousNotification(asynchronousNotification);
-    }
-
-    public void addBeforeNotify(BeforeNotify beforeNotify) {
-        config.addBeforeNotify(beforeNotify);
-    }
-
-    public void notify(Error error) {
-        if (error == null || error.getException() == null) {
-            config.logger.warn("Report not sent to Bugsnag, Throwable is null");
-            return;
-        }
-        if (!config.shouldNotify() ||
-            error.shouldIgnore() ||
-            !beforeNotify(error)) return;
-
-        Notification notif = new Notification(config, error);
-        if (config.asynchronousNotification) {
-            notificationWorker.notifyAsync(notif);
-        } else {
-            notif.deliver();
+    /**
+     * Set a timeout (in ms) to use when delivering Bugsnag error reports.
+     * This is a convenient shorthand for client.getDelivery().setTimeout();
+     *
+     * @param timeout the timeout to set (in ms)
+     * @see #setDelivery
+     */
+    public void setTimeout(int timeout) {
+        if(config.delivery instanceof HttpDelivery) {
+            ((HttpDelivery)config.delivery).setTimeout(timeout);
         }
     }
 
-    public void notify(Throwable e, String severity, MetaData metaData) {
-        Error error = new Error(e, severity, metaData, config, diagnostics);
-        notify(error);
+
+    //
+    // Notification
+    //
+
+    /**
+     * Build an Report object to send to Bugsnag.
+     *
+     * @param throwable the exception to send to Bugsnag
+     * @return the report object
+     *
+     * @see Report
+     * @see #notify(com.bugsnag.Report)
+     */
+    public Report buildReport(Throwable throwable) {
+        return new Report(config, throwable);
     }
 
-    public void notify(Throwable e, MetaData metaData) {
-        notify(e, null, metaData);
+    /**
+     * Notify Bugsnag of a handled exception.
+     *
+     * @param throwable the exception to send to Bugsnag
+     * @return true unless the error report was ignored
+     */
+    public boolean notify(Throwable throwable) {
+        return notify(buildReport(throwable));
     }
 
-    public void notify(Throwable e, String severity) {
-        notify(e, severity, null);
+    /**
+     * Notify Bugsnag of a handled exception.
+     *
+     * @param throwable the exception to send to Bugsnag
+     * @param callback the {@link Callback} object to run for this Report
+     * @return true unless the error report was ignored
+     */
+    public boolean notify(Throwable throwable, Callback callback) {
+        return notify(buildReport(throwable), callback);
     }
 
-    public void notify(Throwable e) {
-        notify(e, null, null);
-    }
-
-    public void autoNotify(Throwable e) {
-        if(config.autoNotify) {
-            notify(e, "error");
+    /**
+     * Notify Bugsnag of a handled exception - with a severity.
+     *
+     * @param throwable the exception to send to Bugsnag
+     * @param severity the severity of the error, one of {#link Severity#ERROR},
+     *                 {@link Severity#WARNING} or {@link Severity#INFO}
+     * @return true unless the error report was ignored
+     */
+    public boolean notify(Throwable throwable, Severity severity) {
+        if(throwable == null) {
+            logger.warn("Tried to notify with a null Throwable");
+            return false;
         }
+
+        Report report = buildReport(throwable);
+        report.setSeverity(severity);
+        return notify(report);
     }
 
-    public void addToTab(String tab, String key, Object value) {
-        config.addToTab(tab, key, value);
+    /**
+     * Notify Bugsnag of an exception and provide custom diagnostic data
+     * for this particular error report.
+     *
+     * @param report the {@link Report} object to send to Bugsnag
+     * @return true unless the error report was ignored
+     *
+     * @see Report
+     * @see #buildReport
+     */
+    public boolean notify(Report report) {
+        return notify(report, null);
     }
 
-    public void clearTab(String tab) {
-        config.clearTab(tab);
-    }
-
-    public void trackUser() {
-        try {
-            Metrics metrics = new Metrics(config, diagnostics);
-            metrics.deliver();
-        } catch (NetworkException ex) {
-            config.logger.warn("Error sending metrics to Bugsnag", ex);
+    /**
+     * Notify Bugsnag of an exception and provide custom diagnostic data
+     * for this particular error report.
+     *
+     * @param report the {@link Report} object to send to Bugsnag
+     * @param callback the {@link Callback} object to run for this Report
+     * @return false if the error report was ignored
+     *
+     * @see Report
+     * @see #buildReport
+     */
+    public boolean notify(Report report, Callback reportCallback) {
+        if(report == null) {
+            logger.warn("Tried to call notify with a null Report");
+            return false;
         }
-    }
 
-    protected boolean beforeNotify(Error error) {
-        for (BeforeNotify beforeNotify : config.beforeNotify) {
+        // Don't notify if this error class should be ignored
+        if (config.shouldIgnoreClass(report.getExceptionName())) {
+            logger.debug("Error not reported to Bugsnag - exception class is in 'ignoreClasses'");
+            return false;
+        }
+
+        // Don't notify unless releaseStage is in notifyReleaseStages
+        if (!config.shouldNotifyForReleaseStage()) {
+            logger.debug("Error not reported to Bugsnag - 'releaseStage' is not in 'notifyReleaseStages'");
+            return false;
+        }
+
+        // Run all client-wide beforeNotify callbacks
+        for (Callback callback : config.callbacks) {
             try {
-                if (!beforeNotify.run(error)) {
+                // Run the callback
+                callback.beforeNotify(report);
+
+                // Check if callback cancelled delivery
+                if(report.getShouldCancel()) {
+                    logger.debug("Error not reported to Bugsnag - a callback cancelled the report");
                     return false;
                 }
             } catch (Throwable ex) {
-                config.logger.warn("BeforeNotify threw an Exception", ex);
+                logger.warn("Callback threw an exception", ex);
             }
         }
 
-        // By default, allow the error to be sent if there were no objections
+        // Run the report-specific beforeNotify callback, if given
+        if(reportCallback != null) {
+            try {
+                // Run the callback
+                reportCallback.beforeNotify(report);
+
+                // Check if callback cancelled delivery
+                if(report.getShouldCancel()) {
+                    logger.debug("Error not reported to Bugsnag - a callback cancelled the report");
+                    return false;
+                }
+            } catch (Throwable ex) {
+                logger.warn("Callback threw an exception", ex);
+            }
+        }
+
+        // Build the notification
+        Notification notification = new Notification(config, report);
+
+        // Deliver the notification
+        logger.debug("Reporting error to Bugsnag");
+        config.delivery.deliver(config.serializer, notification);
+
         return true;
-    }
-
-    // Factory methods so we don't have to expose the Configuration class
-    public Notification createNotification() {
-        return new Notification(config);
-    }
-
-    public Notification createNotification(Error error) {
-        return new Notification(config, error);
-    }
-
-    public Metrics createMetrics() {
-        return new Metrics(config, diagnostics);
-    }
-
-    public Error createError(Throwable e, String severity, MetaData metaData) {
-        return new Error(e, severity, metaData, config, diagnostics);
     }
 }

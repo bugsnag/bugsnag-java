@@ -1,39 +1,60 @@
 package com.bugsnag;
 
 import java.lang.Thread.UncaughtExceptionHandler;
+import java.util.WeakHashMap;
 
-public class ExceptionHandler implements UncaughtExceptionHandler {
-    private UncaughtExceptionHandler originalHandler;
-    private Client client;
+class ExceptionHandler implements UncaughtExceptionHandler {
+    private final UncaughtExceptionHandler originalHandler;
+    private final WeakHashMap<Client, Boolean> clientMap = new WeakHashMap<Client, Boolean>();
 
-    public static void install(Client client) {
+    static void enable(Client client) {
         UncaughtExceptionHandler currentHandler = Thread.getDefaultUncaughtExceptionHandler();
-        if(currentHandler instanceof ExceptionHandler) {
-            currentHandler = ((ExceptionHandler)currentHandler).originalHandler;
-        }
 
-        Thread.setDefaultUncaughtExceptionHandler(new ExceptionHandler(currentHandler, client));
-    }
-
-    public static void remove() {
-        UncaughtExceptionHandler currentHandler = Thread.getDefaultUncaughtExceptionHandler();
-        if(currentHandler instanceof ExceptionHandler) {
-            Thread.setDefaultUncaughtExceptionHandler(((ExceptionHandler)currentHandler).originalHandler);
-        }
-    }
-
-    public ExceptionHandler(UncaughtExceptionHandler originalHandler, Client client) {
-        this.originalHandler = originalHandler;
-        this.client = client;
-    }
-
-    public void uncaughtException(Thread t, Throwable e) {
-        client.autoNotify(e);
-        if(originalHandler != null) {
-            originalHandler.uncaughtException(t, e);
+        // Find or create the Bugsnag ExceptionHandler
+        ExceptionHandler bugsnagHandler;
+        if (currentHandler instanceof ExceptionHandler) {
+            bugsnagHandler = (ExceptionHandler)currentHandler;
         } else {
-            System.err.printf("Exception in thread \"%s\" ", t.getName());
-            e.printStackTrace(System.err);
+            bugsnagHandler = new ExceptionHandler(currentHandler);
+            Thread.setDefaultUncaughtExceptionHandler(bugsnagHandler);
+        }
+
+        // Subscribe this client to uncaught exceptions
+        bugsnagHandler.clientMap.put(client, true);
+    }
+
+    static void disable(Client client) {
+        // Find the Bugsnag ExceptionHandler
+        UncaughtExceptionHandler currentHandler = Thread.getDefaultUncaughtExceptionHandler();
+        if (currentHandler instanceof ExceptionHandler) {
+            // Unsubscribe this client from uncaught exceptions
+            ExceptionHandler bugsnagHandler = (ExceptionHandler)currentHandler;
+            bugsnagHandler.clientMap.remove(client);
+
+            // Remove the Bugsnag ExceptionHandler if no clients are subscribed
+            if (bugsnagHandler.clientMap.size() == 0) {
+                Thread.setDefaultUncaughtExceptionHandler(bugsnagHandler.originalHandler);
+            }
+        }
+    }
+
+    ExceptionHandler(UncaughtExceptionHandler originalHandler) {
+        this.originalHandler = originalHandler;
+    }
+
+    public void uncaughtException(Thread thread, Throwable throwable) {
+        // Notify any subscribed clients of the uncaught exception
+        for (Client client : clientMap.keySet()) {
+            client.notify(throwable, Severity.ERROR);
+        }
+
+        // Pass exception on to original exception handler
+        if (originalHandler != null) {
+            originalHandler.uncaughtException(thread, throwable);
+        } else {
+            // Emulate the java exception print style
+            System.err.printf("Exception in thread \"%s\" ", thread.getName());
+            throwable.printStackTrace(System.err);
         }
     }
 }
