@@ -6,6 +6,9 @@ plugins {
     id "nebula.optional-base" version '3.0.3'
 }
 
+sourceCompatibility = 1.6
+targetCompatibility = 1.6
+
 repositories {
     jcenter()
 }
