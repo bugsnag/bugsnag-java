@@ -1,11 +1,10 @@
 package com.bugsnag.serialization;
 
-import java.io.IOException;
-
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import java.io.IOException;
 import java.io.OutputStream;
 
 public class Serializer {
@@ -14,7 +13,7 @@ public class Serializer {
     public Serializer() {
         mapper
             .setSerializationInclusion(JsonInclude.Include.NON_NULL)
-            .setVisibilityChecker(
+            .setVisibility(
                 mapper.getVisibilityChecker().with(JsonAutoDetect.Visibility.NONE)
             );
     }

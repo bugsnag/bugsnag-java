@@ -3,10 +3,10 @@ package com.bugsnag.callbacks;
 import com.bugsnag.Report;
 import com.bugsnag.servlet.BugsnagServletRequestListener;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
-import javax.servlet.http.HttpServletRequest;
 
 public class ServletCallback implements Callback {
     private static final String HEADER_X_FORWARDED_FOR = "X-FORWARDED-FOR";
@@ -38,7 +38,7 @@ public class ServletCallback implements Callback {
             .addToTab("request", "headers", getHeaderMap(request));
 
         // Set default context
-        report.setContext(request.getMethod() + " " + request.getRequestURI().toString());
+        report.setContext(request.getMethod() + " " + request.getRequestURI());
     }
 
     private String getClientIp(HttpServletRequest request) {

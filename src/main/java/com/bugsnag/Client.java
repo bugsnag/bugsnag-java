@@ -46,7 +46,6 @@ public class Client {
         }
     }
 
-
     //
     // Configuration
     //
@@ -68,7 +67,6 @@ public class Client {
     /**
      * Get the method of delivery for Bugsnag error reports.
      *
-     * @param delivery the delivery mechanism in use
      * @see Delivery
      */
     public Delivery getDelivery() {
@@ -167,8 +165,7 @@ public class Client {
      * Set a proxy to use when delivering Bugsnag error reports. This is a convenient
      * shorthand for client.getDelivery().setProxy();
      *
-     * @param endpoint the endpoint to send reports to
-     * @see #setDelivery
+     * @param proxy the proxy to use to send reports
      */
     public void setProxy(Proxy proxy) {
         if(config.delivery instanceof HttpDelivery) {
@@ -289,7 +286,7 @@ public class Client {
      * for this particular error report.
      *
      * @param report the {@link Report} object to send to Bugsnag
-     * @param callback the {@link Callback} object to run for this Report
+     * @param reportCallback the {@link Callback} object to run for this Report
      * @return false if the error report was ignored
      *
      * @see Report
