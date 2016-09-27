@@ -18,10 +18,14 @@ public class AsyncHttpDelivery implements HttpDelivery {
     protected HttpDelivery baseDelivery = new SyncHttpDelivery();
     protected ExecutorService executorService = Executors.newSingleThreadExecutor();
     private boolean shuttingDown = false;
-    private final ShutdownHandler shutdownHandler = new ShutdownHandler();
 
     public AsyncHttpDelivery() {
-        Runtime.getRuntime().addShutdownHook(shutdownHandler);
+        Runtime.getRuntime().addShutdownHook(new Thread() {
+            @Override
+            public void run() {
+                AsyncHttpDelivery.this.shutdown();
+            }
+        });
     }
 
     public void setEndpoint(String endpoint) {
@@ -70,13 +74,6 @@ public class AsyncHttpDelivery implements HttpDelivery {
         } catch (InterruptedException ex) {
             logger.warn("Shutdown of 'sending' threads was interrupted - forcing a shutdown");
             executorService.shutdownNow();
-        }
-    }
-
-    private final class ShutdownHandler extends Thread {
-        @Override
-        public void run() {
-            AsyncHttpDelivery.this.shutdown();
         }
     }
 }

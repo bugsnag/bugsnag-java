@@ -5,11 +5,11 @@ A simple example application to show how to use Bugsnag in a plain Java applicat
 - Build the app
 
     ```shell
-    gradle clean assemble
+    ../../gradlew clean assemble
     ```
 
 - Run the app
 
     ```shell
-    gradle run
+    ../../gradlew run
     ```
