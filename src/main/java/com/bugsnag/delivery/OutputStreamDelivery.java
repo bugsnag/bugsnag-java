@@ -1,12 +1,14 @@
 package com.bugsnag.delivery;
 
-import com.bugsnag.serialization.Serializer;
 import com.bugsnag.serialization.SerializationException;
+import com.bugsnag.serialization.Serializer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
 import java.io.OutputStream;
 
 public class OutputStreamDelivery implements Delivery {
+    private static final Logger logger = LoggerFactory.getLogger(OutputStreamDelivery.class);
     private OutputStream outputStream;
 
     public OutputStreamDelivery(OutputStream outputStream) {
@@ -17,7 +19,7 @@ public class OutputStreamDelivery implements Delivery {
         try {
             serializer.writeToStream(outputStream, object);
         } catch (SerializationException ex) {
-            // Meh
+            logger.warn("Error not reported to Bugsnag - exception when serializing payload", ex);
         }
     }
 }

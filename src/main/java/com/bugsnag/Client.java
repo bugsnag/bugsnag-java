@@ -303,13 +303,13 @@ public class Client {
 
         // Don't notify if this error class should be ignored
         if (config.shouldIgnoreClass(report.getExceptionName())) {
-            logger.debug("Error not reported to Bugsnag - exception class is in 'ignoreClasses'");
+            logger.debug("Error not reported to Bugsnag - {} is in 'ignoreClasses'", report.getExceptionName());
             return false;
         }
 
         // Don't notify unless releaseStage is in notifyReleaseStages
         if (!config.shouldNotifyForReleaseStage()) {
-            logger.debug("Error not reported to Bugsnag - 'releaseStage' is not in 'notifyReleaseStages'");
+            logger.debug("Error not reported to Bugsnag - {} is not in 'notifyReleaseStages'", config.releaseStage);
             return false;
         }
 
@@ -321,7 +321,7 @@ public class Client {
 
                 // Check if callback cancelled delivery
                 if(report.getShouldCancel()) {
-                    logger.debug("Error not reported to Bugsnag - a callback cancelled the report");
+                    logger.debug("Error not reported to Bugsnag - cancelled by a client-wide beforeNotify callback");
                     return false;
                 }
             } catch (Throwable ex) {
@@ -330,14 +330,14 @@ public class Client {
         }
 
         // Run the report-specific beforeNotify callback, if given
-        if(reportCallback != null) {
+        if (reportCallback != null) {
             try {
                 // Run the callback
                 reportCallback.beforeNotify(report);
 
                 // Check if callback cancelled delivery
                 if(report.getShouldCancel()) {
-                    logger.debug("Error not reported to Bugsnag - a callback cancelled the report");
+                    logger.debug("Error not reported to Bugsnag - cancelled by a report-specific callback");
                     return false;
                 }
             } catch (Throwable ex) {
