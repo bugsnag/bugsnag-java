@@ -82,7 +82,7 @@ public class Report {
 
     @Expose
     public Map getMetaData() {
-        Map metaDataMap = diagnostics.metaData;
+        Map<String, Object> metaDataMap = diagnostics.metaData;
 
         // Apply filters
         return Maps.transformEntries(metaDataMap, new FilterTransformer(config.filters));

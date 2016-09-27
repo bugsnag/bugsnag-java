@@ -3,9 +3,9 @@ package com.bugsnag;
 import java.util.HashMap;
 import java.util.Map;
 
-class MetaData extends HashMap {
+class MetaData extends HashMap<String, Object> {
     public void addToTab(String tabName, String key, Object value) {
-        Map tab = getTab(tabName);
+        Map<String, Object> tab = getTab(tabName);
         tab.put(key, value);
     }
 
@@ -13,10 +13,11 @@ class MetaData extends HashMap {
         remove(tabName);
     }
 
-    private Map getTab(String tabName) {
-        Map tab = (Map) get(tabName);
+    @SuppressWarnings(value="unchecked")
+    private Map<String, Object> getTab(String tabName) {
+        Map<String, Object> tab = (Map<String, Object>)get(tabName);
         if (tab == null) {
-            tab = new HashMap();
+            tab = new HashMap<String, Object>();
             put(tabName, tab);
         }
 
