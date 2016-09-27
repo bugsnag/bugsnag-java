@@ -342,11 +342,17 @@ public class Client {
             }
         }
 
+        if (config.delivery == null) {
+            logger.debug("Error not reported to Bugsnag - no delivery is set");
+            return false;
+        }
+
         // Build the notification
         Notification notification = new Notification(config, report);
 
         // Deliver the notification
         logger.debug("Reporting error to Bugsnag");
+
         config.delivery.deliver(config.serializer, notification);
 
         return true;
