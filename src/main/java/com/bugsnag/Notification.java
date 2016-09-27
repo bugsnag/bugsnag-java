@@ -2,7 +2,6 @@ package com.bugsnag;
 
 import com.bugsnag.serialization.Expose;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -18,7 +17,7 @@ class Notification {
     @Expose
     public String getApiKey() {
         String reportApiKey = report.getApiKey();
-        return reportApiKey != null ? reportApiKey : config.apiKey;
+        return reportApiKey != null ? reportApiKey : config.getApiKey();
     }
 
     @Expose
