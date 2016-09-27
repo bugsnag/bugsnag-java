@@ -14,7 +14,7 @@ public class ServletCallback implements Callback {
     public static boolean isAvailable() {
         try {
             Class.forName("javax.servlet.ServletRequestListener", false,
-                          ServletCallback.class.getClassLoader());
+                    ServletCallback.class.getClassLoader());
 
             return true;
         } catch (ClassNotFoundException ex) {
@@ -31,11 +31,11 @@ public class ServletCallback implements Callback {
 
         // Add request information to metaData
         report
-            .addToTab("request", "url", request.getRequestURL().toString())
-            .addToTab("request", "method", request.getMethod())
-            .addToTab("request", "params", request.getParameterMap())
-            .addToTab("request", "clientIp", getClientIp(request))
-            .addToTab("request", "headers", getHeaderMap(request));
+                .addToTab("request", "url", request.getRequestURL().toString())
+                .addToTab("request", "method", request.getMethod())
+                .addToTab("request", "params", request.getParameterMap())
+                .addToTab("request", "clientIp", getClientIp(request))
+                .addToTab("request", "headers", getHeaderMap(request));
 
         // Set default context
         report.setContext(request.getMethod() + " " + request.getRequestURI());

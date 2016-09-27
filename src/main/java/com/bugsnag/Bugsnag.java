@@ -1,9 +1,8 @@
 package com.bugsnag;
 
 import com.bugsnag.callbacks.Callback;
-import com.bugsnag.delivery.HttpDelivery;
 import com.bugsnag.delivery.Delivery;
-
+import com.bugsnag.delivery.HttpDelivery;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,7 +29,7 @@ public class Bugsnag {
     /**
      * Initialize a Bugsnag client.
      *
-     * @param apiKey your Bugsnag API key
+     * @param apiKey                 your Bugsnag API key
      * @param sendUncaughtExceptions should we send uncaught exceptions to Bugsnag
      */
     public Bugsnag(String apiKey, boolean sendUncaughtExceptions) {
@@ -51,7 +50,7 @@ public class Bugsnag {
 
     /**
      * Add a callback to execute code before/after every notification to Bugsnag.
-     *
+     * <p>
      * <p>You can use this to add or modify information attached to an error
      * before it is sent to your dashboard. You can also stop any reports being
      * sent to Bugsnag completely.
@@ -112,8 +111,8 @@ public class Bugsnag {
      * @see #setDelivery
      */
     public void setEndpoint(String endpoint) {
-        if(config.getDelivery() instanceof HttpDelivery) {
-            ((HttpDelivery)config.getDelivery()).setEndpoint(endpoint);
+        if (config.getDelivery() instanceof HttpDelivery) {
+            ((HttpDelivery) config.getDelivery()).setEndpoint(endpoint);
         }
     }
 
@@ -167,15 +166,15 @@ public class Bugsnag {
      * @param proxy the proxy to use to send reports
      */
     public void setProxy(Proxy proxy) {
-        if(config.getDelivery() instanceof HttpDelivery) {
-            ((HttpDelivery)config.getDelivery()).setProxy(proxy);
+        if (config.getDelivery() instanceof HttpDelivery) {
+            ((HttpDelivery) config.getDelivery()).setProxy(proxy);
         }
     }
 
     /**
      * Set the current "release stage" of your application.
      *
-     * @param releaseStage  the release stage of the app
+     * @param releaseStage the release stage of the app
      * @see #setNotifyReleaseStages
      */
     public void setReleaseStage(String releaseStage) {
@@ -188,7 +187,7 @@ public class Bugsnag {
      * there could be thousands of active threads depending on your
      * environment.
      *
-     * @param sendThreads  should we send thread state with error reports
+     * @param sendThreads should we send thread state with error reports
      * @see #setNotifyReleaseStages
      */
     public void setSendThreads(boolean sendThreads) {
@@ -203,8 +202,8 @@ public class Bugsnag {
      * @see #setDelivery
      */
     public void setTimeout(int timeout) {
-        if(config.getDelivery() instanceof HttpDelivery) {
-            ((HttpDelivery)config.getDelivery()).setTimeout(timeout);
+        if (config.getDelivery() instanceof HttpDelivery) {
+            ((HttpDelivery) config.getDelivery()).setTimeout(timeout);
         }
     }
 
@@ -217,7 +216,6 @@ public class Bugsnag {
      *
      * @param throwable the exception to send to Bugsnag
      * @return the report object
-     *
      * @see Report
      * @see #notify(com.bugsnag.Report)
      */
@@ -239,7 +237,7 @@ public class Bugsnag {
      * Notify Bugsnag of a handled exception.
      *
      * @param throwable the exception to send to Bugsnag
-     * @param callback the {@link Callback} object to run for this Report
+     * @param callback  the {@link Callback} object to run for this Report
      * @return true unless the error report was ignored
      */
     public boolean notify(Throwable throwable, Callback callback) {
@@ -250,12 +248,12 @@ public class Bugsnag {
      * Notify Bugsnag of a handled exception - with a severity.
      *
      * @param throwable the exception to send to Bugsnag
-     * @param severity the severity of the error, one of {#link Severity#ERROR},
-     *                 {@link Severity#WARNING} or {@link Severity#INFO}
+     * @param severity  the severity of the error, one of {#link Severity#ERROR},
+     *                  {@link Severity#WARNING} or {@link Severity#INFO}
      * @return true unless the error report was ignored
      */
     public boolean notify(Throwable throwable, Severity severity) {
-        if(throwable == null) {
+        if (throwable == null) {
             logger.warn("Tried to notify with a null Throwable");
             return false;
         }
@@ -271,7 +269,6 @@ public class Bugsnag {
      *
      * @param report the {@link Report} object to send to Bugsnag
      * @return true unless the error report was ignored
-     *
      * @see Report
      * @see #buildReport
      */
@@ -283,15 +280,14 @@ public class Bugsnag {
      * Notify Bugsnag of an exception and provide custom diagnostic data
      * for this particular error report.
      *
-     * @param report the {@link Report} object to send to Bugsnag
+     * @param report         the {@link Report} object to send to Bugsnag
      * @param reportCallback the {@link Callback} object to run for this Report
      * @return false if the error report was ignored
-     *
      * @see Report
      * @see #buildReport
      */
     public boolean notify(Report report, Callback reportCallback) {
-        if(report == null) {
+        if (report == null) {
             logger.warn("Tried to call notify with a null Report");
             return false;
         }
@@ -304,7 +300,8 @@ public class Bugsnag {
 
         // Don't notify unless releaseStage is in notifyReleaseStages
         if (!config.shouldNotifyForReleaseStage()) {
-            logger.debug("Error not reported to Bugsnag - {} is not in 'notifyReleaseStages'", config.getReleaseStage());
+            logger.debug("Error not reported to Bugsnag - {} is not in 'notifyReleaseStages'",
+                    config.getReleaseStage());
             return false;
         }
 
@@ -315,7 +312,7 @@ public class Bugsnag {
                 callback.beforeNotify(report);
 
                 // Check if callback cancelled delivery
-                if(report.getShouldCancel()) {
+                if (report.getShouldCancel()) {
                     logger.debug("Error not reported to Bugsnag - cancelled by a client-wide beforeNotify callback");
                     return false;
                 }
@@ -331,7 +328,7 @@ public class Bugsnag {
                 reportCallback.beforeNotify(report);
 
                 // Check if callback cancelled delivery
-                if(report.getShouldCancel()) {
+                if (report.getShouldCancel()) {
                     logger.debug("Error not reported to Bugsnag - cancelled by a report-specific callback");
                     return false;
                 }

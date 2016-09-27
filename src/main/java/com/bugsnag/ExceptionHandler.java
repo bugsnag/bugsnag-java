@@ -13,7 +13,7 @@ class ExceptionHandler implements UncaughtExceptionHandler {
         // Find or create the Bugsnag ExceptionHandler
         ExceptionHandler bugsnagHandler;
         if (currentHandler instanceof ExceptionHandler) {
-            bugsnagHandler = (ExceptionHandler)currentHandler;
+            bugsnagHandler = (ExceptionHandler) currentHandler;
         } else {
             bugsnagHandler = new ExceptionHandler(currentHandler);
             Thread.setDefaultUncaughtExceptionHandler(bugsnagHandler);
@@ -28,7 +28,7 @@ class ExceptionHandler implements UncaughtExceptionHandler {
         UncaughtExceptionHandler currentHandler = Thread.getDefaultUncaughtExceptionHandler();
         if (currentHandler instanceof ExceptionHandler) {
             // Unsubscribe this bugsnag from uncaught exceptions
-            ExceptionHandler bugsnagHandler = (ExceptionHandler)currentHandler;
+            ExceptionHandler bugsnagHandler = (ExceptionHandler) currentHandler;
             bugsnagHandler.clientMap.remove(bugsnag);
 
             // Remove the Bugsnag ExceptionHandler if no clients are subscribed

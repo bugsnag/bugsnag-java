@@ -28,13 +28,13 @@ class ThreadState {
         Object[] keys = liveThreads.keySet().toArray();
         Arrays.sort(keys, new Comparator<Object>() {
             public int compare(Object first, Object second) {
-                return Long.valueOf(((Thread) first).getId()).compareTo(((Thread)second).getId());
+                return Long.valueOf(((Thread) first).getId()).compareTo(((Thread) second).getId());
             }
         });
 
         List<ThreadState> threads = new ArrayList<ThreadState>();
         for (int i = 0; i < keys.length; i++) {
-            Thread thread = (Thread)keys[i];
+            Thread thread = (Thread) keys[i];
 
             // Don't show the current stacktrace here. It'll point at this method
             // rather than at the point they crashed.

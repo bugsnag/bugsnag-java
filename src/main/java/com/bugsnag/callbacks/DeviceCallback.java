@@ -10,13 +10,13 @@ public class DeviceCallback implements Callback {
     @Override
     public void beforeNotify(Report report) {
         report
-            .setDeviceInfo("hostname", getHostname())
-            .setDeviceInfo("osName", System.getProperty("os.name"))
-            .setDeviceInfo("osVersion", System.getProperty("os.version"))
-            .setDeviceInfo("osArch", System.getProperty("os.arch"))
-            .setDeviceInfo("runtimeName", System.getProperty("java.runtime.name"))
-            .setDeviceInfo("runtimeVersion", System.getProperty("java.runtime.version"))
-            .setDeviceInfo("locale", Locale.getDefault());
+                .setDeviceInfo("hostname", getHostname())
+                .setDeviceInfo("osName", System.getProperty("os.name"))
+                .setDeviceInfo("osVersion", System.getProperty("os.version"))
+                .setDeviceInfo("osArch", System.getProperty("os.arch"))
+                .setDeviceInfo("runtimeName", System.getProperty("java.runtime.name"))
+                .setDeviceInfo("runtimeVersion", System.getProperty("java.runtime.version"))
+                .setDeviceInfo("locale", Locale.getDefault());
     }
 
     private String getHostname() {

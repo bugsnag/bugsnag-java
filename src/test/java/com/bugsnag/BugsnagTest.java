@@ -83,7 +83,7 @@ public class BugsnagTest {
         bugsnag.setDelivery(new Delivery() {
             @Override
             public void deliver(Serializer serializer, Object object) {
-                Report report = ((Notification)object).getEvents().get(0);
+                Report report = ((Notification) object).getEvents().get(0);
                 assertTrue(report.getExceptions().get(0).getStacktrace().get(0).isInProject());
             }
         });
@@ -99,7 +99,7 @@ public class BugsnagTest {
         bugsnag.setDelivery(new Delivery() {
             @Override
             public void deliver(Serializer serializer, Object object) {
-                Report report = ((Notification)object).getEvents().get(0);
+                Report report = ((Notification) object).getEvents().get(0);
                 assertEquals("1.2.3", report.getApp().get("version"));
             }
         });
@@ -113,7 +113,7 @@ public class BugsnagTest {
         bugsnag.setDelivery(new Delivery() {
             @Override
             public void deliver(Serializer serializer, Object object) {
-                Report report = ((Notification)object).getEvents().get(0);
+                Report report = ((Notification) object).getEvents().get(0);
                 assertEquals("testtype", report.getApp().get("type"));
             }
         });
@@ -126,7 +126,7 @@ public class BugsnagTest {
         bugsnag.setDelivery(new Delivery() {
             @Override
             public void deliver(Serializer serializer, Object object) {
-                Report report = ((Notification)object).getEvents().get(0);
+                Report report = ((Notification) object).getEvents().get(0);
                 assertEquals(Severity.INFO.getValue(), report.getSeverity());
             }
         });
@@ -140,9 +140,9 @@ public class BugsnagTest {
         bugsnag.setDelivery(new Delivery() {
             @Override
             public void deliver(Serializer serializer, Object object) {
-                Report report = ((Notification)object).getEvents().get(0);
-                Map firstTab =  (Map)report.getMetaData().get("firsttab");
-                Map secondTab =  (Map)report.getMetaData().get("secondtab");
+                Report report = ((Notification) object).getEvents().get(0);
+                Map firstTab = (Map) report.getMetaData().get("firsttab");
+                Map secondTab = (Map) report.getMetaData().get("secondtab");
                 assertEquals("[FILTERED]", firstTab.get("testfilter1"));
                 assertEquals("[FILTERED]", firstTab.get("testfilter2"));
                 assertEquals("secretpassword", firstTab.get("testfilter3"));
@@ -166,7 +166,7 @@ public class BugsnagTest {
         bugsnag.setDelivery(new Delivery() {
             @Override
             public void deliver(Serializer serializer, Object object) {
-                Report report = ((Notification)object).getEvents().get(0);
+                Report report = ((Notification) object).getEvents().get(0);
                 assertEquals("123", report.getUser().get("id"));
                 assertEquals("test@example.com", report.getUser().get("email"));
                 assertEquals("test name", report.getUser().get("name"));
@@ -192,7 +192,7 @@ public class BugsnagTest {
         bugsnag.setDelivery(new Delivery() {
             @Override
             public void deliver(Serializer serializer, Object object) {
-                Report report = ((Notification)object).getEvents().get(0);
+                Report report = ((Notification) object).getEvents().get(0);
                 assertEquals("newapikey", report.getApiKey());
             }
         });
@@ -205,7 +205,7 @@ public class BugsnagTest {
         bugsnag.setDelivery(new Delivery() {
             @Override
             public void deliver(Serializer serializer, Object object) {
-                Report report = ((Notification)object).getEvents().get(0);
+                Report report = ((Notification) object).getEvents().get(0);
                 assertEquals("newapikey", report.getApiKey());
             }
         });
@@ -236,7 +236,7 @@ public class BugsnagTest {
         bugsnag.setDelivery(new Delivery() {
             @Override
             public void deliver(Serializer serializer, Object object) {
-                Report report = ((Notification)object).getEvents().get(0);
+                Report report = ((Notification) object).getEvents().get(0);
                 assertEquals("secondnewapikey", report.getApiKey());
             }
         });
@@ -248,6 +248,7 @@ public class BugsnagTest {
         Bugsnag bugsnag = new Bugsnag("apikey");
         bugsnag.setDelivery(new HttpDelivery() {
             String endpoint;
+
             @Override
             public void setEndpoint(String endpoint) {
                 this.endpoint = endpoint;
@@ -276,6 +277,7 @@ public class BugsnagTest {
         Bugsnag bugsnag = new Bugsnag("apikey");
         bugsnag.setDelivery(new HttpDelivery() {
             Proxy proxy;
+
             @Override
             public void setEndpoint(String endpoint) {
             }
@@ -307,7 +309,7 @@ public class BugsnagTest {
         bugsnag.setDelivery(new Delivery() {
             @Override
             public void deliver(Serializer serializer, Object object) {
-                Report report = ((Notification)object).getEvents().get(0);
+                Report report = ((Notification) object).getEvents().get(0);
                 // There is information about at least one thread
                 assertTrue(report.getThreads().size() > 0);
             }

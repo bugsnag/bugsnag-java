@@ -13,9 +13,9 @@ class MetaData extends HashMap<String, Object> {
         remove(tabName);
     }
 
-    @SuppressWarnings(value="unchecked")
+    @SuppressWarnings(value = "unchecked")
     private Map<String, Object> getTab(String tabName) {
-        Map<String, Object> tab = (Map<String, Object>)get(tabName);
+        Map<String, Object> tab = (Map<String, Object>) get(tabName);
         if (tab == null) {
             tab = new HashMap<String, Object>();
             put(tabName, tab);

@@ -12,10 +12,10 @@ public class Serializer {
 
     public Serializer() {
         mapper
-            .setSerializationInclusion(JsonInclude.Include.NON_NULL)
-            .setVisibility(
-                mapper.getVisibilityChecker().with(JsonAutoDetect.Visibility.NONE)
-            );
+                .setSerializationInclusion(JsonInclude.Include.NON_NULL)
+                .setVisibility(
+                        mapper.getVisibilityChecker().with(JsonAutoDetect.Visibility.NONE)
+                );
     }
 
     public void writeToStream(OutputStream stream, Object object) throws SerializationException {

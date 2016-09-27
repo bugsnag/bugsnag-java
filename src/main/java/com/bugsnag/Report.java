@@ -1,8 +1,7 @@
 package com.bugsnag;
 
-import com.bugsnag.util.FilterTransformer;
 import com.bugsnag.serialization.Expose;
-
+import com.bugsnag.util.FilterTransformer;
 import com.google.common.collect.Maps;
 
 import java.util.ArrayList;

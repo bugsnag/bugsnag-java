@@ -14,11 +14,11 @@ public class FilterTransformer implements Maps.EntryTransformer<Object, Object, 
         this.keyFilters = keyFilters;
     }
 
-    @SuppressWarnings(value="unchecked")
+    @SuppressWarnings(value = "unchecked")
     @Override
     public Object transformEntry(Object key, Object value) {
         if (deep && value instanceof Map) {
-            return Maps.transformEntries((Map<String, Object>)value, this);
+            return Maps.transformEntries((Map<String, Object>) value, this);
         }
 
         return shouldFilterKey(key) ? FILTERED_PLACEHOLDER : value;
@@ -30,7 +30,7 @@ public class FilterTransformer implements Maps.EntryTransformer<Object, Object, 
         }
 
         for (String filter : keyFilters) {
-            if (((String)key).contains(filter)) {
+            if (((String) key).contains(filter)) {
                 return true;
             }
         }

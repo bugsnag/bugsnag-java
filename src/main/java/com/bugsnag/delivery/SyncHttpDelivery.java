@@ -1,8 +1,7 @@
 package com.bugsnag.delivery;
 
-import com.bugsnag.serialization.Serializer;
 import com.bugsnag.serialization.SerializationException;
-
+import com.bugsnag.serialization.Serializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -10,8 +9,8 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.Proxy;
-import java.net.UnknownHostException;
 import java.net.URL;
+import java.net.UnknownHostException;
 
 public class SyncHttpDelivery implements HttpDelivery {
     private static final Logger logger = LoggerFactory.getLogger(SyncHttpDelivery.class);
