@@ -1,5 +1,6 @@
 apply plugin: 'java'
 apply plugin: 'war'
+apply plugin: 'org.akhikhl.gretty'
 
 buildscript {
     repositories {
@@ -16,11 +17,13 @@ repositories {
 }
 
 dependencies {
+    runtime 'org.slf4j:slf4j-simple:1.+'
     compile 'javax.servlet:javax.servlet-api:3.0.1'
-}
-
-dependencies {
     compile rootProject
 }
+gretty {
+    port = 8081
+    contextPath = '/'
+    jvmArgs = ['-Dorg.slf4j.simpleLogger.defaultLogLevel=DEBUG']
+}
 
-apply plugin: 'org.akhikhl.gretty'

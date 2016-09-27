@@ -6,7 +6,7 @@
   <servlet>
     <display-name>ExampleServlet</display-name>
     <servlet-name>ExampleServlet</servlet-name>
-    <servlet-class>com.bugsnag.example.ExampleServlet</servlet-class>
+    <servlet-class>com.bugsnag.example.servlet.ExampleServlet</servlet-class>
   </servlet>
 
   <servlet-mapping>

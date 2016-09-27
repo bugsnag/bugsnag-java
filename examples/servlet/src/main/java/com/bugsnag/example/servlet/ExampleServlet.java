@@ -1,20 +1,19 @@
-package com.bugsnag.example;
+package com.bugsnag.example.servlet;
 
-import java.io.IOException;
+import com.bugsnag.Bugsnag;
+import com.bugsnag.Severity;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import com.bugsnag.Bugsnag;
-import com.bugsnag.Severity;
+import java.io.IOException;
 
 public class ExampleServlet extends HttpServlet {
     private Bugsnag bugsnag;
 
     public ExampleServlet() {
-        bugsnag = new Bugsnag("3fd63394a0ec74ac916fbdf3110ed957");
+        bugsnag = new Bugsnag("YOUR-API-KEY");
         bugsnag.setProjectPackages("com.bugsnag.example");
     }
 
