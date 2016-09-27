@@ -14,11 +14,11 @@ import java.util.Map;
 
 import static org.junit.Assert.*;
 
-public class ClientTest {
+public class BugsnagTest {
 
     @Test
     public void testNoDeliveryFails() {
-        Client bugsnag = new Client("apikey");
+        Bugsnag bugsnag = new Bugsnag("apikey");
         bugsnag.setDelivery(null);
 
         boolean result = bugsnag.notify(new RuntimeException());
@@ -27,7 +27,7 @@ public class ClientTest {
 
     @Test
     public void testIgnoreClasses() {
-        Client bugsnag = new Client("apikey");
+        Bugsnag bugsnag = new Bugsnag("apikey");
         bugsnag.setDelivery(new Delivery() {
             @Override
             public void deliver(Serializer serializer, Object object) {
@@ -52,7 +52,7 @@ public class ClientTest {
 
     @Test
     public void testNotifyReleaseStages() {
-        Client bugsnag = new Client("apikey");
+        Bugsnag bugsnag = new Bugsnag("apikey");
         bugsnag.setDelivery(new Delivery() {
             @Override
             public void deliver(Serializer serializer, Object object) {
@@ -79,7 +79,7 @@ public class ClientTest {
 
     @Test
     public void testProjectPackages() {
-        Client bugsnag = new Client("apikey");
+        Bugsnag bugsnag = new Bugsnag("apikey");
         bugsnag.setDelivery(new Delivery() {
             @Override
             public void deliver(Serializer serializer, Object object) {
@@ -94,7 +94,7 @@ public class ClientTest {
 
     @Test
     public void testAppVersion() {
-        Client bugsnag = new Client("apikey");
+        Bugsnag bugsnag = new Bugsnag("apikey");
         bugsnag.setAppVersion("1.2.3");
         bugsnag.setDelivery(new Delivery() {
             @Override
@@ -108,7 +108,7 @@ public class ClientTest {
 
     @Test
     public void testAppType() {
-        Client bugsnag = new Client("apikey");
+        Bugsnag bugsnag = new Bugsnag("apikey");
         bugsnag.setAppType("testtype");
         bugsnag.setDelivery(new Delivery() {
             @Override
@@ -122,7 +122,7 @@ public class ClientTest {
 
     @Test
     public void testSeverity() {
-        Client bugsnag = new Client("apikey");
+        Bugsnag bugsnag = new Bugsnag("apikey");
         bugsnag.setDelivery(new Delivery() {
             @Override
             public void deliver(Serializer serializer, Object object) {
@@ -135,7 +135,7 @@ public class ClientTest {
 
     @Test
     public void testFilters() {
-        Client bugsnag = new Client("apikey");
+        Bugsnag bugsnag = new Bugsnag("apikey");
         bugsnag.setFilters("testfilter1", "testfilter2");
         bugsnag.setDelivery(new Delivery() {
             @Override
@@ -162,7 +162,7 @@ public class ClientTest {
 
     @Test
     public void testUser() {
-        Client bugsnag = new Client("apikey");
+        Bugsnag bugsnag = new Bugsnag("apikey");
         bugsnag.setDelivery(new Delivery() {
             @Override
             public void deliver(Serializer serializer, Object object) {
@@ -182,7 +182,7 @@ public class ClientTest {
 
     @Test
     public void testSingleCallback() {
-        Client bugsnag = new Client("apikey");
+        Bugsnag bugsnag = new Bugsnag("apikey");
         bugsnag.addCallback(new Callback() {
             @Override
             public void beforeNotify(Report report) {
@@ -201,7 +201,7 @@ public class ClientTest {
 
     @Test
     public void testSingleCallbackInNotify() {
-        Client bugsnag = new Client("apikey");
+        Bugsnag bugsnag = new Bugsnag("apikey");
         bugsnag.setDelivery(new Delivery() {
             @Override
             public void deliver(Serializer serializer, Object object) {
@@ -220,7 +220,7 @@ public class ClientTest {
 
     @Test
     public void testCallbackOrder() {
-        Client bugsnag = new Client("apikey");
+        Bugsnag bugsnag = new Bugsnag("apikey");
         bugsnag.addCallback(new Callback() {
             @Override
             public void beforeNotify(Report report) {
@@ -245,7 +245,7 @@ public class ClientTest {
 
     @Test
     public void testEndpoint() {
-        Client bugsnag = new Client("apikey");
+        Bugsnag bugsnag = new Bugsnag("apikey");
         bugsnag.setDelivery(new HttpDelivery() {
             String endpoint;
             @Override
@@ -273,7 +273,7 @@ public class ClientTest {
 
     @Test
     public void testProxy() {
-        Client bugsnag = new Client("apikey");
+        Bugsnag bugsnag = new Bugsnag("apikey");
         bugsnag.setDelivery(new HttpDelivery() {
             Proxy proxy;
             @Override
@@ -302,7 +302,7 @@ public class ClientTest {
 
     @Test
     public void testSendThreads() {
-        Client bugsnag = new Client("apikey");
+        Bugsnag bugsnag = new Bugsnag("apikey");
         bugsnag.setSendThreads(true);
         bugsnag.setDelivery(new Delivery() {
             @Override
@@ -319,7 +319,7 @@ public class ClientTest {
     public void testSerialization() {
         ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
 
-        Client bugsnag = new Client("apikey");
+        Bugsnag bugsnag = new Bugsnag("apikey");
         bugsnag.setDelivery(new OutputStreamDelivery(byteStream));
         bugsnag.notify(new RuntimeException());
 

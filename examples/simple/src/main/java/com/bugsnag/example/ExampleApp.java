@@ -2,15 +2,13 @@ package com.bugsnag.example.simple;
 
 import java.util.Date;
 
-import com.bugsnag.Client;
-import com.bugsnag.Report;
+import com.bugsnag.Bugsnag;
 import com.bugsnag.Severity;
-import com.bugsnag.callbacks.Callback;
 
 public class ExampleApp {
     public static void main(String[] args) {
         // Create a Bugsnag client
-        Client bugsnag = new Client("3fd63394a0ec74ac916fbdf3110ed957");
+        Bugsnag bugsnag = new Bugsnag("3fd63394a0ec74ac916fbdf3110ed957");
         // bugsnag.setEndpoint("https://dijfdijfndsfn.com");
 
         // Set some diagnostic data which will not change during the

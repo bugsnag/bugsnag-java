@@ -7,14 +7,14 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.bugsnag.Client;
+import com.bugsnag.Bugsnag;
 import com.bugsnag.Severity;
 
 public class ExampleServlet extends HttpServlet {
-    private Client bugsnag;
+    private Bugsnag bugsnag;
 
     public ExampleServlet() {
-        bugsnag = new Client("3fd63394a0ec74ac916fbdf3110ed957");
+        bugsnag = new Bugsnag("3fd63394a0ec74ac916fbdf3110ed957");
         bugsnag.setProjectPackages("com.bugsnag.example");
     }
 

@@ -5,9 +5,9 @@ import java.util.WeakHashMap;
 
 class ExceptionHandler implements UncaughtExceptionHandler {
     private final UncaughtExceptionHandler originalHandler;
-    private final WeakHashMap<Client, Boolean> clientMap = new WeakHashMap<Client, Boolean>();
+    private final WeakHashMap<Bugsnag, Boolean> clientMap = new WeakHashMap<Bugsnag, Boolean>();
 
-    static void enable(Client client) {
+    static void enable(Bugsnag bugsnag) {
         UncaughtExceptionHandler currentHandler = Thread.getDefaultUncaughtExceptionHandler();
 
         // Find or create the Bugsnag ExceptionHandler
@@ -19,17 +19,17 @@ class ExceptionHandler implements UncaughtExceptionHandler {
             Thread.setDefaultUncaughtExceptionHandler(bugsnagHandler);
         }
 
-        // Subscribe this client to uncaught exceptions
-        bugsnagHandler.clientMap.put(client, true);
+        // Subscribe this bugsnag to uncaught exceptions
+        bugsnagHandler.clientMap.put(bugsnag, true);
     }
 
-    static void disable(Client client) {
+    static void disable(Bugsnag bugsnag) {
         // Find the Bugsnag ExceptionHandler
         UncaughtExceptionHandler currentHandler = Thread.getDefaultUncaughtExceptionHandler();
         if (currentHandler instanceof ExceptionHandler) {
-            // Unsubscribe this client from uncaught exceptions
+            // Unsubscribe this bugsnag from uncaught exceptions
             ExceptionHandler bugsnagHandler = (ExceptionHandler)currentHandler;
-            bugsnagHandler.clientMap.remove(client);
+            bugsnagHandler.clientMap.remove(bugsnag);
 
             // Remove the Bugsnag ExceptionHandler if no clients are subscribed
             if (bugsnagHandler.clientMap.size() == 0) {
@@ -44,8 +44,8 @@ class ExceptionHandler implements UncaughtExceptionHandler {
 
     public void uncaughtException(Thread thread, Throwable throwable) {
         // Notify any subscribed clients of the uncaught exception
-        for (Client client : clientMap.keySet()) {
-            client.notify(throwable, Severity.ERROR);
+        for (Bugsnag bugsnag : clientMap.keySet()) {
+            bugsnag.notify(throwable, Severity.ERROR);
         }
 
         // Pass exception on to original exception handler

@@ -9,8 +9,8 @@ import org.slf4j.LoggerFactory;
 
 import java.net.Proxy;
 
-public class Client {
-    private static final Logger logger = LoggerFactory.getLogger(Client.class);
+public class Bugsnag {
+    private static final Logger logger = LoggerFactory.getLogger(Bugsnag.class);
 
     private Configuration config;
 
@@ -23,7 +23,7 @@ public class Client {
      *
      * @param apiKey your Bugsnag API key from your Bugsnag dashboard
      */
-    public Client(String apiKey) {
+    public Bugsnag(String apiKey) {
         this(apiKey, true);
     }
 
@@ -33,14 +33,14 @@ public class Client {
      * @param apiKey your Bugsnag API key from your Bugsnag dashboard
      * @param sendUncaughtExceptions should we send uncaught exceptions to Bugsnag
      */
-    public Client(String apiKey, boolean sendUncaughtExceptions) {
+    public Bugsnag(String apiKey, boolean sendUncaughtExceptions) {
         if (apiKey == null) {
             throw new NullPointerException("You must provide a Bugsnag API key");
         }
 
         config = new Configuration(apiKey);
 
-        // Automatically send unhandled exceptions to Bugsnag using this Client
+        // Automatically send unhandled exceptions to Bugsnag using this Bugsnag
         if (sendUncaughtExceptions) {
             ExceptionHandler.enable(this);
         }
@@ -107,7 +107,7 @@ public class Client {
 
     /**
      * Set the endpoint to deliver Bugsnag errors report to. This is a convenient
-     * shorthand for client.getDelivery().setEndpoint();
+     * shorthand for bugsnag.getDelivery().setEndpoint();
      *
      * @param endpoint the endpoint to send reports to
      * @see #setDelivery
@@ -163,7 +163,7 @@ public class Client {
 
     /**
      * Set a proxy to use when delivering Bugsnag error reports. This is a convenient
-     * shorthand for client.getDelivery().setProxy();
+     * shorthand for bugsnag.getDelivery().setProxy();
      *
      * @param proxy the proxy to use to send reports
      */
@@ -198,7 +198,7 @@ public class Client {
 
     /**
      * Set a timeout (in ms) to use when delivering Bugsnag error reports.
-     * This is a convenient shorthand for client.getDelivery().setTimeout();
+     * This is a convenient shorthand for bugsnag.getDelivery().setTimeout();
      *
      * @param timeout the timeout to set (in ms)
      * @see #setDelivery
