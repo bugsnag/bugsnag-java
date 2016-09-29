@@ -46,7 +46,7 @@ public class Report {
 
     @Expose
     public List<ThreadState> getThreads() {
-        return config.isSendThreads() ? ThreadState.getLiveThreads(config) : null;
+        return config.sendThreads ? ThreadState.getLiveThreads(config) : null;
     }
 
     @Expose
@@ -84,7 +84,7 @@ public class Report {
         Map<String, Object> metaDataMap = diagnostics.metaData;
 
         // Apply filters
-        return Maps.transformEntries(metaDataMap, new FilterTransformer(config.getFilters()));
+        return Maps.transformEntries(metaDataMap, new FilterTransformer(config.filters));
     }
 
     /**
