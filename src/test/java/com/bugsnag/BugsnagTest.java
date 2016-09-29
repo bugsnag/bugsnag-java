@@ -181,6 +181,44 @@ public class BugsnagTest {
     }
 
     @Test
+    public void testContext() {
+        Bugsnag bugsnag = new Bugsnag("apikey");
+        bugsnag.addCallback(new Callback() {
+            @Override
+            public void beforeNotify(Report report) {
+                report.setContext("the context");
+            }
+        });
+        bugsnag.setDelivery(new Delivery() {
+            @Override
+            public void deliver(Serializer serializer, Object object) {
+                Report report = ((Notification) object).getEvents().get(0);
+                assertEquals("the context", report.getContext());
+            }
+        });
+        assertTrue(bugsnag.notify(new Throwable()));
+    }
+
+    @Test
+    public void testGroupingHash() {
+        Bugsnag bugsnag = new Bugsnag("apikey");
+        bugsnag.addCallback(new Callback() {
+            @Override
+            public void beforeNotify(Report report) {
+                report.setGroupingHash("the grouping hash");
+            }
+        });
+        bugsnag.setDelivery(new Delivery() {
+            @Override
+            public void deliver(Serializer serializer, Object object) {
+                Report report = ((Notification) object).getEvents().get(0);
+                assertEquals("the grouping hash", report.getGroupingHash());
+            }
+        });
+        assertTrue(bugsnag.notify(new Throwable()));
+    }
+
+    @Test
     public void testSingleCallback() {
         Bugsnag bugsnag = new Bugsnag("apikey");
         bugsnag.addCallback(new Callback() {
@@ -241,6 +279,19 @@ public class BugsnagTest {
             }
         });
         assertTrue(bugsnag.notify(new Throwable()));
+    }
+
+    @Test
+    public void testCallbackCancel() {
+        Bugsnag bugsnag = new Bugsnag("apikey");
+        bugsnag.addCallback(new Callback() {
+            @Override
+            public void beforeNotify(Report report) {
+                report.cancel();
+            }
+        });
+        // Test the report is not sent
+        assertFalse(bugsnag.notify(new Throwable()));
     }
 
     @Test
