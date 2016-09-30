@@ -1,6 +1,7 @@
 package com.bugsnag.delivery;
 
 import com.bugsnag.serialization.Serializer;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -17,6 +18,9 @@ public class AsyncHttpDelivery implements HttpDelivery {
     protected ExecutorService executorService = Executors.newSingleThreadExecutor();
     private boolean shuttingDown = false;
 
+    /**
+     * Constructor.
+     */
     public AsyncHttpDelivery() {
         Runtime.getRuntime().addShutdownHook(new Thread() {
             @Override
@@ -46,6 +50,7 @@ public class AsyncHttpDelivery implements HttpDelivery {
         this.executorService = executorService;
     }
 
+    @Override
     public void deliver(final Serializer serializer, final Object object) {
         if (shuttingDown) {
             logger.warn("Not notifying - 'sending' threads are already shutting down");

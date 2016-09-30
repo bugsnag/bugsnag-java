@@ -2,6 +2,7 @@ package com.bugsnag;
 
 import com.bugsnag.serialization.Expose;
 import com.bugsnag.util.FilterTransformer;
+
 import com.google.common.collect.Maps;
 
 import java.util.ArrayList;
@@ -20,7 +21,13 @@ public class Report {
     private Diagnostics diagnostics = new Diagnostics();
     private boolean shouldCancel = false;
 
-    Report(Configuration config, Throwable throwable) {
+    /**
+     * Create a report for the error.
+     *
+     * @param config    the configuration for the report.
+     * @param throwable the error to create the report for.
+     */
+    public Report(Configuration config, Throwable throwable) {
         this.config = config;
         this.throwable = throwable;
     }
@@ -30,6 +37,11 @@ public class Report {
         return PAYLOAD_VERSION;
     }
 
+    /**
+     * Get the exceptions for the report.
+     *
+     * @return the exceptions that make up the error.
+     */
     @Expose
     public List<Exception> getExceptions() {
         List<Exception> exceptions = new ArrayList<Exception>();
@@ -37,7 +49,6 @@ public class Report {
         Throwable currentThrowable = throwable;
         while (currentThrowable != null) {
             exceptions.add(new Exception(config, currentThrowable));
-
             currentThrowable = currentThrowable.getCause();
         }
 
@@ -82,8 +93,6 @@ public class Report {
     @Expose
     public Map getMetaData() {
         Map<String, Object> metaDataMap = diagnostics.metaData;
-
-        // Apply filters
         return Maps.transformEntries(metaDataMap, new FilterTransformer(config.filters));
     }
 
@@ -152,6 +161,14 @@ public class Report {
         return this;
     }
 
+    /**
+     * Helper method to set all the user attributes.
+     *
+     * @param id    the identifier of the user.
+     * @param email the email of the user.
+     * @param name  the name of the user.
+     * @return the modified report.
+     */
     public Report setUser(String id, String email, String name) {
         diagnostics.user.put("id", id);
         diagnostics.user.put("email", email);

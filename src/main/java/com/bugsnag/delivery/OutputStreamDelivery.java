@@ -2,6 +2,7 @@ package com.bugsnag.delivery;
 
 import com.bugsnag.serialization.SerializationException;
 import com.bugsnag.serialization.Serializer;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -15,6 +16,7 @@ public class OutputStreamDelivery implements Delivery {
         this.outputStream = outputStream;
     }
 
+    @Override
     public void deliver(Serializer serializer, Object object) {
         try {
             serializer.writeToStream(outputStream, object);

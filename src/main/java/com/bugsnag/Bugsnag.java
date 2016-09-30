@@ -3,6 +3,7 @@ package com.bugsnag;
 import com.bugsnag.callbacks.Callback;
 import com.bugsnag.delivery.Delivery;
 import com.bugsnag.delivery.HttpDelivery;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -51,7 +52,7 @@ public class Bugsnag {
 
     /**
      * Add a callback to execute code before/after every notification to Bugsnag.
-     * <p>
+     *
      * <p>You can use this to add or modify information attached to an error
      * before it is sent to your dashboard. You can also stop any reports being
      * sent to Bugsnag completely.
@@ -112,7 +113,7 @@ public class Bugsnag {
      * @see #setDelivery
      */
     public void setEndpoint(String endpoint) {
-        if(config.delivery instanceof HttpDelivery) {
+        if (config.delivery instanceof HttpDelivery) {
             ((HttpDelivery) config.delivery).setEndpoint(endpoint);
         }
     }
@@ -296,13 +297,15 @@ public class Bugsnag {
 
         // Don't notify if this error class should be ignored
         if (config.shouldIgnoreClass(report.getExceptionName())) {
-            logger.debug("Error not reported to Bugsnag - {} is in 'ignoreClasses'", report.getExceptionName());
+            logger.debug("Error not reported to Bugsnag - {} is in 'ignoreClasses'",
+                report.getExceptionName());
             return false;
         }
 
         // Don't notify unless releaseStage is in notifyReleaseStages
         if (!config.shouldNotifyForReleaseStage()) {
-            logger.debug("Error not reported to Bugsnag - {} is not in 'notifyReleaseStages'", config.releaseStage);
+            logger.debug("Error not reported to Bugsnag - {} is not in 'notifyReleaseStages'",
+                config.releaseStage);
             return false;
         }
 
@@ -314,7 +317,8 @@ public class Bugsnag {
 
                 // Check if callback cancelled delivery
                 if (report.getShouldCancel()) {
-                    logger.debug("Error not reported to Bugsnag - cancelled by a client-wide beforeNotify callback");
+                    logger.debug("Error not reported to Bugsnag - "
+                        + "cancelled by a client-wide beforeNotify callback");
                     return false;
                 }
             } catch (Throwable ex) {
@@ -330,7 +334,8 @@ public class Bugsnag {
 
                 // Check if callback cancelled delivery
                 if (report.getShouldCancel()) {
-                    logger.debug("Error not reported to Bugsnag - cancelled by a report-specific callback");
+                    logger.debug(
+                        "Error not reported to Bugsnag - cancelled by a report-specific callback");
                     return false;
                 }
             } catch (Throwable ex) {

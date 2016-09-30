@@ -6,7 +6,8 @@ import javax.servlet.ServletRequestListener;
 import javax.servlet.http.HttpServletRequest;
 
 public class BugsnagServletRequestListener implements ServletRequestListener {
-    private static final ThreadLocal<HttpServletRequest> SERVLET_REQUEST = new ThreadLocal<HttpServletRequest>();
+    private static final ThreadLocal<HttpServletRequest> SERVLET_REQUEST =
+        new ThreadLocal<HttpServletRequest>();
 
     public static HttpServletRequest getServletRequest() {
         return SERVLET_REQUEST.get();

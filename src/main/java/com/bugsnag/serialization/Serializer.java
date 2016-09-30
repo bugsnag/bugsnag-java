@@ -10,14 +10,23 @@ import java.io.OutputStream;
 public class Serializer {
     private ObjectMapper mapper = new ObjectMapper();
 
+    /**
+     * Constructor.
+     */
     public Serializer() {
         mapper
-                .setSerializationInclusion(JsonInclude.Include.NON_NULL)
-                .setVisibility(
-                        mapper.getVisibilityChecker().with(JsonAutoDetect.Visibility.NONE)
-                );
+            .setSerializationInclusion(JsonInclude.Include.NON_NULL)
+            .setVisibility(
+                mapper.getVisibilityChecker().with(JsonAutoDetect.Visibility.NONE));
     }
 
+    /**
+     * Write the object to the stream.
+     *
+     * @param stream the stream to write the object to.
+     * @param object the object to write to the stream.
+     * @throws SerializationException the object could not be serialized.
+     */
     public void writeToStream(OutputStream stream, Object object) throws SerializationException {
         try {
             mapper.writeValue(stream, object);

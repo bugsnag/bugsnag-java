@@ -2,6 +2,7 @@ package com.bugsnag.delivery;
 
 import com.bugsnag.serialization.SerializationException;
 import com.bugsnag.serialization.Serializer;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,6 +35,7 @@ public class SyncHttpDelivery implements HttpDelivery {
         this.timeout = timeout;
     }
 
+    @Override
     public void deliver(Serializer serializer, Object object) {
         HttpURLConnection connection = null;
         try {
@@ -66,7 +68,8 @@ public class SyncHttpDelivery implements HttpDelivery {
             // End the request, get the response code
             int status = connection.getResponseCode();
             if (status / 100 != 2) {
-                logger.warn("Error not reported to Bugsnag - got non-200 response code: {}", status);
+                logger.warn(
+                        "Error not reported to Bugsnag - got non-200 response code: {}", status);
             }
         } catch (SerializationException ex) {
             logger.warn("Error not reported to Bugsnag - exception when serializing payload", ex);
