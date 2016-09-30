@@ -1,11 +1,11 @@
 package com.bugsnag;
 
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import org.junit.Test;
 
 import java.util.List;
-
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 public class ThreadStateTest {
 

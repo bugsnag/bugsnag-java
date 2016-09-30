@@ -1,18 +1,21 @@
 package com.bugsnag;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import com.bugsnag.callbacks.Callback;
 import com.bugsnag.delivery.Delivery;
 import com.bugsnag.delivery.HttpDelivery;
 import com.bugsnag.delivery.OutputStreamDelivery;
 import com.bugsnag.serialization.Serializer;
+
 import org.junit.Test;
 
 import java.io.ByteArrayOutputStream;
 import java.net.InetSocketAddress;
 import java.net.Proxy;
 import java.util.Map;
-
-import static org.junit.Assert.*;
 
 public class BugsnagTest {
 
@@ -142,7 +145,7 @@ public class BugsnagTest {
             public void deliver(Serializer serializer, Object object) {
                 Report report = ((Notification) object).getEvents().get(0);
                 Map firstTab = (Map) report.getMetaData().get("firsttab");
-                Map secondTab = (Map) report.getMetaData().get("secondtab");
+                final Map secondTab = (Map) report.getMetaData().get("secondtab");
                 assertEquals("[FILTERED]", firstTab.get("testfilter1"));
                 assertEquals("[FILTERED]", firstTab.get("testfilter2"));
                 assertEquals("secretpassword", firstTab.get("testfilter3"));

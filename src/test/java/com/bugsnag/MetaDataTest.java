@@ -1,11 +1,11 @@
 package com.bugsnag;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+
 import org.junit.Test;
 
 import java.util.Map;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
 
 public class MetaDataTest {
 
@@ -22,8 +22,8 @@ public class MetaDataTest {
         metaData.addToTab("tab-name", "key-1", "value-1");
 
         assertEquals(1, metaData.size());
-        assertEquals(1, ((Map<String, Object>)metaData.get("tab-name")).size());
-        assertEquals("value-1", ((Map<String, Object>)metaData.get("tab-name")).get("key-1"));
+        assertEquals(1, ((Map<String, Object>) metaData.get("tab-name")).size());
+        assertEquals("value-1", ((Map<String, Object>) metaData.get("tab-name")).get("key-1"));
     }
 
     @Test
@@ -34,9 +34,9 @@ public class MetaDataTest {
         metaData.addToTab("tab-name", "key-2", "value-2");
 
         assertEquals(1, metaData.size());
-        assertEquals(2, ((Map<String, Object>)metaData.get("tab-name")).size());
-        assertEquals("value-1", ((Map<String, Object>)metaData.get("tab-name")).get("key-1"));
-        assertEquals("value-2", ((Map<String, Object>)metaData.get("tab-name")).get("key-2"));
+        assertEquals(2, ((Map<String, Object>) metaData.get("tab-name")).size());
+        assertEquals("value-1", ((Map<String, Object>) metaData.get("tab-name")).get("key-1"));
+        assertEquals("value-2", ((Map<String, Object>) metaData.get("tab-name")).get("key-2"));
     }
 
     @Test
@@ -47,10 +47,10 @@ public class MetaDataTest {
         metaData.addToTab("tab-name-2", "key-1", "value-1");
 
         assertEquals(2, metaData.size());
-        assertEquals(1, ((Map<String, Object>)metaData.get("tab-name-1")).size());
-        assertEquals(1, ((Map<String, Object>)metaData.get("tab-name-2")).size());
-        assertEquals("value-1", ((Map<String, Object>)metaData.get("tab-name-1")).get("key-1"));
-        assertEquals("value-1", ((Map<String, Object>)metaData.get("tab-name-1")).get("key-1"));
+        assertEquals(1, ((Map<String, Object>) metaData.get("tab-name-1")).size());
+        assertEquals(1, ((Map<String, Object>) metaData.get("tab-name-2")).size());
+        assertEquals("value-1", ((Map<String, Object>) metaData.get("tab-name-1")).get("key-1"));
+        assertEquals("value-1", ((Map<String, Object>) metaData.get("tab-name-1")).get("key-1"));
     }
 
     @Test
@@ -66,7 +66,7 @@ public class MetaDataTest {
 
         assertEquals(1, metaData.size());
 
-        assertNull(((Map<String, Object>)metaData.get("tab-name-1")));
-        assertEquals(1, ((Map<String, Object>)metaData.get("tab-name-2")).size());
+        assertNull(((Map<String, Object>) metaData.get("tab-name-1")));
+        assertEquals(1, ((Map<String, Object>) metaData.get("tab-name-2")).size());
     }
 }
