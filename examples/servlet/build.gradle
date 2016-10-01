@@ -18,9 +18,9 @@ repositories {
 
 dependencies {
     runtime 'org.slf4j:slf4j-simple:1.+'
-    compile 'javax.servlet:javax.servlet-api:3.0.1'
     compile rootProject
 }
+
 gretty {
     port = 8081
     contextPath = '/'

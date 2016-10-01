@@ -1,9 +1,6 @@
 plugins {
     id "java"
     id "checkstyle"
-
-    // Provides "optional" dependency support
-    id "nebula.optional-base" version '3.0.3'
 }
 
 sourceCompatibility = 1.6
@@ -17,7 +14,7 @@ dependencies {
     compile 'com.fasterxml.jackson.core:jackson-databind:2.+'
     compile 'com.google.guava:guava:12.+'
     compile 'org.slf4j:slf4j-api:1.+'
-    compile 'javax.servlet:javax.servlet-api:3.0.1', optional
+    compileOnly 'javax.servlet:javax.servlet-api:3.0.1'
 
     testCompile 'junit:junit:4.+'
     testCompile 'org.slf4j:slf4j-jdk14:1.+'
