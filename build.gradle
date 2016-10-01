@@ -11,7 +11,7 @@ repositories {
 }
 
 dependencies {
-    compile 'com.fasterxml.jackson.core:jackson-databind:2.+'
+    compile 'com.fasterxml.jackson.core:jackson-databind:2.6.7'
     compile 'com.google.guava:guava:12.+'
     compile 'org.slf4j:slf4j-api:1.+'
     compileOnly 'javax.servlet:javax.servlet-api:3.0.1'
