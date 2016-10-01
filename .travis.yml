@@ -9,12 +9,14 @@ script:
   - ./gradlew assemble
   - ./gradlew check
   - jdk_switcher use oraclejdk7
+  - ./gradlew clean
   - ./gradlew :assemble
   - ./gradlew :check
   - jdk_switcher use openjdk7
+  - ./gradlew clean
   - ./gradlew :assemble
   - ./gradlew :check
   - jdk_switcher use openjdk6
+  - ./gradlew clean
   - ./gradlew :assemble
   - ./gradlew :check
-  
