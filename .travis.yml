@@ -3,7 +3,7 @@ language: java
 # Skip the default install step
 install: true
 
-# Only build the example projects in JDK8
+# Only run checkstyle and build the example projects in JDK8
 script:
   - jdk_switcher use oraclejdk8
   - ./gradlew assemble
@@ -11,12 +11,12 @@ script:
   - jdk_switcher use oraclejdk7
   - ./gradlew clean
   - ./gradlew :assemble
-  - ./gradlew :check
+  - ./gradlew :test
   - jdk_switcher use openjdk7
   - ./gradlew clean
   - ./gradlew :assemble
-  - ./gradlew :check
+  - ./gradlew :test
   - jdk_switcher use openjdk6
   - ./gradlew clean
   - ./gradlew :assemble
-  - ./gradlew :check
+  - ./gradlew :test
