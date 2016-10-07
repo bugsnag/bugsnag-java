@@ -22,7 +22,6 @@ dependencies {
 }
 
 gretty {
-    port = 8081
     contextPath = '/'
     jvmArgs = ['-Dorg.slf4j.simpleLogger.defaultLogLevel=DEBUG']
 }

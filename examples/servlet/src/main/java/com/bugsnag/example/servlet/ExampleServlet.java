@@ -12,6 +12,9 @@ import java.io.IOException;
 public class ExampleServlet extends HttpServlet {
     private Bugsnag bugsnag;
 
+    /**
+     * Simple servlet example
+     */
     public ExampleServlet() {
         bugsnag = new Bugsnag("YOUR-API-KEY");
         bugsnag.setProjectPackages("com.bugsnag.example");
@@ -22,18 +25,18 @@ public class ExampleServlet extends HttpServlet {
         // Send a handled exception to Bugsnag
         try {
             throw new RuntimeException("Handled exception - default severity");
-        } catch(RuntimeException e) {
+        } catch (RuntimeException e) {
             bugsnag.notify(e);
         }
 
         // Send a handled exception to Bugsnag with info severity
         try {
             throw new RuntimeException("Handled exception - INFO severity");
-        } catch(RuntimeException e) {
-            bugsnag.notify(e, Severity.INFO);
+        } catch (RuntimeException ex) {
+            bugsnag.notify(ex, Severity.INFO);
         }
 
-        // Throw an exception
-        throw new ServletException("Unhandled exception");
+        // Throw an exception - not automatically reported so must be handled by the error handler
+        throw new ServletException("Servlet exception");
     }
 }
