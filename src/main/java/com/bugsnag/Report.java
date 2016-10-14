@@ -27,13 +27,13 @@ public class Report {
      * @param config    the configuration for the report.
      * @param throwable the error to create the report for.
      */
-    public Report(Configuration config, Throwable throwable) {
+    protected Report(Configuration config, Throwable throwable) {
         this.config = config;
         this.throwable = throwable;
     }
 
     @Expose
-    public String getPayloadVersion() {
+    protected String getPayloadVersion() {
         return PAYLOAD_VERSION;
     }
 
@@ -43,7 +43,7 @@ public class Report {
      * @return the exceptions that make up the error.
      */
     @Expose
-    public List<Exception> getExceptions() {
+    protected List<Exception> getExceptions() {
         List<Exception> exceptions = new ArrayList<Exception>();
 
         Throwable currentThrowable = throwable;
@@ -56,7 +56,7 @@ public class Report {
     }
 
     @Expose
-    public List<ThreadState> getThreads() {
+    protected List<ThreadState> getThreads() {
         return config.sendThreads ? ThreadState.getLiveThreads(config) : null;
     }
 
@@ -137,7 +137,7 @@ public class Report {
         return this;
     }
 
-    public String getApiKey() {
+    protected String getApiKey() {
         return this.apiKey;
     }
 
