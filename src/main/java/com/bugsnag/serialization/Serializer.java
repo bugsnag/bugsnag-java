@@ -15,7 +15,7 @@ public class Serializer {
      */
     public Serializer() {
         mapper
-            .setSerializationInclusion(JsonInclude.Include.NON_NULL)
+            .setSerializationInclusion(JsonInclude.Include.NON_EMPTY)
             .setVisibility(
                 mapper.getVisibilityChecker().with(JsonAutoDetect.Visibility.NONE));
     }
