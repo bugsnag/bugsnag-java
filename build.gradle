@@ -94,9 +94,3 @@ uploadArchives {
         }
     }
 }
-
-release {
-    git {
-        requireBranch = 'next'
-    }
-}
