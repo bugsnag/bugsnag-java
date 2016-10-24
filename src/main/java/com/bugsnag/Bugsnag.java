@@ -10,7 +10,7 @@ import org.slf4j.LoggerFactory;
 import java.net.Proxy;
 
 public class Bugsnag {
-    private static final Logger logger = LoggerFactory.getLogger(Bugsnag.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(Bugsnag.class);
 
     private Configuration config;
 
@@ -257,7 +257,7 @@ public class Bugsnag {
      */
     public boolean notify(Throwable throwable, Severity severity) {
         if (throwable == null) {
-            logger.warn("Tried to notify with a null Throwable");
+            LOGGER.warn("Tried to notify with a null Throwable");
             return false;
         }
 
@@ -291,20 +291,20 @@ public class Bugsnag {
      */
     public boolean notify(Report report, Callback reportCallback) {
         if (report == null) {
-            logger.warn("Tried to call notify with a null Report");
+            LOGGER.warn("Tried to call notify with a null Report");
             return false;
         }
 
         // Don't notify if this error class should be ignored
         if (config.shouldIgnoreClass(report.getExceptionName())) {
-            logger.debug("Error not reported to Bugsnag - {} is in 'ignoreClasses'",
+            LOGGER.debug("Error not reported to Bugsnag - {} is in 'ignoreClasses'",
                 report.getExceptionName());
             return false;
         }
 
         // Don't notify unless releaseStage is in notifyReleaseStages
         if (!config.shouldNotifyForReleaseStage()) {
-            logger.debug("Error not reported to Bugsnag - {} is not in 'notifyReleaseStages'",
+            LOGGER.debug("Error not reported to Bugsnag - {} is not in 'notifyReleaseStages'",
                 config.releaseStage);
             return false;
         }
@@ -317,12 +317,12 @@ public class Bugsnag {
 
                 // Check if callback cancelled delivery
                 if (report.getShouldCancel()) {
-                    logger.debug("Error not reported to Bugsnag - "
+                    LOGGER.debug("Error not reported to Bugsnag - "
                         + "cancelled by a client-wide beforeNotify callback");
                     return false;
                 }
             } catch (Throwable ex) {
-                logger.warn("Callback threw an exception", ex);
+                LOGGER.warn("Callback threw an exception", ex);
             }
         }
 
@@ -334,17 +334,17 @@ public class Bugsnag {
 
                 // Check if callback cancelled delivery
                 if (report.getShouldCancel()) {
-                    logger.debug(
+                    LOGGER.debug(
                         "Error not reported to Bugsnag - cancelled by a report-specific callback");
                     return false;
                 }
             } catch (Throwable ex) {
-                logger.warn("Callback threw an exception", ex);
+                LOGGER.warn("Callback threw an exception", ex);
             }
         }
 
         if (config.delivery == null) {
-            logger.debug("Error not reported to Bugsnag - no delivery is set");
+            LOGGER.debug("Error not reported to Bugsnag - no delivery is set");
             return false;
         }
 
@@ -352,7 +352,7 @@ public class Bugsnag {
         Notification notification = new Notification(config, report);
 
         // Deliver the notification
-        logger.debug("Reporting error to Bugsnag");
+        LOGGER.debug("Reporting error to Bugsnag");
 
         config.delivery.deliver(config.serializer, notification);
 
