@@ -1,6 +1,9 @@
 plugins {
     id "java"
     id "checkstyle"
+    id 'net.researchgate.release' version '2.4.0'
+    id 'maven'
+    id 'signing'
 }
 
 sourceCompatibility = 1.6
@@ -28,4 +31,66 @@ test {
 
 checkstyle {
     toolVersion = "6.16"
+}
+
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = 'javadoc'
+    from tasks.javadoc.destinationDir
+}
+
+task sourcesJar(type: Jar) {
+    classifier = 'sources'
+    from sourceSets.main.allSource
+}
+
+artifacts {
+    archives jar
+    archives javadocJar
+    archives sourcesJar
+}
+
+signing {
+    required {  gradle.taskGraph.hasTask("uploadArchives") }
+    sign configurations.archives
+}
+
+// Required to upload releases to Sonatype
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+
+            repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
+                authentication(userName: sonatypeUsername, password: sonatypePassword)
+            }
+
+            pom.project {
+                name 'bugsnag'
+                packaging 'jar'
+                description 'Official Bugsnag notifier for Java applications'
+                url 'http://bugsnag.com/'
+
+                scm {
+                    url 'https://github.com/bugsnag/bugsnag-java'
+                    connection 'scm:git:git@github.com:bugsnag/bugsnag-java.git'
+                    developerConnection 'scm:git:git@github.com:bugsnag/bugsnag-java.git'
+                }
+
+                licenses {
+                    license {
+                        name 'MIT'
+                        url 'http://opensource.org/licenses/MIT'
+                        distribution 'repo'
+                    }
+                }
+
+                developers {
+                    developer {
+                        id 'james'
+                        name 'James Smith'
+                    }
+                }
+            }
+        }
+    }
 }
