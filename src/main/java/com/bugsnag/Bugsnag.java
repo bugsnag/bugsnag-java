@@ -256,6 +256,19 @@ public class Bugsnag {
      * @return true unless the error report was ignored
      */
     public boolean notify(Throwable throwable, Severity severity) {
+        return notify(throwable, severity, null);
+    }
+
+    /**
+     * Notify Bugsnag of a handled exception
+     *
+     * @param throwable the exception to send to Bugsnag
+     * @param severity  the severity of the error, one of {#link Severity#ERROR},
+     *                  {@link Severity#WARNING} or {@link Severity#INFO}
+     * @param callback  the {@link Callback} object to run for this Report
+     * @return true unless the error report was ignored
+     */
+    public boolean notify(Throwable throwable, Severity severity, Callback callback) {
         if (throwable == null) {
             LOGGER.warn("Tried to notify with a null Throwable");
             return false;
@@ -263,7 +276,7 @@ public class Bugsnag {
 
         Report report = buildReport(throwable);
         report.setSeverity(severity);
-        return notify(report);
+        return notify(report, callback);
     }
 
     /**
