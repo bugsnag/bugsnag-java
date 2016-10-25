@@ -37,10 +37,18 @@ bugsnag.notify(ex, (report) -> {
 
 #### Chaining support
 
-Chaining support added to `Report` methods
+Chaining support added to `Report` methods:
 
 ```
 bugsnag.addCallback((report) -> {
     report.setSeverity(Severity.ERROR).setUserId("123");
 });
+```
+
+#### Custom endpoint requires protocol
+
+Setting a custom endpoint now requires the protocol to be set:
+
+```
+bugsnag.setEndpoint("https://bugsnag.internal.example:49000");
 ```
