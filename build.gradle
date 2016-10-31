@@ -1,0 +1,96 @@
+plugins {
+    id "java"
+    id "checkstyle"
+    id 'net.researchgate.release' version '2.4.0'
+    id 'maven'
+    id 'signing'
+}
+
+sourceCompatibility = 1.6
+targetCompatibility = 1.6
+
+repositories {
+    jcenter()
+}
+
+dependencies {
+    compile 'com.fasterxml.jackson.core:jackson-databind:2.6.7'
+    compile 'com.google.guava:guava:12.+'
+    compile 'org.slf4j:slf4j-api:1.+'
+    compileOnly 'javax.servlet:javax.servlet-api:3.0.1'
+
+    testCompile 'junit:junit:4.+'
+    testCompile 'org.slf4j:slf4j-jdk14:1.+'
+}
+
+test {
+    testLogging {
+        events "passed", "skipped", "failed", "standardOut", "standardError"
+    }
+}
+
+checkstyle {
+    toolVersion = "6.16"
+}
+
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = 'javadoc'
+    from tasks.javadoc.destinationDir
+}
+
+task sourcesJar(type: Jar) {
+    classifier = 'sources'
+    from sourceSets.main.allSource
+}
+
+artifacts {
+    archives jar
+    archives javadocJar
+    archives sourcesJar
+}
+
+signing {
+    required {  gradle.taskGraph.hasTask("uploadArchives") }
+    sign configurations.archives
+}
+
+// Required to upload releases to Sonatype
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+
+            repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
+                authentication(userName: sonatypeUsername, password: sonatypePassword)
+            }
+
+            pom.project {
+                name 'bugsnag'
+                packaging 'jar'
+                description 'Official Bugsnag notifier for Java applications'
+                url 'http://bugsnag.com/'
+
+                scm {
+                    url 'https://github.com/bugsnag/bugsnag-java'
+                    connection 'scm:git:git@github.com:bugsnag/bugsnag-java.git'
+                    developerConnection 'scm:git:git@github.com:bugsnag/bugsnag-java.git'
+                }
+
+                licenses {
+                    license {
+                        name 'MIT'
+                        url 'http://opensource.org/licenses/MIT'
+                        distribution 'repo'
+                    }
+                }
+
+                developers {
+                    developer {
+                        id 'james'
+                        name 'James Smith'
+                    }
+                }
+            }
+        }
+    }
+}

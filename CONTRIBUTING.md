@@ -10,75 +10,56 @@ Thanks!
 
 ## Building
 
-Building and running the test requires [Maven](https://maven.apache.org).
-To build, run:
-
 ```
-mvn compile
+./gradlew jar
 ```
 
 ## Testing
 
-Building and running the test requires [Maven](https://maven.apache.org).
-To test, run:
+Runs tests and checkstyle.
 
 ```
-mvn test
+./gradlew check
 ```
 
 ## Making a Release
 
+
 ### 1. Ensure you have permission to make a release
 
-This process is a little ridiculous.
+Create a Sonatype account:
 
 1. Create a [Sonatype JIRA](https://issues.sonatype.org) account
-2. Ask in the [Bugsnag Sonatype JIRA ticket](https://issues.sonatype.org/browse/OSSRH-5533) to become a contributor
-3. Ask an existing contributor (likely Simon) to confirm in the ticket
-4. Wait for Sonatype them to confirm the approval
+1. Ask in the [Bugsnag Sonatype JIRA ticket](https://issues.sonatype.org/browse/OSSRH-5533) to become a contributor
+1. Ask an existing contributor (likely Simon) to confirm in the ticket
+1. Wait for Sonatype them to confirm the approval
 
 ### 2. Configure the prerequisites
 
-1. [Create your PGP Signatures](http://central.sonatype.org/pages/working-with-pgp-signatures.html)
-2. [Configure your `~/.m2/settings.xml`](http://central.sonatype.org/pages/apache-maven.html):
+1. Create your [PGP Signatures](http://central.sonatype.org/pages/working-with-pgp-signatures.html)
+2. Configure your `~/.gradle/gradle.properties`:
 
    ```xml
-   <settings>
-		<servers>
-			<server>
-				<id>sonatype-nexus-staging</id>
-				<username>your-nexus-username</username>
-				<password>your-nexus-password</password>
-			</server>
-		</servers>
-		<profiles>
-			<profile>
-				<activation>
-					<activeByDefault>true</activeByDefault>
-				</activation>
-				<properties>
-					<gpg.keyname>your-gpg-key-name (8-character hex)</gpg.keyname>
-					<gpg.passphrase>your-gpg-passphrase (optional, requires XML escaping)</gpg.passphrase>
-				</properties>
-			</profile>
-		</profiles>
-	</settings>
+   signing.keyId=your-gpg-key-id (8-character hex)
+   signing.password=your-gpg-password
+   signing.secretKeyRingFile=~/.gnupg/secring.gpg
+   
+   sonatypeUsername=your-sonatype-username
+   sonatypePassword=your-sonatype-password
    ```
 
 ### 3. Making a release
 
 1. Update the CHANGELOG.md file with any changes
-2. Bump the version number in `Configuration.java`
-3. Commit the changes
-4. Create a release build:
-   * `mvn release:clean`
-   * `mvn release:prepare`
+1. Bump the version number in `Notifier.java`
+1. Commit the changes
+1. Create a release build:
+   * `./gradlew release`
      - enter the release version (e.g. `1.2.0`)
      - enter the release tag (e.g. `v1.2.0`)
      - accept the default development version
      - enter your GPG password
-   * `mvn release:perform`
-5. "Promote" the release build on Maven Central
+1. "Promote" the release build on Maven Central
    * Go to the [sonatype open source dashboard](https://oss.sonatype.org/index.html#stagingRepositories)
    * Click the search box at the top right, and type “com.bugsnag”
    * Select the com.bugsnag staging repository
@@ -86,13 +67,13 @@ This process is a little ridiculous.
    * Click the “refresh” button
    * Select the com.bugsnag closed repository
    * Click the “release” button in the toolbar
-6. Upload the new jar to S3
+1. Upload the new jar to S3
    * Log in to the [AWS Console](https://bugsnag.signin.aws.amazon.com/console)
-   * Upload `target/bugsnag-x.x.x.jar` to `bugsnagcdn/bugsnag-java` on S3
+   * Upload `build/libs/bugsnag-x.x.x.jar` to `bugsnagcdn/bugsnag-java` on S3
 	 * Ensure file permissions are set to allow anyone to download (click on the
      file, then "Properties")
-7. Update the release link in the README.md to the latest version
-8. Update the version numbers on the website:
+1. Update the release link in the README.md to the latest version
+1. Update the version numbers on the website:
 
    ```
    bugsnag-website/config/notifiers.yml
@@ -102,3 +83,4 @@ This process is a little ridiculous.
 
 Update the setup guides for Java with any new content, and bump major version
 numbers in installation instructions if changed.
+
