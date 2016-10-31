@@ -97,65 +97,120 @@ public class Report {
     }
 
     /**
-     * The {@linkplain Throwable exception} which triggered this error report.
+     * @return The {@linkplain Throwable exception} which triggered this error report.
      */
     public Throwable getException() {
         return throwable;
     }
 
     /**
-     * Get the class name from the exception contained in this error report.
+     * @reutnr the class name from the exception contained in this error report.
      */
     public String getExceptionName() {
         return throwable.getClass().getName();
     }
 
     /**
-     * Get the message from the exception contained in this error report.
+     * @return The message from the exception contained in this error report.
      */
     public String getExceptionMessage() {
         return throwable.getLocalizedMessage();
     }
 
+    /**
+     * Add a key value pair to a metadata tab.
+     *
+     * @param tabName the name of the tab to add the key value pair to
+     * @param key     the key of the metadata to add
+     * @param value   the metadata value to add
+     * @return the modified report
+     */
     public Report addToTab(String tabName, String key, Object value) {
         diagnostics.metaData.addToTab(tabName, key, value);
         return this;
     }
 
+    /**
+     * @return The message from the exception contained in this error report.
+     */
     public Report clearTab(String tabName) {
         diagnostics.metaData.clearTab(tabName);
         return this;
     }
 
+    /**
+     * Add some application info on the report.
+     *
+     * @param key   the key of app info to add
+     * @param value the value of app info to add
+     * @return the modified report
+     */
     public Report setAppInfo(String key, Object value) {
         diagnostics.app.put(key, value);
         return this;
     }
 
+    /**
+     * Set the API key for the report.
+     *
+     * @param apiKey the API key to use in the report
+     * @return the modified report
+     */
     public Report setApiKey(String apiKey) {
         this.apiKey = apiKey;
         return this;
     }
 
+    /**
+     * Get the API key in the report.
+     *
+     * @return the API key in the report
+     */
     protected String getApiKey() {
         return this.apiKey;
     }
 
+    /**
+     * Set context of the report.
+     *
+     * @param context the context to use in the report
+     * @return the modified report
+     */
     public Report setContext(String context) {
         diagnostics.context = context;
         return this;
     }
 
+    /**
+     * Set device information on the report.
+     *
+     * @param key   the key of device info to add
+     * @param value the value of device info to add
+     * @return the modified report
+     */
     public Report setDeviceInfo(String key, Object value) {
         diagnostics.device.put(key, value);
         return this;
     }
 
+    /**
+     * Set the grouping hash on the report. Events will the same grouping hash will be grouped into
+     * the same error in Bugsnag. For use if custom grouping is required.
+     *
+     * @param groupingHash the grouping hash for the error report
+     * @return the modified report
+     */
     public Report setGroupingHash(String groupingHash) {
         this.groupingHash = groupingHash;
         return this;
     }
 
+    /**
+     * Set the severity to use in the report.
+     *
+     * @param severity the severity for the error report
+     * @return the modified report
+     */
     public Report setSeverity(Severity severity) {
         this.severity = severity;
         return this;

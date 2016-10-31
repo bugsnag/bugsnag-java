@@ -65,7 +65,7 @@ public class Bugsnag {
     }
 
     /**
-     * Get the method of delivery for Bugsnag error reports.
+     * Get the delivery to use to send reports.
      *
      * @see Delivery
      */
@@ -260,7 +260,7 @@ public class Bugsnag {
     }
 
     /**
-     * Notify Bugsnag of a handled exception
+     * Notify Bugsnag of a handled exception.
      *
      * @param throwable the exception to send to Bugsnag
      * @param severity  the severity of the error, one of {#link Severity#ERROR},
