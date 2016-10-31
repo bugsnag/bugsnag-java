@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.0.0 (31 Oct 2016)
+
+This major release has many breaking changes. See [UPGRADING](UPGRADING.md) for details.
+
 ## 2.0.0 (25 Mar 2016)
 
 This is a major release for the release of the potentially breaking change of
