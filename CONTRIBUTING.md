@@ -57,6 +57,7 @@ Create a Sonatype account:
    * `./gradlew clean release`
      - enter the release version (e.g. `1.2.0`)
      - accept the default development version
+1. Create a release in GitHub
 1. Upload the archives to Sonatype Nexus:
    * `git checkout <TAG_NAME>`
    * `./gradlew clean uploadArchives`
