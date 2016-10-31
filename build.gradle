@@ -71,7 +71,7 @@ uploadArchives {
             }
 
             pom.artifactId = 'bugsnag'
-            pom.groupId = 'com.bugnsag'
+            pom.groupId = 'com.bugsnag'
 
             pom.project {
                 name 'bugsnag'
