@@ -67,6 +67,7 @@ public class Bugsnag {
     /**
      * Get the delivery to use to send reports.
      *
+     * @return the delivery to use to send reports.
      * @see Delivery
      */
     public Delivery getDelivery() {

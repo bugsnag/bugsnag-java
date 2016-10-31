@@ -104,7 +104,7 @@ public class Report {
     }
 
     /**
-     * @reutnr the class name from the exception contained in this error report.
+     * @return the class name from the exception contained in this error report.
      */
     public String getExceptionName() {
         return throwable.getClass().getName();
@@ -131,6 +131,9 @@ public class Report {
     }
 
     /**
+     * Clear all of the keys from the given tab.
+     *
+     * @param tabName the name of the tab to clear.
      * @return The message from the exception contained in this error report.
      */
     public Report clearTab(String tabName) {
