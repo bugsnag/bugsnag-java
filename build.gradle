@@ -54,6 +54,10 @@ signing {
     sign configurations.archives
 }
 
+release {
+    tagTemplate = 'v${version}'
+}
+
 // Required to upload releases to Sonatype
 uploadArchives {
     repositories {
