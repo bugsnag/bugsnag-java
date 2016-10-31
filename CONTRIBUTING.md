@@ -54,25 +54,25 @@ Create a Sonatype account:
 1. Bump the version number in `Notifier.java`
 1. Commit the changes
 1. Create a release build:
-   * `./gradlew release`
+   * `./gradlew clean release`
      - enter the release version (e.g. `1.2.0`)
-     - enter the release tag (e.g. `v1.2.0`)
      - accept the default development version
-     - enter your GPG password
+1. Upload the archives to Sonatype Nexus:
+   * `git checkout <TAG_NAME>`
+   * `./gradlew clean uploadArchives`
 1. "Promote" the release build on Maven Central
    * Go to the [sonatype open source dashboard](https://oss.sonatype.org/index.html#stagingRepositories)
    * Click the search box at the top right, and type “com.bugsnag”
    * Select the com.bugsnag staging repository
-   * Click the “close” button in the toolbar, no message
-   * Click the “refresh” button
-   * Select the com.bugsnag closed repository
-   * Click the “release” button in the toolbar
+   * Click the “Close” button in the toolbar to prompt the repository to be checked
+   * Click the “Refresh” button
+   * Select the com.bugsnag repository (should have a status of 'closed')
+   * Click the “Release” button in the toolbar
 1. Upload the new jar to S3
    * Log in to the [AWS Console](https://bugsnag.signin.aws.amazon.com/console)
    * Upload `build/libs/bugsnag-x.x.x.jar` to `bugsnagcdn/bugsnag-java` on S3
 	 * Ensure file permissions are set to allow anyone to download (click on the
      file, then "Properties")
-1. Update the release link in the README.md to the latest version
 1. Update the version numbers on the website:
 
    ```
