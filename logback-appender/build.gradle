@@ -1,0 +1,14 @@
+apply plugin: 'java'
+apply plugin: 'net.researchgate.release'
+
+sourceCompatibility = 1.6
+targetCompatibility = 1.6
+
+repositories {
+    jcenter()
+}
+
+dependencies {
+    compile 'ch.qos.logback:logback-classic:1.1.7'
+    compile rootProject
+}

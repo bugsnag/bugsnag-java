@@ -1,1 +1,4 @@
-include ':examples:simple', ':examples:servlet'
+include ':examples:simple'
+include ':examples:servlet'
+include ':examples:logback'
+include 'logback-appender'
