@@ -81,4 +81,9 @@ public class SyncHttpDelivery implements HttpDelivery {
             connection.disconnect();
         }
     }
+
+    @Override
+    public void close() {
+        // Nothing to do here.
+    }
 }

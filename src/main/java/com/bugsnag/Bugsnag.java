@@ -372,4 +372,13 @@ public class Bugsnag {
 
         return true;
     }
+
+    /**
+     * Close the connection to Bugsnag and unlink the exception handler.
+     */
+    public void close() {
+        LOGGER.debug("Closing connection to Bugsnag");
+        config.delivery.close();
+        ExceptionHandler.disable(this);
+    }
 }

@@ -73,6 +73,11 @@ public class AsyncHttpDelivery implements HttpDelivery {
         });
     }
 
+    @Override
+    public void close() {
+        shutdown();
+    }
+
     private void shutdown() {
         shuttingDown = true;
         executorService.shutdown();
