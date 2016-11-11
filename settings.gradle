@@ -1,1 +1,1 @@
-include ':examples:simple', ':examples:servlet'
+include ':examples:simple', ':examples:servlet', ':examples:spring', ':examples:spring-web'

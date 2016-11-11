@@ -24,4 +24,9 @@ public class OutputStreamDelivery implements Delivery {
             logger.warn("Error not reported to Bugsnag - exception when serializing payload", ex);
         }
     }
+
+    @Override
+    public void close() {
+        // Nothing to do here.
+    }
 }

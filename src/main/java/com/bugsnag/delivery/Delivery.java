@@ -10,4 +10,9 @@ public interface Delivery {
      * @param object     the object to deliver.
      */
     void deliver(Serializer serializer, Object object);
+
+    /**
+     * Close any open connections to Bugsnag.
+     */
+    void close();
 }
