@@ -1,5 +1,19 @@
 # Changelog
 
+## 3.0.1 (11 Nov 2016)
+
+### Bug Fixes
+
+* Stop AsyncHttpDelivery from indefinitely blocking exit
+  [William Starling](https://github.com/foygl)
+  [#50](https://github.com/bugsnag/bugsnag-java/pull/50)
+
+### Enhancements
+
+* Improve Spring compatibility
+  [William Starling](https://github.com/foygl)
+  [#49](https://github.com/bugsnag/bugsnag-java/pull/49)
+
 ## 3.0.0 (31 Oct 2016)
 
 Major rewrite/update of the notifier. Changes include:
