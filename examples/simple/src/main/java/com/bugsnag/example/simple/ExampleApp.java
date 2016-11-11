@@ -61,8 +61,5 @@ public class ExampleApp {
                 throw new RuntimeException("Unhandled exception");
             }
         }).start();
-
-        // Exit to run the shutdown hooks
-        System.exit(0);
     }
 }
