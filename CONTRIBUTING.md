@@ -42,7 +42,7 @@ Create a Sonatype account:
    ```xml
    signing.keyId=your-gpg-key-id (8-character hex)
    signing.password=your-gpg-password
-   signing.secretKeyRingFile=~/.gnupg/secring.gpg
+   signing.secretKeyRingFile=/PATH/TO/HOME/.gnupg/secring.gpg
    
    sonatypeUsername=your-sonatype-username
    sonatypePassword=your-sonatype-password
@@ -54,7 +54,7 @@ Create a Sonatype account:
 1. Bump the version number in `Notifier.java`
 1. Commit the changes
 1. Create a release build:
-   * `./gradlew clean release`
+   * `./gradlew --console=plain clean release`
      - enter the release version (e.g. `1.2.0`)
      - accept the default development version
 1. Create a release in GitHub
