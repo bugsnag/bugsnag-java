@@ -17,7 +17,5 @@ public class ExampleApp {
         // Logs without will not
         logger.info("Not reported to Bugsnag");
         logger.error("Also not reported to Bugsnag");
-
-        System.exit(0);
     }
 }

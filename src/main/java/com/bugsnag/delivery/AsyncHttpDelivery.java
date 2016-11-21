@@ -7,15 +7,23 @@ import org.slf4j.LoggerFactory;
 
 import java.net.Proxy;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 public class AsyncHttpDelivery implements HttpDelivery {
     private static final Logger logger = LoggerFactory.getLogger(AsyncHttpDelivery.class);
     private static final int SHUTDOWN_TIMEOUT = 5000;
 
-    protected HttpDelivery baseDelivery = new SyncHttpDelivery();
-    protected ExecutorService executorService = Executors.newSingleThreadExecutor();
+    private HttpDelivery baseDelivery = new SyncHttpDelivery();
+
+    // Create an exector service which keeps idle threads alive for a maximum of SHUTDOWN_TIMEOUT.
+    // This should avoid blocking an application that doesn't call shutdown from exiting.
+    private ExecutorService executorService =
+            new ThreadPoolExecutor(0, 1,
+                    SHUTDOWN_TIMEOUT, TimeUnit.MILLISECONDS,
+                    new LinkedBlockingQueue<Runnable>());
+
     private boolean shuttingDown = false;
 
     /**
@@ -63,6 +71,11 @@ public class AsyncHttpDelivery implements HttpDelivery {
                 baseDelivery.deliver(serializer, object);
             }
         });
+    }
+
+    @Override
+    public void close() {
+        shutdown();
     }
 
     private void shutdown() {

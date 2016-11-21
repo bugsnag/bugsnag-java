@@ -35,6 +35,10 @@ public class BugsnagTest {
             @Override
             public void deliver(Serializer serializer, Object object) {
             }
+
+            @Override
+            public void close() {
+            }
         });
 
         // Ignore neither
@@ -59,6 +63,10 @@ public class BugsnagTest {
         bugsnag.setDelivery(new Delivery() {
             @Override
             public void deliver(Serializer serializer, Object object) {
+            }
+
+            @Override
+            public void close() {
             }
         });
         bugsnag.setReleaseStage("production");
@@ -89,6 +97,10 @@ public class BugsnagTest {
                 Report report = ((Notification) object).getEvents().get(0);
                 assertTrue(report.getExceptions().get(0).getStacktrace().get(0).isInProject());
             }
+
+            @Override
+            public void close() {
+            }
         });
         bugsnag.setProjectPackages("com.bugsnag");
 
@@ -105,6 +117,10 @@ public class BugsnagTest {
                 Report report = ((Notification) object).getEvents().get(0);
                 assertEquals("1.2.3", report.getApp().get("version"));
             }
+
+            @Override
+            public void close() {
+            }
         });
         assertTrue(bugsnag.notify(new Throwable()));
     }
@@ -119,6 +135,10 @@ public class BugsnagTest {
                 Report report = ((Notification) object).getEvents().get(0);
                 assertEquals("testtype", report.getApp().get("type"));
             }
+
+            @Override
+            public void close() {
+            }
         });
         assertTrue(bugsnag.notify(new Throwable()));
     }
@@ -131,6 +151,10 @@ public class BugsnagTest {
             public void deliver(Serializer serializer, Object object) {
                 Report report = ((Notification) object).getEvents().get(0);
                 assertEquals(Severity.INFO.getValue(), report.getSeverity());
+            }
+
+            @Override
+            public void close() {
             }
         });
         assertTrue(bugsnag.notify(new Throwable(), Severity.INFO));
@@ -150,6 +174,10 @@ public class BugsnagTest {
                 assertEquals("[FILTERED]", firstTab.get("testfilter2"));
                 assertEquals("secretpassword", firstTab.get("testfilter3"));
                 assertEquals("[FILTERED]", secondTab.get("testfilter1"));
+            }
+
+            @Override
+            public void close() {
             }
         });
         assertTrue(bugsnag.notify(new Throwable(), new Callback() {
@@ -173,6 +201,10 @@ public class BugsnagTest {
                 assertEquals("123", report.getUser().get("id"));
                 assertEquals("test@example.com", report.getUser().get("email"));
                 assertEquals("test name", report.getUser().get("name"));
+            }
+
+            @Override
+            public void close() {
             }
         });
         assertTrue(bugsnag.notify(new Throwable(), new Callback() {
@@ -198,6 +230,10 @@ public class BugsnagTest {
                 Report report = ((Notification) object).getEvents().get(0);
                 assertEquals("the context", report.getContext());
             }
+
+            @Override
+            public void close() {
+            }
         });
         assertTrue(bugsnag.notify(new Throwable()));
     }
@@ -216,6 +252,10 @@ public class BugsnagTest {
             public void deliver(Serializer serializer, Object object) {
                 Report report = ((Notification) object).getEvents().get(0);
                 assertEquals("the grouping hash", report.getGroupingHash());
+            }
+
+            @Override
+            public void close() {
             }
         });
         assertTrue(bugsnag.notify(new Throwable()));
@@ -236,6 +276,10 @@ public class BugsnagTest {
                 Report report = ((Notification) object).getEvents().get(0);
                 assertEquals("newapikey", report.getApiKey());
             }
+
+            @Override
+            public void close() {
+            }
         });
         assertTrue(bugsnag.notify(new Throwable()));
     }
@@ -248,6 +292,10 @@ public class BugsnagTest {
             public void deliver(Serializer serializer, Object object) {
                 Report report = ((Notification) object).getEvents().get(0);
                 assertEquals("newapikey", report.getApiKey());
+            }
+
+            @Override
+            public void close() {
             }
         });
 
@@ -279,6 +327,10 @@ public class BugsnagTest {
             public void deliver(Serializer serializer, Object object) {
                 Report report = ((Notification) object).getEvents().get(0);
                 assertEquals("secondnewapikey", report.getApiKey());
+            }
+
+            @Override
+            public void close() {
             }
         });
         assertTrue(bugsnag.notify(new Throwable()));
@@ -320,6 +372,10 @@ public class BugsnagTest {
             public void deliver(Serializer serializer, Object object) {
                 assertEquals("https://www.example.com", endpoint);
             }
+
+            @Override
+            public void close() {
+            }
         });
         bugsnag.setEndpoint("https://www.example.com");
 
@@ -349,6 +405,10 @@ public class BugsnagTest {
             public void deliver(Serializer serializer, Object object) {
                 assertEquals("/127.0.0.1:8080", proxy.address().toString());
             }
+
+            @Override
+            public void close() {
+            }
         });
         Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress("127.0.0.1", 8080));
         bugsnag.setProxy(proxy);
@@ -366,6 +426,10 @@ public class BugsnagTest {
                 Report report = ((Notification) object).getEvents().get(0);
                 // There is information about at least one thread
                 assertTrue(report.getThreads().size() > 0);
+            }
+
+            @Override
+            public void close() {
             }
         });
         assertTrue(bugsnag.notify(new Throwable()));

@@ -1,34 +1,30 @@
-package com.bugsnag.example.simple;
+package com.bugsnag.example.spring.cli;
 
 import com.bugsnag.Bugsnag;
 import com.bugsnag.Severity;
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.CommandLineRunner;
+import org.springframework.boot.SpringApplication;
+import org.springframework.context.ApplicationContext;
+import org.springframework.stereotype.Component;
 
-import java.util.Date;
+@Component
+public class ApplicationCommandLineRunner implements CommandLineRunner {
 
-public class ExampleApp {
-    public static void main(String[] args) throws InterruptedException {
-        // Create a Bugsnag client
-        Bugsnag bugsnag = new Bugsnag("YOUR-API-KEY");
+    private static final Logger LOGGER = Logger.getLogger(ApplicationCommandLineRunner.class);
 
-        // Set some diagnostic data which will not change during the
-        // lifecycle of the application
-        bugsnag.setReleaseStage("staging");
-        bugsnag.setAppVersion("1.0.1");
+    // Inject the bugsnag notifier bean defined in Config.java
+    @Autowired
+    private Bugsnag bugsnag;
 
-        // Create and attach a simple Bugsnag callback.
-        // Use Callbacks to send custom diagnostic data which changes during
-        // the lifecyle of your application
-        bugsnag.addCallback((report) -> {
-            report.addToTab("diagnostics", "timestamp", new Date());
-            report.addToTab("customer", "name", "acme-inc");
-            report.addToTab("customer", "paying", true);
-            report.addToTab("customer", "spent", 1234);
-            report.setUserName("User Name");
-            report.setUserEmail("user@example.com");
-            report.setUserId("12345");
-        });
+    @Autowired
+    private ApplicationContext applicationContext;
 
+    @Override
+    public void run(final String... args) throws Exception {
         // Send a handled exception to Bugsnag
+        LOGGER.info("Sending a handled exception to Bugsnag");
         try {
             throw new RuntimeException("Handled exception - default severity");
         } catch (RuntimeException e) {
@@ -36,6 +32,7 @@ public class ExampleApp {
         }
 
         // Send a handled exception to Bugsnag with info severity
+        LOGGER.info("Sending a handled exception to Bugsnag with INFO severity");
         try {
             throw new RuntimeException("Handled exception - INFO severity");
         } catch (RuntimeException e) {
@@ -43,6 +40,7 @@ public class ExampleApp {
         }
 
         // Send a handled exception with custom MetaData
+        LOGGER.info("Sending a handled exception to Bugsnag with custom MetaData");
         try {
             throw new RuntimeException("Handled exception - custom metadata");
         } catch (RuntimeException e) {
@@ -55,6 +53,7 @@ public class ExampleApp {
 
         // Test an unhanded exception from a different thread as shutdown hooks
         // won't be called if executed from this thread
+        LOGGER.info("Sending an unhandled exception to Bugsnag");
         Thread thread = new Thread() {
             @Override
             public void run() {
@@ -66,5 +65,8 @@ public class ExampleApp {
 
         // Wait for unhandled exception thread to finish before exiting
         thread.join();
+
+        // Exit the spring application
+        SpringApplication.exit(applicationContext);
     }
 }

@@ -1,4 +1,5 @@
 include ':examples:simple'
 include ':examples:servlet'
+include ':examples:spring-web'
 include ':examples:logback'
 include 'logback-appender'
