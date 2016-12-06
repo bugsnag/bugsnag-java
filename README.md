@@ -16,14 +16,14 @@ The Bugsnag exception reporter for Java automatically detects and reports errors
 
 1. [Create a Bugsnag account](https://bugsnag.com)
 2. Complete the instructions in the [integration guide](https://docs.bugsnag.com/platforms/java/spring)
-3. Report handled exceptions using [`Client.notify()`](https://docs.bugsnag.com/platforms/java/spring/#reporting-handled-exceptions)
+3. Report handled exceptions using [`Bugsnag.notify()`](https://docs.bugsnag.com/platforms/java/spring/#reporting-handled-exceptions)
 4. Customize your integration using the [configuration options](https://docs.bugsnag.com/platforms/java/spring/configuration-options/)
 
 ### Other Java apps
 
 1. [Create a Bugsnag account](https://bugsnag.com)
 2. Complete the instructions in the [integration guide](https://docs.bugsnag.com/platforms/java/other)
-3. Report handled exceptions using [`Client.notify()`](https://docs.bugsnag.com/platforms/java/other/#reporting-handled-exceptions)
+3. Report handled exceptions using [`Bugsnag.notify()`](https://docs.bugsnag.com/platforms/java/other/#reporting-handled-exceptions)
 4. Customize your integration using the [configuration options](https://docs.bugsnag.com/platforms/java/other/configuration-options/)
 
 ## Support
