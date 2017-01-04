@@ -13,7 +13,8 @@ public class Serializer {
     /**
      * Constructor.
      */
-    @SuppressWarnings("deprecation") // Use deprecated method to ensure we don't break with older versions of jackson
+    // Use deprecated method to ensure we don't break with older versions of jackson
+    @SuppressWarnings("deprecation")
     public Serializer() {
         mapper
             .setSerializationInclusion(JsonInclude.Include.NON_EMPTY)
