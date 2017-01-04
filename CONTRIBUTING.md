@@ -24,7 +24,6 @@ Runs tests and checkstyle.
 
 ## Making a Release
 
-
 ### 1. Ensure you have permission to make a release
 
 Create a Sonatype account:
@@ -69,14 +68,7 @@ Create a Sonatype account:
    * Click the “Refresh” button
    * Select the com.bugsnag repository (should have a status of 'closed')
    * Click the “Release” button in the toolbar
-1. Update the version numbers on the website:
-
-   ```
-   bugsnag-website/config/notifiers.yml
-   ```
-
-### 4. Update docs.bugsnag.com
-
-Update the setup guides for Java with any new content, and bump major version
+1. For a major version change, update the version numbers in the integration instructions in the website.
+1. Update docs.bugsnag.com with any new content, and bump major version
 numbers in installation instructions if changed.
 
