@@ -1,5 +1,13 @@
 # Changelog
 
+## 3.0.2 (04 Jan 2017)
+
+### Bug Fixes
+
+* Use deprecated method to ensure we don't break with older versions of jackson
+  [William Starling](https://github.com/foygl)
+  [#54](https://github.com/bugsnag/bugsnag-java/pull/54)
+
 ## 3.0.1 (11 Nov 2016)
 
 ### Bug Fixes
