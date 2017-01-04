@@ -69,11 +69,6 @@ Create a Sonatype account:
    * Click the “Refresh” button
    * Select the com.bugsnag repository (should have a status of 'closed')
    * Click the “Release” button in the toolbar
-1. Upload the new jar to S3
-   * Log in to the [AWS Console](https://bugsnag.signin.aws.amazon.com/console)
-   * Upload `build/libs/bugsnag-x.x.x.jar` to `bugsnagcdn/bugsnag-java` on S3
-	 * Ensure file permissions are set to allow anyone to download (click on the
-     file, then "Properties")
 1. Update the version numbers on the website:
 
    ```
