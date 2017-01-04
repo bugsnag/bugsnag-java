@@ -13,10 +13,11 @@ public class Serializer {
     /**
      * Constructor.
      */
+    @SuppressWarnings("deprecation") // Use deprecated method to ensure we don't break with older versions of jackson
     public Serializer() {
         mapper
             .setSerializationInclusion(JsonInclude.Include.NON_EMPTY)
-            .setVisibility(
+            .setVisibilityChecker(
                 mapper.getVisibilityChecker().with(JsonAutoDetect.Visibility.NONE));
     }
 
