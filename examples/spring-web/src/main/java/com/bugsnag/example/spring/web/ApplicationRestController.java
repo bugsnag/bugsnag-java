@@ -21,16 +21,12 @@ public class ApplicationRestController {
     @Autowired
     private ApplicationContext applicationContext;
 
-    private final String links =
-            "<a href=\"/send-handled-exception\">Send a handled exception to Bugsnag</a><br/>"
-            + "<a href=\"/send-handled-exception-info\">Send a handled exception to Bugsnag with INFO severity</a><br/>"
-            + "<a href=\"/send-handled-exception-with-metadata\">Send a handled exception to Bugsnag with custom MetaData</a><br/>"
-            + "<a href=\"/send-unhandled-exception\">Send an unhandled exception to Bugsnag</a><br/>"
-            + "<a href=\"/shutdown\">Shutdown the application</a><br/>";
+    @Autowired
+    private String exampleWebsiteLinks;
 
     @RequestMapping("/")
     public String index() {
-        return links;
+        return exampleWebsiteLinks;
     }
 
     @RequestMapping("/send-handled-exception")
@@ -42,7 +38,7 @@ public class ApplicationRestController {
             bugsnag.notify(e);
         }
 
-        return links + "<br/>Sent a handled exception to Bugsnag";
+        return exampleWebsiteLinks + "<br/>Sent a handled exception to Bugsnag";
     }
 
     @RequestMapping("/send-handled-exception-info")
@@ -54,7 +50,7 @@ public class ApplicationRestController {
             bugsnag.notify(e, Severity.INFO);
         }
 
-        return links + "<br/>Sent a handled exception to Bugsnag with INFO severity";
+        return exampleWebsiteLinks + "<br/>Sent a handled exception to Bugsnag with INFO severity";
     }
 
     @RequestMapping("/send-handled-exception-with-metadata")
@@ -70,7 +66,7 @@ public class ApplicationRestController {
             });
         }
 
-        return links + "<br/>Sent a handled exception to Bugsnag with custom MetaData";
+        return exampleWebsiteLinks + "<br/>Sent a handled exception to Bugsnag with custom MetaData";
     }
 
     @RequestMapping("/send-unhandled-exception")
@@ -90,11 +86,17 @@ public class ApplicationRestController {
         // Wait for unhandled exception thread to finish
         thread.join();
 
-        return links + "<br/>Sent an unhandled exception to Bugsnag";
+        return exampleWebsiteLinks + "<br/>Sent an unhandled exception to Bugsnag";
+    }
+
+    @RequestMapping("/send-spring-handled-exception")
+    public String sendSpringHandledException() {
+        LOGGER.info("Sending a Spring handled exception to Bugsnag");
+        throw new RuntimeException("Spring handled exception");
     }
 
     @RequestMapping("/shutdown")
-    public void shutdown() throws InterruptedException {
+    public void shutdown() {
         LOGGER.info("Shutting down application");
 
         SpringApplication.exit(applicationContext);
