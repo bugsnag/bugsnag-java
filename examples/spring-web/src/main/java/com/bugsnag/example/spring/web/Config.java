@@ -35,4 +35,15 @@ public class Config {
 
         return bugsnag;
     }
+
+    // The entire code for the example website
+    @Bean
+    public String exampleWebsiteLinks() {
+        return "<a href=\"/send-handled-exception\">Send a handled exception to Bugsnag</a><br/>"
+                + "<a href=\"/send-handled-exception-info\">Send a handled exception to Bugsnag with INFO severity</a><br/>"
+                + "<a href=\"/send-handled-exception-with-metadata\">Send a handled exception to Bugsnag with custom MetaData</a><br/>"
+                + "<a href=\"/send-unhandled-exception\">Send an unhandled exception to Bugsnag</a><br/>"
+                + "<a href=\"/send-spring-handled-exception\">Send an exception handled by Spring @ExceptionHandler to Bugsnag</a><br/>"
+                + "<a href=\"/shutdown\">Shutdown the application</a><br/>";
+    }
 }
