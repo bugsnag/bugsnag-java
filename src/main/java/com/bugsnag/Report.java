@@ -16,7 +16,8 @@ public class Report {
 
     private String apiKey;
     private Throwable throwable;
-    private Severity severity = Severity.WARNING;
+    private final EventHandledState eventHandledState;
+    private Severity severity;
     private String groupingHash;
     private Diagnostics diagnostics = new Diagnostics();
     private boolean shouldCancel = false;
@@ -28,10 +29,16 @@ public class Report {
      * @param throwable the error to create the report for.
      */
     protected Report(Configuration config, Throwable throwable) {
-        this.config = config;
-        this.throwable = throwable;
+        this(config, throwable, new EventHandledState(Severity.WARNING, null, null));
     }
 
+    protected Report(Configuration config, Throwable throwable, EventHandledState eventHandledState) {
+        this.config = config;
+        this.throwable = throwable;
+        this.eventHandledState = eventHandledState;
+        this.severity = eventHandledState.getOriginalSeverity();
+    }
+    
     @Expose
     protected String getPayloadVersion() {
         return PAYLOAD_VERSION;

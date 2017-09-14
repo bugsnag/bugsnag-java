@@ -40,11 +40,15 @@ final class EventHandledState {
         return unhandled;
     }
 
-    public SeverityReasonType getSeverityReasonType() {
+    SeverityReasonType getSeverityReasonType() {
         return severityReasonType;
     }
 
-    public String getDescription() {
+    String getDescription() {
         return description;
+    }
+
+    public Severity getOriginalSeverity() {
+        return originalSeverity;
     }
 }
