@@ -9,7 +9,7 @@ public class EventHandledStateTest {
 
     @Test
     public void testHandledEventState() throws Throwable {
-        EventHandledState state = new EventHandledState(Severity.WARNING, false);
+        EventHandledState state = new EventHandledState(Severity.WARNING, null);
         assertNotNull(state);
         assertFalse(state.isUnhandled());
         assertTrue(state.isDefaultSeverity(Severity.WARNING));
@@ -18,7 +18,7 @@ public class EventHandledStateTest {
 
     @Test
     public void testUnhandledEventState() throws Throwable {
-        EventHandledState state = new EventHandledState(Severity.ERROR, true);
+        EventHandledState state = new EventHandledState(Severity.ERROR, SeverityReasonType.EXCEPTION_HANDLER);
         assertNotNull(state);
         assertTrue(state.isUnhandled());
         assertTrue(state.isDefaultSeverity(Severity.ERROR));
