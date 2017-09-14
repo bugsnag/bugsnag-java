@@ -22,10 +22,14 @@ final class EventHandledState {
 
     private final Severity originalSeverity;
     private final boolean unhandled;
+    private final SeverityReasonType severityReasonType;
+    private final String description;
 
-    EventHandledState(Severity originalSeverity, SeverityReasonType severityReasonType) {
+    EventHandledState(Severity originalSeverity, SeverityReasonType severityReasonType, String description) {
         this.originalSeverity = originalSeverity;
         this.unhandled = severityReasonType != null;
+        this.severityReasonType = severityReasonType;
+        this.description = description;
     }
 
     boolean isDefaultSeverity(Severity currentSeverity) {
@@ -36,4 +40,11 @@ final class EventHandledState {
         return unhandled;
     }
 
+    public SeverityReasonType getSeverityReasonType() {
+        return severityReasonType;
+    }
+
+    public String getDescription() {
+        return description;
+    }
 }
