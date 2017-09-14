@@ -292,6 +292,12 @@ public class Bugsnag {
         return notify(report, null);
     }
 
+
+    public boolean notify(Throwable throwable, EventHandledState eventHandledState) {
+        Report report = new Report(config, throwable, eventHandledState);
+        return notify(report, null);
+    }
+
     /**
      * Notify Bugsnag of an exception and provide custom diagnostic data
      * for this particular error report.
