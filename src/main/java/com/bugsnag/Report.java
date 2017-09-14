@@ -38,7 +38,7 @@ public class Report {
         this.eventHandledState = eventHandledState;
         this.severity = eventHandledState.getOriginalSeverity();
     }
-    
+
     @Expose
     protected String getPayloadVersion() {
         return PAYLOAD_VERSION;

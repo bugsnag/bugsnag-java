@@ -275,8 +275,7 @@ public class Bugsnag {
             return false;
         }
 
-        Report report = buildReport(throwable);
-        report.setSeverity(severity);
+        Report report = new Report(config, throwable, new EventHandledState(severity, null, null));
         return notify(report, callback);
     }
 
