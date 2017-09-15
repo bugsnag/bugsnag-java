@@ -64,7 +64,6 @@ public class HandledStatePayloadTest {
         ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
         Bugsnag bugsnag = new Bugsnag("apikey");
         bugsnag.setDelivery(new OutputStreamDelivery(byteStream));
-        bugsnag.notify(throwable, handledState);
 
         if (changeSeverity) {
             bugsnag.addCallback(new Callback() {
@@ -74,6 +73,7 @@ public class HandledStatePayloadTest {
                 }
             });
         }
+        bugsnag.notify(throwable, handledState);
 
         String data = new String(byteStream.toByteArray());
         assertNotNull(data);
@@ -90,7 +90,6 @@ public class HandledStatePayloadTest {
 
         JsonNode event = events.get(0);
         assertNotNull(event);
-        assertEquals(4, event.size());
         return event;
     }
 

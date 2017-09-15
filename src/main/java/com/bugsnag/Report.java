@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Map;
 
 public class Report {
-    private static final String PAYLOAD_VERSION = "2";
+    private static final String PAYLOAD_VERSION = "3";
 
     private Configuration config;
 
@@ -60,6 +60,26 @@ public class Report {
         }
 
         return exceptions;
+    }
+
+    @Expose
+    boolean getDefaultSeverity() {
+        return handledState.isDefaultSeverity(severity);
+    }
+
+    @Expose
+    boolean getUnhandled() {
+        return handledState.isUnhandled();
+    }
+
+    @Expose
+    SeverityReason getSeverityReason() {
+        HandledState.SeverityReasonType severityReasonType = handledState.getSeverityReasonType();
+        if (severityReasonType != null) {
+            return new SeverityReason(handledState.getSeverityReasonType().toString());
+        } else {
+            return null;
+        }
     }
 
     @Expose
@@ -263,5 +283,18 @@ public class Report {
 
     public boolean getShouldCancel() {
         return this.shouldCancel;
+    }
+
+    static class SeverityReason {
+        private final String type;
+
+        SeverityReason(String type) {
+            this.type = type;
+        }
+
+        @Expose
+        String getType() {
+            return type;
+        }
     }
 }
