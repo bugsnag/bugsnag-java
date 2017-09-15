@@ -31,15 +31,7 @@ public class BugsnagTest {
     @Test
     public void testIgnoreClasses() {
         Bugsnag bugsnag = new Bugsnag("apikey");
-        bugsnag.setDelivery(new Delivery() {
-            @Override
-            public void deliver(Serializer serializer, Object object) {
-            }
-
-            @Override
-            public void close() {
-            }
-        });
+        bugsnag.setDelivery(BugsnagTestUtils.generateDelivery());
 
         // Ignore neither
         bugsnag.setIgnoreClasses();
@@ -60,15 +52,8 @@ public class BugsnagTest {
     @Test
     public void testNotifyReleaseStages() {
         Bugsnag bugsnag = new Bugsnag("apikey");
-        bugsnag.setDelivery(new Delivery() {
-            @Override
-            public void deliver(Serializer serializer, Object object) {
-            }
+        bugsnag.setDelivery(BugsnagTestUtils.generateDelivery());
 
-            @Override
-            public void close() {
-            }
-        });
         bugsnag.setReleaseStage("production");
 
         // Never send
@@ -339,6 +324,7 @@ public class BugsnagTest {
     @Test
     public void testCallbackCancel() {
         Bugsnag bugsnag = new Bugsnag("apikey");
+        bugsnag.setDelivery(BugsnagTestUtils.generateDelivery());
         bugsnag.addCallback(new Callback() {
             @Override
             public void beforeNotify(Report report) {
