@@ -293,7 +293,7 @@ public class Bugsnag {
     }
 
 
-    public boolean notify(Throwable throwable, HandledState handledState) {
+    boolean notify(Throwable throwable, HandledState handledState) {
         Report report = new Report(config, throwable, handledState);
         return notify(report, null);
     }
