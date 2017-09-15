@@ -32,7 +32,7 @@ public class Report {
         this(config, throwable, new HandledState(Severity.WARNING, null, null));
     }
 
-    protected Report(Configuration config, Throwable throwable, HandledState handledState) {
+    Report(Configuration config, Throwable throwable, HandledState handledState) {
         this.config = config;
         this.throwable = throwable;
         this.handledState = handledState;
