@@ -275,7 +275,7 @@ public class Bugsnag {
             return false;
         }
 
-        Report report = new Report(config, throwable, new EventHandledState(severity, null, null));
+        Report report = new Report(config, throwable, new HandledState(severity, null, null));
         return notify(report, callback);
     }
 
@@ -293,8 +293,8 @@ public class Bugsnag {
     }
 
 
-    public boolean notify(Throwable throwable, EventHandledState eventHandledState) {
-        Report report = new Report(config, throwable, eventHandledState);
+    public boolean notify(Throwable throwable, HandledState handledState) {
+        Report report = new Report(config, throwable, handledState);
         return notify(report, null);
     }
 

@@ -1,6 +1,6 @@
 package com.bugsnag;
 
-final class EventHandledState {
+final class HandledState {
 
     enum SeverityReasonType {
         EXCEPTION_HANDLER("exception_handler"),
@@ -25,7 +25,7 @@ final class EventHandledState {
     private final SeverityReasonType severityReasonType;
     private final String description;
 
-    EventHandledState(Severity originalSeverity, SeverityReasonType severityReasonType, String description) {
+    HandledState(Severity originalSeverity, SeverityReasonType severityReasonType, String description) {
         this.originalSeverity = originalSeverity;
         this.unhandled = severityReasonType != null;
         this.severityReasonType = severityReasonType;
@@ -48,7 +48,7 @@ final class EventHandledState {
         return description;
     }
 
-    public Severity getOriginalSeverity() {
+    Severity getOriginalSeverity() {
         return originalSeverity;
     }
 }
