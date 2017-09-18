@@ -1,9 +1,12 @@
 package com.bugsnag;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
 import org.junit.Test;
 
-import static com.bugsnag.HandledState.*;
-import static org.junit.Assert.*;
 
 public class HandledStateTest {
 
@@ -18,7 +21,8 @@ public class HandledStateTest {
 
     @Test
     public void testUnhandledEventState() throws Throwable {
-        HandledState state = new HandledState(Severity.ERROR, SeverityReasonType.EXCEPTION_HANDLER, null);
+        HandledState state = new HandledState(Severity.ERROR,
+                HandledState.SeverityReasonType.EXCEPTION_HANDLER, null);
         assertNotNull(state);
         assertTrue(state.isUnhandled());
         assertTrue(state.isDefaultSeverity(Severity.ERROR));
@@ -27,9 +31,10 @@ public class HandledStateTest {
 
     @Test
     public void testSeverityPayload() throws Throwable {
-        HandledState eh = new HandledState(Severity.ERROR, SeverityReasonType.LOG_LEVEL, "warn");
+        HandledState eh = new HandledState(Severity.ERROR,
+                HandledState.SeverityReasonType.LOG_LEVEL, "warn");
         assertNotNull(eh);
-        assertTrue(eh.getSeverityReasonType() == SeverityReasonType.LOG_LEVEL);
+        assertTrue(eh.getSeverityReasonType() == HandledState.SeverityReasonType.LOG_LEVEL);
         assertEquals(eh.getDescription(), "warn");
     }
 

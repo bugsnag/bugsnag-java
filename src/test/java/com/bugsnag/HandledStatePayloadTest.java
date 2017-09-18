@@ -1,7 +1,14 @@
 package com.bugsnag;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+
 import com.bugsnag.callbacks.Callback;
 import com.bugsnag.delivery.OutputStreamDelivery;
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Test;
@@ -9,24 +16,24 @@ import org.junit.Test;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
-import static com.bugsnag.HandledState.*;
-import static org.junit.Assert.*;
-
 
 public class HandledStatePayloadTest {
 
     @Test
     public void testPayloadGeneration() throws Throwable {
         HandledState handledState = new HandledState(Severity.WARNING, null, null);
-        JsonNode payload = getJsonPayloadFromThrowable(new RuntimeException("Test"), handledState, false);
+        RuntimeException exception = new RuntimeException("Test");
+        JsonNode payload = getJsonPayloadFromThrowable(exception, handledState, false);
         JsonNode event = getEvent(payload);
         assertEquals("warning", event.get("severity").asText());
     }
 
     @Test
     public void testUnhandledPayload() throws Throwable {
-        HandledState handledState = new HandledState(Severity.ERROR, SeverityReasonType.EXCEPTION_HANDLER, null);
-        JsonNode payload = getJsonPayloadFromThrowable(new RuntimeException(), handledState, false);
+        HandledState handledState = new HandledState(Severity.ERROR,
+                HandledState.SeverityReasonType.EXCEPTION_HANDLER, null);
+        RuntimeException exception = new RuntimeException();
+        JsonNode payload = getJsonPayloadFromThrowable(exception, handledState, false);
         JsonNode event = getEvent(payload);
 
         assertTrue(event.get("defaultSeverity").booleanValue());

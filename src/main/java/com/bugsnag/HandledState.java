@@ -25,7 +25,9 @@ final class HandledState {
     private final SeverityReasonType severityReasonType;
     private final String description;
 
-    HandledState(Severity originalSeverity, SeverityReasonType severityReasonType, String description) {
+    HandledState(Severity originalSeverity,
+                 SeverityReasonType severityReasonType,
+                 String description) {
         this.originalSeverity = originalSeverity;
         this.unhandled = severityReasonType != null;
         this.severityReasonType = severityReasonType;
