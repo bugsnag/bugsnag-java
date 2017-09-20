@@ -1,22 +1,25 @@
+sudo: required
 language: java
+before_cache:
+- rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
+- rm -fr $HOME/.gradle/caches/*/plugin-resolution/
+cache:
+  directories:
+  - $HOME/.gradle/caches/
+  - $HOME/.gradle/wrapper/
+install: ./gradlew :assemble
 
-# Skip the default install step
-install: true
-
-# Only run checkstyle and build the example projects in JDK8
-script:
-  - jdk_switcher use oraclejdk8
-  - ./gradlew assemble
-  - ./gradlew check
-  - jdk_switcher use oraclejdk7
-  - ./gradlew clean
-  - ./gradlew :assemble
-  - ./gradlew :test
-  - jdk_switcher use openjdk7
-  - ./gradlew clean
-  - ./gradlew :assemble
-  - ./gradlew :test
-  - jdk_switcher use openjdk6
-  - ./gradlew clean
-  - ./gradlew :assemble
-  - ./gradlew :test
+jobs:
+  include:
+  - stage: test
+    jdk: openjdk8
+    script: ./gradlew check :test
+  # - stage: test                # Disabled due to SSL errors on Travis
+  #   jdk: openjdk7              # when downloading gradle
+  #   script: ./gradlew :test
+  - stage: test
+    jdk: oraclejdk9
+    script: ./gradlew check :test
+  - stage: test
+    jdk: oraclejdk8
+    script: ./gradlew check :test
