@@ -33,18 +33,17 @@ final class HandledState {
     static HandledState newInstance(SeverityReasonType severityReasonType, Severity severity) {
         switch (severityReasonType) {
             case REASON_UNHANDLED_EXCEPTION:
-                return new HandledState(severityReasonType, Severity.ERROR, true, null);
+                return new HandledState(severityReasonType, Severity.ERROR, true);
             case REASON_HANDLED_EXCEPTION:
-                return new HandledState(severityReasonType, Severity.WARNING, false, null);
+                return new HandledState(severityReasonType, Severity.WARNING, false);
             case REASON_USER_SPECIFIED:
-                return new HandledState(severityReasonType, severity, false, null);
+                return new HandledState(severityReasonType, severity, false);
             default:
                 throw new IllegalArgumentException("Invalid arg for reason: " + severityReasonType);
         }
     }
 
-    private HandledState(SeverityReasonType severityReasonType, Severity currentSeverity, boolean unhandled,
-                         String attributeValue) {
+    private HandledState(SeverityReasonType severityReasonType, Severity currentSeverity, boolean unhandled) {
         this.severityReasonType = severityReasonType;
         this.originalSeverity = currentSeverity;
         this.unhandled = unhandled;

@@ -64,23 +64,13 @@ public class Report {
     }
 
     @Expose
-    boolean getDefaultSeverity() {
-        return handledState.isDefaultSeverity(severity);
-    }
-
-    @Expose
     boolean getUnhandled() {
         return handledState.isUnhandled();
     }
 
     @Expose
     SeverityReason getSeverityReason() {
-        HandledState.SeverityReasonType severityReasonType = handledState.getSeverityReasonType();
-        if (severityReasonType != null) {
-            return new SeverityReason(handledState.getSeverityReasonType().toString());
-        } else {
-            return null;
-        }
+        return new SeverityReason(handledState.calculateSeverityReasonType().toString());
     }
 
     @Expose
@@ -244,6 +234,7 @@ public class Report {
      */
     public Report setSeverity(Severity severity) {
         this.severity = severity;
+        this.handledState.setCurrentSeverity(severity);
         return this;
     }
 
