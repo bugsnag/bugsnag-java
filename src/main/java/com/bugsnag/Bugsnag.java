@@ -275,7 +275,9 @@ public class Bugsnag {
             return false;
         }
 
-        Report report = new Report(config, throwable, new HandledState(severity, null, null));
+        HandledState handledState = HandledState.newInstance(
+                HandledState.SeverityReasonType.REASON_USER_SPECIFIED, severity);
+        Report report = new Report(config, throwable, handledState);
         return notify(report, callback);
     }
 

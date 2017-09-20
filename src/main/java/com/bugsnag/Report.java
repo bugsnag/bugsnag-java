@@ -29,7 +29,8 @@ public class Report {
      * @param throwable the error to create the report for.
      */
     protected Report(Configuration config, Throwable throwable) {
-        this(config, throwable, new HandledState(Severity.WARNING, null, null));
+        this(config, throwable, HandledState.newInstance(
+                HandledState.SeverityReasonType.REASON_HANDLED_EXCEPTION));
     }
 
     Report(Configuration config, Throwable throwable, HandledState handledState) {
