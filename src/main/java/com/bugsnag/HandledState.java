@@ -43,7 +43,8 @@ final class HandledState {
         }
     }
 
-    private HandledState(SeverityReasonType severityReasonType, Severity currentSeverity, boolean unhandled) {
+    private HandledState(SeverityReasonType severityReasonType,
+                         Severity currentSeverity, boolean unhandled) {
         this.severityReasonType = severityReasonType;
         this.originalSeverity = currentSeverity;
         this.unhandled = unhandled;
@@ -67,8 +68,9 @@ final class HandledState {
     }
 
     SeverityReasonType calculateSeverityReasonType() {
-        return originalSeverity == currentSeverity ?
-                severityReasonType : SeverityReasonType.REASON_CALLBACK_SPECIFIED;
+        return originalSeverity == currentSeverity
+                ? severityReasonType
+                : SeverityReasonType.REASON_CALLBACK_SPECIFIED;
     }
 
     Severity getCurrentSeverity() {
