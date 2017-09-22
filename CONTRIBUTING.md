@@ -33,18 +33,27 @@ Create a Sonatype account:
 1. Ask an existing contributor (likely Simon) to confirm in the ticket
 1. Wait for Sonatype them to confirm the approval
 
+Create a [Bintray](https://bintray.com) account:
+
+1. Create an account
+1. Request access to the Bugsnag organization
+
 ### 2. Configure the prerequisites
 
 1. Create your [PGP Signatures](http://central.sonatype.org/pages/working-with-pgp-signatures.html)
 2. Configure your `~/.gradle/gradle.properties`:
 
-   ```xml
-   signing.keyId=your-gpg-key-id (8-character hex)
+   ```ini
+   signing.keyId=your-gpg-key-id # (8-character hex)
    signing.password=your-gpg-password
    signing.secretKeyRingFile=/PATH/TO/HOME/.gnupg/secring.gpg
-   
-   sonatypeUsername=your-sonatype-username
-   sonatypePassword=your-sonatype-password
+
+   nexusUsername=your-sonatype-username
+   nexusPassword=your-sonatype-password
+
+   # Your credentials for https://bintray.com
+   bintray_user=your-bintray-username
+   bintray_api_key=your-bintray-api-key
    ```
 
 ### 3. Making a release
@@ -53,21 +62,14 @@ Create a Sonatype account:
 1. Bump the version number in `Notifier.java`
 1. Commit the changes
 1. Create a release build:
-   * `./gradlew --console=plain clean release`
+   * `./gradlew -Preleasing=true clean release`
      - enter the release version (e.g. `1.2.0`)
      - accept the default development version
 1. Create a release in GitHub
-1. Upload the archives to Sonatype Nexus:
-   * `git checkout <TAG_NAME>`
-   * `./gradlew clean uploadArchives`
-1. "Promote" the release build on Maven Central
-   * Go to the [sonatype open source dashboard](https://oss.sonatype.org/index.html#stagingRepositories)
-   * Click the search box at the top right, and type “com.bugsnag”
-   * Select the com.bugsnag staging repository
-   * Click the “Close” button in the toolbar to prompt the repository to be checked
-   * Click the “Refresh” button
-   * Select the com.bugsnag repository (should have a status of 'closed')
-   * Click the “Release” button in the toolbar
+1. Upload the archives to Sonatype Nexus and Bintray:
+   * `./gradlew -Preleasing=true uploadArchives bintrayUpload`
+1. "Promote" the build on Maven Central:
+   * `./gradlew -Preleasing=true closeAndReleaseRepository`
 1. For a major version change, update the version numbers in the integration instructions in the website.
 1. Update docs.bugsnag.com with any new content, and bump major version
 numbers in installation instructions if changed.
