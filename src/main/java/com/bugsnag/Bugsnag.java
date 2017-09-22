@@ -275,8 +275,9 @@ public class Bugsnag {
             return false;
         }
 
-        Report report = buildReport(throwable);
-        report.setSeverity(severity);
+        HandledState handledState = HandledState.newInstance(
+                HandledState.SeverityReasonType.REASON_USER_SPECIFIED, severity);
+        Report report = new Report(config, throwable, handledState);
         return notify(report, callback);
     }
 
@@ -290,6 +291,12 @@ public class Bugsnag {
      * @see #buildReport
      */
     public boolean notify(Report report) {
+        return notify(report, null);
+    }
+
+
+    boolean notify(Throwable throwable, HandledState handledState) {
+        Report report = new Report(config, throwable, handledState);
         return notify(report, null);
     }
 

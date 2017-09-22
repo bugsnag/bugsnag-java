@@ -3,6 +3,7 @@ package com.bugsnag;
 import java.lang.Thread.UncaughtExceptionHandler;
 import java.util.WeakHashMap;
 
+
 class ExceptionHandler implements UncaughtExceptionHandler {
     private final UncaughtExceptionHandler originalHandler;
     private final WeakHashMap<Bugsnag, Boolean> clientMap = new WeakHashMap<Bugsnag, Boolean>();
@@ -45,7 +46,10 @@ class ExceptionHandler implements UncaughtExceptionHandler {
     public void uncaughtException(Thread thread, Throwable throwable) {
         // Notify any subscribed clients of the uncaught exception
         for (Bugsnag bugsnag : clientMap.keySet()) {
-            bugsnag.notify(throwable, Severity.ERROR);
+
+            HandledState handledState = HandledState.newInstance(
+                    HandledState.SeverityReasonType.REASON_UNHANDLED_EXCEPTION, Severity.ERROR);
+            bugsnag.notify(throwable, handledState);
         }
 
         // Pass exception on to original exception handler

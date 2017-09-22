@@ -1,6 +1,7 @@
 .gradle
 build/
-
+*.iml
+out/
 #
 # Common IDE files
 #

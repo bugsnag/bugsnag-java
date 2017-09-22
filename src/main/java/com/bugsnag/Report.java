@@ -10,13 +10,14 @@ import java.util.List;
 import java.util.Map;
 
 public class Report {
-    private static final String PAYLOAD_VERSION = "2";
+    private static final String PAYLOAD_VERSION = "3";
 
     private Configuration config;
 
     private String apiKey;
     private Throwable throwable;
-    private Severity severity = Severity.WARNING;
+    private final HandledState handledState;
+    private Severity severity;
     private String groupingHash;
     private Diagnostics diagnostics = new Diagnostics();
     private boolean shouldCancel = false;
@@ -28,8 +29,15 @@ public class Report {
      * @param throwable the error to create the report for.
      */
     protected Report(Configuration config, Throwable throwable) {
+        this(config, throwable, HandledState.newInstance(
+                HandledState.SeverityReasonType.REASON_HANDLED_EXCEPTION));
+    }
+
+    Report(Configuration config, Throwable throwable, HandledState handledState) {
         this.config = config;
         this.throwable = throwable;
+        this.handledState = handledState;
+        this.severity = handledState.getOriginalSeverity();
     }
 
     @Expose
@@ -53,6 +61,16 @@ public class Report {
         }
 
         return exceptions;
+    }
+
+    @Expose
+    boolean getUnhandled() {
+        return handledState.isUnhandled();
+    }
+
+    @Expose
+    SeverityReason getSeverityReason() {
+        return new SeverityReason(handledState.calculateSeverityReasonType().toString());
     }
 
     @Expose
@@ -216,6 +234,7 @@ public class Report {
      */
     public Report setSeverity(Severity severity) {
         this.severity = severity;
+        this.handledState.setCurrentSeverity(severity);
         return this;
     }
 
@@ -256,5 +275,18 @@ public class Report {
 
     public boolean getShouldCancel() {
         return this.shouldCancel;
+    }
+
+    static class SeverityReason {
+        private final String type;
+
+        SeverityReason(String type) {
+            this.type = type;
+        }
+
+        @Expose
+        String getType() {
+            return type;
+        }
     }
 }
