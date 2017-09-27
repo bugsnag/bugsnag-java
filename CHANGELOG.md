@@ -1,5 +1,12 @@
 # Changelog
 
+## 3.1.0 (2017-90-22)
+
+### Enhancements
+
+* Track difference between handled and unhandled exceptions
+  [#59](https://github.com/bugsnag/bugsnag-java/pull/59)
+
 ## 3.0.2 (04 Jan 2017)
 
 ### Bug Fixes

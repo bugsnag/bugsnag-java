@@ -1,12 +1,21 @@
-plugins {
-    id "java"
-    id "checkstyle"
-    id 'net.researchgate.release' version '2.4.0'
-    id 'maven'
-    id 'signing'
+apply plugin: 'java'
+apply plugin: 'checkstyle'
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        if (project.hasProperty('releasing')) {
+            classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.7.3'
+            classpath 'com.bmuschko:gradle-nexus-plugin:2.3.1'
+            classpath 'io.codearte.gradle.nexus:gradle-nexus-staging-plugin:0.11.0'
+            classpath 'net.researchgate:gradle-release:2.4.0'
+        }
+    }
 }
-
-archivesBaseName = 'bugsnag'
+if (project.hasProperty('releasing')) {
+    apply from: "release.gradle"
+}
 
 sourceCompatibility = 1.6
 targetCompatibility = 1.6
@@ -33,73 +42,4 @@ test {
 
 checkstyle {
     toolVersion = "6.16"
-}
-
-task javadocJar(type: Jar, dependsOn: javadoc) {
-    classifier = 'javadoc'
-    from tasks.javadoc.destinationDir
-}
-
-task sourcesJar(type: Jar) {
-    classifier = 'sources'
-    from sourceSets.main.allSource
-}
-
-artifacts {
-    archives jar
-    archives javadocJar
-    archives sourcesJar
-}
-
-signing {
-    required {  gradle.taskGraph.hasTask("uploadArchives") }
-    sign configurations.archives
-}
-
-release {
-    tagTemplate = 'v${version}'
-}
-
-// Required to upload releases to Sonatype
-uploadArchives {
-    repositories {
-        mavenDeployer {
-            beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
-
-            repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
-                authentication(userName: sonatypeUsername, password: sonatypePassword)
-            }
-
-            pom.artifactId = 'bugsnag'
-            pom.groupId = 'com.bugsnag'
-
-            pom.project {
-                name 'bugsnag'
-                packaging 'jar'
-                description 'Official Bugsnag notifier for Java applications'
-                url 'http://bugsnag.com/'
-
-                scm {
-                    url 'https://github.com/bugsnag/bugsnag-java'
-                    connection 'scm:git:git@github.com:bugsnag/bugsnag-java.git'
-                    developerConnection 'scm:git:git@github.com:bugsnag/bugsnag-java.git'
-                }
-
-                licenses {
-                    license {
-                        name 'MIT'
-                        url 'http://opensource.org/licenses/MIT'
-                        distribution 'repo'
-                    }
-                }
-
-                developers {
-                    developer {
-                        id 'james'
-                        name 'James Smith'
-                    }
-                }
-            }
-        }
-    }
 }
