@@ -10,6 +10,10 @@ release {
     tagTemplate = 'v${version}'
 }
 
+nexusStaging {
+    packageGroup = "com.bugsnag"
+}
+
 modifyPom {
     project {
         name 'Bugsnag'
@@ -62,7 +66,7 @@ bintray {
     publications = ['Publication']
     pkg {
         repo = 'maven'
-        name = 'bugsnag-java'
+        name = 'bugsnag'
         userOrg = 'bugsnag'
         licenses = ['MIT']
         vcsUrl = 'https://github.com/bugsnag/bugsnag-java.git'
