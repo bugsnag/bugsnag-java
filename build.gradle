@@ -25,13 +25,13 @@ repositories {
 }
 
 dependencies {
-    compile 'com.fasterxml.jackson.core:jackson-databind:2.6.7'
-    compile 'com.google.guava:guava:12.0.1'
-    compile 'org.slf4j:slf4j-api:1.7.21'
-    compileOnly 'javax.servlet:javax.servlet-api:3.0.1'
+    compile 'com.fasterxml.jackson.core:jackson-databind:2.9.1'
+    compile 'com.google.guava:guava:23.1-jre'
+    compile 'org.slf4j:slf4j-api:1.7.25'
+    compileOnly 'javax.servlet:javax.servlet-api:3.1.0'
 
     testCompile 'junit:junit:4.12'
-    testCompile 'org.slf4j:slf4j-jdk14:1.7.21'
+    testCompile 'org.slf4j:slf4j-jdk14:1.7.25'
 }
 
 test {
