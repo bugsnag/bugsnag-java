@@ -1,4 +1,9 @@
 sudo: required
+addons:
+  apt:
+    packages:
+    - openjdk-7-jre
+    - openjdk-6-jre
 language: java
 before_cache:
 - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
@@ -14,9 +19,12 @@ jobs:
   - stage: test
     jdk: openjdk8
     script: ./gradlew check :test
-  # - stage: test                # Disabled due to SSL errors on Travis
-  #   jdk: openjdk7              # when downloading gradle
-  #   script: ./gradlew :test
+  - stage: test
+    jdk: openjdk7
+    install:
+    - jdk_switcher use openjdk7
+    - ./gradlew :assemble
+    script: ./gradlew :test
   - stage: test
     jdk: oraclejdk9
     script: ./gradlew check :test
