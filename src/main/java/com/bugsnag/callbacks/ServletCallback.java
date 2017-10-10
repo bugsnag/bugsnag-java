@@ -41,7 +41,9 @@ public class ServletCallback implements Callback {
                 .addToTab("request", "headers", getHeaderMap(request));
 
         // Set default context
-        report.setContext(request.getMethod() + " " + request.getRequestURI());
+        if (report.getContext() == null) {
+            report.setContext(request.getMethod() + " " + request.getRequestURI());
+        }
     }
 
     private String getClientIp(HttpServletRequest request) {
