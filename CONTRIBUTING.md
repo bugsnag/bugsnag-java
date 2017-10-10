@@ -72,5 +72,6 @@ Create a [Bintray](https://bintray.com) account:
    * `./gradlew -Preleasing=true closeAndReleaseRepository`
 1. For a major version change, update the version numbers in the integration instructions in the website.
 1. Update docs.bugsnag.com with any new content, and bump major version
-numbers in installation instructions if changed.
+numbers in installation instructions if changed. Update the version numbers of
+the dependent libraries in the manual integration guide.
 
