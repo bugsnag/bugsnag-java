@@ -1,5 +1,12 @@
 # Changelog
 
+## 3.1.1 (2017-10-11)
+
+### Bug Fixes
+
+* Allow overriding the context set by the servlet callback
+  [#63](https://github.com/bugsnag/bugsnag-java/pull/63)
+
 ## 3.1.0 (2017-90-22)
 
 ### Enhancements
