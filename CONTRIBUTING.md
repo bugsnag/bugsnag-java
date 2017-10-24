@@ -59,7 +59,7 @@ Create a [Bintray](https://bintray.com) account:
 ### 3. Making a release
 
 1. Update the CHANGELOG.md file with any changes
-1. Bump the version number in `Notifier.java`
+1. Update the version number by running `make VERSION=[number] bump`
 1. Commit the changes
 1. Create a release build:
    * `./gradlew -Preleasing=true clean release`
