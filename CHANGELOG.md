@@ -1,5 +1,10 @@
 # Changelog
 
+## 3.1.2 (2017-11-03)
+
+* Fixes JDK 7 support by using Android Guava
+* Fixes bad artefact packaging caused by bug in gradle
+
 ## 3.1.1 (2017-10-11)
 
 ### Bug Fixes
