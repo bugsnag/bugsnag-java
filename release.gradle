@@ -52,7 +52,7 @@ modifyPom {
 publishing {
     publications {
         Publication(MavenPublication) {
-            artifact jar
+            from components.java
             groupId 'com.bugsnag'
             artifactId 'bugsnag'
             version project.version

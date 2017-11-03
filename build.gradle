@@ -1,4 +1,4 @@
-apply plugin: 'java'
+apply plugin: 'java-library'
 apply plugin: 'checkstyle'
 buildscript {
     repositories {
@@ -26,7 +26,7 @@ repositories {
 
 dependencies {
     compile 'com.fasterxml.jackson.core:jackson-databind:2.9.1'
-    compile 'com.google.guava:guava:23.1-jre'
+    compile 'com.google.guava:guava:23.1-android'
     compile 'org.slf4j:slf4j-api:1.7.25'
     compileOnly 'javax.servlet:javax.servlet-api:3.1.0'
 
