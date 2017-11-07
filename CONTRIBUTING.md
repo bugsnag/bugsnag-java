@@ -65,13 +65,13 @@ Create a [Bintray](https://bintray.com) account:
    * `./gradlew -Preleasing=true clean release`
      - enter the release version (e.g. `1.2.0`)
      - accept the default development version
-1. Create a release in GitHub
+1. Create a release in GitHub, attaching the changelog entry and build artifacts
 1. Upload the archives to Sonatype Nexus and Bintray:
    * `./gradlew -Preleasing=true uploadArchives bintrayUpload`
 1. "Promote" the build on Maven Central:
    * `./gradlew -Preleasing=true closeAndReleaseRepository`
-1. For a major version change, update the version numbers in the integration instructions in the website.
-1. Update docs.bugsnag.com with any new content, and bump major version
-numbers in installation instructions if changed. Update the version numbers of
-the dependent libraries in the manual integration guide.
-
+1. Update the documentation (integration guide, quick start):
+   * Update the version numbers of the dependencies listed in the manual
+     integration guide.
+   * For a major version change, update the version numbers in the integration
+     instructions on docs.bugsnag.com and the quick start guides on the website.
