@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.1.3 (2017-11-30)
+
+* Cache hostname to avoid excessive thread spawning
+
 ## 3.1.2 (2017-11-03)
 
 * Fixes JDK 7 support by using Android Guava
