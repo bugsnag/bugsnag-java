@@ -35,6 +35,10 @@ public class DeviceCallback implements Callback {
             }
         });
 
+    public static void initializeCache() {
+        hostnameCache.get();
+    }
+
     @Override
     public void beforeNotify(Report report) {
         report
