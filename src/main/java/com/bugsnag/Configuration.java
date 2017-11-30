@@ -34,6 +34,7 @@ public class Configuration {
         // Add built-in callbacks
         addCallback(new AppCallback(this));
         addCallback(new DeviceCallback());
+        DeviceCallback.initializeCache();
 
         if (ServletCallback.isAvailable()) {
             addCallback(new ServletCallback());
