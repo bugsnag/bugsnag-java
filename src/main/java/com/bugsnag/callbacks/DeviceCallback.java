@@ -2,47 +2,60 @@ package com.bugsnag.callbacks;
 
 import com.bugsnag.Report;
 
-import com.google.common.base.Supplier;
-import com.google.common.base.Suppliers;
-
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Locale;
 
 public class DeviceCallback implements Callback {
-    private static final Supplier<String> hostnameCache =
-        Suppliers.memoize(new Supplier<String>() {
 
-            public String get() {
-                // Windows always sets COMPUTERNAME
-                if (System.getProperty("os.name").startsWith("Windows")) {
-                    return System.getenv("COMPUTERNAME");
-                }
+    private static volatile String hostname;
+    private static transient volatile boolean hostnameInitialised;
+    private static final Object lock = new Object();
 
-                // Try the HOSTNAME env variable (most unix systems)
-                String hostname = System.getenv("HOSTNAME");
-                if (hostname != null) {
-                    return hostname;
+    /**
+     * Memoises the hostname, as lookup can be expensive
+     */
+    private static String getHostnameValue() {
+        if (!hostnameInitialised) {
+            synchronized (lock) {
+                if (!hostnameInitialised) {
+                    hostname = lookupHostname();
+                    hostnameInitialised = true;
                 }
-
-                // Resort to dns hostname lookup
-                try {
-                    return InetAddress.getLocalHost().getHostName();
-                } catch (UnknownHostException ex) {
-                    // Give up
-                }
-                return null;
             }
-        });
+        }
+        return hostname;
+    }
+
+    private static String lookupHostname() {
+        // Windows always sets COMPUTERNAME
+        if (System.getProperty("os.name").startsWith("Windows")) {
+            return System.getenv("COMPUTERNAME");
+        }
+
+        // Try the HOSTNAME env variable (most unix systems)
+        String hostname = System.getenv("HOSTNAME");
+        if (hostname != null) {
+            return hostname;
+        }
+
+        // Resort to dns hostname lookup
+        try {
+            return InetAddress.getLocalHost().getHostName();
+        } catch (UnknownHostException ex) {
+            // Give up
+        }
+        return null;
+    }
 
     public static void initializeCache() {
-        hostnameCache.get();
+        getHostnameValue();
     }
 
     @Override
     public void beforeNotify(Report report) {
         report
-                .setDeviceInfo("hostname", hostnameCache.get())
+                .setDeviceInfo("hostname", getHostnameValue())
                 .setDeviceInfo("osName", System.getProperty("os.name"))
                 .setDeviceInfo("osVersion", System.getProperty("os.version"))
                 .setDeviceInfo("osArch", System.getProperty("os.arch"))
