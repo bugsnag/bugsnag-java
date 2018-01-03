@@ -1,11 +1,11 @@
 package com.bugsnag;
 
 import com.bugsnag.serialization.Expose;
-import com.bugsnag.util.FilterTransformer;
 
-import com.google.common.collect.Maps;
+import com.bugsnag.util.FilteredMap;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -110,8 +110,7 @@ public class Report {
 
     @Expose
     public Map getMetaData() {
-        Map<String, Object> metaDataMap = diagnostics.metaData;
-        return Maps.transformEntries(metaDataMap, new FilterTransformer(config.filters));
+        return new FilteredMap(diagnostics.metaData, Arrays.asList(config.filters));
     }
 
     /**
