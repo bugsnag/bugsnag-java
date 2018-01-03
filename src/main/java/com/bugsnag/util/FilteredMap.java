@@ -1,7 +1,10 @@
 package com.bugsnag.util;
 
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Decorates a map, and alters the return value of {@link #get(Object)} if the key matches a filter.
@@ -40,8 +43,8 @@ public class FilteredMap implements Map<String, Object> {
 
     @Override
     public Object get(Object key) {
-        Object o = map.get(key);
-        return o != null ? transformEntry(key, o) : null;
+        Object obj = map.get(key);
+        return obj != null ? transformEntry(key, obj) : null;
     }
 
     @Override
@@ -55,8 +58,8 @@ public class FilteredMap implements Map<String, Object> {
     }
 
     @Override
-    public void putAll(Map<? extends String, ?> m) {
-        map.putAll(m);
+    public void putAll(Map<? extends String, ?> mapValues) {
+        map.putAll(mapValues);
     }
 
     @Override
