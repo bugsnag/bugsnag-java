@@ -1,5 +1,10 @@
 # Changelog
 
+## 3.1.4 (2018-01-19)
+
+* Remove dependency on Guava
+* Update Gradle wrapper
+
 ## 3.1.3 (2017-11-30)
 
 * Cache hostname to avoid excessive thread spawning
