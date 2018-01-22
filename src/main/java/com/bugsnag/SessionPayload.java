@@ -1,36 +1,45 @@
 package com.bugsnag;
 
+import com.bugsnag.callbacks.DeviceCallback;
 import com.bugsnag.serialization.Expose;
 
-import java.util.Collection;
-import java.util.Collections;
+import java.util.*;
 
-class SessionPayload {
+final class SessionPayload {
 
-//    private Device device;
-//
-//    private App app;
-//
-//    private List<SessionCount> sessionCounts;
+    private final Collection<SessionCount> sessionCounts = new ArrayList<SessionCount>();;
+    private final Configuration configuration;
+
+    SessionPayload(Collection<SessionCount> sessionCounts, Configuration configuration) {
+        this.sessionCounts.addAll(sessionCounts);
+        this.configuration = configuration;
+    }
 
     @Expose
-    public Notifier getNotifier() {
+    Notifier getNotifier() {
         return new Notifier();
     }
 
-//    @Expose
-//    public Device getDevice() {
-//        return device;
-//    }
-//
-//    @Expose
-//    public App getApp() {
-//        return app;
-//    }
-//
     @Expose
-    public Collection<SessionCount> getSessionCounts() {
-        return Collections.emptyList();
+    Map<String, Object> getDevice() {
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put("hostname", DeviceCallback.getHostnameValue());
+        map.put("osName", System.getProperty("os.name"));
+        map.put("osVersion", System.getProperty("os.version"));
+        return map;
+    }
+
+    @Expose
+    Map<String, Object> getApp() {
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put("releaseStage", configuration.releaseStage);
+        map.put("appVersion", configuration.appVersion);
+        return map;
+    }
+
+    @Expose
+    Collection<SessionCount> getSessionCounts() {
+        return sessionCounts;
     }
 
 }
