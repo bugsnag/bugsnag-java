@@ -380,6 +380,20 @@ public class Bugsnag {
         return true;
     }
 
+    public void startSession() {
+        // TODO
+    }
+
+    public void setAutoCaptureSessions(boolean autoCaptureSessions) {
+        config.setAutoCaptureSessions(autoCaptureSessions);
+        // TODO
+    }
+
+    public void setSessionEndpoint(String sessionEndpoint) {
+        config.setSessionEndpoint(sessionEndpoint);
+        // TODO
+    }
+
     /**
      * Close the connection to Bugsnag and unlink the exception handler.
      */

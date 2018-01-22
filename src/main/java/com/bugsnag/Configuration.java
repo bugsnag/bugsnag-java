@@ -27,6 +27,8 @@ public class Configuration {
 
     Collection<Callback> callbacks = new ArrayList<Callback>();
     Serializer serializer = new Serializer();
+    private boolean autoCaptureSessions;
+    private String sessionEndpoint;
 
     Configuration(String apiKey) {
         this.apiKey = apiKey;
@@ -73,5 +75,21 @@ public class Configuration {
         }
 
         return false;
+    }
+
+    public void setAutoCaptureSessions(boolean autoCaptureSessions) {
+        this.autoCaptureSessions = autoCaptureSessions;
+    }
+
+    public boolean shouldAutoCaptureSessions() {
+        return autoCaptureSessions;
+    }
+
+    public void setSessionEndpoint(String sessionEndpoint) {
+        this.sessionEndpoint = sessionEndpoint;
+    }
+
+    public String getSessionEndpoint() {
+        return sessionEndpoint;
     }
 }
