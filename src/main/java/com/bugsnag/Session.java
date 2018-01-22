@@ -1,34 +1,36 @@
 package com.bugsnag;
 
 import java.util.Date;
+import java.util.concurrent.atomic.AtomicInteger;
 
 class Session {
 
     private final String id;
     private final Date startedAt;
-
-    private int handledCount;
-    private int unhandledCount;
+    private final AtomicInteger handledCount;
+    private final AtomicInteger unhandledCount;
 
     Session(String id, Date startedAt) {
         this.id = id;
         this.startedAt = new Date(startedAt.getTime());
+        this.handledCount = new AtomicInteger(0);
+        this.unhandledCount = new AtomicInteger(0);
     }
 
-    synchronized int getHandledCount() {
-        return handledCount;
+    int getHandledCount() {
+        return handledCount.get();
     }
 
-    synchronized void incrementHandledCount() {
-        this.handledCount++;
+    void incrementHandledCount() {
+        this.handledCount.incrementAndGet();
     }
 
-    synchronized int getUnhandledCount() {
-        return unhandledCount;
+    int getUnhandledCount() {
+        return unhandledCount.get();
     }
 
-    synchronized void incrementUnhandledCount() {
-        this.unhandledCount++;
+    void incrementUnhandledCount() {
+        this.unhandledCount.incrementAndGet();
     }
 
     String getId() {
