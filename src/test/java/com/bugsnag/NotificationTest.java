@@ -6,6 +6,8 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.Date;
+
 import static org.junit.Assert.*;
 
 public class NotificationTest {
@@ -17,6 +19,7 @@ public class NotificationTest {
         ObjectMapper mapper = new ObjectMapper();
         Configuration config = new Configuration("api-key");
         Report report = new Report(config, new RuntimeException());
+        report.setSession(new Session("123", new Date()));
         Notification notification = new Notification(config, report);
         String json = mapper.writeValueAsString(notification);
         rootNode = mapper.readTree(json);

@@ -4,10 +4,7 @@ import com.bugsnag.serialization.Expose;
 
 import com.bugsnag.util.FilteredMap;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class Report {
     private static final String PAYLOAD_VERSION = "3";
@@ -21,6 +18,7 @@ public class Report {
     private String groupingHash;
     private Diagnostics diagnostics = new Diagnostics();
     private boolean shouldCancel = false;
+    private Session session;
 
     /**
      * Create a report for the error.
@@ -111,6 +109,27 @@ public class Report {
     @Expose
     public Map getMetaData() {
         return new FilteredMap(diagnostics.metaData, Arrays.asList(config.filters));
+    }
+
+    @Expose
+    public Map<String, Object> getSession() {
+        if (session == null) {
+            return null;
+        }
+        
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put("id", session.getId());
+        map.put("startedAt", session.getStartedAt());
+
+        Map<String, Object> handledCounts = new HashMap<String, Object>();
+        handledCounts.put("handled", session.getHandledCount());
+        handledCounts.put("unhandled", session.getUnhandledCount());
+        map.put("events", handledCounts);
+        return map;
+    }
+
+    void setSession(Session session) {
+        this.session = session;
     }
 
     /**
