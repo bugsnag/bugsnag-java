@@ -8,11 +8,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.net.Proxy;
+import java.util.Date;
 
 public class Bugsnag {
     private static final Logger LOGGER = LoggerFactory.getLogger(Bugsnag.class);
 
     private Configuration config;
+    private final SessionTracker sessionTracker;
 
     //
     // Constructors
@@ -39,6 +41,7 @@ public class Bugsnag {
         }
 
         config = new Configuration(apiKey);
+        sessionTracker = new SessionTracker();
 
         // Automatically send unhandled exceptions to Bugsnag using this Bugsnag
         if (sendUncaughtExceptions) {
@@ -106,6 +109,21 @@ public class Bugsnag {
         config.delivery = delivery;
     }
 
+
+    /**
+     * Set the method of delivery for Bugsnag sessions. By default we'll
+     * send sessions asynchronously using a thread pool to
+     * https://sessions.bugsnag.com, but you can override this to use a
+     * different sending technique or endpoint (for example, if you are using
+     * Bugsnag On-Premise).
+     *
+     * @param delivery the delivery mechanism to use
+     * @see Delivery
+     */
+    public void setSessionDelivery(Delivery delivery) {
+        config.sessionDelivery = delivery;
+    }
+
     /**
      * Set the endpoint to deliver Bugsnag errors report to. This is a convenient
      * shorthand for bugsnag.getDelivery().setEndpoint();
@@ -118,8 +136,6 @@ public class Bugsnag {
             ((HttpDelivery) config.delivery).setEndpoint(endpoint);
         }
     }
-
-    // TODO create session equivalents here!
 
     /**
      * Set which keys should be filtered when sending metaData to Bugsnag.
@@ -165,7 +181,7 @@ public class Bugsnag {
     }
 
     /**
-     * Set a proxy to use when delivering Bugsnag error reports. This is a convenient
+     * Set a proxy to use when delivering Bugsnag error reports and sessions. This is a convenient
      * shorthand for bugsnag.getDelivery().setProxy();
      *
      * @param proxy the proxy to use to send reports
@@ -173,6 +189,9 @@ public class Bugsnag {
     public void setProxy(Proxy proxy) {
         if (config.delivery instanceof HttpDelivery) {
             ((HttpDelivery) config.delivery).setProxy(proxy);
+        }
+        if (config.sessionDelivery instanceof HttpDelivery) {
+            ((HttpDelivery) config.sessionDelivery).setProxy(proxy);
         }
     }
 
@@ -200,7 +219,7 @@ public class Bugsnag {
     }
 
     /**
-     * Set a timeout (in ms) to use when delivering Bugsnag error reports.
+     * Set a timeout (in ms) to use when delivering Bugsnag error reports and sessions.
      * This is a convenient shorthand for bugsnag.getDelivery().setTimeout();
      *
      * @param timeout the timeout to set (in ms)
@@ -209,6 +228,9 @@ public class Bugsnag {
     public void setTimeout(int timeout) {
         if (config.delivery instanceof HttpDelivery) {
             ((HttpDelivery) config.delivery).setTimeout(timeout);
+        }
+        if (config.sessionDelivery instanceof HttpDelivery) {
+            ((HttpDelivery) config.sessionDelivery).setTimeout(timeout);
         }
     }
 
@@ -382,18 +404,39 @@ public class Bugsnag {
         return true;
     }
 
+    /**
+     * Manually starts tracking a new session.
+     *
+     * Automatic session tracking can be enabled via
+     * {@link Bugsnag#setAutoCaptureSessions(boolean)}, which will automatically create a new
+     * session for each request
+     */
     public void startSession() {
-        // TODO
+        sessionTracker.startNewSession(new Date(), false);
     }
 
+    /**
+     * Sets whether or not Bugsnag should automatically capture and report User sessions for each request.
+     * <p>
+     * By default this behavior is disabled.
+     *
+     * @param autoCaptureSessions whether sessions should be captured automatically
+     */
     public void setAutoCaptureSessions(boolean autoCaptureSessions) {
         config.setAutoCaptureSessions(autoCaptureSessions);
-        // TODO
     }
 
-    public void setSessionEndpoint(String sessionEndpoint) {
-        config.setSessionEndpoint(sessionEndpoint);
-        // TODO
+    /**
+     * Set the endpoint to deliver Bugsnag sessions to. This is a convenient
+     * shorthand for bugsnag.getSessionDelivery().setEndpoint();
+     *
+     * @param endpoint the endpoint to send reports to
+     * @see #setDelivery
+     */
+    public void setSessionEndpoint(String endpoint) {
+        if (config.sessionDelivery instanceof HttpDelivery) {
+            ((HttpDelivery) config.sessionDelivery).setEndpoint(endpoint);
+        }
     }
 
     /**

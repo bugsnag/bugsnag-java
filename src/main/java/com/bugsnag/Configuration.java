@@ -20,6 +20,7 @@ public class Configuration {
     public String appType;
     public String appVersion;
     public Delivery delivery = new AsyncHttpDelivery();
+    public Delivery sessionDelivery = new AsyncHttpDelivery();
     public String[] filters = new String[]{"password"};
     public String[] ignoreClasses;
     public String[] notifyReleaseStages = null;
@@ -30,7 +31,6 @@ public class Configuration {
     Collection<Callback> callbacks = new ArrayList<Callback>();
     Serializer serializer = new Serializer();
     private volatile boolean autoCaptureSessions;
-    private String sessionEndpoint = "https://sessions.bugsnag.com";
 
     Configuration(String apiKey) {
         this.apiKey = apiKey;
@@ -85,14 +85,6 @@ public class Configuration {
 
     public boolean shouldAutoCaptureSessions() {
         return autoCaptureSessions;
-    }
-
-    public void setSessionEndpoint(String sessionEndpoint) {
-        this.sessionEndpoint = sessionEndpoint;
-    }
-
-    public String getSessionEndpoint() {
-        return sessionEndpoint;
     }
 
     Map<String, String> getErrorApiHeaders() {

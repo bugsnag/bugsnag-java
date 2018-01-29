@@ -17,7 +17,7 @@ import java.util.Map;
 public class SyncHttpDelivery implements HttpDelivery {
     private static final Logger logger = LoggerFactory.getLogger(SyncHttpDelivery.class);
 
-    protected static final String DEFAULT_ENDPOINT = "https://notify.bugsnag.com";
+    protected static final String DEFAULT_ENDPOINT = "https://notify.bugsnag.com"; // FIXME handle sessions!
     protected static final int DEFAULT_TIMEOUT = 5000;
 
     protected String endpoint = DEFAULT_ENDPOINT;
