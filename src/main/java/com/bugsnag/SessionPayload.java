@@ -32,8 +32,13 @@ final class SessionPayload {
     @Expose
     Map<String, Object> getApp() {
         Map<String, Object> map = new HashMap<String, Object>();
-        map.put("releaseStage", configuration.releaseStage);
-        map.put("appVersion", configuration.appVersion);
+
+        if (configuration.releaseStage != null) {
+            map.put("releaseStage", configuration.releaseStage);
+        }
+        if (configuration.appVersion != null) {
+            map.put("appVersion", configuration.appVersion);
+        }
         return map;
     }
 

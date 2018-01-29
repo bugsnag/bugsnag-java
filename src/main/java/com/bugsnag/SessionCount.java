@@ -6,16 +6,16 @@ import java.util.Date;
 
 final class SessionCount {
 
-    private final Date startedAt;
+    private final String startedAt;
     private final long sessionsStarted;
 
     SessionCount(Date startedAt, long sessionsStarted) {
-        this.startedAt = new Date(startedAt.getTime());
+        this.startedAt = DateUtils.toISO8601(startedAt);
         this.sessionsStarted = sessionsStarted;
     }
 
     @Expose
-    Date getStartedAt() {
+    String getStartedAt() {
         return startedAt;
     }
 
