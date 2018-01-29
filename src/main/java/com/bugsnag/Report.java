@@ -16,7 +16,7 @@ public class Report {
     private final HandledState handledState;
     private Severity severity;
     private String groupingHash;
-    private Diagnostics diagnostics = new Diagnostics();
+    private Diagnostics diagnostics;
     private boolean shouldCancel = false;
     private Session session;
 
@@ -36,6 +36,7 @@ public class Report {
         this.throwable = throwable;
         this.handledState = handledState;
         this.severity = handledState.getOriginalSeverity();
+        diagnostics = new Diagnostics(this.config);
     }
 
     @Expose

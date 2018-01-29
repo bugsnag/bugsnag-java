@@ -1,5 +1,8 @@
 package com.bugsnag;
 
+import com.bugsnag.serialization.Expose;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import java.util.Date;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -37,7 +40,12 @@ class Session {
         return id;
     }
 
-    Date getStartedAt() {
+    Date getStartedAtDate() {
         return new Date(startedAt.getTime());
+    }
+
+    @Expose
+    String getStartedAt() {
+        return DateUtils.toISO8601(startedAt);
     }
 }

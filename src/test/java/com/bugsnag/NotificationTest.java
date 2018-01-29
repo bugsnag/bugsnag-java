@@ -19,6 +19,8 @@ public class NotificationTest {
     @Before
     public void setUp() throws Throwable {
         config = new Configuration("api-key");
+        config.appVersion = "1.2.3";
+        config.releaseStage = "dev";
         report = new Report(config, new RuntimeException());
     }
 
@@ -30,7 +32,7 @@ public class NotificationTest {
 
     @Test
     public void testSessionSerialisation() throws Throwable {
-        report.setSession(new Session("123", new Date()));
+        report.setSession(new Session("123", new Date(1500000000000L)));
         JsonNode rootNode = generateJson(mapper, config, report);
         validateErrorReport(rootNode);
 
@@ -38,7 +40,7 @@ public class NotificationTest {
         JsonNode session = rootNode.get("events").get(0).get("session");
         assertNotNull(session);
         assertNotNull(session.get("id").asText());
-        assertNotNull(session.get("startedAt").asText());
+        assertEquals("2017-07-14T02:40:00Z", session.get("startedAt").asText());
 
         JsonNode handledState = session.get("events");
         assertNotNull(handledState);
@@ -64,6 +66,21 @@ public class NotificationTest {
 
         JsonNode event = events.get(0);
         assertNotNull(event);
+
+        assertEquals("warning", event.get("severity").asText());
+        assertEquals("4", event.get("payloadVersion").asText());
+        assertFalse(event.get("unhandled").asBoolean());
+
+        JsonNode device = event.get("device");
+        assertNotNull(device);
+        assertNotNull(device.get("hostname").asText());
+        assertNotNull(device.get("osName").asText());
+        assertNotNull(device.get("osVersion").asText());
+
+        JsonNode app = event.get("app");
+        assertNotNull(app);
+        assertNotNull(app.get("releaseStage").asText());
+        assertNotNull(app.get("version").asText());
     }
 
 }
