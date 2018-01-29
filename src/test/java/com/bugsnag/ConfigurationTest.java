@@ -19,7 +19,6 @@ public class ConfigurationTest {
     @Test
     public void testDefaults() throws java.lang.Exception {
         assertFalse(config.shouldAutoCaptureSessions());
-        assertEquals("https://sessions.bugsnag.com", config.getSessionEndpoint());
     }
 
     @Test
