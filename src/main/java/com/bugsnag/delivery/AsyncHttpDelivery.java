@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.net.Proxy;
+import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -59,7 +60,7 @@ public class AsyncHttpDelivery implements HttpDelivery {
     }
 
     @Override
-    public void deliver(final Serializer serializer, final Object object) {
+    public void deliver(final Serializer serializer, final Object object, final Map<String, String> headers) {
         if (shuttingDown) {
             logger.warn("Not notifying - 'sending' threads are already shutting down");
             return;
@@ -68,7 +69,7 @@ public class AsyncHttpDelivery implements HttpDelivery {
         executorService.execute(new Runnable() {
             @Override
             public void run() {
-                baseDelivery.deliver(serializer, object);
+                baseDelivery.deliver(serializer, object, headers);
             }
         });
     }

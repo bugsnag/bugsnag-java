@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.OutputStream;
+import java.util.Map;
 
 public class OutputStreamDelivery implements Delivery {
     private static final Logger logger = LoggerFactory.getLogger(OutputStreamDelivery.class);
@@ -17,7 +18,7 @@ public class OutputStreamDelivery implements Delivery {
     }
 
     @Override
-    public void deliver(Serializer serializer, Object object) {
+    public void deliver(Serializer serializer, Object object, Map<String, String> headers) {
         try {
             serializer.writeToStream(outputStream, object);
         } catch (SerializationException ex) {

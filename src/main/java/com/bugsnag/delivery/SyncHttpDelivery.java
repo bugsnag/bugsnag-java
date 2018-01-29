@@ -12,6 +12,7 @@ import java.net.HttpURLConnection;
 import java.net.Proxy;
 import java.net.URL;
 import java.net.UnknownHostException;
+import java.util.Map;
 
 public class SyncHttpDelivery implements HttpDelivery {
     private static final Logger logger = LoggerFactory.getLogger(SyncHttpDelivery.class);
@@ -36,7 +37,7 @@ public class SyncHttpDelivery implements HttpDelivery {
     }
 
     @Override
-    public void deliver(Serializer serializer, Object object) {
+    public void deliver(Serializer serializer, Object object, Map<String, String> headers) {
         HttpURLConnection connection = null;
         try {
             URL url = new URL(endpoint);
@@ -50,6 +51,10 @@ public class SyncHttpDelivery implements HttpDelivery {
             connection.setRequestMethod("POST");
             connection.setConnectTimeout(timeout);
             connection.addRequestProperty("Content-Type", "application/json");
+
+            for (Map.Entry<String, String> entry : headers.entrySet()) {
+                connection.addRequestProperty(entry.getKey(), entry.getValue());
+            }
 
             OutputStream outputStream = null;
             try {

@@ -7,7 +7,7 @@ import com.bugsnag.util.FilteredMap;
 import java.util.*;
 
 public class Report {
-    private static final String PAYLOAD_VERSION = "3";
+    private static final String PAYLOAD_VERSION = "4";
 
     private Configuration config;
 

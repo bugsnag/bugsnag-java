@@ -8,12 +8,14 @@ import com.bugsnag.delivery.AsyncHttpDelivery;
 import com.bugsnag.delivery.Delivery;
 import com.bugsnag.serialization.Serializer;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 public class Configuration {
+
+    private static final String HEADER_API_PAYLOAD_VERSION = "Bugsnag-Payload-Version";
+    private static final String HEADER_API_KEY = "Bugsnag-Api-Key";
+    private static final String HEADER_BUGSNAG_SENT_AT = "Bugsnag-Sent-At";
+
     public String apiKey;
     public String appType;
     public String appVersion;
@@ -27,8 +29,8 @@ public class Configuration {
 
     Collection<Callback> callbacks = new ArrayList<Callback>();
     Serializer serializer = new Serializer();
-    private boolean autoCaptureSessions;
-    private String sessionEndpoint;
+    private volatile boolean autoCaptureSessions;
+    private String sessionEndpoint = "https://sessions.bugsnag.com";
 
     Configuration(String apiKey) {
         this.apiKey = apiKey;
@@ -91,5 +93,21 @@ public class Configuration {
 
     public String getSessionEndpoint() {
         return sessionEndpoint;
+    }
+
+    Map<String, String> getErrorApiHeaders() {
+        Map<String, String> map = new HashMap<String, String>();
+        map.put(HEADER_API_PAYLOAD_VERSION, "4.0");
+        map.put(HEADER_API_KEY, apiKey);
+        map.put(HEADER_BUGSNAG_SENT_AT, DateUtils.toISO8601(new Date()));
+        return map;
+    }
+
+    Map<String, String> getSessionApiHeaders() {
+        Map<String, String> map = new HashMap<String, String>();
+        map.put(HEADER_API_PAYLOAD_VERSION, "1.0");
+        map.put(HEADER_API_KEY, apiKey);
+        map.put(HEADER_BUGSNAG_SENT_AT, DateUtils.toISO8601(new Date()));
+        return map;
     }
 }

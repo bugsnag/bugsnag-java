@@ -119,6 +119,8 @@ public class Bugsnag {
         }
     }
 
+    // TODO create session equivalents here!
+
     /**
      * Set which keys should be filtered when sending metaData to Bugsnag.
      * Use this when you want to ensure sensitive information, such as passwords
@@ -375,7 +377,7 @@ public class Bugsnag {
         // Deliver the notification
         LOGGER.debug("Reporting error to Bugsnag");
 
-        config.delivery.deliver(config.serializer, notification);
+        config.delivery.deliver(config.serializer, notification, config.getErrorApiHeaders());
 
         return true;
     }
