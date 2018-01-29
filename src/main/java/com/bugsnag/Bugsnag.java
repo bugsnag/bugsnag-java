@@ -41,7 +41,7 @@ public class Bugsnag {
         }
 
         config = new Configuration(apiKey);
-        sessionTracker = new SessionTracker();
+        sessionTracker = new SessionTracker(config);
 
         // Automatically send unhandled exceptions to Bugsnag using this Bugsnag
         if (sendUncaughtExceptions) {
