@@ -1,9 +1,5 @@
 package com.bugsnag;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
 import com.bugsnag.callbacks.Callback;
 import com.bugsnag.delivery.Delivery;
 import com.bugsnag.delivery.HttpDelivery;
@@ -16,6 +12,8 @@ import java.io.ByteArrayOutputStream;
 import java.net.InetSocketAddress;
 import java.net.Proxy;
 import java.util.Map;
+
+import static org.junit.Assert.*;
 
 public class BugsnagTest {
 
@@ -412,6 +410,47 @@ public class BugsnagTest {
                 Report report = ((Notification) object).getEvents().get(0);
                 // There is information about at least one thread
                 assertTrue(report.getThreads().size() > 0);
+            }
+
+            @Override
+            public void close() {
+            }
+        });
+        assertTrue(bugsnag.notify(new Throwable()));
+    }
+
+    @Test
+    public void testHandledIncrementNoSession() {
+        Bugsnag bugsnag = new Bugsnag("apikey");
+        bugsnag.setDelivery(new Delivery() {
+            @Override
+            public void deliver(Serializer serializer, Object object, Map<String, String> headers) {
+                Report report = ((Notification) object).getEvents().get(0);
+                assertNull(report.getSession());
+            }
+
+            @Override
+            public void close() {
+            }
+        });
+        assertTrue(bugsnag.notify(new Throwable()));
+    }
+
+    @Test
+    public void testHandledIncrementWithSession() {
+        Bugsnag bugsnag = new Bugsnag("apikey");
+        bugsnag.startSession();
+        bugsnag.setDelivery(new Delivery() {
+            @Override
+            public void deliver(Serializer serializer, Object object, Map<String, String> headers) {
+                Report report = ((Notification) object).getEvents().get(0);
+
+                Map<String, Object> session = report.getSession();
+                assertNotNull(session);
+
+                Map<String, Object> handledCounts = (Map<String, Object>) session.get("events");
+                assertEquals(1, handledCounts.get("handled"));
+                assertEquals(0, handledCounts.get("unhandled"));
             }
 
             @Override

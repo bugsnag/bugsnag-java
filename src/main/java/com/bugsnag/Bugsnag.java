@@ -393,6 +393,18 @@ public class Bugsnag {
             return false;
         }
 
+        // increment session handled/unhandled count
+        Session session = sessionTracker.getSession();
+
+        if (session != null) {
+            if (report.getUnhandled()) {
+                session.incrementUnhandledCount();
+            } else {
+                session.incrementHandledCount();
+            }
+            report.setSession(session);
+        }
+
         // Build the notification
         Notification notification = new Notification(config, report);
 

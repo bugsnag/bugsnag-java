@@ -17,11 +17,14 @@ class SessionTracker {
             return;
         }
 
-        // TODO increment count!
-        session.set(new Session(UUID.randomUUID().toString(), date));
+        Session newSession = new Session(UUID.randomUUID().toString(), date);
+
+
+        // TODO increment count/report!
+        session.set(newSession);
     }
 
-    public Session getSession() {
+    Session getSession() {
         return session.get();
     }
 
