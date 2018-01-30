@@ -2,11 +2,14 @@ package com.bugsnag;
 
 import java.util.Date;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicLong;
 
 class SessionTracker {
 
     private final Configuration configuration;
     private final ThreadLocal<Session> session = new ThreadLocal<Session>();
+
+    private final AtomicLong sessionCount = new AtomicLong();
 
     SessionTracker(Configuration configuration) {
         this.configuration = configuration;
@@ -17,11 +20,9 @@ class SessionTracker {
             return;
         }
 
-        Session newSession = new Session(UUID.randomUUID().toString(), date);
-
-
-        // TODO increment count/report!
-        session.set(newSession);
+        // TODO store date against count and deliver sessions
+        sessionCount.incrementAndGet();
+        session.set(new Session(UUID.randomUUID().toString(), date));
     }
 
     Session getSession() {
