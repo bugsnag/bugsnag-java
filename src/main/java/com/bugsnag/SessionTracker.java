@@ -6,18 +6,23 @@ import java.util.UUID;
 class SessionTracker {
 
     private final Configuration configuration;
+    private final ThreadLocal<Session> session = new ThreadLocal<Session>();
 
     SessionTracker(Configuration configuration) {
         this.configuration = configuration;
     }
 
     void startNewSession(Date date, boolean autoCaptured) {
-        if (!configuration.shouldNotifyForReleaseStage()) {
+        if ((!configuration.shouldAutoCaptureSessions() && autoCaptured) || !configuration.shouldNotifyForReleaseStage()) {
             return;
         }
 
-        new Session(UUID.randomUUID().toString(), date);
-        // TODO
+        // TODO increment count!
+        session.set(new Session(UUID.randomUUID().toString(), date));
+    }
+
+    public Session getSession() {
+        return session.get();
     }
 
 }
