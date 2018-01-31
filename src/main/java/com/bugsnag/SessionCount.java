@@ -3,15 +3,19 @@ package com.bugsnag;
 import com.bugsnag.serialization.Expose;
 
 import java.util.Date;
+import java.util.concurrent.atomic.AtomicLong;
 
 final class SessionCount {
 
     private final String startedAt;
-    private final long sessionsStarted;
+    private final AtomicLong sessionsStarted = new AtomicLong();
 
-    SessionCount(Date startedAt, long sessionsStarted) {
+    SessionCount(Date startedAt) {
         this.startedAt = DateUtils.toISO8601(startedAt);
-        this.sessionsStarted = sessionsStarted;
+    }
+
+    void incrementSessionsStarted() {
+        sessionsStarted.incrementAndGet();
     }
 
     @Expose
@@ -21,7 +25,7 @@ final class SessionCount {
 
     @Expose
     long getSessionsStarted() {
-        return sessionsStarted;
+        return sessionsStarted.get();
     }
 
 }
