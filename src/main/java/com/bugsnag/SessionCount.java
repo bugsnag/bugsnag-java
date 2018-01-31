@@ -11,7 +11,7 @@ final class SessionCount {
     private final AtomicLong sessionsStarted = new AtomicLong();
 
     SessionCount(Date startedAt) {
-        this.startedAt = DateUtils.toISO8601(startedAt);
+        this.startedAt = DateUtils.toIso8601(startedAt);
     }
 
     void incrementSessionsStarted() {

@@ -18,7 +18,7 @@ class DateUtils {
         }
     };
 
-    static String toISO8601(Date date) {
+    static String toIso8601(Date date) {
         return iso8601Holder.get().format(date);
     }
 }

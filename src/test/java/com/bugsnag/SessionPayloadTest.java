@@ -19,7 +19,10 @@ public class SessionPayloadTest {
     public void setUp() throws Throwable {
         ObjectMapper mapper = new ObjectMapper();
         Collection<SessionCount> sessionCounts = new ArrayList<SessionCount>();
-        sessionCounts.add(new SessionCount(new Date(1500000000000L), 50));
+        SessionCount e = new SessionCount(new Date(1500000000000L));
+        e.incrementSessionsStarted();
+        e.incrementSessionsStarted();
+        sessionCounts.add(e);
         Configuration configuration = new Configuration("api-key");
         configuration.appVersion = "1.2.3";
         configuration.releaseStage = "dev";
@@ -48,7 +51,7 @@ public class SessionPayloadTest {
         assertNotNull(sessionCount);
         assertEquals(2, sessionCount.size());
 
-        assertEquals(sessionCount.get("sessionsStarted").intValue(), 50);
+        assertEquals(sessionCount.get("sessionsStarted").intValue(), 2);
         assertEquals(sessionCount.get("startedAt").asText(), "2017-07-14T02:40:00Z");
 
         JsonNode device = rootNode.get("device");

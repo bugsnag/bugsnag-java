@@ -428,7 +428,8 @@ public class Bugsnag {
     }
 
     /**
-     * Sets whether or not Bugsnag should automatically capture and report User sessions for each request.
+     * Sets whether or not Bugsnag should automatically capture and report User
+     * sessions for each request.
      * <p>
      * By default this behavior is disabled.
      *

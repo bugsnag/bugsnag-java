@@ -60,7 +60,9 @@ public class AsyncHttpDelivery implements HttpDelivery {
     }
 
     @Override
-    public void deliver(final Serializer serializer, final Object object, final Map<String, String> headers) {
+    public void deliver(final Serializer serializer,
+                        final Object object,
+                        final Map<String, String> headers) {
         if (shuttingDown) {
             logger.warn("Not notifying - 'sending' threads are already shutting down");
             return;

@@ -2,7 +2,9 @@ package com.bugsnag;
 
 import com.bugsnag.serialization.Expose;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Map;
 
 final class SessionPayload {
 

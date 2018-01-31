@@ -9,7 +9,13 @@ import com.bugsnag.delivery.Delivery;
 import com.bugsnag.delivery.HttpDelivery;
 import com.bugsnag.serialization.Serializer;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class Configuration {
 
@@ -94,7 +100,7 @@ public class Configuration {
         Map<String, String> map = new HashMap<String, String>();
         map.put(HEADER_API_PAYLOAD_VERSION, "4.0");
         map.put(HEADER_API_KEY, apiKey);
-        map.put(HEADER_BUGSNAG_SENT_AT, DateUtils.toISO8601(new Date()));
+        map.put(HEADER_BUGSNAG_SENT_AT, DateUtils.toIso8601(new Date()));
         return map;
     }
 
@@ -102,7 +108,7 @@ public class Configuration {
         Map<String, String> map = new HashMap<String, String>();
         map.put(HEADER_API_PAYLOAD_VERSION, "1.0");
         map.put(HEADER_API_KEY, apiKey);
-        map.put(HEADER_BUGSNAG_SENT_AT, DateUtils.toISO8601(new Date()));
+        map.put(HEADER_BUGSNAG_SENT_AT, DateUtils.toIso8601(new Date()));
         return map;
     }
 }

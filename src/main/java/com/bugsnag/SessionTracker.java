@@ -5,7 +5,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
-public class SessionTracker {
+class SessionTracker {
 
     private final Configuration config;
     private final ThreadLocal<Session> session = new ThreadLocal<Session>();
@@ -14,8 +14,9 @@ public class SessionTracker {
         this.config = configuration;
     }
 
-    public void startNewSession(Date date, boolean autoCaptured) {
-        if ((!config.shouldAutoCaptureSessions() && autoCaptured) || !config.shouldNotifyForReleaseStage()) {
+    void startNewSession(Date date, boolean autoCaptured) {
+        if ((!config.shouldAutoCaptureSessions()
+                && autoCaptured) || !config.shouldNotifyForReleaseStage()) {
             return;
         }
 
