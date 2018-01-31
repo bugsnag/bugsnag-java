@@ -9,6 +9,7 @@ import org.junit.Test;
 import java.util.Date;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.junit.Assert.*;
 
@@ -173,12 +174,33 @@ public class SessionTrackerTest {
         assertTrue(sessionDelivery.delivered);
     }
 
+    @Test
+    public void sessionDeliveryMultiFlush() throws Throwable {
+        CustomDelivery sessionDelivery = new CustomDelivery() {
+            @Override
+            public void deliver(Serializer serializer, Object object, Map<String, String> headers) {
+                SessionPayload payload = (SessionPayload) object;
+                assertEquals(1, payload.getSessionCounts().size());
+            }
+        };
+        configuration.sessionDelivery = sessionDelivery;
+
+        // 1 hour apart
+        sessionTracker.startNewSession(new Date(10000000L), false);
+        sessionTracker.flushSessions(new Date(13600000L));
+        sessionTracker.flushSessions(new Date(13600000L));
+        assertTrue(sessionDelivery.delivered);
+        assertEquals(1, sessionDelivery.count.get());
+    }
+
     abstract static class CustomDelivery implements Delivery {
         boolean delivered;
+        AtomicInteger count = new AtomicInteger(0);
 
         @Override
         public void deliver(Serializer serializer, Object object, Map<String, String> headers) {
             delivered = true;
+            count.getAndIncrement();
         }
 
         @Override

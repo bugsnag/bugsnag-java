@@ -9,9 +9,11 @@ final class SessionCount {
 
     private final String startedAt;
     private final AtomicLong sessionsStarted = new AtomicLong();
+    private final Date roundedDate;
 
     SessionCount(Date startedAt) {
-        this.startedAt = DateUtils.toIso8601(startedAt);
+        roundedDate = DateUtils.roundTimeToLatestMinute(startedAt);
+        this.startedAt = DateUtils.toIso8601(roundedDate);
     }
 
     void incrementSessionsStarted() {
@@ -28,4 +30,7 @@ final class SessionCount {
         return sessionsStarted.get();
     }
 
+    Date getRoundedDate() {
+        return roundedDate;
+    }
 }

@@ -2,18 +2,17 @@ package com.bugsnag;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.Semaphore;
+import java.util.concurrent.atomic.AtomicReference;
 
 class SessionTracker {
 
     private final Configuration config;
     private final ThreadLocal<Session> session = new ThreadLocal<Session>();
-    private final ThreadLocal<Calendar> calendarThreadLocal = new ThreadLocal<Calendar>() {
-        @Override
-        protected Calendar initialValue() {
-            return new GregorianCalendar(TimeZone.getTimeZone("UTC"));
-        }
-    };
+    private AtomicReference<SessionCount> batchCount = new AtomicReference<SessionCount>();
     private final Collection<SessionCount> enqueuedSessionCounts = new ConcurrentLinkedQueue<SessionCount>();
+
+    private final Semaphore flushingRequest = new Semaphore(1);
 
     SessionTracker(Configuration configuration) {
         this.config = configuration;
@@ -25,17 +24,32 @@ class SessionTracker {
             return;
         }
 
-        session.set(new Session(UUID.randomUUID().toString(), date));
+        // update the current session
+        Date roundedStartDate = DateUtils.roundTimeToLatestMinute(date);
+        session.set(new Session(UUID.randomUUID().toString(), roundedStartDate));
 
+        // check whether the session count needs to be updated
+        updateBatchCountIfNeeded(roundedStartDate);
 
-        // get current minute in utc
-        int minute = getUtcMinute(date);
+        // increment the session count
+        batchCount.get().incrementSessionsStarted();
+    }
 
-        // TODO temp flush
-        SessionCount count = new SessionCount(session.get().getStartedAtDate());
-        count.incrementSessionsStarted();
+    private void updateBatchCountIfNeeded(Date roundedStartDate) {
+        boolean isNewBatchPeriod = isNewBatchPeriod(roundedStartDate);
 
+        if (isNewBatchPeriod) {
+            SessionCount prev = batchCount.getAndSet(new SessionCount(roundedStartDate));
 
+            if (prev != null) {
+                enqueuedSessionCounts.add(prev);
+            }
+        }
+    }
+
+    private boolean isNewBatchPeriod(Date now) {
+        SessionCount val = batchCount.get();
+        return val == null || now.after(val.getRoundedDate());
     }
 
     Session getSession() {
@@ -43,18 +57,20 @@ class SessionTracker {
     }
 
     void flushSessions(Date now) {
-        if (!enqueuedSessionCounts.isEmpty()) {
-            // TODO check empty
+        if (isNewBatchPeriod(now) && flushingRequest.tryAcquire(1)) {
+            try {
+                Collection<SessionCount> requestValues = new ArrayList<SessionCount>();
+                requestValues.addAll(enqueuedSessionCounts);
 
-            SessionPayload payload = new SessionPayload(enqueuedSessionCounts, config);
-            config.sessionDelivery.deliver(config.serializer, payload, config.getErrorApiHeaders());
+                if (!requestValues.isEmpty()) {
+                    SessionPayload payload = new SessionPayload(requestValues, config);
+                    config.sessionDelivery.deliver(config.serializer, payload, config.getErrorApiHeaders());
+                    enqueuedSessionCounts.removeAll(requestValues);
+                }
+            } finally {
+                flushingRequest.release(1);
+            }
         }
-    }
-
-    private int getUtcMinute(Date date) {
-        Calendar calendar = calendarThreadLocal.get();
-        calendar.setTime(date);
-        return calendar.get(Calendar.MINUTE);
     }
 
 }
