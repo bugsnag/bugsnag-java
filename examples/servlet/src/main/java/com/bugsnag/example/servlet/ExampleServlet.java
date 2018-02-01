@@ -22,21 +22,21 @@ public class ExampleServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-//        // Send a handled exception to Bugsnag
-//        try {
-//            throw new RuntimeException("Handled exception - default severity");
-//        } catch (RuntimeException e) {
-//            bugsnag.notify(e);
-//        }
-//
-//        // Send a handled exception to Bugsnag with info severity
-//        try {
-//            throw new RuntimeException("Handled exception - INFO severity");
-//        } catch (RuntimeException ex) {
-//            bugsnag.notify(ex, Severity.INFO);
-//        }
-//
-//        // Throw an exception - not automatically reported so must be handled by the error handler
-//        throw new ServletException("Servlet exception");
+        // Send a handled exception to Bugsnag
+        try {
+            throw new RuntimeException("Handled exception - default severity");
+        } catch (RuntimeException e) {
+            bugsnag.notify(e);
+        }
+
+        // Send a handled exception to Bugsnag with info severity
+        try {
+            throw new RuntimeException("Handled exception - INFO severity");
+        } catch (RuntimeException ex) {
+            bugsnag.notify(ex, Severity.INFO);
+        }
+
+        // Throw an exception - not automatically reported so must be handled by the error handler
+        throw new ServletException("Servlet exception");
     }
 }
