@@ -48,7 +48,7 @@ class SessionTracker {
         if (isNewBatchPeriod) {
             SessionCount prev = batchCount.getAndSet(new SessionCount(roundedStartDate));
 
-            if (prev != null) {
+            if (prev != null && prev.getSessionsStarted() > 0) {
                 enqueuedSessionCounts.add(prev);
             }
         }
