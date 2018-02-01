@@ -57,7 +57,9 @@ class SessionTracker {
     }
 
     void flushSessions(Date now) {
-        if (isNewBatchPeriod(now) && flushingRequest.tryAcquire(1)) {
+        updateBatchCountIfNeeded(DateUtils.roundTimeToLatestMinute(now));
+
+        if (!enqueuedSessionCounts.isEmpty() && flushingRequest.tryAcquire(1)) {
             try {
                 Collection<SessionCount> requestValues = new ArrayList<SessionCount>();
                 requestValues.addAll(enqueuedSessionCounts);

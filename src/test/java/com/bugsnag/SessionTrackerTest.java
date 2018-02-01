@@ -2,11 +2,11 @@ package com.bugsnag;
 
 import com.bugsnag.delivery.Delivery;
 import com.bugsnag.serialization.Serializer;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -100,6 +100,7 @@ public class SessionTrackerTest {
         CustomDelivery sessionDelivery = new CustomDelivery() {
             @Override
             public void deliver(Serializer serializer, Object object, Map<String, String> headers) {
+                super.deliver(serializer, object, headers);
                 fail("Should not be called if no sessions enqueued");
             }
         };
@@ -113,13 +114,14 @@ public class SessionTrackerTest {
         CustomDelivery sessionDelivery = new CustomDelivery() {
             @Override
             public void deliver(Serializer serializer, Object object, Map<String, String> headers) {
+                super.deliver(serializer, object, headers);
                 fail("Should not be called if date has not exceeded batch period");
             }
         };
         configuration.sessionDelivery = sessionDelivery;
         sessionTracker.startNewSession(new Date(1309209859), false);
         sessionTracker.flushSessions(new Date(1309209859));
-        assertTrue(sessionDelivery.delivered);
+        assertFalse(sessionDelivery.delivered);
     }
 
     @Test
@@ -127,8 +129,24 @@ public class SessionTrackerTest {
         CustomDelivery sessionDelivery = new CustomDelivery() {
             @Override
             public void deliver(Serializer serializer, Object object, Map<String, String> headers) {
+                super.deliver(serializer, object, headers);
                 SessionPayload payload = (SessionPayload) object;
-                assertEquals(2, payload.getSessionCounts().size());
+
+
+                List<SessionCount> sessionCounts = (List<SessionCount>) payload.getSessionCounts();
+                assertEquals(3, sessionCounts.size());
+
+                SessionCount sessionCount = sessionCounts.get(0);
+                assertEquals(1, sessionCount.getSessionsStarted());
+                assertEquals("1970-01-01T01:24:00Z", sessionCount.getStartedAt());
+
+                sessionCount = sessionCounts.get(1);
+                assertEquals(1, sessionCount.getSessionsStarted());
+                assertEquals("1970-01-02T10:44:00Z", sessionCount.getStartedAt());
+
+                sessionCount = sessionCounts.get(2);
+                assertEquals(2, sessionCount.getSessionsStarted());
+                assertEquals("1970-01-18T11:13:00Z", sessionCount.getStartedAt());
             }
         };
         configuration.sessionDelivery = sessionDelivery;
@@ -136,7 +154,7 @@ public class SessionTrackerTest {
         sessionTracker.startNewSession(new Date(125098234L), false);
         sessionTracker.startNewSession(new Date(1509207501L), false);
         sessionTracker.startNewSession(new Date(1509209834L), false);
-        sessionTracker.flushSessions(new Date(1509209834L));
+        sessionTracker.flushSessions(new Date(1609209834L));
         assertTrue(sessionDelivery.delivered);
     }
 
@@ -145,8 +163,14 @@ public class SessionTrackerTest {
         CustomDelivery sessionDelivery = new CustomDelivery() {
             @Override
             public void deliver(Serializer serializer, Object object, Map<String, String> headers) {
+                super.deliver(serializer, object, headers);
                 SessionPayload payload = (SessionPayload) object;
-                assertEquals(1, payload.getSessionCounts().size());
+
+                List<SessionCount> sessionCounts = (List<SessionCount>) payload.getSessionCounts();
+                assertEquals(1, sessionCounts.size());
+                SessionCount sessionCount = sessionCounts.get(0);
+                assertEquals(1, sessionCount.getSessionsStarted());
+                assertEquals("1970-01-01T02:46:00Z", sessionCount.getStartedAt());
             }
         };
         configuration.sessionDelivery = sessionDelivery;
@@ -162,8 +186,14 @@ public class SessionTrackerTest {
         CustomDelivery sessionDelivery = new CustomDelivery() {
             @Override
             public void deliver(Serializer serializer, Object object, Map<String, String> headers) {
+                super.deliver(serializer, object, headers);
                 SessionPayload payload = (SessionPayload) object;
-                assertEquals(1, payload.getSessionCounts().size());
+
+                List<SessionCount> sessionCounts = (List<SessionCount>) payload.getSessionCounts();
+                assertEquals(1, sessionCounts.size());
+                SessionCount sessionCount = sessionCounts.get(0);
+                assertEquals(1, sessionCount.getSessionsStarted());
+                assertEquals("1970-01-01T02:46:00Z", sessionCount.getStartedAt());
             }
         };
         configuration.sessionDelivery = sessionDelivery;
@@ -179,8 +209,14 @@ public class SessionTrackerTest {
         CustomDelivery sessionDelivery = new CustomDelivery() {
             @Override
             public void deliver(Serializer serializer, Object object, Map<String, String> headers) {
+                super.deliver(serializer, object, headers);
                 SessionPayload payload = (SessionPayload) object;
-                assertEquals(1, payload.getSessionCounts().size());
+
+                List<SessionCount> sessionCounts = (List<SessionCount>) payload.getSessionCounts();
+                assertEquals(1, sessionCounts.size());
+                SessionCount sessionCount = sessionCounts.get(0);
+                assertEquals(1, sessionCount.getSessionsStarted());
+                assertEquals("1970-01-01T02:46:00Z", sessionCount.getStartedAt());
             }
         };
         configuration.sessionDelivery = sessionDelivery;
