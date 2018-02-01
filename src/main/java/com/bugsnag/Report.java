@@ -117,7 +117,7 @@ public class Report {
     }
 
     @Expose
-    public Map<String, Object> getSession() {
+    Map<String, Object> getSession() {
         if (session == null) {
             return null;
         }

@@ -1,6 +1,11 @@
 package com.bugsnag;
 
-import java.util.*;
+import com.bugsnag.delivery.Delivery;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.atomic.AtomicReference;
@@ -10,7 +15,8 @@ class SessionTracker {
     private final Configuration config;
     private final ThreadLocal<Session> session = new ThreadLocal<Session>();
     private AtomicReference<SessionCount> batchCount = new AtomicReference<SessionCount>();
-    private final Collection<SessionCount> enqueuedSessionCounts = new ConcurrentLinkedQueue<SessionCount>();
+    private final Collection<SessionCount>
+            enqueuedSessionCounts = new ConcurrentLinkedQueue<SessionCount>();
 
     private final Semaphore flushingRequest = new Semaphore(1);
 
@@ -66,7 +72,8 @@ class SessionTracker {
 
                 if (!requestValues.isEmpty()) {
                     SessionPayload payload = new SessionPayload(requestValues, config);
-                    config.sessionDelivery.deliver(config.serializer, payload, config.getErrorApiHeaders());
+                    Delivery delivery = config.sessionDelivery;
+                    delivery.deliver(config.serializer, payload, config.getErrorApiHeaders());
                     enqueuedSessionCounts.removeAll(requestValues);
                 }
             } finally {

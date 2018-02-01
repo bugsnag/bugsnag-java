@@ -1,5 +1,11 @@
 package com.bugsnag;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+
 import com.bugsnag.callbacks.Callback;
 import com.bugsnag.delivery.Delivery;
 import com.bugsnag.delivery.HttpDelivery;
@@ -13,7 +19,6 @@ import java.net.InetSocketAddress;
 import java.net.Proxy;
 import java.util.Map;
 
-import static org.junit.Assert.*;
 
 public class BugsnagTest {
 

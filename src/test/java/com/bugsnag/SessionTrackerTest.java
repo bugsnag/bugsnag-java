@@ -1,7 +1,16 @@
 package com.bugsnag;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import com.bugsnag.delivery.Delivery;
 import com.bugsnag.serialization.Serializer;
+
 import org.junit.Before;
 import org.junit.Test;
 
@@ -11,13 +20,17 @@ import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static org.junit.Assert.*;
 
 public class SessionTrackerTest {
 
     private SessionTracker sessionTracker;
     private Configuration configuration;
 
+    /**
+     * Initialises config + session tracker
+     *
+     * @throws Throwable the throwable
+     */
     @Before
     public void setUp() throws Throwable {
         configuration = new Configuration("api-key");

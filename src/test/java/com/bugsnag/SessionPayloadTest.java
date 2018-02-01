@@ -1,5 +1,8 @@
 package com.bugsnag;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Before;
@@ -9,24 +12,28 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 
-import static org.junit.Assert.*;
 
 public class SessionPayloadTest {
 
     private JsonNode rootNode;
 
+    /**
+     * Initialises the session payload for serialisation
+     * @throws Throwable the throwable
+     */
     @Before
     public void setUp() throws Throwable {
-        ObjectMapper mapper = new ObjectMapper();
         Collection<SessionCount> sessionCounts = new ArrayList<SessionCount>();
-        SessionCount e = new SessionCount(new Date(1500000000000L));
-        e.incrementSessionsStarted();
-        e.incrementSessionsStarted();
-        sessionCounts.add(e);
+        SessionCount sessionCount = new SessionCount(new Date(1500000000000L));
+        sessionCount.incrementSessionsStarted();
+        sessionCount.incrementSessionsStarted();
+        sessionCounts.add(sessionCount);
         Configuration configuration = new Configuration("api-key");
         configuration.appVersion = "1.2.3";
         configuration.releaseStage = "dev";
         SessionPayload payload = new SessionPayload(sessionCounts, configuration);
+
+        ObjectMapper mapper = new ObjectMapper();
         String json = mapper.writeValueAsString(payload);
         rootNode = mapper.readTree(json);
     }

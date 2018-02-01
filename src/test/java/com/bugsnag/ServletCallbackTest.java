@@ -1,7 +1,6 @@
 package com.bugsnag.servlet;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -20,7 +19,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Vector;
 import javax.servlet.ServletContext;
-import javax.servlet.ServletRequest;
 import javax.servlet.ServletRequestEvent;
 import javax.servlet.http.HttpServletRequest;
 

@@ -1,5 +1,10 @@
 package com.bugsnag;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Before;
@@ -8,7 +13,6 @@ import org.junit.Test;
 import java.io.IOException;
 import java.util.Date;
 
-import static org.junit.Assert.*;
 
 public class NotificationTest {
 
@@ -16,6 +20,11 @@ public class NotificationTest {
     private Configuration config;
     private final ObjectMapper mapper = new ObjectMapper();
 
+    /**
+     * Initialises the objectmapper + report for conversion to json
+     *
+     * @throws Throwable the throwable
+     */
     @Before
     public void setUp() throws Throwable {
         config = new Configuration("api-key");
@@ -24,7 +33,9 @@ public class NotificationTest {
         report = new Report(config, new RuntimeException());
     }
 
-    private JsonNode generateJson(ObjectMapper mapper, Configuration config, Report report) throws IOException {
+    private JsonNode generateJson(ObjectMapper mapper,
+                                  Configuration config,
+                                  Report report) throws IOException {
         Notification notification = new Notification(config, report);
         String json = mapper.writeValueAsString(notification);
         return mapper.readTree(json);
