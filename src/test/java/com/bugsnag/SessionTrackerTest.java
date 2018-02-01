@@ -27,43 +27,43 @@ public class SessionTrackerTest {
 
     @Test
     public void startManualSession() throws Throwable {
-        sessionTracker.startNewSession(new Date(), false);
+        sessionTracker.startSession(new Date(), false);
         assertNotNull(sessionTracker.getSession());
     }
 
     @Test
     public void startAutoSessionDisabled() throws Throwable {
-        sessionTracker.startNewSession(new Date(), true);
+        sessionTracker.startSession(new Date(), true);
         assertNull(sessionTracker.getSession());
     }
 
     @Test
     public void startAutoSessionEnabled() throws Throwable {
         configuration.setAutoCaptureSessions(true);
-        sessionTracker.startNewSession(new Date(), true);
+        sessionTracker.startSession(new Date(), true);
         assertNotNull(sessionTracker.getSession());
     }
 
     @Test
     public void startTwoSessionsSameThread() throws Throwable {
-        sessionTracker.startNewSession(new Date(), false);
+        sessionTracker.startSession(new Date(), false);
         Session first = sessionTracker.getSession();
 
-        sessionTracker.startNewSession(new Date(), false);
+        sessionTracker.startSession(new Date(), false);
         Session second = sessionTracker.getSession();
         assertNotEquals(first, second);
     }
 
     @Test
     public void startTwoSessionsDiffThread() throws Throwable {
-        sessionTracker.startNewSession(new Date(), false);
+        sessionTracker.startSession(new Date(), false);
         final Session first = sessionTracker.getSession();
         final CountDownLatch countDownLatch = new CountDownLatch(1);
 
         new Thread(new Runnable() {
             @Override
             public void run() {
-                sessionTracker.startNewSession(new Date(), false);
+                sessionTracker.startSession(new Date(), false);
                 countDownLatch.countDown();
             }
         }).start();
@@ -76,7 +76,7 @@ public class SessionTrackerTest {
     public void disabledReleaseStage() throws Throwable {
         configuration.notifyReleaseStages = new String[]{"prod"};
         configuration.releaseStage = "dev";
-        sessionTracker.startNewSession(new Date(), false);
+        sessionTracker.startSession(new Date(), false);
         assertNull(sessionTracker.getSession());
     }
 
@@ -84,14 +84,14 @@ public class SessionTrackerTest {
     public void enabledReleaseStage() throws Throwable {
         configuration.notifyReleaseStages = new String[]{"prod"};
         configuration.releaseStage = "prod";
-        sessionTracker.startNewSession(new Date(), false);
+        sessionTracker.startSession(new Date(), false);
         assertNotNull(sessionTracker.getSession());
     }
 
     @Test(timeout = 200)
     public void addManySessions() throws Throwable {
         for (int k = 0; k < 1000; k++) {
-            sessionTracker.startNewSession(new Date(), false);
+            sessionTracker.startSession(new Date(), false);
         }
     }
 
@@ -119,7 +119,7 @@ public class SessionTrackerTest {
             }
         };
         configuration.sessionDelivery = sessionDelivery;
-        sessionTracker.startNewSession(new Date(1309209859), false);
+        sessionTracker.startSession(new Date(1309209859), false);
         sessionTracker.flushSessions(new Date(1309209859));
         assertFalse(sessionDelivery.delivered);
     }
@@ -150,10 +150,10 @@ public class SessionTrackerTest {
             }
         };
         configuration.sessionDelivery = sessionDelivery;
-        sessionTracker.startNewSession(new Date(5092340L), false);
-        sessionTracker.startNewSession(new Date(125098234L), false);
-        sessionTracker.startNewSession(new Date(1509207501L), false);
-        sessionTracker.startNewSession(new Date(1509209834L), false);
+        sessionTracker.startSession(new Date(5092340L), false);
+        sessionTracker.startSession(new Date(125098234L), false);
+        sessionTracker.startSession(new Date(1509207501L), false);
+        sessionTracker.startSession(new Date(1509209834L), false);
         sessionTracker.flushSessions(new Date(1609209834L));
         assertTrue(sessionDelivery.delivered);
     }
@@ -176,7 +176,7 @@ public class SessionTrackerTest {
         configuration.sessionDelivery = sessionDelivery;
 
         // 2 mins apart
-        sessionTracker.startNewSession(new Date(10000000L), false);
+        sessionTracker.startSession(new Date(10000000L), false);
         sessionTracker.flushSessions(new Date(10120000L));
         assertTrue(sessionDelivery.delivered);
     }
@@ -199,7 +199,7 @@ public class SessionTrackerTest {
         configuration.sessionDelivery = sessionDelivery;
 
         // 1 hour apart
-        sessionTracker.startNewSession(new Date(10000000L), false);
+        sessionTracker.startSession(new Date(10000000L), false);
         sessionTracker.flushSessions(new Date(13600000L));
         assertTrue(sessionDelivery.delivered);
     }
@@ -222,7 +222,7 @@ public class SessionTrackerTest {
         configuration.sessionDelivery = sessionDelivery;
 
         // 1 hour apart
-        sessionTracker.startNewSession(new Date(10000000L), false);
+        sessionTracker.startSession(new Date(10000000L), false);
         sessionTracker.flushSessions(new Date(13600000L));
         sessionTracker.flushSessions(new Date(13600000L));
         assertTrue(sessionDelivery.delivered);

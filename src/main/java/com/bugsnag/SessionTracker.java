@@ -18,7 +18,7 @@ class SessionTracker {
         this.config = configuration;
     }
 
-    void startNewSession(Date date, boolean autoCaptured) {
+    void startSession(Date date, boolean autoCaptured) {
         if ((!config.shouldAutoCaptureSessions()
                 && autoCaptured) || !config.shouldNotifyForReleaseStage()) {
             return;

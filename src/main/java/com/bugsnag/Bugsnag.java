@@ -42,6 +42,7 @@ public class Bugsnag {
 
         config = new Configuration(apiKey);
         sessionTracker = new SessionTracker(config);
+        ServletSessionTracker.INSTANCE.setSessionTracker(sessionTracker);
 
         // Automatically send unhandled exceptions to Bugsnag using this Bugsnag
         if (sendUncaughtExceptions) {
@@ -424,7 +425,7 @@ public class Bugsnag {
      * session for each request
      */
     public void startSession() {
-        sessionTracker.startNewSession(new Date(), false);
+        sessionTracker.startSession(new Date(), false);
     }
 
     /**
