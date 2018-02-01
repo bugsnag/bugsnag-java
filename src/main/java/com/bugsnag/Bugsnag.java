@@ -22,7 +22,7 @@ public class Bugsnag {
     private ScheduledThreadPoolExecutor sessionExecutorService =
             new ScheduledThreadPoolExecutor(1, new RejectedExecutionHandler() {
                 @Override
-                public void rejectedExecution(Runnable r, ThreadPoolExecutor executor) {
+                public void rejectedExecution(Runnable runnable, ThreadPoolExecutor executor) {
                     LOGGER.error("Rejected execution for sessionExecutorService");
                 }
             });
@@ -84,13 +84,13 @@ public class Bugsnag {
                 try {
                     if (!sessionExecutorService
                             .awaitTermination(SHUTDOWN_TIMEOUT, TimeUnit.MILLISECONDS)) {
-                        LOGGER.warn("Shutdown of 'session tracking' threads" +
-                                " took too long - forcing a shutdown");
+                        LOGGER.warn("Shutdown of 'session tracking' threads"
+                                + " took too long - forcing a shutdown");
                         sessionExecutorService.shutdownNow();
                     }
                 } catch (InterruptedException ex) {
-                    LOGGER.warn("Shutdown of 'session tracking' thread " +
-                            "was interrupted - forcing a shutdown");
+                    LOGGER.warn("Shutdown of 'session tracking' thread "
+                            + "was interrupted - forcing a shutdown");
                     sessionExecutorService.shutdownNow();
                 }
             }
