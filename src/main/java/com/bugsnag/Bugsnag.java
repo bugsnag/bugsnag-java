@@ -18,9 +18,10 @@ public class Bugsnag {
     private static final Logger LOGGER = LoggerFactory.getLogger(Bugsnag.class);
     private static final int SHUTDOWN_TIMEOUT = 5000;
     private static final int SESSION_TRACKING_PERIOD_SECS = 60;
+    private static final int CORE_POOL_SIZE = 1;
 
     private ScheduledThreadPoolExecutor sessionExecutorService =
-            new ScheduledThreadPoolExecutor(1, new RejectedExecutionHandler() {
+            new ScheduledThreadPoolExecutor(CORE_POOL_SIZE, new RejectedExecutionHandler() {
                 @Override
                 public void rejectedExecution(Runnable runnable, ThreadPoolExecutor executor) {
                     LOGGER.error("Rejected execution for sessionExecutorService");

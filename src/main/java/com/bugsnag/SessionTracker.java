@@ -74,12 +74,10 @@ class SessionTracker {
                 Collection<SessionCount> requestValues = new ArrayList<SessionCount>();
                 requestValues.addAll(enqueuedSessionCounts);
 
-                if (!requestValues.isEmpty()) {
-                    SessionPayload payload = new SessionPayload(requestValues, config);
-                    Delivery delivery = config.sessionDelivery;
-                    delivery.deliver(config.serializer, payload, config.getErrorApiHeaders());
-                    enqueuedSessionCounts.removeAll(requestValues);
-                }
+                SessionPayload payload = new SessionPayload(requestValues, config);
+                Delivery delivery = config.sessionDelivery;
+                delivery.deliver(config.serializer, payload, config.getErrorApiHeaders());
+                enqueuedSessionCounts.removeAll(requestValues);
             } finally {
                 flushingRequest.release(1);
             }
