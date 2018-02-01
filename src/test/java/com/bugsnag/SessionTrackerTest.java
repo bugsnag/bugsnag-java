@@ -242,6 +242,18 @@ public class SessionTrackerTest {
         assertEquals(1, sessionDelivery.count.get());
     }
 
+    @Test
+    public void sessionDeliveryShutdown() throws Throwable {
+        CustomDelivery sessionDelivery = new CustomDelivery() {};
+        configuration.sessionDelivery = sessionDelivery;
+        sessionTracker.startSession(new Date(10000000L), false);
+        sessionTracker.setShuttingDown(true);
+        sessionTracker.flushSessions(new Date(10120000L));
+        assertFalse(sessionDelivery.delivered);
+    }
+
+    // TODO add test if count zero, ignored!
+
     abstract static class CustomDelivery implements Delivery {
         boolean delivered;
         AtomicInteger count = new AtomicInteger(0);

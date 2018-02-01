@@ -9,9 +9,23 @@ import org.slf4j.LoggerFactory;
 
 import java.net.Proxy;
 import java.util.Date;
+import java.util.concurrent.RejectedExecutionHandler;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 public class Bugsnag {
     private static final Logger LOGGER = LoggerFactory.getLogger(Bugsnag.class);
+    private static final int SHUTDOWN_TIMEOUT = 5000;
+    private static final int SESSION_TRACKING_PERIOD_SECS = 60;
+
+    private ScheduledThreadPoolExecutor sessionExecutorService =
+            new ScheduledThreadPoolExecutor(1, new RejectedExecutionHandler() {
+                @Override
+                public void rejectedExecution(Runnable r, ThreadPoolExecutor executor) {
+                    LOGGER.error("Rejected execution for sessionExecutorService");
+                }
+            });
 
     private Configuration config;
     private final SessionTracker sessionTracker;
@@ -48,6 +62,39 @@ public class Bugsnag {
         if (sendUncaughtExceptions) {
             ExceptionHandler.enable(this);
         }
+        addSessionTrackingShutdownHook();
+        scheduleSessionFlushes();
+    }
+
+    private void scheduleSessionFlushes() {
+        sessionExecutorService.scheduleAtFixedRate(new Runnable() {
+            @Override
+            public void run() {
+                sessionTracker.flushSessions(new Date());
+            }
+        }, SESSION_TRACKING_PERIOD_SECS, SESSION_TRACKING_PERIOD_SECS, TimeUnit.SECONDS);
+    }
+
+    private void addSessionTrackingShutdownHook() {
+        Runtime.getRuntime().addShutdownHook(new Thread() {
+            @Override
+            public void run() {
+                sessionTracker.setShuttingDown(true);
+                sessionExecutorService.shutdown();
+                try {
+                    if (!sessionExecutorService
+                            .awaitTermination(SHUTDOWN_TIMEOUT, TimeUnit.MILLISECONDS)) {
+                        LOGGER.warn("Shutdown of 'session tracking' threads" +
+                                " took too long - forcing a shutdown");
+                        sessionExecutorService.shutdownNow();
+                    }
+                } catch (InterruptedException ex) {
+                    LOGGER.warn("Shutdown of 'session tracking' thread " +
+                            "was interrupted - forcing a shutdown");
+                    sessionExecutorService.shutdownNow();
+                }
+            }
+        });
     }
 
     //

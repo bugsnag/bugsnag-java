@@ -21,7 +21,6 @@ public enum ServletSessionTracker {
      * @param sessionTracker the session tracker
      */
     void setSessionTracker(SessionTracker sessionTracker) {
-        LoggerFactory.getLogger("foo").warn("Set tracker!");
         this.sessionTracker = sessionTracker;
     }
 
@@ -31,9 +30,6 @@ public enum ServletSessionTracker {
     public static void trackServletSession() {
         if (INSTANCE.sessionTracker != null) {
             INSTANCE.sessionTracker.startSession(new Date(), true);
-            LoggerFactory.getLogger("foo").warn("Tracking auto session!");
-        } else {
-            LoggerFactory.getLogger("foo").warn("Null session!");
         }
     }
 

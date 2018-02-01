@@ -19,14 +19,15 @@ class SessionTracker {
             enqueuedSessionCounts = new ConcurrentLinkedQueue<SessionCount>();
 
     private final Semaphore flushingRequest = new Semaphore(1);
+    private volatile boolean shuttingDown;
 
     SessionTracker(Configuration configuration) {
         this.config = configuration;
     }
 
     void startSession(Date date, boolean autoCaptured) {
-        if ((!config.shouldAutoCaptureSessions()
-                && autoCaptured) || !config.shouldNotifyForReleaseStage()) {
+        if ((!config.shouldAutoCaptureSessions() && autoCaptured)
+                || !config.shouldNotifyForReleaseStage()) {
             return;
         }
 
@@ -63,6 +64,9 @@ class SessionTracker {
     }
 
     void flushSessions(Date now) {
+        if (shuttingDown) {
+            return;
+        }
         updateBatchCountIfNeeded(DateUtils.roundTimeToLatestMinute(now));
 
         if (!enqueuedSessionCounts.isEmpty() && flushingRequest.tryAcquire(1)) {
@@ -82,4 +86,7 @@ class SessionTracker {
         }
     }
 
+    void setShuttingDown(boolean shuttingDown) {
+        this.shuttingDown = shuttingDown;
+    }
 }
