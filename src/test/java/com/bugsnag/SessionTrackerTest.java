@@ -252,7 +252,14 @@ public class SessionTrackerTest {
         assertFalse(sessionDelivery.delivered);
     }
 
-    // TODO add test if count zero, ignored!
+    @Test
+    public void zeroSessionCount() throws Throwable {
+        CustomDelivery sessionDelivery = new CustomDelivery() {};
+        configuration.sessionDelivery = sessionDelivery;
+        sessionTracker.flushSessions(new Date(10120000L));
+        sessionTracker.flushSessions(new Date(14000000L));
+        assertFalse(sessionDelivery.delivered);
+    }
 
     abstract static class CustomDelivery implements Delivery {
         boolean delivered;
