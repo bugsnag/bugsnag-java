@@ -7,6 +7,7 @@ import com.bugsnag.callbacks.ServletCallback;
 import com.bugsnag.delivery.AsyncHttpDelivery;
 import com.bugsnag.delivery.Delivery;
 import com.bugsnag.delivery.HttpDelivery;
+import com.bugsnag.delivery.SyncHttpDelivery;
 import com.bugsnag.serialization.Serializer;
 
 import java.util.ArrayList;
@@ -27,8 +28,9 @@ public class Configuration {
     public String apiKey;
     public String appType;
     public String appVersion;
-    public Delivery delivery = new AsyncHttpDelivery();
-    public Delivery sessionDelivery = new AsyncHttpDelivery();
+    public Delivery delivery = new AsyncHttpDelivery(SyncHttpDelivery.DEFAULT_NOTIFY_ENDPOINT);
+    public Delivery sessionDelivery =
+            new AsyncHttpDelivery(SyncHttpDelivery.DEFAULT_SESSION_ENDPOINT);
     public String[] filters = new String[]{"password"};
     public String[] ignoreClasses;
     public String[] notifyReleaseStages = null;
@@ -51,7 +53,6 @@ public class Configuration {
         if (ServletCallback.isAvailable()) {
             addCallback(new ServletCallback());
         }
-        ((HttpDelivery) sessionDelivery).setEndpoint("https://sessions.bugsnag.com");
     }
 
     boolean shouldNotifyForReleaseStage() {

@@ -17,12 +17,17 @@ import java.util.Map;
 public class SyncHttpDelivery implements HttpDelivery {
     private static final Logger logger = LoggerFactory.getLogger(SyncHttpDelivery.class);
 
-    protected static final String DEFAULT_ENDPOINT = "https://notify.bugsnag.com";
+    public static final String DEFAULT_NOTIFY_ENDPOINT = "https://notify.bugsnag.com";
+    public static final String DEFAULT_SESSION_ENDPOINT = "https://sessions.bugsnag.com";
     protected static final int DEFAULT_TIMEOUT = 5000;
 
-    protected String endpoint = DEFAULT_ENDPOINT;
+    protected String endpoint = DEFAULT_NOTIFY_ENDPOINT;
     protected int timeout = DEFAULT_TIMEOUT;
     protected Proxy proxy;
+
+    SyncHttpDelivery(String endpoint) {
+        this.endpoint = endpoint;
+    }
 
     public void setEndpoint(String endpoint) {
         this.endpoint = endpoint;
