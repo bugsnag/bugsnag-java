@@ -16,6 +16,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class Configuration {
 
@@ -27,7 +28,7 @@ public class Configuration {
     public String appType;
     public String appVersion;
     public Delivery delivery = new AsyncHttpDelivery();
-    public Delivery sessionDelivery;
+    public Delivery sessionDelivery = new AsyncHttpDelivery();
     public String[] filters = new String[]{"password"};
     public String[] ignoreClasses;
     public String[] notifyReleaseStages = null;
@@ -37,7 +38,7 @@ public class Configuration {
 
     Collection<Callback> callbacks = new ArrayList<Callback>();
     Serializer serializer = new Serializer();
-    private volatile boolean autoCaptureSessions;
+    private final AtomicBoolean autoCaptureSessions = new AtomicBoolean();
 
     Configuration(String apiKey) {
         this.apiKey = apiKey;
@@ -50,7 +51,6 @@ public class Configuration {
         if (ServletCallback.isAvailable()) {
             addCallback(new ServletCallback());
         }
-        sessionDelivery = new AsyncHttpDelivery();
         ((HttpDelivery) sessionDelivery).setEndpoint("https://sessions.bugsnag.com");
     }
 
@@ -89,11 +89,11 @@ public class Configuration {
     }
 
     public void setAutoCaptureSessions(boolean autoCaptureSessions) {
-        this.autoCaptureSessions = autoCaptureSessions;
+        this.autoCaptureSessions.set(autoCaptureSessions);
     }
 
     public boolean shouldAutoCaptureSessions() {
-        return autoCaptureSessions;
+        return autoCaptureSessions.get();
     }
 
     Map<String, String> getErrorApiHeaders() {
