@@ -9,10 +9,13 @@ import org.slf4j.LoggerFactory;
 
 import java.net.Proxy;
 import java.util.Date;
+import java.util.Set;
+import java.util.Collections;
 import java.util.concurrent.RejectedExecutionHandler;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+import java.lang.Thread.UncaughtExceptionHandler;
 
 public class Bugsnag {
     private static final Logger LOGGER = LoggerFactory.getLogger(Bugsnag.class);
@@ -57,7 +60,6 @@ public class Bugsnag {
 
         config = new Configuration(apiKey);
         sessionTracker = new SessionTracker(config);
-        ServletSessionTracker.INSTANCE.setSessionTracker(sessionTracker);
 
         // Automatically send unhandled exceptions to Bugsnag using this Bugsnag
         if (sendUncaughtExceptions) {
@@ -488,6 +490,10 @@ public class Bugsnag {
         config.setAutoCaptureSessions(autoCaptureSessions);
     }
 
+    public boolean shouldAutoCaptureSessions() {
+        return config.shouldAutoCaptureSessions();
+    }
+
     /**
      * Set the endpoint to deliver Bugsnag sessions to. This is a convenient
      * shorthand for bugsnag.getSessionDelivery().setEndpoint();
@@ -508,5 +514,14 @@ public class Bugsnag {
         LOGGER.debug("Closing connection to Bugsnag");
         config.delivery.close();
         ExceptionHandler.disable(this);
+    }
+
+    public static Set<Bugsnag> uncaughtExceptionClients() {
+        UncaughtExceptionHandler handler = Thread.getDefaultUncaughtExceptionHandler();
+        if (handler instanceof ExceptionHandler) {
+            ExceptionHandler bugsnagHandler = (ExceptionHandler)handler;
+            return bugsnagHandler.uncaughtExceptionClients();
+        }
+        return Collections.emptySet();
     }
 }
