@@ -18,6 +18,7 @@ import java.io.ByteArrayOutputStream;
 import java.net.InetSocketAddress;
 import java.net.Proxy;
 import java.util.Map;
+import java.util.Set;
 
 
 public class BugsnagTest {
@@ -475,6 +476,12 @@ public class BugsnagTest {
 
         // Exact content will vary with stacktrace so just check for some content
         assertTrue(new String(byteStream.toByteArray()).length() > 0);
+    }
+
+    @Test(expected = UnsupportedOperationException.class)
+    public void testUncaughtHandlerModification() throws Throwable {
+        Set<Bugsnag> bugsnags = Bugsnag.uncaughtExceptionClients();
+        bugsnags.clear();
     }
 
     // Test exception class

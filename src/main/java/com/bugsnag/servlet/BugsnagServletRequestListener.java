@@ -7,8 +7,6 @@ import javax.servlet.ServletRequestEvent;
 import javax.servlet.ServletRequestListener;
 import javax.servlet.http.HttpServletRequest;
 
-import java.lang.Thread.UncaughtExceptionHandler;
-
 public class BugsnagServletRequestListener implements ServletRequestListener {
 
     private static final ThreadLocal<HttpServletRequest> SERVLET_REQUEST =

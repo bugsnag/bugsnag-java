@@ -7,15 +7,15 @@ import com.bugsnag.delivery.HttpDelivery;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.lang.Thread.UncaughtExceptionHandler;
 import java.net.Proxy;
+import java.util.Collections;
 import java.util.Date;
 import java.util.Set;
-import java.util.Collections;
 import java.util.concurrent.RejectedExecutionHandler;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
-import java.lang.Thread.UncaughtExceptionHandler;
 
 public class Bugsnag {
     private static final Logger LOGGER = LoggerFactory.getLogger(Bugsnag.class);
@@ -490,6 +490,11 @@ public class Bugsnag {
         config.setAutoCaptureSessions(autoCaptureSessions);
     }
 
+    /**
+     * Retrieves whether or not Bugsnag should automatically capture
+     * and report User sessions for each request.
+     * @return whether sessions should be auto captured
+     */
     public boolean shouldAutoCaptureSessions() {
         return config.shouldAutoCaptureSessions();
     }
@@ -516,11 +521,17 @@ public class Bugsnag {
         ExceptionHandler.disable(this);
     }
 
+    /**
+     * Retrieves all instances of {@link Bugsnag} which are registered to
+     * catch uncaught exceptions.
+     *
+     * @return clients which catch uncaught exceptions
+     */
     public static Set<Bugsnag> uncaughtExceptionClients() {
         UncaughtExceptionHandler handler = Thread.getDefaultUncaughtExceptionHandler();
         if (handler instanceof ExceptionHandler) {
             ExceptionHandler bugsnagHandler = (ExceptionHandler)handler;
-            return bugsnagHandler.uncaughtExceptionClients();
+            return Collections.unmodifiableSet(bugsnagHandler.uncaughtExceptionClients());
         }
         return Collections.emptySet();
     }

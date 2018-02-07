@@ -1,8 +1,8 @@
 package com.bugsnag;
 
 import java.lang.Thread.UncaughtExceptionHandler;
-import java.util.WeakHashMap;
 import java.util.Set;
+import java.util.WeakHashMap;
 
 
 class ExceptionHandler implements UncaughtExceptionHandler {
