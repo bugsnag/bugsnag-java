@@ -7,8 +7,11 @@ import com.bugsnag.delivery.HttpDelivery;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.lang.Thread.UncaughtExceptionHandler;
 import java.net.Proxy;
+import java.util.Collections;
 import java.util.Date;
+import java.util.Set;
 import java.util.concurrent.RejectedExecutionHandler;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -57,7 +60,6 @@ public class Bugsnag {
 
         config = new Configuration(apiKey);
         sessionTracker = new SessionTracker(config);
-        ServletSessionTracker.INSTANCE.setSessionTracker(sessionTracker);
 
         // Automatically send unhandled exceptions to Bugsnag using this Bugsnag
         if (sendUncaughtExceptions) {
@@ -489,6 +491,15 @@ public class Bugsnag {
     }
 
     /**
+     * Retrieves whether or not Bugsnag should automatically capture
+     * and report User sessions for each request.
+     * @return whether sessions should be auto captured
+     */
+    public boolean shouldAutoCaptureSessions() {
+        return config.shouldAutoCaptureSessions();
+    }
+
+    /**
      * Set the endpoint to deliver Bugsnag sessions to. This is a convenient
      * shorthand for bugsnag.getSessionDelivery().setEndpoint();
      *
@@ -508,5 +519,20 @@ public class Bugsnag {
         LOGGER.debug("Closing connection to Bugsnag");
         config.delivery.close();
         ExceptionHandler.disable(this);
+    }
+
+    /**
+     * Retrieves all instances of {@link Bugsnag} which are registered to
+     * catch uncaught exceptions.
+     *
+     * @return clients which catch uncaught exceptions
+     */
+    public static Set<Bugsnag> uncaughtExceptionClients() {
+        UncaughtExceptionHandler handler = Thread.getDefaultUncaughtExceptionHandler();
+        if (handler instanceof ExceptionHandler) {
+            ExceptionHandler bugsnagHandler = (ExceptionHandler)handler;
+            return Collections.unmodifiableSet(bugsnagHandler.uncaughtExceptionClients());
+        }
+        return Collections.emptySet();
     }
 }
