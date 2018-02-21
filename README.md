@@ -2,7 +2,7 @@
 [![Documentation](https://img.shields.io/badge/docs-latest-blue.svg)](https://docs.bugsnag.com/platforms/java)
 [![Build status](https://travis-ci.org/bugsnag/bugsnag-java.svg?branch=master)](https://travis-ci.org/bugsnag/bugsnag-java)
 
-The Bugsnag exception reporter for Java automatically detects and reports errors and exceptions in your Java code.
+The Bugsnag exception reporter for Java automatically detects and reports errors and exceptions in your Java code. Learn more about [reporting Java exceptions](https://www.bugsnag.com/platforms/java/) with Bugsnag.
 
 ## Features
 
@@ -14,14 +14,14 @@ The Bugsnag exception reporter for Java automatically detects and reports errors
 
 ### Spring
 
-1. [Create a Bugsnag account](https://bugsnag.com)
+1. [Create a Bugsnag account](https://www.bugsnag.com)
 2. Complete the instructions in the [integration guide](https://docs.bugsnag.com/platforms/java/spring)
 3. Report handled exceptions using [`Bugsnag.notify()`](https://docs.bugsnag.com/platforms/java/spring/#reporting-handled-exceptions)
 4. Customize your integration using the [configuration options](https://docs.bugsnag.com/platforms/java/spring/configuration-options/)
 
 ### Other Java apps
 
-1. [Create a Bugsnag account](https://bugsnag.com)
+1. [Create a Bugsnag account](https://www.bugsnag.com)
 2. Complete the instructions in the [integration guide](https://docs.bugsnag.com/platforms/java/other)
 3. Report handled exceptions using [`Bugsnag.notify()`](https://docs.bugsnag.com/platforms/java/other/#reporting-handled-exceptions)
 4. Customize your integration using the [configuration options](https://docs.bugsnag.com/platforms/java/other/configuration-options/)
