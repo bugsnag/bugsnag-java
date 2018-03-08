@@ -74,12 +74,23 @@ public class FilteredMap implements Map<String, Object> {
 
     @Override
     public Collection<Object> values() {
-        return map.values();
+        Collection<Object> objects = new ArrayList<Object>();
+
+        for (Entry<String, Object> entry : entrySet()) {
+            objects.add(entry.getValue());
+        }
+        return objects;
     }
 
     @Override
     public Set<Entry<String, Object>> entrySet() {
-        return map.entrySet();
+        Set<Entry<String, Object>> entries = map.entrySet();
+
+        for (Entry<String, Object> entry : entries) {
+            String key = entry.getKey();
+            entry.setValue(transformEntry(key, entry.getValue()));
+        }
+        return entries;
     }
 
     private Object transformEntry(Object key, Object value) {

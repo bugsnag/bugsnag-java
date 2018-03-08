@@ -111,9 +111,8 @@ public class FilteredMapTest {
         assertEquals(3, values.size());
         assertTrue(values.contains(VAL_UNFILTERED));
         assertTrue(values.contains(PLACEHOLDER_FILTERED));
-        assertTrue(values.contains(KEY_NESTED));
 
-        values.remove(VAL_FILTERED);
+        values.remove(PLACEHOLDER_FILTERED);
         values.remove(VAL_UNFILTERED);
 
         Object nestedObj = values.toArray(new Object[1])[0];
