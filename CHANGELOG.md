@@ -1,5 +1,10 @@
 # Changelog
 
+## 3.1.5 (2018-03-08)
+
+* Update MetaData filtering to handle different versions of Jackson correctly 
+[#76](https://github.com/bugsnag/bugsnag-java/pull/76)
+
 ## 3.1.4 (2018-01-19)
 
 * Remove dependency on Guava
