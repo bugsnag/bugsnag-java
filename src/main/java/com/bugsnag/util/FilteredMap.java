@@ -3,6 +3,7 @@ package com.bugsnag.util;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -85,12 +86,14 @@ public class FilteredMap implements Map<String, Object> {
     @Override
     public Set<Entry<String, Object>> entrySet() {
         Set<Entry<String, Object>> entries = map.entrySet();
+        Set<Entry<String, Object>> copy = new HashSet<Entry<String, Object>>();
+        copy.addAll(entries);
 
-        for (Entry<String, Object> entry : entries) {
+        for (Entry<String, Object> entry : copy) {
             String key = entry.getKey();
             entry.setValue(transformEntry(key, entry.getValue()));
         }
-        return entries;
+        return copy;
     }
 
     private Object transformEntry(Object key, Object value) {
