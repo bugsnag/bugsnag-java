@@ -1,5 +1,9 @@
 package com.bugsnag.util;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import org.junit.Before;
 import org.junit.Test;
 
@@ -8,10 +12,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 
 public class FilteredMapTest {
 
@@ -24,6 +24,10 @@ public class FilteredMapTest {
 
     private Map<String, Object> filteredMap;
 
+    /**
+     * Creates a map with filtered, unfiltered, and nested values
+     * @throws Exception an exception
+     */
     @Before
     public void setUp() throws Exception {
         HashMap<String, Object> map = new HashMap<String, Object>();
@@ -73,7 +77,8 @@ public class FilteredMapTest {
         map.put(KEY_FILTERED, VAL_FILTERED);
 
         HashMap<String, Object> emptyMap = new HashMap<String, Object>();
-        Map<String, Object> removeMap = new FilteredMap(emptyMap, Collections.singleton(KEY_FILTERED));
+        Set<String> filters = Collections.singleton(KEY_FILTERED);
+        Map<String, Object> removeMap = new FilteredMap(emptyMap, filters);
         removeMap.putAll(map);
 
         assertEquals(2, removeMap.size());
