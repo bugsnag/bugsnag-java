@@ -18,6 +18,7 @@ public class FilteredMapTest {
     private static final String KEY_UNFILTERED = "unfiltered";
     private static final String KEY_FILTERED = "auth";
     private static final String KEY_NESTED = "nested";
+    private static final String KEY_UNMODIFIABLE = "unmodifiable";
     private static final String VAL_UNFILTERED = "Foo";
     private static final String VAL_FILTERED = "Bar";
     private static final String PLACEHOLDER_FILTERED = "[FILTERED]";
@@ -39,12 +40,14 @@ public class FilteredMapTest {
         nestedMap.put(KEY_FILTERED, VAL_FILTERED);
         map.put(KEY_NESTED, nestedMap);
 
+        map.put(KEY_UNMODIFIABLE, Collections.unmodifiableMap(nestedMap));
+
         this.filteredMap = new FilteredMap(map, Collections.singleton(KEY_FILTERED));
     }
 
     @Test
     public void testSize() {
-        assertEquals(3, filteredMap.size());
+        assertEquals(4, filteredMap.size());
     }
 
     @Test
@@ -57,7 +60,7 @@ public class FilteredMapTest {
 
     @Test
     public void testClear() throws Exception {
-        assertEquals(3, filteredMap.size());
+        assertEquals(4, filteredMap.size());
         filteredMap.clear();
         assertTrue(filteredMap.isEmpty());
     }
@@ -104,7 +107,7 @@ public class FilteredMapTest {
     @Test
     public void testKeySet() throws Exception {
         Set<String> keySet = filteredMap.keySet();
-        assertEquals(3, keySet.size());
+        assertEquals(4, keySet.size());
         assertTrue(keySet.contains(KEY_FILTERED));
         assertTrue(keySet.contains(KEY_UNFILTERED));
         assertTrue(keySet.contains(KEY_NESTED));
@@ -113,7 +116,7 @@ public class FilteredMapTest {
     @Test
     public void testValues() throws Exception {
         Collection<Object> values = filteredMap.values();
-        assertEquals(3, values.size());
+        assertEquals(4, values.size());
         assertTrue(values.contains(VAL_UNFILTERED));
         assertTrue(values.contains(PLACEHOLDER_FILTERED));
 
@@ -133,7 +136,7 @@ public class FilteredMapTest {
     @Test
     public void testEntrySet() throws Exception {
         Set<Map.Entry<String, Object>> entries = filteredMap.entrySet();
-        assertEquals(3, entries.size());
+        assertEquals(4, entries.size());
 
         int expectedCount = 0;
 
@@ -152,9 +155,13 @@ public class FilteredMapTest {
                 expectedCount++;
                 Object value = entry.getValue();
                 assertTrue(value instanceof FilteredMap);
+            } else if (key.equals(KEY_UNMODIFIABLE)) {
+                expectedCount++;
+                Map<String, Object> nested = (Map<String, Object>) entry.getValue();
+                assertEquals(2, nested.entrySet().size());
             }
         }
-        assertEquals(3, expectedCount);
+        assertEquals(4, expectedCount);
     }
 
 }
