@@ -1,5 +1,11 @@
 # Changelog
 
+## TBD
+
+* Make preemptive copy of map filtering specified keys
+  [#77](https://github.com/bugsnag/bugsnag-java/pull/77)
+  [Leandro Aparecido](https://github.com/lehphyro)
+
 ## 3.1.5 (2018-03-08)
 
 * Update MetaData filtering to handle different versions of Jackson correctly 
