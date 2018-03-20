@@ -19,29 +19,29 @@ import ch.qos.logback.core.UnsynchronizedAppenderBase;
 public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
     /** Bugsnag API key; the appender doesn't do anything if it's not available. */
     private String apiKey;
-    /** Bugsnag app type. */
+    /** Application type. */
     private String appType;
     /** Callback that can be used to enhance the report before sending it to Bugsnag servers. */
     private LogEventAwareCallback callback;
-    /** Bugsnag endpoint. */
+    /** Bugsnag server endpoint. */
     private String endpoint;
-    /** Property names that should be filtered before sending to Bugsnag servers. */
+    /** Property names that should be filtered out before sending to Bugsnag servers. */
     private List<String> filteredProperties = new ArrayList<String>();
     /** Exception classes to be ignored. */
     private List<String> ignoreClasses = new ArrayList<String>();
     /** Release stages that should be notified. */
     private List<String> notifyReleaseStages = new ArrayList<String>();
-    /** Bugsnag Java packages configuration, separated by commas. */
+    /** Project packages. */
     private List<String> projectPackages = new ArrayList<String>();
     /** Proxy configuration to access the internet. */
     private ProxyConfiguration proxy;
-    /** Bugsnag release stage in Bugsnag. */
+    /** Release stage. */
     private String releaseStage;
     /** Whether threads state should be sent to Bugsnag. */
     private boolean sendThreads;
-    /** Bugsnag api request timeout. */
+    /** Bugsnag API request timeout. */
     private int timeout;
-    /** Application version, used to determine the app version in Bugsnag. */
+    /** Application version. */
     private String version;
     /** Bugsnag client. */
     private Bugsnag bugsnag = null;
