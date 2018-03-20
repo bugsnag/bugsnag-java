@@ -14,15 +14,17 @@ public class TestCallback extends DefaultLogEventAwareCallback {
         checkValue("id", BugsnagAppenderTest.USER_ID_VALUE, report.getUser());
         checkValue("name", BugsnagAppenderTest.USER_NAME_VALUE, report.getUser());
         checkValue("email", BugsnagAppenderTest.USER_EMAIL_VALUE, report.getUser());
+
+        Map requestData = (Map) report.getMetaData().get("request");
         checkValue(
                 BugsnagAppenderTest.REQUEST_PROPERTY,
                 BugsnagAppenderTest.REQUEST_VALUE,
-                (Map) report.getMetaData().get("request"));
+                requestData);
         report.cancel();
     }
 
     private void checkValue(String name, String expectedValue, Map map) {
-        String actualValue = (String) map.get(name);
+        Object actualValue = map.get(name);
         if (!expectedValue.equals(actualValue)) {
             throw new IllegalStateException(
                     "Assertion failure for property: "

@@ -28,7 +28,7 @@ public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
     /** Property names that should be filtered out before sending to Bugsnag servers. */
     private List<String> filteredProperties = new ArrayList<String>();
     /** Exception classes to be ignored. */
-    private List<String> ignoreClasses = new ArrayList<String>();
+    private List<String> ignoredClasses = new ArrayList<String>();
     /** Release stages that should be notified. */
     private List<String> notifyReleaseStages = new ArrayList<String>();
     /** Project packages. */
@@ -37,7 +37,7 @@ public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
     private ProxyConfiguration proxy;
     /** Release stage. */
     private String releaseStage;
-    /** Whether threads state should be sent to Bugsnag. */
+    /** Whether thread state should be sent to Bugsnag. */
     private boolean sendThreads;
     /** Bugsnag API request timeout. */
     private int timeout;
@@ -65,11 +65,12 @@ public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
     @Override
     protected void append(final ILoggingEvent event) {
         if (bugsnag != null) {
+            Throwable throwable = extractThrowable(event);
             if (callback == null) {
-                bugsnag.notify(extractThrowable(event));
+                bugsnag.notify(throwable);
             } else {
                 bugsnag.notify(
-                        extractThrowable(event),
+                        throwable,
                         new Callback() {
                             @Override
                             public void beforeNotify(Report report) {
@@ -120,7 +121,7 @@ public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
         }
 
         bugsnag.setFilters(filteredProperties.toArray(new String[0]));
-        bugsnag.setIgnoreClasses(ignoreClasses.toArray(new String[0]));
+        bugsnag.setIgnoreClasses(ignoredClasses.toArray(new String[0]));
         bugsnag.setNotifyReleaseStages(notifyReleaseStages.toArray(new String[0]));
         bugsnag.setProjectPackages(projectPackages.toArray(new String[0]));
         bugsnag.setSendThreads(sendThreads);
@@ -159,12 +160,12 @@ public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
         this.filteredProperties.add(filter);
     }
 
-    public void setIgnoreClasses(String ignoreClasses) {
-        this.ignoreClasses.addAll(split(ignoreClasses));
+    public void setIgnoredClasses(String ignoredClasses) {
+        this.ignoredClasses.addAll(split(ignoredClasses));
     }
 
-    public void addIgnoreClass(String ignoreClass) {
-        this.ignoreClasses.add(ignoreClass);
+    public void addIgnoredClass(String ignoredClass) {
+        this.ignoredClasses.add(ignoredClass);
     }
 
     public void setNotifyReleaseStages(String notifyReleaseStages) {

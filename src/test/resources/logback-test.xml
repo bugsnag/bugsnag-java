@@ -4,9 +4,9 @@
 		<apiKey>12345</apiKey>
 		<appType>webapp</appType>
 		<filteredProperties>cookie,password</filteredProperties>
-		<ignoreClasses>com.bugsnag.TestException,com.bugsnag.AnotherTestException</ignoreClasses>
+		<ignoredClasses>com.bugsnag.TestException,com.bugsnag.AnotherTestException</ignoredClasses>
 
-		<!-- Properties that allow multiple values may be defined as comma-separated string or repeated multiple times -->
+		<!-- Properties that allow multiple values may be defined as a comma-separated string or repeated multiple times -->
 		<notifyReleaseStage>development</notifyReleaseStage>
 		<notifyReleaseStage>production</notifyReleaseStage>
 
