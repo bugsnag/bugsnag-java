@@ -1,7 +1,7 @@
 package com.bugsnag.logback;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.bugsnag.Report;
 
@@ -12,7 +12,7 @@ public class DefaultLogEventAwareCallback extends AbstractLogEventAwareCallback 
     private String userIdProperty;
     private String userNameProperty;
     private String userEmailProperty;
-    private Map<String, String> tabProperties = new HashMap<String, String>();
+    private List<TabConfiguration> tabConfigurations = new ArrayList<TabConfiguration>();
 
     @Override
     public void beforeNotify(Report report, ILoggingEvent event) {
@@ -33,10 +33,12 @@ public class DefaultLogEventAwareCallback extends AbstractLogEventAwareCallback 
             report.setUserEmail(userEmail);
         }
 
-        for (Map.Entry<String, String> entry : tabProperties.entrySet()) {
-            String value = getMdcProperty(entry.getKey(), event);
-            if (value != null) {
-                report.addToTab(entry.getValue(), entry.getKey(), value);
+        for (TabConfiguration tabConfiguration : tabConfigurations) {
+            for (String property : tabConfiguration.getProperties()) {
+                String value = getMdcProperty(property, event);
+                if (value != null) {
+                    report.addToTab(tabConfiguration.getTab(), property, value);
+                }
             }
         }
     }
@@ -57,7 +59,7 @@ public class DefaultLogEventAwareCallback extends AbstractLogEventAwareCallback 
         this.userEmailProperty = userEmailProperty;
     }
 
-    public void setTabProperties(Map<String, String> tabProperties) {
-        this.tabProperties = tabProperties;
+    public void addTabConfiguration(TabConfiguration tabConfiguration) {
+        this.tabConfigurations.add(tabConfiguration);
     }
 }

@@ -13,7 +13,7 @@ public abstract class AbstractLogEventAwareCallback implements LogEventAwareCall
         report.setSeverity(defineSeverity(event));
     }
 
-    protected Severity defineSeverity(ILoggingEvent event) {
+    private Severity defineSeverity(ILoggingEvent event) {
         if (event.getLevel().equals(Level.ERROR)) {
             return Severity.ERROR;
         } else if (event.getLevel().equals(Level.WARN)) {

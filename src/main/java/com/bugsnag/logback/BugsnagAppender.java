@@ -1,5 +1,9 @@
 package com.bugsnag.logback;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import com.bugsnag.Bugsnag;
 import com.bugsnag.Report;
 import com.bugsnag.callbacks.Callback;
@@ -20,13 +24,13 @@ public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
     /** Bugsnag endpoint. */
     private String endpoint;
     /** Property names that should be filtered before sending to Bugsnag servers. */
-    private String filters;
+    private List<String> filteredProperties = new ArrayList<String>();
     /** Exception classes to be ignored. */
-    private String ignoreClasses;
+    private List<String> ignoreClasses = new ArrayList<String>();
     /** Release stages that should be notified. */
-    private String notifyReleaseStages;
+    private List<String> notifyReleaseStages = new ArrayList<String>();
     /** Bugsnag Java packages configuration, separated by commas. */
-    private String projectPackages;
+    private List<String> projectPackages = new ArrayList<String>();
     /** Bugsnag release stage in Bugsnag. */
     private String releaseStage;
     /** Whether threads state should be sent to Bugsnag. */
@@ -82,59 +86,40 @@ public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
     }
 
     private Bugsnag createBugsnag() {
-        checkRequiredParameter("api key", apiKey);
-        checkRequiredParameter("app type", appType);
-        checkRequiredParameter("release stage", releaseStage);
-        checkRequiredParameter("version", version);
+        Bugsnag bugsnag = new Bugsnag(apiKey);
 
-        if (getStatusManager().getCount() > 0) {
-            return null;
+        if (appType != null) {
+            bugsnag.setAppType(appType);
         }
 
-        Bugsnag bugsnag = new Bugsnag(apiKey);
-        bugsnag.setAppType(appType);
-        bugsnag.setAppVersion(version);
+        if (version != null) {
+            bugsnag.setAppVersion(version);
+        }
 
         if (endpoint != null) {
             bugsnag.setEndpoint(endpoint);
         }
 
-        if (filters != null) {
-            String[] filterNames = filters.split(",", -1);
-            bugsnag.setFilters(filterNames);
-        }
-
-        if (ignoreClasses != null) {
-            String[] classes = ignoreClasses.split(",", -1);
-            bugsnag.setIgnoreClasses(classes);
-        }
-
-        if (notifyReleaseStages != null) {
-            String[] notifyReleaseStageNames = notifyReleaseStages.split(",", -1);
-            bugsnag.setNotifyReleaseStages(notifyReleaseStageNames);
-        }
-
-        if (projectPackages != null) {
-            String[] packages = projectPackages.split(",", -1);
-            bugsnag.setProjectPackages(packages);
+        if (releaseStage != null) {
+            bugsnag.setReleaseStage(releaseStage);
         }
 
         if (timeout > 0) {
             bugsnag.setTimeout(timeout);
         }
 
+        bugsnag.setFilters(filteredProperties.toArray(new String[0]));
+        bugsnag.setIgnoreClasses(ignoreClasses.toArray(new String[0]));
+        bugsnag.setNotifyReleaseStages(notifyReleaseStages.toArray(new String[0]));
+        bugsnag.setProjectPackages(projectPackages.toArray(new String[0]));
         bugsnag.setSendThreads(sendThreads);
-        bugsnag.setReleaseStage(releaseStage);
 
         return bugsnag;
     }
 
-    private void checkRequiredParameter(String parameterName, String parameterValue) {
-        if (parameterValue == null || parameterValue.isEmpty()) {
-            addError(
-                    String.format(
-                            "No %s set for the appender named [%s]", parameterName, this.name));
-        }
+    private List<String> split(String value) {
+        String[] parts = value.split(",", -1);
+        return Arrays.asList(parts);
     }
 
     // Setters
@@ -155,20 +140,36 @@ public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
         this.endpoint = endpoint;
     }
 
-    public void setFilters(String filters) {
-        this.filters = filters;
+    public void setFilteredProperties(String filters) {
+        this.filteredProperties.addAll(split(filters));
+    }
+
+    public void addFilteredProperty(String filter) {
+        this.filteredProperties.add(filter);
     }
 
     public void setIgnoreClasses(String ignoreClasses) {
-        this.ignoreClasses = ignoreClasses;
+        this.ignoreClasses.addAll(split(ignoreClasses));
+    }
+
+    public void addIgnoreClass(String ignoreClass) {
+        this.ignoreClasses.add(ignoreClass);
     }
 
     public void setNotifyReleaseStages(String notifyReleaseStages) {
-        this.notifyReleaseStages = notifyReleaseStages;
+        this.notifyReleaseStages.addAll(split(notifyReleaseStages));
+    }
+
+    public void addNotifyReleaseStage(String notifyReleaseStage) {
+        this.notifyReleaseStages.add(notifyReleaseStage);
     }
 
     public void setProjectPackages(String projectPackages) {
-        this.projectPackages = projectPackages;
+        this.projectPackages.addAll(split(projectPackages));
+    }
+
+    public void addProjectPackage(String projectPackage) {
+        this.projectPackages.add(projectPackage);
     }
 
     public void setReleaseStage(String releaseStage) {
