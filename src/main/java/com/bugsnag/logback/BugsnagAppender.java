@@ -1,5 +1,7 @@
 package com.bugsnag.logback;
 
+import java.net.InetSocketAddress;
+import java.net.Proxy;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -31,6 +33,8 @@ public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
     private List<String> notifyReleaseStages = new ArrayList<String>();
     /** Bugsnag Java packages configuration, separated by commas. */
     private List<String> projectPackages = new ArrayList<String>();
+    /** Proxy configuration to access the internet. */
+    private ProxyConfiguration proxy;
     /** Bugsnag release stage in Bugsnag. */
     private String releaseStage;
     /** Whether threads state should be sent to Bugsnag. */
@@ -98,6 +102,13 @@ public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
 
         if (endpoint != null) {
             bugsnag.setEndpoint(endpoint);
+        }
+
+        if (proxy != null) {
+            bugsnag.setProxy(
+                    new Proxy(
+                            proxy.getType(),
+                            new InetSocketAddress(proxy.getHostname(), proxy.getPort())));
         }
 
         if (releaseStage != null) {
@@ -170,6 +181,10 @@ public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
 
     public void addProjectPackage(String projectPackage) {
         this.projectPackages.add(projectPackage);
+    }
+
+    public void setProxy(ProxyConfiguration proxy) {
+        this.proxy = proxy;
     }
 
     public void setReleaseStage(String releaseStage) {

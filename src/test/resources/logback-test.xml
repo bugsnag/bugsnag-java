@@ -31,6 +31,12 @@
         <timeout>10000</timeout>
         <version>0.1</version>
 
+        <proxy>
+            <type>HTTP</type>
+            <hostname>localhost</hostname>
+            <port>65000</port>
+        </proxy>
+
         <callback class="com.bugsnag.logback.TestCallback">
             <userIdProperty>user-id</userIdProperty>
             <userNameProperty>username</userNameProperty>
