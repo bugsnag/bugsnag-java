@@ -1,11 +1,5 @@
 package com.bugsnag.logback;
 
-import java.net.InetSocketAddress;
-import java.net.Proxy;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 import com.bugsnag.Bugsnag;
 import com.bugsnag.Report;
 import com.bugsnag.callbacks.Callback;
@@ -14,6 +8,12 @@ import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.classic.spi.IThrowableProxy;
 import ch.qos.logback.classic.spi.ThrowableProxy;
 import ch.qos.logback.core.UnsynchronizedAppenderBase;
+
+import java.net.InetSocketAddress;
+import java.net.Proxy;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /** Sends events to Bugsnag using its Java client library. */
 public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {

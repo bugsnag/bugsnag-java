@@ -9,7 +9,7 @@ public interface LogEventAwareCallback {
     /**
      * @param report the report to perform changes on.
      * @param event the log event being notified.
-     * See {@link com.bugsnag.callbacks.Callback#beforeNotify(Report)}
+     *     See {@link com.bugsnag.callbacks.Callback#beforeNotify(Report)}
      */
     void beforeNotify(Report report, ILoggingEvent event);
 }

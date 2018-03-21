@@ -1,11 +1,11 @@
 package com.bugsnag.logback;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.bugsnag.Report;
 
 import ch.qos.logback.classic.spi.ILoggingEvent;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /** Obtains data about the current user and additional tabs from MDC. */
 public class MdcCallback extends AbstractLogEventAwareCallback {

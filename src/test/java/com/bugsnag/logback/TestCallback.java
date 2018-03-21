@@ -1,10 +1,10 @@
 package com.bugsnag.logback;
 
-import java.util.Map;
-
 import com.bugsnag.Report;
 
 import ch.qos.logback.classic.spi.ILoggingEvent;
+
+import java.util.Map;
 
 public class TestCallback extends MdcCallback {
 
