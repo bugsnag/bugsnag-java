@@ -19,7 +19,7 @@ public class BugsnagAppenderTest {
     public static final String REQUEST_VALUE = "value2";
 
     @Test
-    public void testConfigurationIsPassedThrough() {
+    public void testMdcValuesArePassedThrough() {
         MDC.put(USER_ID_PROPERTY, USER_ID_VALUE);
         MDC.put(USER_NAME_PROPERTY, USER_NAME_VALUE);
         MDC.put(USER_EMAIL_PROPERTY, USER_EMAIL_VALUE);

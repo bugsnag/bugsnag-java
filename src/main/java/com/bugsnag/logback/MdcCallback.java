@@ -7,8 +7,8 @@ import com.bugsnag.Report;
 
 import ch.qos.logback.classic.spi.ILoggingEvent;
 
-/** Default implementation that obtains data about the current user and additional tabs from MDC. */
-public class DefaultLogEventAwareCallback extends AbstractLogEventAwareCallback {
+/** Obtains data about the current user and additional tabs from MDC. */
+public class MdcCallback extends AbstractLogEventAwareCallback {
     /** Property that contains the current user ID. */
     private String userIdProperty;
     /** Property that contains the current user name. */
