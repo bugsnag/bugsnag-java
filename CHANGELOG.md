@@ -4,7 +4,7 @@
 * Make preemptive copy of map filtering specified keys
   [Leandro Aparecido](https://github.com/lehphyro)
   [#77](https://github.com/bugsnag/bugsnag-java/pull/77)
-* Add setter for overriding error class  
+* Add setter for overriding error class
   [Jamie Lynch](https://github.com/fractalwrench)
   [#78](https://github.com/bugsnag/bugsnag-java/pull/78)
 
