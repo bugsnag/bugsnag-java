@@ -8,7 +8,6 @@
   [Jamie Lynch](https://github.com/fractalwrench)
   [#78](https://github.com/bugsnag/bugsnag-java/pull/78)
 
-
 ## 3.1.5 (2018-03-08)
 
 * Update MetaData filtering to handle different versions of Jackson correctly 
