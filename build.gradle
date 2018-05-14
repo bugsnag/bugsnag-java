@@ -27,12 +27,14 @@ repositories {
 dependencies {
     compile 'com.fasterxml.jackson.core:jackson-databind:2.9.1'
     compile 'org.slf4j:slf4j-api:1.7.25'
+    compileOnly 'ch.qos.logback:logback-classic:1.2.3'
     compileOnly 'javax.servlet:javax.servlet-api:3.1.0'
 
+    testCompile 'ch.qos.logback:logback-classic:1.2.3'
     testCompile 'junit:junit:4.12'
-    testCompile 'org.slf4j:slf4j-jdk14:1.7.25'
     testCompile 'javax.servlet:javax.servlet-api:3.1.0'
     testCompile 'org.mockito:mockito-core:2.10.0'
+    testRuntime 'org.codehaus.janino:janino:3.0.8'
 }
 
 test {

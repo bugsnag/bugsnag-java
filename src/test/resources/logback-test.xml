@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+	<appender name="BUGSNAG" class="com.bugsnag.logback.BugsnagAppender">
+		<apiKey>12345</apiKey>
+		<appType>webapp</appType>
+		<filteredProperties>cookie,password</filteredProperties>
+		<ignoredClasses>com.bugsnag.TestException,com.bugsnag.AnotherTestException</ignoredClasses>
+
+		<!-- Properties that allow multiple values may be defined as a comma-separated string or repeated multiple times -->
+		<notifyReleaseStage>development</notifyReleaseStage>
+		<notifyReleaseStage>production</notifyReleaseStage>
+
+		<projectPackages>com.bugsnag</projectPackages>
+
+		<!-- Example configuration for defining release stage conditionally -->
+		<if condition='property("HOSTNAME").contains("prod")'>
+			<then>
+				<releaseStage>production</releaseStage>
+			</then>
+			<else>
+				<releaseStage>development</releaseStage>
+			</else>
+		</if>
+
+		<sendThreads>true</sendThreads>
+		<timeout>10000</timeout>
+		<version>0.1</version>
+
+		<proxy>
+			<type>HTTP</type>
+			<hostname>localhost</hostname>
+			<port>65000</port>
+		</proxy>
+
+		<callback class="com.bugsnag.logback.TestCallback">
+			<userIdProperty>user-id</userIdProperty>
+			<userNameProperty>username</userNameProperty>
+			<userEmailProperty>user-email</userEmailProperty>
+			<tabConfiguration class="com.bugsnag.logback.TabConfiguration">
+				<tab>request</tab>
+				<property>property1</property>
+				<property>property2</property>
+			</tabConfiguration>
+			<tabConfiguration class="com.bugsnag.logback.TabConfiguration">
+				<tab>response</tab>
+				<property>value1</property>
+			</tabConfiguration>
+		</callback>
+	</appender>
+
+	<root level="INFO">
+		<appender-ref ref="BUGSNAG"/>
+	</root>
+</configuration>
