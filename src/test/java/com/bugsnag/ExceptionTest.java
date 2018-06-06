@@ -13,6 +13,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.util.List;
+import java.util.Map;
 
 public class ExceptionTest {
 
@@ -51,7 +52,8 @@ public class ExceptionTest {
         Bugsnag bugsnag = new Bugsnag("apikey");
         bugsnag.setDelivery(new Delivery() {
             @Override
-            public void deliver(Serializer serializer, Object object) {
+            public void deliver(Serializer serializer, Object object, Map<String, String> headers) {
+
             }
 
             @Override
