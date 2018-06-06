@@ -32,7 +32,6 @@ class DateUtils {
         return iso8601Holder.get().format(date);
     }
 
-
     /**
      * Returns the time rounded down to the latest minute
      *

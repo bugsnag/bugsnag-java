@@ -9,12 +9,14 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.concurrent.atomic.AtomicStampedReference;
+import java.util.function.UnaryOperator;
 
 class SessionTracker {
 
     private final Configuration config;
     private final ThreadLocal<Session> session = new ThreadLocal<Session>();
-    private AtomicReference<SessionCount> batchCount = new AtomicReference<SessionCount>();
+    private final AtomicReference<SessionCount> batchCount = new AtomicReference<SessionCount>();
     private final Collection<SessionCount>
             enqueuedSessionCounts = new ConcurrentLinkedQueue<SessionCount>();
 
@@ -43,20 +45,24 @@ class SessionTracker {
     }
 
     private void updateBatchCountIfNeeded(Date roundedStartDate) {
-        boolean isNewBatchPeriod = isNewBatchPeriod(roundedStartDate);
+        if (isNewBatchPeriod(roundedStartDate)) {
+            synchronized (batchCount) {
+                // check again in case already updated in another thread
+                if (isNewBatchPeriod(roundedStartDate)) {
+                    SessionCount newCount = new SessionCount(roundedStartDate);
+                    SessionCount prevCount = batchCount.getAndSet(newCount);
 
-        if (isNewBatchPeriod) {
-            SessionCount prev = batchCount.getAndSet(new SessionCount(roundedStartDate));
-
-            if (prev != null && prev.getSessionsStarted() > 0) {
-                enqueuedSessionCounts.add(prev);
+                    if (prevCount != null && prevCount.getSessionsStarted() > 0) {
+                        enqueuedSessionCounts.add(prevCount);
+                    }
+                }
             }
         }
     }
 
-    private boolean isNewBatchPeriod(Date now) {
-        SessionCount val = batchCount.get();
-        return val == null || now.after(val.getRoundedDate());
+    private boolean isNewBatchPeriod(Date roundedStartDate) {
+        SessionCount currentCount = batchCount.get();
+        return currentCount == null || roundedStartDate.after(currentCount.getRoundedDate());
     }
 
     Session getSession() {
@@ -71,9 +77,8 @@ class SessionTracker {
 
         if (!enqueuedSessionCounts.isEmpty() && flushingRequest.tryAcquire(1)) {
             try {
-                Collection<SessionCount> requestValues = new ArrayList<SessionCount>();
-                requestValues.addAll(enqueuedSessionCounts);
-
+                Collection<SessionCount> requestValues
+                        = new ArrayList<SessionCount>(enqueuedSessionCounts);
                 SessionPayload payload = new SessionPayload(requestValues, config);
                 Delivery delivery = config.sessionDelivery;
                 delivery.deliver(config.serializer, payload, config.getSessionApiHeaders());

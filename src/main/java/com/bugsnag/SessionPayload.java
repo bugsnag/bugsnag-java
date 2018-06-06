@@ -8,11 +8,11 @@ import java.util.Map;
 
 final class SessionPayload {
 
-    private final Collection<SessionCount> sessionCounts = new ArrayList<SessionCount>();
+    private final Collection<SessionCount> sessionCounts;
     private final Diagnostics diagnostics;
 
     SessionPayload(Collection<SessionCount> sessionCounts, Configuration configuration) {
-        this.sessionCounts.addAll(sessionCounts);
+        this.sessionCounts = sessionCounts;
         diagnostics = new Diagnostics(configuration);
     }
 
