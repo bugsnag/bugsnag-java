@@ -16,7 +16,7 @@ public class Report {
     private Configuration config;
 
     private String apiKey;
-    private Throwable throwable;
+    private final Exception exception;
     private final HandledState handledState;
     private Severity severity;
     private String groupingHash;
@@ -37,7 +37,7 @@ public class Report {
 
     Report(Configuration config, Throwable throwable, HandledState handledState) {
         this.config = config;
-        this.throwable = throwable;
+        this.exception = new Exception(config, throwable);
         this.handledState = handledState;
         this.severity = handledState.getOriginalSeverity();
         diagnostics = new Diagnostics(this.config);
@@ -56,8 +56,9 @@ public class Report {
     @Expose
     protected List<Exception> getExceptions() {
         List<Exception> exceptions = new ArrayList<Exception>();
+        exceptions.add(exception);
 
-        Throwable currentThrowable = throwable;
+        Throwable currentThrowable = exception.getThrowable().getCause();
         while (currentThrowable != null) {
             exceptions.add(new Exception(config, currentThrowable));
             currentThrowable = currentThrowable.getCause();
@@ -141,21 +142,30 @@ public class Report {
      * @return The {@linkplain Throwable exception} which triggered this error report.
      */
     public Throwable getException() {
-        return throwable;
+        return exception.getThrowable();
     }
 
     /**
      * @return the class name from the exception contained in this error report.
      */
     public String getExceptionName() {
-        return throwable.getClass().getName();
+        return exception.getErrorClass();
+    }
+
+    /**
+     * Sets the class name from the exception contained in this error report.
+     *
+     * @param exceptionName the error name
+     */
+    public void setExceptionName(String exceptionName) {
+        exception.setErrorClass(exceptionName);
     }
 
     /**
      * @return The message from the exception contained in this error report.
      */
     public String getExceptionMessage() {
-        return throwable.getLocalizedMessage();
+        return exception.getThrowable().getLocalizedMessage();
     }
 
     /**
