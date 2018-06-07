@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.Proxy;
 import java.net.URL;
 import java.net.UnknownHostException;
@@ -81,6 +82,9 @@ public class SyncHttpDelivery implements HttpDelivery {
                 logger.warn(
                         "Error not reported to Bugsnag - got non-200 response code: {}", status);
             }
+        } catch (MalformedURLException ex) {
+            logger.warn("Error not reported to Bugsnag - malformed URL."
+                    + " Have you set both endpoints correctly?", ex);
         } catch (SerializationException ex) {
             logger.warn("Error not reported to Bugsnag - exception when serializing payload", ex);
         } catch (UnknownHostException ex) {
