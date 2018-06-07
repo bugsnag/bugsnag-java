@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import com.bugsnag.delivery.Delivery;
 import com.bugsnag.delivery.HttpDelivery;
@@ -33,7 +34,7 @@ public class ConfigurationTest {
 
     @Test
     public void testDefaults() throws java.lang.Exception {
-        assertFalse(config.shouldAutoCaptureSessions());
+        assertTrue(config.shouldAutoCaptureSessions());
     }
 
     @Test

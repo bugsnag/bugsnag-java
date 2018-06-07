@@ -45,7 +45,7 @@ public class Configuration {
 
     Collection<Callback> callbacks = new ArrayList<Callback>();
     Serializer serializer = new Serializer();
-    private final AtomicBoolean autoCaptureSessions = new AtomicBoolean();
+    private final AtomicBoolean autoCaptureSessions = new AtomicBoolean(true);
 
     Configuration(String apiKey) {
         this.apiKey = apiKey;

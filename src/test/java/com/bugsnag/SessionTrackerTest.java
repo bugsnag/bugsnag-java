@@ -46,13 +46,13 @@ public class SessionTrackerTest {
 
     @Test
     public void startAutoSessionDisabled() throws Throwable {
+        configuration.setAutoCaptureSessions(false);
         sessionTracker.startSession(new Date(), true);
         assertNull(sessionTracker.getSession());
     }
 
     @Test
     public void startAutoSessionEnabled() throws Throwable {
-        configuration.setAutoCaptureSessions(true);
         sessionTracker.startSession(new Date(), true);
         assertNotNull(sessionTracker.getSession());
     }
