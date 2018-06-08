@@ -507,7 +507,9 @@ public class Bugsnag {
      *
      * @param endpoint the endpoint to send reports to
      * @see #setDelivery
+     * @deprecated use {@link Configuration#setEndpoints(String, String)} instead
      */
+    @Deprecated
     public void setSessionEndpoint(String endpoint) {
         if (config.sessionDelivery instanceof HttpDelivery) {
             ((HttpDelivery) config.sessionDelivery).setEndpoint(endpoint);
