@@ -14,7 +14,9 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.net.Proxy;
+import java.util.LinkedList;
 import java.util.Map;
+import java.util.Queue;
 
 public class ConfigurationTest {
 
@@ -104,6 +106,7 @@ public class ConfigurationTest {
 
     static class FakeHttpDelivery implements HttpDelivery {
         String endpoint;
+        Queue<Object> receivedObjects = new LinkedList<Object>();
 
         @Override
         public void setEndpoint(String endpoint) {
@@ -120,6 +123,7 @@ public class ConfigurationTest {
 
         @Override
         public void deliver(Serializer serializer, Object object, Map<String, String> headers) {
+            receivedObjects.add(object);
         }
 
         @Override
