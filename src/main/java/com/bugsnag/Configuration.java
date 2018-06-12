@@ -120,7 +120,7 @@ public class Configuration {
      * @throws IllegalArgumentException if the notify endpoint is empty or null
      */
     public void setEndpoints(String notify, String sessions) throws IllegalArgumentException {
-        if (notify == null || "".equals(notify)) {
+        if (notify == null || notify.length() == 0) {
             throw new IllegalArgumentException("Notify endpoint cannot be empty or null.");
         } else {
             if (delivery instanceof HttpDelivery) {
@@ -130,7 +130,7 @@ public class Configuration {
             }
         }
 
-        boolean invalidSessionsEndpoint = sessions == null || "".equals(sessions);
+        boolean invalidSessionsEndpoint = sessions == null || sessions.length() == 0;
         String sessionEndpoint = null;
 
         if (invalidSessionsEndpoint) {
@@ -142,6 +142,8 @@ public class Configuration {
         }
 
         if (sessionDelivery instanceof HttpDelivery) {
+            // sessionEndpoint may be invalid (i.e. null) here, which should result in the default
+            // HttpDelivery throwing a MalformedUrlException which prevents delivery.
             ((HttpDelivery) sessionDelivery).setEndpoint(sessionEndpoint);
         } else {
             LOGGER.warn("Delivery is not instance of HttpDelivery, cannot set sessions endpoint");
