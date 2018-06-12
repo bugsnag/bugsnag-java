@@ -97,6 +97,22 @@ public class ConfigurationTest {
         assertFalse(config.shouldAutoCaptureSessions());
     }
 
+    @Test
+    public void testBaseDeliveryIgnoresEndpoint() {
+        Delivery delivery = new Delivery() {
+            @Override
+            public void deliver(Serializer serializer, Object object, Map<String, String> headers) {
+            }
+
+            @Override
+            public void close() {
+            }
+        };
+        config.delivery = delivery;
+        config.sessionDelivery = delivery;
+        config.setEndpoints("http://example.com", "http://sessions.example.com");
+    }
+
     private String getDeliveryEndpoint(Delivery delivery) {
         if (delivery instanceof FakeHttpDelivery) {
             return ((FakeHttpDelivery) delivery).endpoint;
