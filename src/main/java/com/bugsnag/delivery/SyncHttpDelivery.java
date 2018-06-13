@@ -44,6 +44,11 @@ public class SyncHttpDelivery implements HttpDelivery {
 
     @Override
     public void deliver(Serializer serializer, Object object, Map<String, String> headers) {
+        if (endpoint == null) {
+            logger.warn("Endpoint configured incorrectly, skipping delivery.");
+            return;
+        }
+
         HttpURLConnection connection = null;
         try {
             URL url = new URL(endpoint);

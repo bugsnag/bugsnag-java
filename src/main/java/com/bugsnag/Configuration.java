@@ -142,7 +142,7 @@ public class Configuration {
         }
 
         if (sessionDelivery instanceof HttpDelivery) {
-            // sessionEndpoint may be invalid (i.e. null) here, which should result in the default
+            // sessionEndpoint may be invalid (e.g. typo in the protocol) here, which should result in the default
             // HttpDelivery throwing a MalformedUrlException which prevents delivery.
             ((HttpDelivery) sessionDelivery).setEndpoint(sessionEndpoint);
         } else {
