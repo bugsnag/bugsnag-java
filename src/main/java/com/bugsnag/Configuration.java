@@ -120,7 +120,7 @@ public class Configuration {
      * @throws IllegalArgumentException if the notify endpoint is empty or null
      */
     public void setEndpoints(String notify, String sessions) throws IllegalArgumentException {
-        if (notify == null || notify.length() == 0) {
+        if (notify == null || notify.isEmpty()) {
             throw new IllegalArgumentException("Notify endpoint cannot be empty or null.");
         } else {
             if (delivery instanceof HttpDelivery) {
@@ -130,7 +130,7 @@ public class Configuration {
             }
         }
 
-        boolean invalidSessionsEndpoint = sessions == null || sessions.length() == 0;
+        boolean invalidSessionsEndpoint = sessions == null || sessions.isEmpty();
         String sessionEndpoint = null;
 
         if (invalidSessionsEndpoint) {
