@@ -13,6 +13,8 @@ import com.bugsnag.serialization.Serializer;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
 import java.net.Proxy;
 import java.util.LinkedList;
 import java.util.Map;
@@ -91,6 +93,15 @@ public class ConfigurationTest {
     }
 
     @Test
+    public void testInvalidSessionWarningLogged() {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        System.setErr(new PrintStream(baos));
+        config.setEndpoints("http://example.com", "");
+        String logMsg = new String(baos.toByteArray());
+        assertTrue(logMsg.contains("The session tracking endpoint has not been set. Session tracking is disabled"));
+    }
+
+    @Test
     public void testAutoCaptureOverride() {
         config.setAutoCaptureSessions(false);
         config.setEndpoints("http://example.com", "http://example.com");
@@ -110,7 +121,15 @@ public class ConfigurationTest {
         };
         config.delivery = delivery;
         config.sessionDelivery = delivery;
+
+        // ensure log message
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        System.setErr(new PrintStream(baos));
         config.setEndpoints("http://example.com", "http://sessions.example.com");
+        String logMsg = new String(baos.toByteArray());
+
+        assertTrue(logMsg.contains("Delivery is not instance of HttpDelivery, cannot set notify endpoint"));
+        assertTrue(logMsg.contains("Delivery is not instance of HttpDelivery, cannot set sessions endpoint"));
     }
 
     private String getDeliveryEndpoint(Delivery delivery) {
