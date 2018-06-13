@@ -98,7 +98,8 @@ public class ConfigurationTest {
         System.setErr(new PrintStream(baos));
         config.setEndpoints("http://example.com", "");
         String logMsg = new String(baos.toByteArray());
-        assertTrue(logMsg.contains("The session tracking endpoint has not been set. Session tracking is disabled"));
+        assertTrue(logMsg.contains("The session tracking endpoint "
+                + "has not been set. Session tracking is disabled"));
     }
 
     @Test
@@ -128,8 +129,10 @@ public class ConfigurationTest {
         config.setEndpoints("http://example.com", "http://sessions.example.com");
         String logMsg = new String(baos.toByteArray());
 
-        assertTrue(logMsg.contains("Delivery is not instance of HttpDelivery, cannot set notify endpoint"));
-        assertTrue(logMsg.contains("Delivery is not instance of HttpDelivery, cannot set sessions endpoint"));
+        assertTrue(logMsg.contains("Delivery is not instance of "
+                + "HttpDelivery, cannot set notify endpoint"));
+        assertTrue(logMsg.contains("Delivery is not instance of "
+                + "HttpDelivery, cannot set sessions endpoint"));
     }
 
     private String getDeliveryEndpoint(Delivery delivery) {
