@@ -1,5 +1,19 @@
 # Changelog
 
+## 3.2.0-beta (2018-06-14)
+
+**Important**: This is a beta release which introduces automatic tracking of sessions, which by
+default are captured for each HTTP request received via the Servlet API
+To disable this data collection, call `bugsnag.setAutoCaptureSessions(false)`.
+If you wish to use a custom strategy for tracking sessions, call `bugsnag.startSession()` in the
+appropriate place within your application.
+  [Jamie Lynch](https://github.com/fractalwrench)
+  [#70](https://github.com/bugsnag/bugsnag-java/pull/70)
+
+**Deprecation notice**
+`setEndpoints(String notify, String session)` is now the preferred way to configure custom endpoints,
+if you are using Bugsnag On-Premise.
+
 ## 3.1.6 (2018-05-03)
 * Make preemptive copy of map filtering specified keys
   [Leandro Aparecido](https://github.com/lehphyro)
