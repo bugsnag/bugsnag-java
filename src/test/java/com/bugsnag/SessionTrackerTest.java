@@ -14,6 +14,7 @@ import com.bugsnag.serialization.Serializer;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -25,6 +26,7 @@ public class SessionTrackerTest {
 
     private SessionTracker sessionTracker;
     private Configuration configuration;
+    private ConfigurationTest.FakeHttpDelivery sessionDelivery;
 
     /**
      * Initialises config + session tracker
@@ -34,27 +36,72 @@ public class SessionTrackerTest {
     @Before
     public void setUp() throws Throwable {
         configuration = new Configuration("api-key");
+        sessionDelivery = new ConfigurationTest.FakeHttpDelivery();
+        configuration.sessionDelivery = sessionDelivery;
         sessionTracker = new SessionTracker(configuration);
         assertNull(sessionTracker.getSession());
     }
 
     @Test
-    public void startManualSession() throws Throwable {
+    public void startManualSessionAutoEnabled() throws Throwable {
         sessionTracker.startSession(new Date(), false);
         assertNotNull(sessionTracker.getSession());
     }
 
     @Test
-    public void startAutoSessionDisabled() throws Throwable {
+    public void startManualSessionAutoDisabled() throws Throwable {
+        configuration.setAutoCaptureSessions(false);
+        sessionTracker.startSession(new Date(), false);
+        assertNotNull(sessionTracker.getSession());
+    }
+
+    @Test
+    public void startAutoSessionAutoEnabled() throws Throwable {
+        sessionTracker.startSession(new Date(), true);
+        assertNotNull(sessionTracker.getSession());
+    }
+
+    @Test
+    public void startAutoSessionAutoDisabled() throws Throwable {
+        configuration.setAutoCaptureSessions(false);
         sessionTracker.startSession(new Date(), true);
         assertNull(sessionTracker.getSession());
     }
 
     @Test
-    public void startAutoSessionEnabled() throws Throwable {
-        configuration.setAutoCaptureSessions(true);
+    public void startSessionNoEndpoint() throws Throwable {
+        configuration.setEndpoints("http://example.com", null);
         sessionTracker.startSession(new Date(), true);
-        assertNotNull(sessionTracker.getSession());
+        assertNull(sessionTracker.getSession());
+    }
+
+    @Test
+    public void testMultiSessionsOneBatch() {
+        for (int k = 0; k < 100; k++) {
+            sessionTracker.startSession(new Date(k), false);
+        }
+        sessionTracker.flushSessions(new Date());
+        assertEquals(1, sessionDelivery.receivedObjects.size());
+        SessionPayload payload = (SessionPayload) sessionDelivery.receivedObjects.poll();
+
+        List<SessionCount> sessionCounts = (List<SessionCount>) payload.getSessionCounts();
+        assertEquals(1, sessionCounts.size());
+        assertEquals(100, sessionCounts.get(0).getSessionsStarted());
+    }
+
+    @Test
+    public void testMultiSessionsTwoBatches() {
+        for (int k = 0; k < 100; k++) {
+            sessionTracker.startSession(new Date(k * 1000), false);
+        }
+        sessionTracker.flushSessions(new Date());
+        assertEquals(1, sessionDelivery.receivedObjects.size());
+        SessionPayload payload = (SessionPayload) sessionDelivery.receivedObjects.poll();
+
+        List<SessionCount> sessionCounts = (List<SessionCount>) payload.getSessionCounts();
+        assertEquals(2, sessionCounts.size());
+        assertEquals(60, sessionCounts.get(0).getSessionsStarted());
+        assertEquals(40, sessionCounts.get(1).getSessionsStarted());
     }
 
     @Test
