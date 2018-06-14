@@ -153,7 +153,7 @@ public class Configuration {
 
     Map<String, String> getErrorApiHeaders() {
         Map<String, String> map = new HashMap<String, String>();
-        map.put(HEADER_API_PAYLOAD_VERSION, "4.0");
+        map.put(HEADER_API_PAYLOAD_VERSION, Report.PAYLOAD_VERSION);
         map.put(HEADER_API_KEY, apiKey);
         map.put(HEADER_BUGSNAG_SENT_AT, DateUtils.toIso8601(new Date()));
         return map;

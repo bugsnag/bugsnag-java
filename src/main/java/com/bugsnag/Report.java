@@ -11,7 +11,8 @@ import java.util.List;
 import java.util.Map;
 
 public class Report {
-    private static final String PAYLOAD_VERSION = "4";
+
+    static final String PAYLOAD_VERSION = "4";
 
     private Configuration config;
 

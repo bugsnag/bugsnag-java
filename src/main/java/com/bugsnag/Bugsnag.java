@@ -19,8 +19,8 @@ import java.util.concurrent.TimeUnit;
 
 public class Bugsnag {
     private static final Logger LOGGER = LoggerFactory.getLogger(Bugsnag.class);
-    private static final int SHUTDOWN_TIMEOUT = 5000;
-    private static final int SESSION_TRACKING_PERIOD_SECS = 60;
+    private static final int SHUTDOWN_TIMEOUT_MS = 5000;
+    private static final int SESSION_TRACKING_PERIOD_MS = 60000;
     private static final int CORE_POOL_SIZE = 1;
 
     private ScheduledThreadPoolExecutor sessionExecutorService =
@@ -75,7 +75,7 @@ public class Bugsnag {
             public void run() {
                 sessionTracker.flushSessions(new Date());
             }
-        }, SESSION_TRACKING_PERIOD_SECS, SESSION_TRACKING_PERIOD_SECS, TimeUnit.SECONDS);
+        }, SESSION_TRACKING_PERIOD_MS, SESSION_TRACKING_PERIOD_MS, TimeUnit.MILLISECONDS);
     }
 
     private void addSessionTrackingShutdownHook() {
@@ -86,7 +86,7 @@ public class Bugsnag {
                 sessionExecutorService.shutdown();
                 try {
                     if (!sessionExecutorService
-                            .awaitTermination(SHUTDOWN_TIMEOUT, TimeUnit.MILLISECONDS)) {
+                            .awaitTermination(SHUTDOWN_TIMEOUT_MS, TimeUnit.MILLISECONDS)) {
                         LOGGER.warn("Shutdown of 'session tracking' threads"
                                 + " took too long - forcing a shutdown");
                         sessionExecutorService.shutdownNow();
