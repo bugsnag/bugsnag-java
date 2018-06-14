@@ -521,6 +521,27 @@ public class Bugsnag {
     }
 
     /**
+     * Set the endpoints to send data to. By default we'll send error reports to
+     * https://notify.bugsnag.com, and sessions to https://sessions.bugsnag.com, but you can
+     * override this if you are using Bugsnag Enterprise to point to your own Bugsnag endpoint.
+     *
+     * Please note that it is recommended that you set both endpoints. If the notify endpoint is
+     * missing, an exception will be thrown. If the session endpoint is missing, a warning will be
+     * logged and sessions will not be sent automatically.
+     *
+     * Note that if you are setting a custom {@link Delivery}, this method should be called after
+     * the custom implementation has been set.
+     *
+     * @param notify the notify endpoint
+     * @param sessions the sessions endpoint
+     *
+     * @throws IllegalArgumentException if the notify endpoint is empty or null
+     */
+    public void setEndpoints(String notify, String sessions) throws IllegalArgumentException {
+        config.setEndpoints(notify, sessions);
+    }
+
+    /**
      * Close the connection to Bugsnag and unlink the exception handler.
      */
     public void close() {
