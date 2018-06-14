@@ -7,12 +7,32 @@ import com.bugsnag.delivery.HttpDelivery;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.lang.Thread.UncaughtExceptionHandler;
 import java.net.Proxy;
+import java.util.Collections;
+import java.util.Date;
+import java.util.Set;
+import java.util.concurrent.RejectedExecutionHandler;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 public class Bugsnag {
     private static final Logger LOGGER = LoggerFactory.getLogger(Bugsnag.class);
+    private static final int SHUTDOWN_TIMEOUT_MS = 5000;
+    private static final int SESSION_TRACKING_PERIOD_MS = 60000;
+    private static final int CORE_POOL_SIZE = 1;
+
+    private ScheduledThreadPoolExecutor sessionExecutorService =
+            new ScheduledThreadPoolExecutor(CORE_POOL_SIZE, new RejectedExecutionHandler() {
+                @Override
+                public void rejectedExecution(Runnable runnable, ThreadPoolExecutor executor) {
+                    LOGGER.error("Rejected execution for sessionExecutorService");
+                }
+            });
 
     private Configuration config;
+    private final SessionTracker sessionTracker;
 
     //
     // Constructors
@@ -39,11 +59,45 @@ public class Bugsnag {
         }
 
         config = new Configuration(apiKey);
+        sessionTracker = new SessionTracker(config);
 
         // Automatically send unhandled exceptions to Bugsnag using this Bugsnag
         if (sendUncaughtExceptions) {
             ExceptionHandler.enable(this);
         }
+        addSessionTrackingShutdownHook();
+        scheduleSessionFlushes();
+    }
+
+    private void scheduleSessionFlushes() {
+        sessionExecutorService.scheduleAtFixedRate(new Runnable() {
+            @Override
+            public void run() {
+                sessionTracker.flushSessions(new Date());
+            }
+        }, SESSION_TRACKING_PERIOD_MS, SESSION_TRACKING_PERIOD_MS, TimeUnit.MILLISECONDS);
+    }
+
+    private void addSessionTrackingShutdownHook() {
+        Runtime.getRuntime().addShutdownHook(new Thread() {
+            @Override
+            public void run() {
+                sessionTracker.shutdown();
+                sessionExecutorService.shutdown();
+                try {
+                    if (!sessionExecutorService
+                            .awaitTermination(SHUTDOWN_TIMEOUT_MS, TimeUnit.MILLISECONDS)) {
+                        LOGGER.warn("Shutdown of 'session tracking' threads"
+                                + " took too long - forcing a shutdown");
+                        sessionExecutorService.shutdownNow();
+                    }
+                } catch (InterruptedException ex) {
+                    LOGGER.warn("Shutdown of 'session tracking' thread "
+                            + "was interrupted - forcing a shutdown");
+                    sessionExecutorService.shutdownNow();
+                }
+            }
+        });
     }
 
     //
@@ -106,13 +160,30 @@ public class Bugsnag {
         config.delivery = delivery;
     }
 
+
+    /**
+     * Set the method of delivery for Bugsnag sessions. By default we'll
+     * send sessions asynchronously using a thread pool to
+     * https://sessions.bugsnag.com, but you can override this to use a
+     * different sending technique or endpoint (for example, if you are using
+     * Bugsnag On-Premise).
+     *
+     * @param delivery the delivery mechanism to use
+     * @see Delivery
+     */
+    public void setSessionDelivery(Delivery delivery) {
+        config.sessionDelivery = delivery;
+    }
+
     /**
      * Set the endpoint to deliver Bugsnag errors report to. This is a convenient
      * shorthand for bugsnag.getDelivery().setEndpoint();
      *
      * @param endpoint the endpoint to send reports to
      * @see #setDelivery
+     * @deprecated use {@link Configuration#setEndpoints(String, String)} instead
      */
+    @Deprecated
     public void setEndpoint(String endpoint) {
         if (config.delivery instanceof HttpDelivery) {
             ((HttpDelivery) config.delivery).setEndpoint(endpoint);
@@ -163,7 +234,7 @@ public class Bugsnag {
     }
 
     /**
-     * Set a proxy to use when delivering Bugsnag error reports. This is a convenient
+     * Set a proxy to use when delivering Bugsnag error reports and sessions. This is a convenient
      * shorthand for bugsnag.getDelivery().setProxy();
      *
      * @param proxy the proxy to use to send reports
@@ -171,6 +242,9 @@ public class Bugsnag {
     public void setProxy(Proxy proxy) {
         if (config.delivery instanceof HttpDelivery) {
             ((HttpDelivery) config.delivery).setProxy(proxy);
+        }
+        if (config.sessionDelivery instanceof HttpDelivery) {
+            ((HttpDelivery) config.sessionDelivery).setProxy(proxy);
         }
     }
 
@@ -198,7 +272,7 @@ public class Bugsnag {
     }
 
     /**
-     * Set a timeout (in ms) to use when delivering Bugsnag error reports.
+     * Set a timeout (in ms) to use when delivering Bugsnag error reports and sessions.
      * This is a convenient shorthand for bugsnag.getDelivery().setTimeout();
      *
      * @param timeout the timeout to set (in ms)
@@ -207,6 +281,9 @@ public class Bugsnag {
     public void setTimeout(int timeout) {
         if (config.delivery instanceof HttpDelivery) {
             ((HttpDelivery) config.delivery).setTimeout(timeout);
+        }
+        if (config.sessionDelivery instanceof HttpDelivery) {
+            ((HttpDelivery) config.sessionDelivery).setTimeout(timeout);
         }
     }
 
@@ -369,15 +446,99 @@ public class Bugsnag {
             return false;
         }
 
+        // increment session handled/unhandled count
+        Session session = sessionTracker.getSession();
+
+        if (session != null) {
+            if (report.getUnhandled()) {
+                session.incrementUnhandledCount();
+            } else {
+                session.incrementHandledCount();
+            }
+            report.setSession(session);
+        }
+
         // Build the notification
         Notification notification = new Notification(config, report);
 
         // Deliver the notification
         LOGGER.debug("Reporting error to Bugsnag");
 
-        config.delivery.deliver(config.serializer, notification);
+        config.delivery.deliver(config.serializer, notification, config.getErrorApiHeaders());
 
         return true;
+    }
+
+    /**
+     * Manually starts tracking a new session.
+     *
+     * Note: sessions are currently tracked on a per-thread basis. Therefore, if this method were
+     * called from Thread A then Thread B, two sessions would be considered 'active'. Any custom
+     * strategy used to track sessions should take this into account.
+     *
+     * Automatic session tracking can be enabled via
+     * {@link Bugsnag#setAutoCaptureSessions(boolean)}, which will automatically create a new
+     * session for each request
+     */
+    public void startSession() {
+        sessionTracker.startSession(new Date(), false);
+    }
+
+    /**
+     * Sets whether or not Bugsnag should automatically capture and report User
+     * sessions for each request.
+     * <p>
+     * By default this behavior is disabled.
+     *
+     * @param autoCaptureSessions whether sessions should be captured automatically
+     */
+    public void setAutoCaptureSessions(boolean autoCaptureSessions) {
+        config.setAutoCaptureSessions(autoCaptureSessions);
+    }
+
+    /**
+     * Retrieves whether or not Bugsnag should automatically capture
+     * and report User sessions for each request.
+     * @return whether sessions should be auto captured
+     */
+    public boolean shouldAutoCaptureSessions() {
+        return config.shouldAutoCaptureSessions();
+    }
+
+    /**
+     * Set the endpoint to deliver Bugsnag sessions to. This is a convenient
+     * shorthand for bugsnag.getSessionDelivery().setEndpoint();
+     *
+     * @param endpoint the endpoint to send reports to
+     * @see #setDelivery
+     * @deprecated use {@link Configuration#setEndpoints(String, String)} instead
+     */
+    @Deprecated
+    public void setSessionEndpoint(String endpoint) {
+        if (config.sessionDelivery instanceof HttpDelivery) {
+            ((HttpDelivery) config.sessionDelivery).setEndpoint(endpoint);
+        }
+    }
+
+    /**
+     * Set the endpoints to send data to. By default we'll send error reports to
+     * https://notify.bugsnag.com, and sessions to https://sessions.bugsnag.com, but you can
+     * override this if you are using Bugsnag Enterprise to point to your own Bugsnag endpoint.
+     *
+     * Please note that it is recommended that you set both endpoints. If the notify endpoint is
+     * missing, an exception will be thrown. If the session endpoint is missing, a warning will be
+     * logged and sessions will not be sent automatically.
+     *
+     * Note that if you are setting a custom {@link Delivery}, this method should be called after
+     * the custom implementation has been set.
+     *
+     * @param notify the notify endpoint
+     * @param sessions the sessions endpoint
+     *
+     * @throws IllegalArgumentException if the notify endpoint is empty or null
+     */
+    public void setEndpoints(String notify, String sessions) throws IllegalArgumentException {
+        config.setEndpoints(notify, sessions);
     }
 
     /**
@@ -387,5 +548,20 @@ public class Bugsnag {
         LOGGER.debug("Closing connection to Bugsnag");
         config.delivery.close();
         ExceptionHandler.disable(this);
+    }
+
+    /**
+     * Retrieves all instances of {@link Bugsnag} which are registered to
+     * catch uncaught exceptions.
+     *
+     * @return clients which catch uncaught exceptions
+     */
+    public static Set<Bugsnag> uncaughtExceptionClients() {
+        UncaughtExceptionHandler handler = Thread.getDefaultUncaughtExceptionHandler();
+        if (handler instanceof ExceptionHandler) {
+            ExceptionHandler bugsnagHandler = (ExceptionHandler)handler;
+            return Collections.unmodifiableSet(bugsnagHandler.uncaughtExceptionClients());
+        }
+        return Collections.emptySet();
     }
 }

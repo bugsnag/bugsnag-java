@@ -15,7 +15,7 @@ public class DeviceCallback implements Callback {
     /**
      * Memoises the hostname, as lookup can be expensive
      */
-    private static String getHostnameValue() {
+    public static String getHostnameValue() {
         if (!hostnameInitialised) {
             synchronized (lock) {
                 if (!hostnameInitialised) {

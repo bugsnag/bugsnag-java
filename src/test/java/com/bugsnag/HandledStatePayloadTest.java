@@ -1,10 +1,8 @@
 package com.bugsnag;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
 
 import com.bugsnag.delivery.OutputStreamDelivery;
 
@@ -18,6 +16,7 @@ import org.junit.Test;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.lang.Exception;
+import java.util.Collections;
 
 public class HandledStatePayloadTest {
 
@@ -114,7 +113,7 @@ public class HandledStatePayloadTest {
     private JsonNode getJsonPayloadFromReport(Report report) throws IOException {
         ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
         OutputStreamDelivery delivery = new OutputStreamDelivery(byteStream);
-        delivery.deliver(new Serializer(), report);
+        delivery.deliver(new Serializer(), report, Collections.<String, String>emptyMap());
 
         String data = new String(byteStream.toByteArray());
         assertNotNull(data);

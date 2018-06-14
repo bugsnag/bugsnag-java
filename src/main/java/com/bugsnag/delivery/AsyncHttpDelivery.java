@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.net.Proxy;
+import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -15,7 +16,7 @@ public class AsyncHttpDelivery implements HttpDelivery {
     private static final Logger logger = LoggerFactory.getLogger(AsyncHttpDelivery.class);
     private static final int SHUTDOWN_TIMEOUT = 5000;
 
-    private HttpDelivery baseDelivery = new SyncHttpDelivery();
+    private HttpDelivery baseDelivery;
 
     // Create an exector service which keeps idle threads alive for a maximum of SHUTDOWN_TIMEOUT.
     // This should avoid blocking an application that doesn't call shutdown from exiting.
@@ -27,9 +28,17 @@ public class AsyncHttpDelivery implements HttpDelivery {
     private boolean shuttingDown = false;
 
     /**
-     * Constructor.
+     * Creates a new instance, which defaults to the https://notify.bugsnag.com endpoint
      */
     public AsyncHttpDelivery() {
+        this(SyncHttpDelivery.DEFAULT_NOTIFY_ENDPOINT);
+    }
+
+    /**
+     * Creates a new instance, which uses a custom endpoint
+     */
+    public AsyncHttpDelivery(String endpoint) {
+        baseDelivery = new SyncHttpDelivery(endpoint);
         Runtime.getRuntime().addShutdownHook(new Thread() {
             @Override
             public void run() {
@@ -37,6 +46,7 @@ public class AsyncHttpDelivery implements HttpDelivery {
             }
         });
     }
+
 
     public void setEndpoint(String endpoint) {
         baseDelivery.setEndpoint(endpoint);
@@ -59,7 +69,9 @@ public class AsyncHttpDelivery implements HttpDelivery {
     }
 
     @Override
-    public void deliver(final Serializer serializer, final Object object) {
+    public void deliver(final Serializer serializer,
+                        final Object object,
+                        final Map<String, String> headers) {
         if (shuttingDown) {
             logger.warn("Not notifying - 'sending' threads are already shutting down");
             return;
@@ -68,7 +80,7 @@ public class AsyncHttpDelivery implements HttpDelivery {
         executorService.execute(new Runnable() {
             @Override
             public void run() {
-                baseDelivery.deliver(serializer, object);
+                baseDelivery.deliver(serializer, object, headers);
             }
         });
     }
