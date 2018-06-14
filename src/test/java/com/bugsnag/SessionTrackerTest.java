@@ -14,7 +14,6 @@ import com.bugsnag.serialization.Serializer;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -290,16 +289,6 @@ public class SessionTrackerTest {
     }
 
     @Test
-    public void sessionDeliveryShutdown() throws Throwable {
-        CustomDelivery sessionDelivery = new CustomDelivery() {};
-        configuration.sessionDelivery = sessionDelivery;
-        sessionTracker.startSession(new Date(10000000L), false);
-        sessionTracker.setShuttingDown(true);
-        sessionTracker.flushSessions(new Date(10120000L));
-        assertFalse(sessionDelivery.delivered);
-    }
-
-    @Test
     public void zeroSessionCount() throws Throwable {
         CustomDelivery sessionDelivery = new CustomDelivery() {};
         configuration.sessionDelivery = sessionDelivery;
@@ -308,12 +297,44 @@ public class SessionTrackerTest {
         assertFalse(sessionDelivery.delivered);
     }
 
+    @Test
+    public void testSessionShutdownStartSession() {
+        sessionTracker.shutdown();
+        sessionTracker.startSession(new Date(), true);
+        assertNull(sessionTracker.getSession());
+    }
+
+    @Test
+    public void testSessionShutdownDelivers() {
+        CustomDelivery delivery = new CustomDelivery() {};
+        configuration.sessionDelivery = delivery;
+
+        sessionTracker.startSession(new Date(), true);
+        sessionTracker.shutdown();
+        assertTrue(delivery.recentRequest instanceof SessionPayload);
+        assertEquals(1, delivery.count.get());
+    }
+
+    @Test
+    public void testMultiShutdown() {
+        CustomDelivery delivery = new CustomDelivery() {};
+        configuration.sessionDelivery = delivery;
+
+        sessionTracker.startSession(new Date(), true);
+        sessionTracker.shutdown();
+        sessionTracker.shutdown(); // second should have no effect
+        assertTrue(delivery.recentRequest instanceof SessionPayload);
+        assertEquals(1, delivery.count.get());
+    }
+
     abstract static class CustomDelivery implements Delivery {
         boolean delivered;
         AtomicInteger count = new AtomicInteger(0);
+        Object recentRequest;
 
         @Override
         public void deliver(Serializer serializer, Object object, Map<String, String> headers) {
+            this.recentRequest = object;
             delivered = true;
             count.getAndIncrement();
         }

@@ -82,7 +82,7 @@ public class Bugsnag {
         Runtime.getRuntime().addShutdownHook(new Thread() {
             @Override
             public void run() {
-                sessionTracker.setShuttingDown(true);
+                sessionTracker.shutdown();
                 sessionExecutorService.shutdown();
                 try {
                     if (!sessionExecutorService

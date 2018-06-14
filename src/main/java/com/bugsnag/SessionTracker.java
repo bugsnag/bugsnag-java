@@ -8,6 +8,7 @@ import java.util.Date;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Semaphore;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
 class SessionTracker {
@@ -19,7 +20,7 @@ class SessionTracker {
             enqueuedSessionCounts = new ConcurrentLinkedQueue<SessionCount>();
 
     private final Semaphore flushingRequest = new Semaphore(1);
-    private volatile boolean shuttingDown;
+    private final AtomicBoolean shuttingDown = new AtomicBoolean();
 
     SessionTracker(Configuration configuration) {
         this.config = configuration;
@@ -27,7 +28,8 @@ class SessionTracker {
 
     void startSession(Date date, boolean autoCaptured) {
         if ((!config.shouldAutoCaptureSessions() && autoCaptured)
-                || !config.shouldNotifyForReleaseStage()) {
+                || !config.shouldNotifyForReleaseStage()
+                || shuttingDown.get()) {
             return;
         }
 
@@ -68,9 +70,13 @@ class SessionTracker {
     }
 
     void flushSessions(Date now) {
-        if (shuttingDown) {
+        if (shuttingDown.get()) {
             return;
         }
+        sendSessions(now);
+    }
+
+    private void sendSessions(Date now) {
         updateBatchCountIfNeeded(DateUtils.roundTimeToLatestMinute(now));
 
         if (!enqueuedSessionCounts.isEmpty() && flushingRequest.tryAcquire(1)) {
@@ -87,7 +93,9 @@ class SessionTracker {
         }
     }
 
-    void setShuttingDown(boolean shuttingDown) {
-        this.shuttingDown = shuttingDown;
+    void shutdown() {
+        if (shuttingDown.compareAndSet(false, true)) {
+            sendSessions(new Date(Long.MAX_VALUE)); // flush all remaining sessions
+        }
     }
 }
