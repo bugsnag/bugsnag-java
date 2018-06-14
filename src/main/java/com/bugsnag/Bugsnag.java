@@ -472,9 +472,9 @@ public class Bugsnag {
     /**
      * Manually starts tracking a new session.
      *
-     * Note: sessions are currently tracked on a per-thread basis. Therefore, if this method were called
-     * from Thread A then Thread B, two sessions would be considered 'active'. Any custom strategy used
-     * to track sessions should take this into account.
+     * Note: sessions are currently tracked on a per-thread basis. Therefore, if this method were
+     * called from Thread A then Thread B, two sessions would be considered 'active'. Any custom
+     * strategy used to track sessions should take this into account.
      *
      * Automatic session tracking can be enabled via
      * {@link Bugsnag#setAutoCaptureSessions(boolean)}, which will automatically create a new
