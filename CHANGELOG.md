@@ -10,8 +10,7 @@ appropriate place within your application.
   [Jamie Lynch](https://github.com/fractalwrench)
   [#70](https://github.com/bugsnag/bugsnag-java/pull/70)
 
-**Deprecation notice**
-`setEndpoints(String notify, String session)` is now the preferred way to configure custom endpoints,
+**Deprecation notice**: `setEndpoints(String notify, String session)` is now the preferred way to configure custom endpoints,
 if you are using Bugsnag On-Premise.
 
 ## 3.2.0-beta (2018-06-14)
@@ -24,8 +23,7 @@ appropriate place within your application.
   [Jamie Lynch](https://github.com/fractalwrench)
   [#70](https://github.com/bugsnag/bugsnag-java/pull/70)
 
-**Deprecation notice**
-`setEndpoints(String notify, String session)` is now the preferred way to configure custom endpoints,
+**Deprecation notice**: `setEndpoints(String notify, String session)` is now the preferred way to configure custom endpoints,
 if you are using Bugsnag On-Premise.
 
 ## 3.1.6 (2018-05-03)
