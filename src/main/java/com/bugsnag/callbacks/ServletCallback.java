@@ -61,9 +61,9 @@ public class ServletCallback implements Callback {
 
     private Map<String, String> getHeaderMap(HttpServletRequest request) {
         Map<String, String> map = new HashMap<String, String>();
-        Enumeration headerNames = request.getHeaderNames();
+        Enumeration<String> headerNames = request.getHeaderNames();
         while (headerNames.hasMoreElements()) {
-            String key = (String) headerNames.nextElement();
+            String key = headerNames.nextElement();
             map.put(key, request.getHeader(key));
         }
 
