@@ -154,11 +154,14 @@ public class BugsnagTest {
         Bugsnag bugsnag = new Bugsnag("apikey");
         bugsnag.setFilters("testfilter1", "testfilter2");
         bugsnag.setDelivery(new Delivery() {
+            @SuppressWarnings("unchecked")
             @Override
             public void deliver(Serializer serializer, Object object, Map<String, String> headers) {
                 Report report = ((Notification) object).getEvents().get(0);
-                Map firstTab = (Map) report.getMetaData().get("firsttab");
-                final Map secondTab = (Map) report.getMetaData().get("secondtab");
+                Map<String, Object> firstTab =
+                        (Map<String, Object>) report.getMetaData().get("firsttab");
+                final Map<String, Object> secondTab =
+                        (Map<String, Object>) report.getMetaData().get("secondtab");
                 assertEquals("[FILTERED]", firstTab.get("testfilter1"));
                 assertEquals("[FILTERED]", firstTab.get("testfilter2"));
                 assertEquals("secretpassword", firstTab.get("testfilter3"));
@@ -339,6 +342,7 @@ public class BugsnagTest {
         assertFalse(bugsnag.notify(new Throwable()));
     }
 
+    @SuppressWarnings("deprecation") // ensures deprecated setEndpoint method still works correctly
     @Test
     public void testEndpoint() {
         Bugsnag bugsnag = new Bugsnag("apikey");
@@ -454,6 +458,7 @@ public class BugsnagTest {
                 Map<String, Object> session = report.getSession();
                 assertNotNull(session);
 
+                @SuppressWarnings("unchecked")
                 Map<String, Object> handledCounts = (Map<String, Object>) session.get("events");
                 assertEquals(1, handledCounts.get("handled"));
                 assertEquals(0, handledCounts.get("unhandled"));
@@ -486,5 +491,6 @@ public class BugsnagTest {
 
     // Test exception class
     private class TestException extends RuntimeException {
+        private static final long serialVersionUID = -458298914160798211L;
     }
 }
