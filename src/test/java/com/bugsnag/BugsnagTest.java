@@ -342,7 +342,7 @@ public class BugsnagTest {
         assertFalse(bugsnag.notify(new Throwable()));
     }
 
-    @SuppressWarnings("deprecation")
+    @SuppressWarnings("deprecation") // ensures deprecated setEndpoint method still works correctly
     @Test
     public void testEndpoint() {
         Bugsnag bugsnag = new Bugsnag("apikey");
