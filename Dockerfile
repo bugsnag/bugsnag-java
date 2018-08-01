@@ -7,7 +7,7 @@ EXPOSE 8080
 
 COPY gradle gradle
 COPY gradlew .
-RUN ./gradlew build
+RUN ./gradlew dependencies
 COPY . .
 
 CMD ["./gradlew", ":examples:spring-web:bootrun"]

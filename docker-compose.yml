@@ -1,0 +1,9 @@
+version: "3"
+services:
+  spring-web:
+    image: spring-web
+    ports:
+    - "8080:8080"
+    build:
+      context: .
+      dockerfile: Dockerfile
