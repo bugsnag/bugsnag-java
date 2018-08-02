@@ -1,9 +1,34 @@
 version: "3"
 services:
-  spring-web:
-    image: spring-web
+
+  servlet:
+    image: servlet
     ports:
-    - "8080:8080"
+      - "8080:8080"
     build:
       context: .
       dockerfile: Dockerfile
+    command: "./gradlew :examples:servlet:appRun"
+
+  simple:
+    image: simple
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: "./gradlew :examples:simple:run"
+
+  spring:
+    image: spring
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: "./gradlew :examples:spring:bootrun"
+
+  spring-web:
+    image: spring-web
+    ports:
+      - "8080:8080"
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: "./gradlew :examples:spring-web:bootrun"
