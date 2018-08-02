@@ -7,21 +7,18 @@ services:
       - "8080:8080"
     build:
       context: .
-      dockerfile: Dockerfile
     command: "./gradlew :examples:servlet:appRun"
 
   simple:
     image: simple
     build:
       context: .
-      dockerfile: Dockerfile
     command: "./gradlew :examples:simple:run"
 
   spring:
     image: spring
     build:
       context: .
-      dockerfile: Dockerfile
     command: "./gradlew :examples:spring:bootrun"
 
   spring-web:
@@ -30,5 +27,4 @@ services:
       - "8080:8080"
     build:
       context: .
-      dockerfile: Dockerfile
     command: "./gradlew :examples:spring-web:bootrun"
