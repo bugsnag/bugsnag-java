@@ -1,5 +1,6 @@
 package com.bugsnag;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.ArrayList;
@@ -9,9 +10,11 @@ import java.util.List;
 import java.util.Map;
 
 class ThreadState {
-    private Configuration config;
-    private Thread thread;
-    private StackTraceElement[] stackTraceElements;
+
+    private final Configuration config;
+    private final Thread thread;
+    private final StackTraceElement[] stackTraceElements;
+    private Boolean errorReportingThread;
 
     ThreadState(Configuration config, Thread thread, StackTraceElement[] stackTraceElements) {
         this.config = config;
@@ -33,19 +36,16 @@ class ThreadState {
         });
 
         List<ThreadState> threads = new ArrayList<ThreadState>();
-        for (int i = 0; i < keys.length; i++) {
-            Thread thread = (Thread) keys[i];
 
-            // Don't show the current stacktrace here. It'll point at this method
-            // rather than at the point they crashed.
-            if (thread.getId() == crashingThreadId) {
-                continue;
-            }
-
+        for (Object key : keys) {
+            Thread thread = (Thread) key;
             ThreadState threadState = new ThreadState(config, thread, liveThreads.get(thread));
             threads.add(threadState);
-        }
 
+            if (threadState.getId() == crashingThreadId) {
+                threadState.setErrorReportingThread(true);
+            }
+        }
         return threads;
     }
 
@@ -62,5 +62,15 @@ class ThreadState {
     @JsonProperty("stacktrace")
     public List<Stackframe> getStacktrace() {
         return Stackframe.getStacktrace(config, stackTraceElements);
+    }
+
+    @JsonProperty("errorReportingThread")
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    public Boolean isErrorReportingThread() {
+        return errorReportingThread;
+    }
+
+    public void setErrorReportingThread(Boolean errorReportingThread) {
+        this.errorReportingThread = errorReportingThread;
     }
 }
