@@ -13,3 +13,12 @@ A simple example application to show how to use Bugsnag in a plain Java applicat
     ```shell
     ../../gradlew run
     ```
+
+## Running in Docker
+
+Execute the following commands in the root of the repository:
+
+```
+docker-compose build
+docker-compose up simple
+```

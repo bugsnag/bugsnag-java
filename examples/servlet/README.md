@@ -16,3 +16,12 @@ A simple example application to show how Bugsnag works in a Servlet-based Java a
 - Cause a crash
 
     http://localhost:8080/servlet
+
+## Running in Docker
+
+Execute the following commands in the root of the repository:
+
+```
+docker-compose build
+docker-compose up servlet
+```
