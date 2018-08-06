@@ -339,6 +339,7 @@ public class BugsnagTest {
         assertFalse(bugsnag.notify(new Throwable()));
     }
 
+    @SuppressWarnings("deprecation")
     @Test
     public void testEndpoint() {
         Bugsnag bugsnag = new Bugsnag("apikey");

@@ -6,7 +6,7 @@ repositories {
 
 dependencies {
     runtime 'org.slf4j:slf4j-simple:1.+'
-    compile rootProject
+    compile project(':bugsnag-java')
 }
 
 mainClassName = "com.bugsnag.example.simple.ExampleApp"
