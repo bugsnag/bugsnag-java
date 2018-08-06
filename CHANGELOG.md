@@ -1,10 +1,5 @@
 # Changelog
 
-## 3.X.X (TBD)
-
-* Capture trace of error reporting thread and identify with boolean flag
-  [#87](https://github.com/bugsnag/bugsnag-java/pull/87)
-
 ## 3.2.0 (2018-07-03)
 
 This release introduces automatic tracking of sessions, which by
