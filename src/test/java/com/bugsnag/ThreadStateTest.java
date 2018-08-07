@@ -6,7 +6,6 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Before;
@@ -15,6 +14,7 @@ import org.junit.Test;
 import java.io.IOException;
 import java.lang.Exception;
 import java.util.List;
+import java.util.Map;
 
 public class ThreadStateTest {
 
@@ -27,7 +27,7 @@ public class ThreadStateTest {
      */
     @Before
     public void setUp() throws Exception {
-        threadStates = ThreadState.getLiveThreads(new Configuration("apikey"));
+        threadStates = ThreadState.getLiveThreads(new Configuration("apikey"), Thread.currentThread());
     }
 
     @Test
@@ -62,7 +62,7 @@ public class ThreadStateTest {
      */
     @Test
     public void testSerialisation() throws Exception {
-        JsonNode root = serialiseThreadStateToJson();
+        JsonNode root = serialiseThreadStateToJson(threadStates);
 
         for (JsonNode jsonNode : root) {
             assertNotNull(jsonNode.get("id").asText());
@@ -77,7 +77,7 @@ public class ThreadStateTest {
      */
     @Test
     public void testCurrentThread() throws Exception {
-        JsonNode root = serialiseThreadStateToJson();
+        JsonNode root = serialiseThreadStateToJson(threadStates);
         long currentThreadId = Thread.currentThread().getId();
         int currentThreadCount = 0;
 
@@ -92,7 +92,32 @@ public class ThreadStateTest {
         assertEquals(1, currentThreadCount);
     }
 
-    private JsonNode serialiseThreadStateToJson() throws IOException {
+    /**
+     * Verifies that a thread different from the current thread is serialised as an object,
+     * and that only this value contains the errorReportingThread boolean flag
+     */
+    @Test
+    public void testDifferentThread() throws Exception {
+        Map<Thread, StackTraceElement[]> threads = Thread.getAllStackTraces();
+        threads.remove(Thread.currentThread());
+        Thread otherThread = threads.keySet().iterator().next();
+        List<ThreadState> state = ThreadState.getLiveThreads(new Configuration("apikey"), otherThread);
+
+        JsonNode root = serialiseThreadStateToJson(state);
+        int currentThreadCount = 0;
+
+        for (JsonNode jsonNode : root) {
+            if (otherThread.getId() == jsonNode.get("id").asLong()) {
+                assertTrue(jsonNode.get("errorReportingThread").asBoolean());
+                currentThreadCount++;
+            } else {
+                assertFalse(jsonNode.has("errorReportingThread"));
+            }
+        }
+        assertEquals(1, currentThreadCount);
+    }
+
+    private JsonNode serialiseThreadStateToJson(List<ThreadState> threadStates) throws IOException {
         ObjectMapper mapper = new ObjectMapper();
         String json = mapper.writeValueAsString(threadStates);
         return mapper.readTree(json);

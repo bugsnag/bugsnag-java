@@ -354,7 +354,7 @@ public class Bugsnag {
 
         HandledState handledState = HandledState.newInstance(
                 HandledState.SeverityReasonType.REASON_USER_SPECIFIED, severity);
-        Report report = new Report(config, throwable, handledState);
+        Report report = new Report(config, throwable, handledState, Thread.currentThread());
         return notify(report, callback);
     }
 
@@ -372,8 +372,8 @@ public class Bugsnag {
     }
 
 
-    boolean notify(Throwable throwable, HandledState handledState) {
-        Report report = new Report(config, throwable, handledState);
+    boolean notify(Throwable throwable, HandledState handledState, Thread currentThread) {
+        Report report = new Report(config, throwable, handledState, currentThread);
         return notify(report, null);
     }
 

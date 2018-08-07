@@ -24,6 +24,7 @@ public class Report {
     private Diagnostics diagnostics;
     private boolean shouldCancel = false;
     private Session session;
+    private final List<ThreadState> threadStates;
 
     /**
      * Create a report for the error.
@@ -33,15 +34,16 @@ public class Report {
      */
     protected Report(Configuration config, Throwable throwable) {
         this(config, throwable, HandledState.newInstance(
-                HandledState.SeverityReasonType.REASON_HANDLED_EXCEPTION));
+                HandledState.SeverityReasonType.REASON_HANDLED_EXCEPTION), Thread.currentThread());
     }
 
-    Report(Configuration config, Throwable throwable, HandledState handledState) {
+    Report(Configuration config, Throwable throwable, HandledState handledState, Thread currentThread) {
         this.config = config;
         this.exception = new Exception(config, throwable);
         this.handledState = handledState;
         this.severity = handledState.getOriginalSeverity();
         diagnostics = new Diagnostics(this.config);
+        threadStates = config.sendThreads ? ThreadState.getLiveThreads(config, currentThread) : null;
     }
 
     @Expose
@@ -80,7 +82,7 @@ public class Report {
 
     @Expose
     protected List<ThreadState> getThreads() {
-        return config.sendThreads ? ThreadState.getLiveThreads(config) : null;
+        return threadStates;
     }
 
     @Expose
