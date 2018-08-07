@@ -8,7 +8,7 @@ import java.util.Date;
 public class ExampleApp {
     public static void main(String[] args) throws InterruptedException {
         // Create a Bugsnag client
-        Bugsnag bugsnag = new Bugsnag("YOUR-API-KEY");
+        Bugsnag bugsnag = Bugsnag.createBugsnag("YOUR-API-KEY");
 
         // Set some diagnostic data which will not change during the
         // lifecycle of the application

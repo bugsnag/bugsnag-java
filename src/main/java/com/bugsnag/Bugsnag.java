@@ -4,6 +4,7 @@ import com.bugsnag.callbacks.Callback;
 import com.bugsnag.delivery.Delivery;
 import com.bugsnag.delivery.HttpDelivery;
 
+import com.bugsnag.logback.BugsnagAppender;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,6 +43,42 @@ public class Bugsnag {
      * Initialize a Bugsnag client and automatically send uncaught exceptions.
      *
      * @param apiKey your Bugsnag API key from your Bugsnag dashboard
+     * @return The Bugsnag client instance
+     */
+    public static Bugsnag createBugsnag(String apiKey) {
+        return createBugsnag(apiKey, true);
+    }
+
+    /**
+     * Initialize a Bugsnag client.
+     *
+     * @param apiKey                 your Bugsnag API key
+     * @param sendUncaughtExceptions should we send uncaught exceptions to Bugsnag
+     * @return The Bugsnag client instance
+     */
+    public static Bugsnag createBugsnag(String apiKey, boolean sendUncaughtExceptions) {
+
+        // Look for an existing instance of Bugsnag in the appender
+        if (BugsnagAppender.getInstance() != null) {
+
+            // Check that the API key matches
+            if (apiKey.equals(BugsnagAppender.getInstance().getBugsnag().config.apiKey)) {
+
+                // Ensure that sendUncaughtExceptions is respected
+                BugsnagAppender.getInstance().getBugsnag().config.setAutoCaptureSessions(sendUncaughtExceptions);
+
+                return BugsnagAppender.getInstance().getBugsnag();
+            }
+        }
+
+        return new Bugsnag(apiKey, sendUncaughtExceptions);
+    }
+
+    /**
+     * Initialize a Bugsnag client and automatically send uncaught exceptions.
+     *
+     * @param apiKey your Bugsnag API key from your Bugsnag dashboard
+     * @deprecated use {@link Bugsnag#createBugsnag(String)} instead
      */
     public Bugsnag(String apiKey) {
         this(apiKey, true);
@@ -52,6 +89,7 @@ public class Bugsnag {
      *
      * @param apiKey                 your Bugsnag API key
      * @param sendUncaughtExceptions should we send uncaught exceptions to Bugsnag
+     * @deprecated use {@link Bugsnag#createBugsnag(String, boolean)} instead
      */
     public Bugsnag(String apiKey, boolean sendUncaughtExceptions) {
         if (apiKey == null) {
