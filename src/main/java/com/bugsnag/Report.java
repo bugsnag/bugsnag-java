@@ -37,13 +37,15 @@ public class Report {
                 HandledState.SeverityReasonType.REASON_HANDLED_EXCEPTION), Thread.currentThread());
     }
 
-    Report(Configuration config, Throwable throwable, HandledState handledState, Thread currentThread) {
+    Report(Configuration config, Throwable throwable,
+           HandledState handledState, Thread currentThread) {
         this.config = config;
         this.exception = new Exception(config, throwable);
         this.handledState = handledState;
         this.severity = handledState.getOriginalSeverity();
         diagnostics = new Diagnostics(this.config);
-        threadStates = config.sendThreads ? ThreadState.getLiveThreads(config, currentThread) : null;
+        threadStates = config.sendThreads
+                ? ThreadState.getLiveThreads(config, currentThread) : null;
     }
 
     @Expose

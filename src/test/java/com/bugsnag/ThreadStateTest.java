@@ -27,7 +27,8 @@ public class ThreadStateTest {
      */
     @Before
     public void setUp() throws Exception {
-        threadStates = ThreadState.getLiveThreads(new Configuration("apikey"), Thread.currentThread());
+        Configuration config = new Configuration("apikey");
+        threadStates = ThreadState.getLiveThreads(config, Thread.currentThread());
     }
 
     @Test
@@ -101,7 +102,8 @@ public class ThreadStateTest {
         Map<Thread, StackTraceElement[]> threads = Thread.getAllStackTraces();
         threads.remove(Thread.currentThread());
         Thread otherThread = threads.keySet().iterator().next();
-        List<ThreadState> state = ThreadState.getLiveThreads(new Configuration("apikey"), otherThread);
+        List<ThreadState> state
+                = ThreadState.getLiveThreads(new Configuration("apikey"), otherThread);
 
         JsonNode root = serialiseThreadStateToJson(state);
         int currentThreadCount = 0;
