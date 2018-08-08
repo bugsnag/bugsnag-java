@@ -7,6 +7,7 @@ import ch.qos.logback.classic.spi.IThrowableProxy;
 import ch.qos.logback.classic.spi.ThrowableProxy;
 import ch.qos.logback.core.UnsynchronizedAppenderBase;
 import com.bugsnag.callbacks.Callback;
+import com.bugsnag.delivery.Delivery;
 import com.bugsnag.logback.ProxyConfiguration;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -32,6 +33,12 @@ public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
 
     /** Bugsnag API key; the appender doesn't do anything if it's not available. */
     private String apiKey;
+
+    /** Whether or not to send unhandled exceptions to Bugsnag */
+    private Boolean sendUncaughtExceptions = true;
+
+    /** Whether or not to automatically capture session information */
+    private Boolean autoCaptureSessions = true;
 
     /** Application type. */
     private String appType;
@@ -61,7 +68,7 @@ public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
     private String releaseStage;
 
     /** Whether thread state should be sent to Bugsnag. */
-    private boolean sendThreads;
+    private boolean sendThreads = false;
 
     /** Bugsnag API request timeout. */
     private int timeout;
@@ -177,7 +184,9 @@ public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
      * @return Create a Bugsnag instance with parameters from the logback configuration
      */
     private Bugsnag createBugsnag() {
-        Bugsnag bugsnag = Bugsnag.createBugsnag(apiKey);
+        Bugsnag bugsnag = Bugsnag.createBugsnag(apiKey, sendUncaughtExceptions);
+
+        bugsnag.setAutoCaptureSessions(autoCaptureSessions);
 
         if (appType != null) {
             bugsnag.setAppType(appType);
@@ -349,6 +358,70 @@ public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
         return mapper;
     }
 
+    /**
+     * Add a callback to execute code before/after every notification to Bugsnag.
+     *
+     * <p>You can use this to add or modify information attached to an error
+     * before it is sent to your dashboard. You can also stop any reports being
+     * sent to Bugsnag completely.
+     *
+     * @param callback a callback to run before sending errors to Bugsnag
+     * @see Callback
+     */
+    public void addCallback(Callback callback) {
+        if (bugsnag != null) {
+            bugsnag.addCallback(callback);
+        }
+    }
+
+    /**
+     * Manually starts tracking a new session.
+     *
+     * Note: sessions are currently tracked on a per-thread basis. Therefore, if this method were
+     * called from Thread A then Thread B, two sessions would be considered 'active'. Any custom
+     * strategy used to track sessions should take this into account.
+     *
+     * Automatic session tracking can be enabled via
+     * {@link BugsnagAppender#setAutoCaptureSessions(Boolean)}, which will automatically create a new
+     * session for each request
+     */
+    public void startSession() {
+        if (bugsnag != null) {
+            bugsnag.startSession();
+        }
+    }
+
+    /**
+     * Set the method of delivery for Bugsnag error report. By default we'll
+     * send reports asynchronously using a thread pool to
+     * https://notify.bugsnag.com, but you can override this to use a
+     * different sending technique or endpoint (for example, if you are using
+     * Bugsnag On-Premise).
+     *
+     * @param delivery the delivery mechanism to use
+     * @see Delivery
+     */
+    public void setDelivery(Delivery delivery) {
+        if (bugsnag != null) {
+            bugsnag.setDelivery(delivery);
+        }
+    }
+
+    /**
+     * Set the method of delivery for Bugsnag sessions. By default we'll
+     * send sessions asynchronously using a thread pool to
+     * https://sessions.bugsnag.com, but you can override this to use a
+     * different sending technique or endpoint (for example, if you are using
+     * Bugsnag On-Premise).
+     *
+     * @param delivery the delivery mechanism to use
+     * @see Delivery
+     */
+    public void setSessionDelivery(Delivery delivery) {
+        if (bugsnag != null) {
+            bugsnag.setSessionDelivery(delivery);
+        }
+    }
 
     // Setters
 
@@ -356,17 +429,23 @@ public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
         this.apiKey = apiKey;
     }
 
+    public void setSendUncaughtExceptions(Boolean sendUncaughtExceptions) {
+        this.sendUncaughtExceptions = sendUncaughtExceptions;
+    }
+
+    public void setAutoCaptureSessions(Boolean autoCaptureSessions) {
+        this.autoCaptureSessions = autoCaptureSessions;
+
+        if (bugsnag != null) {
+            bugsnag.setAutoCaptureSessions(autoCaptureSessions);
+        }
+    }
+
     public void setAppType(String appType) {
         this.appType = appType;
 
         if (bugsnag != null) {
             bugsnag.setAppType(appType);
-        }
-    }
-
-    public void setCallback(Callback callback) {
-        if (bugsnag != null) {
-            bugsnag.addCallback(callback);
         }
     }
 

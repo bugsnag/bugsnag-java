@@ -22,7 +22,7 @@ public class ApplicationCommandLineRunner implements CommandLineRunner {
     public void run(final String... args) throws Exception {
 
         // Set some global meta data (added to each report)
-        BugsnagAppender.getInstance().setCallback((report) -> {
+        BugsnagAppender.getInstance().addCallback((report) -> {
             report.addToTab("diagnostics", "timestamp", new Date());
             report.addToTab("customer", "name", "acme-inc");
             report.addToTab("customer", "paying", true);
