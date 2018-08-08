@@ -32,6 +32,9 @@ public class ApplicationCommandLineRunner implements CommandLineRunner {
             report.setUserId("12345");
         });
 
+        // Add meta data that will be added to all reports on the current thread
+        BugsnagAppender.addThreadMetaData("report", "a thing", "happened on this thread");
+
         // Send a handled exception to Bugsnag
         LOGGER.info("Sending a handled exception to Bugsnag");
         try {
@@ -72,6 +75,9 @@ public class ApplicationCommandLineRunner implements CommandLineRunner {
 
         // Wait for unhandled exception thread to finish before exiting
         thread.join();
+
+        // Remove the thread meta data so it won't be added to future reports
+        BugsnagAppender.clearThreadMetaData();
 
         // Exit the spring application
         SpringApplication.exit(applicationContext);

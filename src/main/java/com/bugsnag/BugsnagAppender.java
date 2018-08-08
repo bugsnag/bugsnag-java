@@ -19,7 +19,8 @@ import java.util.List;
 /** Sends events to Bugsnag using its Java client library. */
 public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
 
-    private static final String LOGGING_CONTEXT_PREFIX = "com.bugsnag.BugsnagAppender.";
+    private static final String LOGGING_CONTEXT_THREAD_PREFIX = "com.bugsnag.BugsnagAppender.thread.";
+    private static final String LOGGING_CONTEXT_REPORT_PREFIX = "com.bugsnag.BugsnagAppender.report.";
     private static final String LOGGING_CONTEXT_TAB_SEPARATOR = ".reportTab.";
 
     /** Bugsnag API key; the appender doesn't do anything if it's not available. */
@@ -198,7 +199,10 @@ public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
             bugsnag.setTimeout(timeout);
         }
 
-        bugsnag.setFilters(filteredProperties.toArray(new String[0]));
+        if (filteredProperties.size() > 0) {
+            bugsnag.setFilters(filteredProperties.toArray(new String[0]));
+        }
+
         bugsnag.setIgnoreClasses(ignoredClasses.toArray(new String[0]));
 
         if (notifyReleaseStages.size() > 0) {
@@ -211,13 +215,23 @@ public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
     }
 
     /**
+     * Adds the given key / value to the current thread logging context
+     *
+     * @param key the key to add
+     * @param value the value to add
+     */
+    public static void addThreadMetaData(String tab, String key, String value) {
+        MDC.put(LOGGING_CONTEXT_THREAD_PREFIX + tab + LOGGING_CONTEXT_TAB_SEPARATOR + key, value);
+    }
+
+    /**
      * Adds the given key / value to the current thread logging context, to be used for the next report
      *
      * @param key the key to add
      * @param value the value to add
      */
     public static void addReportMetaData(String tab, String key, String value) {
-        MDC.put(LOGGING_CONTEXT_PREFIX + tab + LOGGING_CONTEXT_TAB_SEPARATOR + key, value);
+        MDC.put(LOGGING_CONTEXT_REPORT_PREFIX + tab + LOGGING_CONTEXT_TAB_SEPARATOR + key, value);
     }
 
     /**
@@ -231,23 +245,59 @@ public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
 
         // Loop through all the keys and put them in the correct tabs
         for (String key : event.getMDCPropertyMap().keySet()) {
-            if (key.startsWith(LOGGING_CONTEXT_PREFIX)) {
-                if (key.contains(LOGGING_CONTEXT_TAB_SEPARATOR)) {
-                    String[] parts = key.substring(LOGGING_CONTEXT_PREFIX.length()).split(LOGGING_CONTEXT_TAB_SEPARATOR);
-                    report.addToTab(parts[0], parts[1], event.getMDCPropertyMap().get(key));
-                } else {
-                    report.addToTab("Context Data", key, event.getMDCPropertyMap().get(key));
-                }
-
+            if (key.startsWith(LOGGING_CONTEXT_REPORT_PREFIX)) {
+                populateKey(key, event.getMDCPropertyMap().get(key), LOGGING_CONTEXT_REPORT_PREFIX,  report);
                 keysToRemove.add(key);
+            } else if (key.startsWith(LOGGING_CONTEXT_THREAD_PREFIX)) {
+                populateKey(key, event.getMDCPropertyMap().get(key), LOGGING_CONTEXT_THREAD_PREFIX, report);
             }
         }
 
-        // Remove the keys so that they won't be associated with any other log message
+        // Remove the report keys so that they won't be associated with any other log message
         for (String key : keysToRemove) {
             event.getMDCPropertyMap().remove(key);
         }
     }
+
+    /**
+     * Clears all meta data added to the current thread
+     */
+    public static void clearThreadMetaData() {
+        List<String> keysToRemove = new ArrayList<String>();
+
+        // Loop through all the keys and collect the thread ones
+        for (String key : MDC.getCopyOfContextMap().keySet()) {
+            if (key.startsWith(LOGGING_CONTEXT_THREAD_PREFIX)) {
+                keysToRemove.add(key);
+            }
+        }
+
+        // Remove the keys
+        for (String key : keysToRemove) {
+            MDC.remove(key);
+        }
+    }
+
+    /**
+     * Adds the given key/value to the report
+     *
+     * @param key    The key to add
+     * @param value  The value to add
+     * @param prefix The prefix of the key
+     * @param report The report to add the value to
+     */
+    private void populateKey(String key, String value, String prefix, Report report) {
+        if (key.contains(LOGGING_CONTEXT_TAB_SEPARATOR)) {
+            String[] parts = key
+                    .substring(prefix.length())
+                    .split(LOGGING_CONTEXT_TAB_SEPARATOR);
+
+            report.addToTab(parts[0], parts[1], value);
+        } else {
+            report.addToTab("Context Data", key, value);
+        }
+    }
+
 
     // Setters
 
