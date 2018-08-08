@@ -4,7 +4,6 @@ import com.bugsnag.callbacks.Callback;
 import com.bugsnag.delivery.Delivery;
 import com.bugsnag.delivery.HttpDelivery;
 
-import com.bugsnag.logback.BugsnagAppender;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -59,7 +58,7 @@ public class Bugsnag {
     public static Bugsnag createBugsnag(String apiKey, boolean sendUncaughtExceptions) {
 
         // Look for an existing instance of Bugsnag in the appender
-        if (BugsnagAppender.getInstance() != null) {
+        if (BugsnagAppender.getInstance() != null && BugsnagAppender.getInstance().getBugsnag() != null) {
 
             // Check that the API key matches
             if (apiKey.equals(BugsnagAppender.getInstance().getBugsnag().config.apiKey)) {

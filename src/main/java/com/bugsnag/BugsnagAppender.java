@@ -1,16 +1,13 @@
-package com.bugsnag.logback;
+package com.bugsnag;
+
 
 import ch.qos.logback.classic.Level;
-import com.bugsnag.Bugsnag;
-import com.bugsnag.Configuration;
-import com.bugsnag.Report;
-import com.bugsnag.Severity;
-import com.bugsnag.callbacks.Callback;
-
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.classic.spi.IThrowableProxy;
 import ch.qos.logback.classic.spi.ThrowableProxy;
 import ch.qos.logback.core.UnsynchronizedAppenderBase;
+import com.bugsnag.callbacks.Callback;
+import com.bugsnag.logback.ProxyConfiguration;
 import org.slf4j.MDC;
 
 import java.net.InetSocketAddress;
@@ -18,18 +15,18 @@ import java.net.Proxy;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 
 /** Sends events to Bugsnag using its Java client library. */
 public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
+
+    private static final String LOGGING_CONTEXT_PREFIX = "com.bugsnag.BugsnagAppender.";
+    private static final String LOGGING_CONTEXT_TAB_SEPARATOR = ".reportTab.";
+
     /** Bugsnag API key; the appender doesn't do anything if it's not available. */
     private String apiKey;
 
     /** Application type. */
     private String appType;
-
-    /** Callback that can be used to enhance the report before sending it to Bugsnag servers. */
-    private LogEventAwareCallback callback;
 
     /** Bugsnag error server endpoint. */
     private String notifyEndpoint;
@@ -62,7 +59,7 @@ public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
     private int timeout;
 
     /** Application version. */
-    private String version;
+    private String appVersion;
 
     /** Bugsnag client. */
     private Bugsnag bugsnag = null;
@@ -109,13 +106,12 @@ public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
                             @Override
                             public void beforeNotify(Report report) {
 
+                                // Add some data from the logging event
+                                report.addToTab("Log event data", "Message", event.getMessage());
+                                report.addToTab("Log event data", "Timestamp", event.getTimeStamp());
+
                                 // Add details from the logging context to the event
                                 populateContextData(report, event);
-
-                                // Call the custom callback
-                                if (callback != null) {
-                                    callback.beforeNotify(report, event);
-                                }
                             }
                         });
             }
@@ -179,8 +175,8 @@ public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
             bugsnag.setAppType(appType);
         }
 
-        if (version != null) {
-            bugsnag.setAppVersion(version);
+        if (appVersion != null) {
+            bugsnag.setAppVersion(appVersion);
         }
 
         if (notifyEndpoint != null) {
@@ -204,7 +200,10 @@ public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
 
         bugsnag.setFilters(filteredProperties.toArray(new String[0]));
         bugsnag.setIgnoreClasses(ignoredClasses.toArray(new String[0]));
-        bugsnag.setNotifyReleaseStages(notifyReleaseStages.toArray(new String[0]));
+
+        if (notifyReleaseStages.size() > 0) {
+            bugsnag.setNotifyReleaseStages(notifyReleaseStages.toArray(new String[0]));
+        }
         bugsnag.setProjectPackages(projectPackages.toArray(new String[0]));
         bugsnag.setSendThreads(sendThreads);
 
@@ -212,13 +211,13 @@ public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
     }
 
     /**
-     * Adds the given key / value to the current thread logging context
+     * Adds the given key / value to the current thread logging context, to be used for the next report
      *
      * @param key the key to add
      * @param value the value to add
      */
-    public static void addToLoggingContext(String key, String value) {
-        MDC.put(key, value);
+    public static void addReportMetaData(String tab, String key, String value) {
+        MDC.put(LOGGING_CONTEXT_PREFIX + tab + LOGGING_CONTEXT_TAB_SEPARATOR + key, value);
     }
 
     /**
@@ -228,13 +227,25 @@ public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
      * @param event The values in the logging context
      */
     private void populateContextData(Report report, ILoggingEvent event) {
+        List<String> keysToRemove = new ArrayList<String>();
 
-        // TODO: add to specific tabs? set user information?
-        report.addToTab("Log Message", "Message", event.getMessage());
-
-
+        // Loop through all the keys and put them in the correct tabs
         for (String key : event.getMDCPropertyMap().keySet()) {
-            report.addToTab("Context Data", key, event.getMDCPropertyMap().get(key));
+            if (key.startsWith(LOGGING_CONTEXT_PREFIX)) {
+                if (key.contains(LOGGING_CONTEXT_TAB_SEPARATOR)) {
+                    String[] parts = key.substring(LOGGING_CONTEXT_PREFIX.length()).split(LOGGING_CONTEXT_TAB_SEPARATOR);
+                    report.addToTab(parts[0], parts[1], event.getMDCPropertyMap().get(key));
+                } else {
+                    report.addToTab("Context Data", key, event.getMDCPropertyMap().get(key));
+                }
+
+                keysToRemove.add(key);
+            }
+        }
+
+        // Remove the keys so that they won't be associated with any other log message
+        for (String key : keysToRemove) {
+            event.getMDCPropertyMap().remove(key);
         }
     }
 
@@ -246,70 +257,107 @@ public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
 
     public void setAppType(String appType) {
         this.appType = appType;
+
+        if (bugsnag != null) {
+            bugsnag.setAppType(appType);
+        }
     }
 
-    public void setCallback(LogEventAwareCallback callback) {
-        this.callback = callback;
+    public void setCallback(Callback callback) {
+        if (bugsnag != null) {
+            bugsnag.addCallback(callback);
+        }
     }
 
     public void setNotifyEndpoint(String notifyEndpoint) {
         this.notifyEndpoint = notifyEndpoint;
+
+        if (bugsnag != null) {
+            bugsnag.setEndpoint(notifyEndpoint);
+        }
     }
 
     public void setSessionEndpoint(String sessionEndpoint) {
         this.sessionEndpoint = sessionEndpoint;
+
+        if (bugsnag != null) {
+            bugsnag.setSessionEndpoint(sessionEndpoint);
+        }
     }
 
     public void setFilteredProperties(String filters) {
         this.filteredProperties.addAll(split(filters));
-    }
 
-    public void addFilteredProperty(String filter) {
-        this.filteredProperties.add(filter);
+        if (bugsnag != null) {
+            bugsnag.setFilters(filters);
+        }
     }
 
     public void setIgnoredClasses(String ignoredClasses) {
         this.ignoredClasses.addAll(split(ignoredClasses));
-    }
 
-    public void addIgnoredClass(String ignoredClass) {
-        this.ignoredClasses.add(ignoredClass);
+        if (bugsnag != null) {
+            bugsnag.setIgnoreClasses(ignoredClasses);
+        }
     }
 
     public void setNotifyReleaseStages(String notifyReleaseStages) {
         this.notifyReleaseStages.addAll(split(notifyReleaseStages));
-    }
 
-    public void addNotifyReleaseStage(String notifyReleaseStage) {
-        this.notifyReleaseStages.add(notifyReleaseStage);
+        if (bugsnag != null) {
+            bugsnag.setNotifyReleaseStages(notifyReleaseStages);
+        }
     }
 
     public void setProjectPackages(String projectPackages) {
         this.projectPackages.addAll(split(projectPackages));
-    }
 
-    public void addProjectPackage(String projectPackage) {
-        this.projectPackages.add(projectPackage);
+        if (bugsnag != null) {
+            bugsnag.setProjectPackages(projectPackages);
+        }
     }
 
     public void setProxy(ProxyConfiguration proxy) {
         this.proxy = proxy;
+
+        if (bugsnag != null) {
+            bugsnag.setProxy(
+                    new Proxy(
+                            proxy.getType(),
+                            new InetSocketAddress(proxy.getHostname(), proxy.getPort())));
+        }
     }
 
     public void setReleaseStage(String releaseStage) {
         this.releaseStage = releaseStage;
+
+        if (bugsnag != null) {
+            bugsnag.setReleaseStage(releaseStage);
+        }
     }
 
     public void setSendThreads(boolean sendThreads) {
         this.sendThreads = sendThreads;
+
+        if (bugsnag != null) {
+            bugsnag.setSendThreads(sendThreads);
+        }
     }
 
     public void setTimeout(int timeout) {
         this.timeout = timeout;
+
+        if (bugsnag != null) {
+            bugsnag.setTimeout(timeout);
+        }
     }
 
-    public void setVersion(String version) {
-        this.version = version;
+    public void setAppVersion(String appVersion) {
+        this.appVersion = appVersion;
+
+        if (bugsnag != null) {
+            bugsnag.setAppVersion(appVersion);
+        }
     }
 
     private List<String> split(String value) {
@@ -317,7 +365,7 @@ public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
         return Arrays.asList(parts);
     }
 
-    public Bugsnag getBugsnag() {
+    Bugsnag getBugsnag() {
         return bugsnag;
     }
 }

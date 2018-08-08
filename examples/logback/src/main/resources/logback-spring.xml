@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+	<include resource="org/springframework/boot/logging/logback/base.xml" />
+
+	<appender name="BUGSNAG" class="com.bugsnag.BugsnagAppender">
+		<apiKey>5a31f4f171a1e1dc4bbfb14b725dc394</apiKey>
+		<notifyEndpoint>http://localhost:8000</notifyEndpoint>
+        <releaseStage>production</releaseStage>
+
+        <appType>webapp</appType>
+		<filteredProperties>cookie,password</filteredProperties>
+		<ignoredClasses>com.bugsnag.TestException,com.bugsnag.AnotherTestException</ignoredClasses>
+
+		<notifyReleaseStages>development,production</notifyReleaseStages>
+
+		<projectPackages>com.bugsnag</projectPackages>
+
+		<sendThreads>true</sendThreads>
+		<timeout>10000</timeout>
+		<appVersion>0.1</appVersion>
+
+		<!--<proxy>-->
+			<!--<type>HTTP</type>-->
+			<!--<hostname>localhost</hostname>-->
+			<!--<port>65000</port>-->
+		<!--</proxy>-->
+	</appender>
+
+	<root level="INFO">
+		<appender-ref ref="BUGSNAG"/>
+	</root>
+</configuration>
