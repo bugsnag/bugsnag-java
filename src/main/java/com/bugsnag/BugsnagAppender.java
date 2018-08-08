@@ -8,13 +8,17 @@ import ch.qos.logback.classic.spi.ThrowableProxy;
 import ch.qos.logback.core.UnsynchronizedAppenderBase;
 import com.bugsnag.callbacks.Callback;
 import com.bugsnag.logback.ProxyConfiguration;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.MDC;
 
+import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.Proxy;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 /** Sends events to Bugsnag using its Java client library. */
 public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
@@ -22,6 +26,9 @@ public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
     private static final String LOGGING_CONTEXT_THREAD_PREFIX = "com.bugsnag.BugsnagAppender.thread.";
     private static final String LOGGING_CONTEXT_REPORT_PREFIX = "com.bugsnag.BugsnagAppender.report.";
     private static final String LOGGING_CONTEXT_TAB_SEPARATOR = ".reportTab.";
+
+    // Object mapper to serialize into logging context with
+    private static ObjectMapper mapper;
 
     /** Bugsnag API key; the appender doesn't do anything if it's not available. */
     private String apiKey;
@@ -220,8 +227,8 @@ public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
      * @param key the key to add
      * @param value the value to add
      */
-    public static void addThreadMetaData(String tab, String key, String value) {
-        MDC.put(LOGGING_CONTEXT_THREAD_PREFIX + tab + LOGGING_CONTEXT_TAB_SEPARATOR + key, value);
+    public static void addThreadMetaData(String tab, String key, Object value) {
+        MDC.put(LOGGING_CONTEXT_THREAD_PREFIX + tab + LOGGING_CONTEXT_TAB_SEPARATOR + key, getStringValue(value));
     }
 
     /**
@@ -230,8 +237,27 @@ public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
      * @param key the key to add
      * @param value the value to add
      */
-    public static void addReportMetaData(String tab, String key, String value) {
-        MDC.put(LOGGING_CONTEXT_REPORT_PREFIX + tab + LOGGING_CONTEXT_TAB_SEPARATOR + key, value);
+    public static void addReportMetaData(String tab, String key, Object value) {
+        MDC.put(LOGGING_CONTEXT_REPORT_PREFIX + tab + LOGGING_CONTEXT_TAB_SEPARATOR + key, getStringValue(value));
+    }
+
+    /**
+     * Clears all meta data added to the current thread
+     */
+    public static void clearThreadMetaData() {
+        List<String> keysToRemove = new ArrayList<String>();
+
+        // Loop through all the keys and collect the thread ones
+        for (String key : MDC.getCopyOfContextMap().keySet()) {
+            if (key.startsWith(LOGGING_CONTEXT_THREAD_PREFIX)) {
+                keysToRemove.add(key);
+            }
+        }
+
+        // Remove the keys
+        for (String key : keysToRemove) {
+            MDC.remove(key);
+        }
     }
 
     /**
@@ -260,25 +286,6 @@ public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
     }
 
     /**
-     * Clears all meta data added to the current thread
-     */
-    public static void clearThreadMetaData() {
-        List<String> keysToRemove = new ArrayList<String>();
-
-        // Loop through all the keys and collect the thread ones
-        for (String key : MDC.getCopyOfContextMap().keySet()) {
-            if (key.startsWith(LOGGING_CONTEXT_THREAD_PREFIX)) {
-                keysToRemove.add(key);
-            }
-        }
-
-        // Remove the keys
-        for (String key : keysToRemove) {
-            MDC.remove(key);
-        }
-    }
-
-    /**
      * Adds the given key/value to the report
      *
      * @param key    The key to add
@@ -292,10 +299,54 @@ public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
                     .substring(prefix.length())
                     .split(LOGGING_CONTEXT_TAB_SEPARATOR);
 
-            report.addToTab(parts[0], parts[1], value);
+            report.addToTab(parts[0], parts[1], getObjectValue(value));
         } else {
-            report.addToTab("Context Data", key, value);
+            report.addToTab("Context Data", key, getObjectValue(value));
         }
+    }
+
+    /**
+     * Serializes the contents of the value if required
+     *
+     * @param value The value to serialize
+     * @return The value as a string
+     */
+    private static String getStringValue(Object value) {
+        if (value instanceof  String) {
+            return (String)value;
+        } else {
+            try {
+                return getObjectMapper().writeValueAsString(value);
+            } catch (JsonProcessingException e) {
+                return value.toString();
+            }
+        }
+    }
+
+    /**
+     * Deserializes the contents of the value
+     *
+     * @param value The value to deserialize
+     * @return The value as an object
+     */
+    private static Object getObjectValue(String value) {
+        try {
+            return getObjectMapper().readValue(value, Map.class);
+        } catch (IOException e) {
+            // Just return the raw string if it could not be read
+            return value;
+        }
+    }
+
+    /**
+     * @return An object mapper to serialize into the logging context with
+     */
+    protected static ObjectMapper getObjectMapper() {
+        if (mapper == null) {
+            mapper = new ObjectMapper();
+        }
+
+        return mapper;
     }
 
 

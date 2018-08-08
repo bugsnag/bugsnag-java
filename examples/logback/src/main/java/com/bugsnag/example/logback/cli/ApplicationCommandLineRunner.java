@@ -33,7 +33,7 @@ public class ApplicationCommandLineRunner implements CommandLineRunner {
         });
 
         // Add meta data that will be added to all reports on the current thread
-        BugsnagAppender.addThreadMetaData("report", "a thing", "happened on this thread");
+        BugsnagAppender.addThreadMetaData("report", "application", "has started on this thread");
 
         // Send a handled exception to Bugsnag
         LOGGER.info("Sending a handled exception to Bugsnag");
