@@ -3,24 +3,9 @@
 	<include resource="org/springframework/boot/logging/logback/base.xml" />
 
 	<appender name="BUGSNAG" class="com.bugsnag.BugsnagAppender">
-		<apiKey>5a31f4f171a1e1dc4bbfb14b725dc394</apiKey>
-        <releaseStage>production</releaseStage>
-
-        <sendUncaughtExceptions>false</sendUncaughtExceptions>
-        <autoCaptureSessions>false</autoCaptureSessions>
-
-		<notifyEndpoint>http://localhost:8000</notifyEndpoint>
-        <sessionEndpoint>http://localhost:10000</sessionEndpoint>
-
-        <appType>webapp</appType>
-		<filteredProperties>cookie,password</filteredProperties>
-		<ignoredClasses>com.bugsnag.TestException,com.bugsnag.AnotherTestException</ignoredClasses>
-		<notifyReleaseStages>development,production</notifyReleaseStages>
-		<projectPackages>com.bugsnag</projectPackages>
-
-		<sendThreads>true</sendThreads>
-		<timeout>10000</timeout>
-		<appVersion>1.0.0</appVersion>
+		<apiKey>your-api-key-here</apiKey>
+        <releaseStage>staging</releaseStage>
+        <appVersion>1.0.1</appVersion>
 	</appender>
 
 	<root level="INFO">
