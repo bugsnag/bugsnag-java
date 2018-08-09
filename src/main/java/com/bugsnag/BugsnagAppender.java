@@ -507,11 +507,33 @@ public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
     /**
      * @see Bugsnag#setFilters(String...)
      */
+    public void setFilteredProperty(String filter) {
+        this.filteredProperties.add(filter);
+
+        if (bugsnag != null) {
+            bugsnag.setFilters(this.filteredProperties.toArray(new String[0]));
+        }
+    }
+
+    /**
+     * @see Bugsnag#setFilters(String...)
+     */
     public void setFilteredProperties(String filters) {
         this.filteredProperties.addAll(split(filters));
 
         if (bugsnag != null) {
-            bugsnag.setFilters(filters);
+            bugsnag.setFilters(this.filteredProperties.toArray(new String[0]));
+        }
+    }
+
+    /**
+     * @see Bugsnag#setIgnoreClasses(String...)
+     */
+    public void setIgnoredClass(String ignoredClass) {
+        this.ignoredClasses.add(ignoredClass);
+
+        if (bugsnag != null) {
+            bugsnag.setIgnoreClasses(this.ignoredClasses.toArray(new String[0]));
         }
     }
 
@@ -522,7 +544,18 @@ public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
         this.ignoredClasses.addAll(split(ignoredClasses));
 
         if (bugsnag != null) {
-            bugsnag.setIgnoreClasses(ignoredClasses);
+            bugsnag.setIgnoreClasses(this.ignoredClasses.toArray(new String[0]));
+        }
+    }
+
+    /**
+     * @see Bugsnag#setNotifyReleaseStages(String...)
+     */
+    public void setNotifyReleaseStage(String notifyReleaseStage) {
+        this.notifyReleaseStages.add(notifyReleaseStage);
+
+        if (bugsnag != null) {
+            bugsnag.setNotifyReleaseStages(this.notifyReleaseStages.toArray(new String[0]));
         }
     }
 
@@ -533,7 +566,7 @@ public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
         this.notifyReleaseStages.addAll(split(notifyReleaseStages));
 
         if (bugsnag != null) {
-            bugsnag.setNotifyReleaseStages(notifyReleaseStages);
+            bugsnag.setNotifyReleaseStages(this.notifyReleaseStages.toArray(new String[0]));
         }
     }
 
