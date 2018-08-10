@@ -64,9 +64,6 @@ public class Bugsnag {
         BugsnagAppender appender = BugsnagAppender.getInstance(apiKey);
 
         if (appender != null && appender.getBugsnag() != null) {
-            // Ensure that sendUncaughtExceptions is respected
-            appender.getBugsnag().config.setAutoCaptureSessions(sendUncaughtExceptions);
-
             return appender.getBugsnag();
         }
 
@@ -164,6 +161,17 @@ public class Bugsnag {
     public Delivery getDelivery() {
         return config.delivery;
     }
+
+    /**
+     * Get the delivery to use to send sessions.
+     *
+     * @return the delivery to use to send sessions.
+     * @see Delivery
+     */
+    public Delivery getSessionDelivery() {
+        return config.sessionDelivery;
+    }
+
 
     /**
      * Set the application type sent to Bugsnag.

@@ -584,11 +584,23 @@ public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
     /**
      * @see Bugsnag#setProjectPackages(String...)
      */
+    public void setProjectPackage(String projectPackage) {
+        this.projectPackages.add(projectPackage);
+
+        if (bugsnag != null) {
+            bugsnag.setProjectPackages(this.projectPackages.toArray(new String[0]));
+        }
+    }
+
+
+    /**
+     * @see Bugsnag#setProjectPackages(String...)
+     */
     public void setProjectPackages(String projectPackages) {
         this.projectPackages.addAll(split(projectPackages));
 
         if (bugsnag != null) {
-            bugsnag.setProjectPackages(projectPackages);
+            bugsnag.setProjectPackages(this.projectPackages.toArray(new String[0]));
         }
     }
 

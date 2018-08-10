@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+	<appender name="BUGSNAG" class="com.bugsnag.BugsnagAppender">
+		<apiKey>apikey</apiKey>
+        <releaseStage>test</releaseStage>
+        <appVersion>1.0.1</appVersion>
+
+        <appType>gradleTask</appType>
+        <autoCaptureSessions>false</autoCaptureSessions>
+
+        <filteredProperty>password</filteredProperty>
+        <filteredProperty>credit_card_number</filteredProperty>
+
+        <ignoredClass>java.io.IOException</ignoredClass>
+        <ignoredClass>com.example.Custom</ignoredClass>
+
+        <notifyReleaseStage>test</notifyReleaseStage>
+        <notifyReleaseStage>development</notifyReleaseStage>
+
+        <projectPackage>com.company.package1</projectPackage>
+        <projectPackage>com.company.package2</projectPackage>
+
+        <sendThreads>true</sendThreads>
+
+	</appender>
+
+	<root level="INFO">
+		<appender-ref ref="BUGSNAG"/>
+	</root>
+
+	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+		<encoder>
+			<pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{50} - %msg%n</pattern>
+		</encoder>
+	</appender>
+	<root level="DEBUG">
+		<appender-ref ref="STDOUT" />
+	</root>
+</configuration>
