@@ -44,8 +44,13 @@ public class Report {
         this.handledState = handledState;
         this.severity = handledState.getOriginalSeverity();
         diagnostics = new Diagnostics(this.config);
-        threadStates = config.sendThreads
-                ? ThreadState.getLiveThreads(config, currentThread, Thread.getAllStackTraces()) : null;
+
+        if (config.sendThreads) {
+            Map<Thread, StackTraceElement[]> allStackTraces = Thread.getAllStackTraces();
+            threadStates = ThreadState.getLiveThreads(config, currentThread, allStackTraces);
+        } else {
+            threadStates = null;
+        }
     }
 
     @Expose
