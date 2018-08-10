@@ -16,7 +16,12 @@ import org.slf4j.MDC;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.Proxy;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 
 /** Sends events to Bugsnag using its Java client library. */
 public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
@@ -90,14 +95,14 @@ public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
         } else  if (instances.size() == 1) {
             return instances.get(instances.keySet().toArray(new String[1])[0]);
         } else {
-            throw new IllegalStateException("Multiple log appenders have been created, please supply API key param");
+            throw new IllegalStateException(
+                    "Multiple log appenders have been created, please supply API key parameter");
         }
     }
 
     /**
-     * @return A running instance of the appender (if one has been created)
-     *
      * @param apiKey The API key of the appender to get (only required if using multiple API keys)
+     * @return A running instance of the appender (if one has been created)
      */
     public static BugsnagAppender getInstance(String apiKey) {
         if (instances.containsKey(apiKey)) {
