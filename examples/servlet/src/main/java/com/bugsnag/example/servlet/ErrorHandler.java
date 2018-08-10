@@ -3,7 +3,6 @@ package com.bugsnag.example.servlet;
 import com.bugsnag.Bugsnag;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -16,7 +15,7 @@ public class ErrorHandler extends HttpServlet {
      * Error handler to report the error to Bugsnag
      */
     public ErrorHandler() {
-        bugsnag = Bugsnag.createBugsnag("YOUR-API-KEY");
+        bugsnag = Bugsnag.init("YOUR-API-KEY");
         bugsnag.setProjectPackages("com.bugsnag.example");
     }
 

@@ -16,10 +16,7 @@ import org.slf4j.MDC;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.Proxy;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /** Sends events to Bugsnag using its Java client library. */
 public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
@@ -31,7 +28,7 @@ public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
     private static final String LOGGING_CONTEXT_TAB_SEPARATOR = ".reportTab.";
 
     // Object mapper to serialize into logging context with
-    private static ObjectMapper mapper;
+    private static ObjectMapper mapper = new ObjectMapper();
 
     /** Bugsnag API key; the appender doesn't do anything if it's not available. */
     private String apiKey;
@@ -82,20 +79,40 @@ public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
     private Bugsnag bugsnag = null;
 
     /** The appender instance */
-    private static BugsnagAppender instance;
+    private static Map<String, BugsnagAppender> instances = new HashMap<String, BugsnagAppender>();
 
     /**
-     * @return The running instance of the appender (if one has been created)
+     * @return A running instance of the appender (if one has been created)
      */
     public static BugsnagAppender getInstance() {
-        return instance;
+        if (instances.size() == 0) {
+            return null;
+        } else  if (instances.size() == 1) {
+            return instances.get(instances.keySet().toArray(new String[1])[0]);
+        } else {
+            throw new IllegalStateException("Multiple log appenders have been created, please supply API key param");
+        }
+    }
+
+    /**
+     * @return A running instance of the appender (if one has been created)
+     *
+     * @param apiKey The API key of the appender to get (only required if using multiple API keys)
+     */
+    public static BugsnagAppender getInstance(String apiKey) {
+        if (instances.containsKey(apiKey)) {
+            return instances.get(apiKey);
+        } else {
+            return null;
+        }
     }
 
     @Override
     public void start() {
         if (apiKey != null && !apiKey.isEmpty()) {
             this.bugsnag = createBugsnag();
-            instance = this;
+
+            instances.put(apiKey, this);
         }
         super.start();
     }
@@ -105,7 +122,7 @@ public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
         super.stop();
         if (bugsnag != null) {
             bugsnag.close();
-            instance = null;
+            instances.remove(apiKey);
         }
     }
 
@@ -192,7 +209,7 @@ public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
      * @return Create a Bugsnag instance with parameters from the logback configuration
      */
     private Bugsnag createBugsnag() {
-        Bugsnag bugsnag = Bugsnag.createBugsnag(apiKey, sendUncaughtExceptions);
+        Bugsnag bugsnag = Bugsnag.init(apiKey, sendUncaughtExceptions);
 
         bugsnag.setAutoCaptureSessions(autoCaptureSessions);
 
@@ -342,7 +359,7 @@ public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
             return (String)value;
         } else {
             try {
-                return getObjectMapper().writeValueAsString(value);
+                return mapper.writeValueAsString(value);
             } catch (JsonProcessingException exception) {
                 return value.toString();
             }
@@ -357,22 +374,11 @@ public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
      */
     private static Object getObjectValue(String value) {
         try {
-            return getObjectMapper().readValue(value, Map.class);
+            return mapper.readValue(value, Map.class);
         } catch (IOException exception) {
             // Just return the raw string if it could not be read
             return value;
         }
-    }
-
-    /**
-     * @return An object mapper to serialize into the logging context with
-     */
-    protected static ObjectMapper getObjectMapper() {
-        if (mapper == null) {
-            mapper = new ObjectMapper();
-        }
-
-        return mapper;
     }
 
     /**

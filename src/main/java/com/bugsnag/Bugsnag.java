@@ -44,8 +44,8 @@ public class Bugsnag {
      * @param apiKey your Bugsnag API key from your Bugsnag dashboard
      * @return The Bugsnag client instance
      */
-    public static Bugsnag createBugsnag(String apiKey) {
-        return createBugsnag(apiKey, true);
+    public static Bugsnag init(String apiKey) {
+        return init(apiKey, true);
     }
 
     /**
@@ -55,21 +55,19 @@ public class Bugsnag {
      * @param sendUncaughtExceptions should we send uncaught exceptions to Bugsnag
      * @return The Bugsnag client instance
      */
-    public static Bugsnag createBugsnag(String apiKey, boolean sendUncaughtExceptions) {
+    public static Bugsnag init(String apiKey, boolean sendUncaughtExceptions) {
+        if (apiKey == null) {
+            throw new NullPointerException("You must provide a Bugsnag API key");
+        }
 
         // Look for an existing instance of Bugsnag in the appender
-        if (BugsnagAppender.getInstance() != null
-                && BugsnagAppender.getInstance().getBugsnag() != null) {
+        BugsnagAppender appender = BugsnagAppender.getInstance(apiKey);
 
-            // Check that the API key matches
-            if (apiKey.equals(BugsnagAppender.getInstance().getBugsnag().config.apiKey)) {
+        if (appender != null && appender.getBugsnag() != null) {
+            // Ensure that sendUncaughtExceptions is respected
+            appender.getBugsnag().config.setAutoCaptureSessions(sendUncaughtExceptions);
 
-                // Ensure that sendUncaughtExceptions is respected
-                BugsnagAppender.getInstance().getBugsnag()
-                        .config.setAutoCaptureSessions(sendUncaughtExceptions);
-
-                return BugsnagAppender.getInstance().getBugsnag();
-            }
+            return appender.getBugsnag();
         }
 
         return new Bugsnag(apiKey, sendUncaughtExceptions);
@@ -79,7 +77,7 @@ public class Bugsnag {
      * Initialize a Bugsnag client and automatically send uncaught exceptions.
      *
      * @param apiKey your Bugsnag API key from your Bugsnag dashboard
-     * @deprecated use {@link Bugsnag#createBugsnag(String)} instead
+     * @deprecated use {@link Bugsnag#init(String)} instead
      */
     public Bugsnag(String apiKey) {
         this(apiKey, true);
@@ -90,7 +88,7 @@ public class Bugsnag {
      *
      * @param apiKey                 your Bugsnag API key
      * @param sendUncaughtExceptions should we send uncaught exceptions to Bugsnag
-     * @deprecated use {@link Bugsnag#createBugsnag(String, boolean)} instead
+     * @deprecated use {@link Bugsnag#init(String, boolean)} instead
      */
     public Bugsnag(String apiKey, boolean sendUncaughtExceptions) {
         if (apiKey == null) {

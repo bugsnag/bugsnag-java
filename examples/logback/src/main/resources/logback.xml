@@ -6,6 +6,32 @@
 		<apiKey>your-api-key-here</apiKey>
         <releaseStage>staging</releaseStage>
         <appVersion>1.0.1</appVersion>
+
+        <!--<appType>gradleTask</appType>-->
+        <!--<autoCaptureSessions>false</autoCaptureSessions>-->
+        <!--<notifyEndpoint>https://notify.example.com</notifyEndpoint>-->
+        <!--<sessionEndpoint>https://sessions.example.com</sessionEndpoint>-->
+
+        <!--<filteredProperty>password</filteredProperty>-->
+        <!--<filteredProperty>credit_card_number</filteredProperty>-->
+
+        <!--<ignoredClass>java.io.IOException</ignoredClass>-->
+        <!--<ignoredClass>com.example.Custom</ignoredClass>-->
+
+        <!--<notifyReleaseStage>production</notifyReleaseStage>-->
+        <!--<notifyReleaseStage>development</notifyReleaseStage>-->
+
+        <!--<projectPackage>com.company.package1</projectPackage>-->
+        <!--<projectPackage>com.company.package2</projectPackage>-->
+
+        <!--<proxy>-->
+            <!--<type>HTTP</type>-->
+            <!--<hostname>example.com</hostname>-->
+            <!--<port>80</port>-->
+        <!--</proxy>-->
+
+        <!--<sendThreads>true</sendThreads>-->
+
 	</appender>
 
 	<root level="INFO">
