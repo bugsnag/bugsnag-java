@@ -27,16 +27,25 @@ public class AppenderTest {
 
     private static final Logger LOGGER = Logger.getLogger(AppenderTest.class.getCanonicalName());
     private static TestDelivery delivery;
+    private static Delivery originalDelivery;
 
     /**
      * Create a new test delivery and assign it to the Bugsnag client
      */
     @Before
     public void swapDelivery() {
-        Bugsnag bugsnag = Bugsnag.init("apikey");
+        Bugsnag bugsnag = Bugsnag.init("appenderApikey");
+        originalDelivery = bugsnag.getDelivery();
         delivery = new TestDelivery();
         bugsnag.setDelivery(delivery);
     }
+
+    @After
+    public void revertDelivery() {
+        Bugsnag bugsnag = Bugsnag.init("appenderApikey");
+        bugsnag.setDelivery(originalDelivery);
+    }
+
 
     @Test
     public void testSimpleException() {
@@ -114,7 +123,7 @@ public class AppenderTest {
     public void testBugsnagConfig() {
 
         // Get the Bugsnag instance
-        Bugsnag bugsnag = Bugsnag.init("apikey");
+        Bugsnag bugsnag = Bugsnag.init("appenderApikey");
 
         Configuration config = getConfig(bugsnag);
         assertEquals("test", config.releaseStage);

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
 	<appender name="BUGSNAG" class="com.bugsnag.BugsnagAppender">
-		<apiKey>apikey</apiKey>
+		<apiKey>appenderApikey</apiKey>
         <releaseStage>test</releaseStage>
         <appVersion>1.0.1</appVersion>
 
@@ -33,7 +33,14 @@
 			<pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{50} - %msg%n</pattern>
 		</encoder>
 	</appender>
-	<root level="DEBUG">
-		<appender-ref ref="STDOUT" />
-	</root>
+    <appender name="STDERR" class="ch.qos.logback.core.ConsoleAppender">
+        <target>System.err</target>
+        <encoder>
+            <pattern>%date [%thread] - 5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+    <root level="DEBUG">
+        <appender-ref ref="STDOUT" />
+        <appender-ref ref="STDERR" />
+    </root>
 </configuration>
