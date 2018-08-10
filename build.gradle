@@ -37,7 +37,6 @@ dependencies {
         exclude group: 'org.slf4j'
     }
     testCompile 'junit:junit:4.12'
-    //testCompile 'org.slf4j:slf4j-simple:1.7.25'
     testCompile 'org.slf4j:log4j-over-slf4j:1.7.25'
     testCompile 'javax.servlet:javax.servlet-api:3.1.0'
     testCompile 'org.mockito:mockito-core:2.10.0'
