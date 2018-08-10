@@ -45,7 +45,7 @@ public class Report {
         this.severity = handledState.getOriginalSeverity();
         diagnostics = new Diagnostics(this.config);
         threadStates = config.sendThreads
-                ? ThreadState.getLiveThreads(config, currentThread) : null;
+                ? ThreadState.getLiveThreads(config, currentThread, Thread.getAllStackTraces()) : null;
     }
 
     @Expose

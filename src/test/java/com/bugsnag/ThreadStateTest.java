@@ -28,7 +28,7 @@ public class ThreadStateTest {
     @Before
     public void setUp() throws Exception {
         Configuration config = new Configuration("apikey");
-        threadStates = ThreadState.getLiveThreads(config, Thread.currentThread());
+        threadStates = ThreadState.getLiveThreads(config, Thread.currentThread(), Thread.getAllStackTraces());
     }
 
     @Test
@@ -103,7 +103,7 @@ public class ThreadStateTest {
         threads.remove(Thread.currentThread());
         Thread otherThread = threads.keySet().iterator().next();
         List<ThreadState> state
-                = ThreadState.getLiveThreads(new Configuration("apikey"), otherThread);
+                = ThreadState.getLiveThreads(new Configuration("apikey"), otherThread, Thread.getAllStackTraces());
 
         JsonNode root = serialiseThreadStateToJson(state);
         int currentThreadCount = 0;
@@ -114,6 +114,32 @@ public class ThreadStateTest {
                 currentThreadCount++;
             } else {
                 assertFalse(jsonNode.has("errorReportingThread"));
+            }
+        }
+        assertEquals(1, currentThreadCount);
+    }
+
+    /**
+     * Verifies that if the current thread is missing from the available traces as reported by
+     * {@link Thread#getAllStackTraces()}, its stacktrace will still be serialised
+     */
+    @Test
+    public void testMissingCurrentThread() throws Exception {
+        Map<Thread, StackTraceElement[]> threads = Thread.getAllStackTraces();
+        Thread currentThread = Thread.currentThread();
+        threads.remove(currentThread);
+
+        List<ThreadState> state
+                = ThreadState.getLiveThreads(new Configuration("apikey"), currentThread, threads);
+
+        JsonNode root = serialiseThreadStateToJson(state);
+        int currentThreadCount = 0;
+
+        for (JsonNode jsonNode : root) {
+            if (currentThread.getId() == jsonNode.get("id").asLong()) {
+                assertTrue(jsonNode.get("errorReportingThread").asBoolean());
+                assertTrue(jsonNode.get("stacktrace").size() > 0);
+                currentThreadCount++;
             }
         }
         assertEquals(1, currentThreadCount);
