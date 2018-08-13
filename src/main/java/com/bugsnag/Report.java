@@ -75,7 +75,8 @@ public class Report {
 
     @Expose
     SeverityReason getSeverityReason() {
-        return new SeverityReason(handledState.calculateSeverityReasonType().toString());
+        return new SeverityReason(handledState.calculateSeverityReasonType().toString(),
+                handledState.getSeverityReasonAttributes());
     }
 
     @Expose
@@ -313,14 +314,21 @@ public class Report {
 
     static class SeverityReason {
         private final String type;
+        private final Map<String, String> attributes;
 
-        SeverityReason(String type) {
+        SeverityReason(String type, Map<String, String> attributes) {
             this.type = type;
+            this.attributes = attributes;
         }
 
         @Expose
         String getType() {
             return type;
+        }
+
+        @Expose
+        Map<String, String> getAttributes() {
+            return attributes;
         }
     }
 }
