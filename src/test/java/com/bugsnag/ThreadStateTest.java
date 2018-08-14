@@ -30,7 +30,8 @@ public class ThreadStateTest {
     public void setUp() throws Exception {
         config = new Configuration("apikey");
         Map<Thread, StackTraceElement[]> stackTraces = Thread.getAllStackTraces();
-        threadStates = ThreadState.getLiveThreads(config, Thread.currentThread(), stackTraces, null);
+        Thread currentThread = Thread.currentThread();
+        threadStates = ThreadState.getLiveThreads(config, currentThread, stackTraces, null);
     }
 
     @Test
@@ -105,7 +106,8 @@ public class ThreadStateTest {
         threads.remove(Thread.currentThread());
         Thread otherThread = threads.keySet().iterator().next();
         Map<Thread, StackTraceElement[]> allStackTraces = Thread.getAllStackTraces();
-        List<ThreadState> state = ThreadState.getLiveThreads(config, otherThread, allStackTraces, null);
+        List<ThreadState> state
+                = ThreadState.getLiveThreads(config, otherThread, allStackTraces, null);
 
         JsonNode root = serialiseThreadStateToJson(state);
         int currentThreadCount = 0;
@@ -149,7 +151,8 @@ public class ThreadStateTest {
 
 
     /**
-     * Verifies that a handled error uses {@link Thread#getAllStackTraces()} for the reporting thread stacktrace
+     * Verifies that a handled error uses {@link Thread#getAllStackTraces()}
+     * for the reporting thread stacktrace
      */
     @Test
     public void testHandledStacktrace() throws Exception {
@@ -176,7 +179,8 @@ public class ThreadStateTest {
 
                 for (int k = 0; k < expectedTrace.length; k++) {
                     JsonNode obj = stacktrace.get(k);
-                    assertEquals(expectedTrace[k].getLineNumber(), obj.get("lineNumber").intValue());
+                    JsonNode lineNumber = obj.get("lineNumber");
+                    assertEquals(expectedTrace[k].getLineNumber(), lineNumber.intValue());
                 }
             }
         }
@@ -213,7 +217,8 @@ public class ThreadStateTest {
 
                 for (int k = 0; k < expectedTrace.length; k++) {
                     JsonNode obj = stacktrace.get(k);
-                    assertEquals(expectedTrace[k].getLineNumber(), obj.get("lineNumber").intValue());
+                    JsonNode lineNumber = obj.get("lineNumber");
+                    assertEquals(expectedTrace[k].getLineNumber(), lineNumber.intValue());
                 }
             }
         }
