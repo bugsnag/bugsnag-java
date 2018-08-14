@@ -5,6 +5,9 @@
 * Capture trace of error reporting thread and identify with boolean flag
   [#87](https://github.com/bugsnag/bugsnag-java/pull/87)
 
+* Add null check when disconnecting HttpUrlConnection
+[#92](https://github.com/bugsnag/bugsnag-java/pull/92)
+
 ## 3.2.0 (2018-07-03)
 
 This release introduces automatic tracking of sessions, which by

@@ -97,7 +97,9 @@ public class SyncHttpDelivery implements HttpDelivery {
         } catch (IOException ex) {
             logger.warn("Error not reported to Bugsnag - exception when making request", ex);
         } finally {
-            connection.disconnect();
+            if (connection != null) {
+                connection.disconnect();
+            }
         }
     }
 
