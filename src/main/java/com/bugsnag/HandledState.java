@@ -1,5 +1,6 @@
 package com.bugsnag;
 
+import java.util.Collections;
 import java.util.Map;
 
 final class HandledState {
@@ -31,22 +32,23 @@ final class HandledState {
 
     private Severity currentSeverity;
 
-    static HandledState newInstance(SeverityReasonType severityReason) {
-        return newInstance(severityReason, null, null, false);
+    static HandledState newInstance(SeverityReasonType severityReasonType) {
+        return newInstance(severityReasonType, Collections.<String, String>emptyMap(), null, false);
     }
 
-    static HandledState newInstance(SeverityReasonType severityReason,
+    static HandledState newInstance(SeverityReasonType severityReasonType,
                                     Map<String, String> severityReasonAttributes) {
-        return newInstance(severityReason, severityReasonAttributes, null, false);
+        return newInstance(severityReasonType, severityReasonAttributes, null, false);
     }
 
     static HandledState newInstance(SeverityReasonType severityReason, Severity severity) {
-        return newInstance(severityReason, null, severity, false);
+        return newInstance(severityReason, Collections.<String, String>emptyMap(), severity, false);
     }
 
     static HandledState newInstance(SeverityReasonType severityReasonType,
                                     Map<String, String> severityReasonAttributes,
-                                    Severity severity, boolean unhandled) {
+                                    Severity severity,
+                                    boolean unhandled) {
         switch (severityReasonType) {
             case REASON_UNHANDLED_EXCEPTION:
             case REASON_UNHANDLED_EXCEPTION_MIDDLEWARE:
@@ -100,7 +102,7 @@ final class HandledState {
     }
 
     Map<String, String> getSeverityReasonAttributes() {
-        return severityReasonAttributes;
+        return Collections.unmodifiableMap(severityReasonAttributes);
     }
 
     Severity getCurrentSeverity() {
