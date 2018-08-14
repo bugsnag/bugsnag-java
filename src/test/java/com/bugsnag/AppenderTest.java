@@ -90,8 +90,8 @@ public class AppenderTest {
     public void testMetaData() {
 
         // Add some report and some thread meta data
-        BugsnagAppender.addReportMetaData("report", "some key", "some value");
-        BugsnagAppender.addThreadMetaData("thread", "some key", "some value");
+        BugsnagAppender.addReportMetaData("report", "some key", "some report value");
+        BugsnagAppender.addThreadMetaData("thread", "some key", "some thread value");
 
         // Send three test logs
         LOGGER.warn("Test exception", new RuntimeException("test"));
@@ -106,12 +106,15 @@ public class AppenderTest {
         // Should have both report and thread meta data
         Notification notification = delivery.getNotifications().get(0);
         assertTrue(notification.getEvents().get(0).getMetaData().containsKey("report"));
+        assertEquals("some report value", getMetaDataMap(notification, "report").get("some key"));
         assertTrue(notification.getEvents().get(0).getMetaData().containsKey("thread"));
+        assertEquals("some thread value", getMetaDataMap(notification, "thread").get("some key"));
 
         // Should have just thread meta data
         notification = delivery.getNotifications().get(1);
         assertFalse(notification.getEvents().get(0).getMetaData().containsKey("report"));
         assertTrue(notification.getEvents().get(0).getMetaData().containsKey("thread"));
+        assertEquals("some thread value", getMetaDataMap(notification, "thread").get("some key"));
 
         // Should have neither meta data
         notification = delivery.getNotifications().get(2);
@@ -136,16 +139,16 @@ public class AppenderTest {
         assertEquals("credit_card_number", config.filters[1]);
 
         assertEquals(2, config.ignoreClasses.length);
-        assertEquals("java.io.IOException", config.ignoreClasses[0]);
-        assertEquals("com.example.Custom", config.ignoreClasses[1]);
+        assertEquals("com.example.Custom", config.ignoreClasses[0]);
+        assertEquals("java.io.IOException", config.ignoreClasses[1]);
 
         assertEquals(2, config.notifyReleaseStages.length);
-        assertEquals("test", config.notifyReleaseStages[0]);
-        assertEquals("development", config.notifyReleaseStages[1]);
+        assertEquals("development", config.notifyReleaseStages[0]);
+        assertEquals("test", config.notifyReleaseStages[1]);
 
         assertEquals(2, config.projectPackages.length);
-        assertEquals("com.company.package1", config.projectPackages[0]);
-        assertEquals("com.company.package2", config.projectPackages[1]);
+        assertEquals("com.company.package2", config.projectPackages[0]);
+        assertEquals("com.company.package1", config.projectPackages[1]);
 
         assertEquals(true, config.sendThreads);
     }

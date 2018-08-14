@@ -33,7 +33,7 @@ public class ApplicationCommandLineRunner implements CommandLineRunner {
         });
 
         // Add meta data that will be added to all reports on the current thread
-        BugsnagAppender.addThreadMetaData("report", "application", "has started on this thread");
+        BugsnagAppender.addThreadMetaData("thread tab", "thread key 1", "thread value 1");
 
         // Send a handled exception to Bugsnag
         LOGGER.info("Sending a handled exception to Bugsnag");
@@ -56,12 +56,12 @@ public class ApplicationCommandLineRunner implements CommandLineRunner {
         try {
             throw new RuntimeException("Handled exception - custom metadata");
         } catch (RuntimeException e) {
-            BugsnagAppender.addReportMetaData("report", "something", "that happened");
-            BugsnagAppender.addReportMetaData("report", "something else", "that happened");
-            LOGGER.warn(e.getMessage(), e);
+            BugsnagAppender.addReportMetaData("report tab", "data key 1", "data value 1");
+            BugsnagAppender.addReportMetaData("report tab", "data key 2", "data value 2");
+            LOGGER.warn("Something bad happened", e);
         }
 
-        // Test an unhanded exception from a different thread as shutdown hooks
+        // Test an unhandled exception from a different thread as shutdown hooks
         // won't be called if executed from this thread
         LOGGER.info("Sending an unhandled exception to Bugsnag");
         Thread thread = new Thread() {
@@ -76,7 +76,7 @@ public class ApplicationCommandLineRunner implements CommandLineRunner {
         // Wait for unhandled exception thread to finish before exiting
         thread.join();
 
-        // Remove the thread meta data so it won't be added to future reports
+        // Remove the thread meta data so it won't be added to future reports on this thread
         BugsnagAppender.clearThreadMetaData();
 
         // Exit the spring application

@@ -19,8 +19,11 @@ import java.net.Proxy;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 
 /** Sends events to Bugsnag using its Java client library. */
@@ -32,17 +35,25 @@ public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
             = "com.bugsnag.BugsnagAppender.report.";
     private static final String LOGGING_CONTEXT_TAB_SEPARATOR = ".reportTab.";
 
-    // Object mapper to serialize into logging context with
+    /** Classes that we should not send logs for (to prevent infinite loops on error) */
+    private static final List<String> EXCLUDED_CLASSES = new ArrayList<String>() {{
+            add("com.bugsnag.Bugsnag");
+            add("com.bugsnag.delivery.OutputStreamDelivery");
+            add("com.bugsnag.delivery.SyncHttpDelivery");
+        }
+    };
+
+    /** Object mapper to serialize into logging context with */
     private static ObjectMapper mapper = new ObjectMapper();
 
     /** Bugsnag API key; the appender doesn't do anything if it's not available. */
     private String apiKey;
 
     /** Whether or not to send unhandled exceptions to Bugsnag */
-    private Boolean sendUncaughtExceptions = true;
+    private boolean sendUncaughtExceptions = true;
 
     /** Whether or not to automatically capture session information */
-    private Boolean autoCaptureSessions = true;
+    private boolean autoCaptureSessions = true;
 
     /** Application type. */
     private String appType;
@@ -54,16 +65,16 @@ public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
     private String sessionEndpoint;
 
     /** Property names that should be filtered out before sending to Bugsnag servers. */
-    private List<String> filteredProperties = new ArrayList<String>();
+    private Set<String> filteredProperties = new HashSet<String>();
 
     /** Exception classes to be ignored. */
-    private List<String> ignoredClasses = new ArrayList<String>();
+    private Set<String> ignoredClasses = new HashSet<String>();
 
     /** Release stages that should be notified. */
-    private List<String> notifyReleaseStages = new ArrayList<String>();
+    private Set<String> notifyReleaseStages = new HashSet<String>();
 
     /** Project packages. */
-    private List<String> projectPackages = new ArrayList<String>();
+    private Set<String> projectPackages = new HashSet<String>();
 
     /** Proxy configuration to access the internet. */
     private ProxyConfiguration proxy;
@@ -173,6 +184,7 @@ public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
         return Severity.INFO;
     }
 
+
     /**
      * Checks to see if a stack trace came from the Bugsnag library
      * (prevent possible infinite reporting loops)
@@ -181,15 +193,12 @@ public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
      * @return true if the stacktrace contains a frame from the Bugsnag library
      */
     private boolean detectLogFromBugsnag(Throwable throwable) {
-
         // Check all places that LOGGER is called with an exception in the Bugsnag library
         for (StackTraceElement element : throwable.getStackTrace()) {
-            if (element.getClassName().startsWith("com.bugsnag.Bugsnag")
-                    || element.getClassName()
-                    .startsWith("com.bugsnag.delivery.OutputStreamDelivery")
-                    || element.getClassName()
-                    .startsWith("com.bugsnag.delivery.SyncHttpDelivery")) {
-                return true;
+            for (String excludedClass : EXCLUDED_CLASSES) {
+                if (element.getClassName().startsWith(excludedClass)) {
+                    return true;
+                }
             }
         }
 
@@ -204,7 +213,7 @@ public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
     private Throwable extractThrowable(ILoggingEvent event) {
         IThrowableProxy throwableProxy = event.getThrowableProxy();
         if (throwableProxy instanceof ThrowableProxy) {
-            return ((ThrowableProxy) event.getThrowableProxy()).getThrowable();
+            return ((ThrowableProxy) throwableProxy).getThrowable();
         }
 
         return null;
@@ -273,7 +282,7 @@ public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
 
     /**
      * Adds the given key / value to the current thread logging context
-     * to be used for the next report
+     * Will only be used for the next report, and then removed from the context
      *
      * @param key the key to add
      * @param value the value to add
@@ -287,18 +296,21 @@ public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
      * Clears all meta data added to the current thread
      */
     public static void clearThreadMetaData() {
-        List<String> keysToRemove = new ArrayList<String>();
+        if (MDC.getMDCAdapter() != null) {
+            Map<String, String> context = MDC.getCopyOfContextMap();
 
-        // Loop through all the keys and collect the thread ones
-        for (String key : MDC.getCopyOfContextMap().keySet()) {
-            if (key.startsWith(LOGGING_CONTEXT_THREAD_PREFIX)) {
-                keysToRemove.add(key);
+            if (context != null) {
+                Iterator<String> iterator = context.keySet().iterator();
+
+                // Loop over the keys and remove the thread ones
+                while (iterator.hasNext()) {
+                    String key = iterator.next();
+
+                    if (key.startsWith(LOGGING_CONTEXT_THREAD_PREFIX)) {
+                        MDC.remove(key);
+                    }
+                }
             }
-        }
-
-        // Remove the keys
-        for (String key : keysToRemove) {
-            MDC.remove(key);
         }
     }
 
@@ -309,27 +321,26 @@ public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
      * @param event The values in the logging context
      */
     private void populateContextData(Report report, ILoggingEvent event) {
-        List<String> keysToRemove = new ArrayList<String>();
+        if (event.getMDCPropertyMap() != null) {
+            Iterator<String> iterator = event.getMDCPropertyMap().keySet().iterator();
 
-        // Loop through all the keys and put them in the correct tabs
-        for (String key : event.getMDCPropertyMap().keySet()) {
-            if (key.startsWith(LOGGING_CONTEXT_REPORT_PREFIX)) {
-                populateKey(key,
-                        event.getMDCPropertyMap().get(key),
-                        LOGGING_CONTEXT_REPORT_PREFIX,
-                        report);
-                keysToRemove.add(key);
-            } else if (key.startsWith(LOGGING_CONTEXT_THREAD_PREFIX)) {
-                populateKey(key,
-                        event.getMDCPropertyMap().get(key),
-                        LOGGING_CONTEXT_THREAD_PREFIX,
-                        report);
+            // Loop through all the keys and put them in the correct tabs
+            while (iterator.hasNext()) {
+                String key = iterator.next();
+
+                if (key.startsWith(LOGGING_CONTEXT_REPORT_PREFIX)) {
+                    populateKey(key,
+                            event.getMDCPropertyMap().get(key),
+                            LOGGING_CONTEXT_REPORT_PREFIX,
+                            report);
+                    iterator.remove();
+                } else if (key.startsWith(LOGGING_CONTEXT_THREAD_PREFIX)) {
+                    populateKey(key,
+                            event.getMDCPropertyMap().get(key),
+                            LOGGING_CONTEXT_THREAD_PREFIX,
+                            report);
+                }
             }
-        }
-
-        // Remove the report keys so that they won't be associated with any other log message
-        for (String key : keysToRemove) {
-            event.getMDCPropertyMap().remove(key);
         }
     }
 
@@ -379,7 +390,13 @@ public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
      */
     private static Object getObjectValue(String value) {
         try {
-            return mapper.readValue(value, Map.class);
+            if (value.startsWith("{")) {
+                return mapper.readValue(value, Map.class);
+            } else if (value.startsWith("[")) {
+                return mapper.readValue(value, List.class);
+            } else {
+                return value;
+            }
         } catch (IOException exception) {
             // Just return the raw string if it could not be read
             return value;
@@ -410,7 +427,7 @@ public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
      * strategy used to track sessions should take this into account.
      *
      * Automatic session tracking can be enabled via
-     * {@link BugsnagAppender#setAutoCaptureSessions(Boolean)}, which will automatically
+     * {@link BugsnagAppender#setAutoCaptureSessions(boolean)}, which will automatically
      * create a new session for each request
      */
     public void startSession() {
@@ -467,14 +484,14 @@ public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
      *
      * @param sendUncaughtExceptions Whether or not Bugsnag should catch unhandled exceptions
      */
-    public void setSendUncaughtExceptions(Boolean sendUncaughtExceptions) {
+    public void setSendUncaughtExceptions(boolean sendUncaughtExceptions) {
         this.sendUncaughtExceptions = sendUncaughtExceptions;
     }
 
     /**
      * @see Bugsnag#setAutoCaptureSessions(boolean)
      */
-    public void setAutoCaptureSessions(Boolean autoCaptureSessions) {
+    public void setAutoCaptureSessions(boolean autoCaptureSessions) {
         this.autoCaptureSessions = autoCaptureSessions;
 
         if (bugsnag != null) {
