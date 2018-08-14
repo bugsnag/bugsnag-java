@@ -1,9 +1,12 @@
 package com.bugsnag;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
+import com.bugsnag.HandledState.SeverityReasonType;
 import com.bugsnag.delivery.OutputStreamDelivery;
 
 import com.bugsnag.serialization.Serializer;
@@ -23,7 +26,7 @@ public class HandledStatePayloadTest {
     private Configuration config;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         config = new Configuration("123");
     }
 
@@ -44,7 +47,7 @@ public class HandledStatePayloadTest {
         JsonNode payload = getJsonPayloadFromReport(report);
 
         assertEquals("warning", payload.get("severity").asText());
-        assertEquals(false, payload.get("unhandled").booleanValue());
+        assertFalse(payload.get("unhandled").booleanValue());
 
         JsonNode severityReason = payload.get("severityReason");
         assertNotNull(severityReason);
@@ -61,7 +64,7 @@ public class HandledStatePayloadTest {
         JsonNode payload = getJsonPayloadFromReport(report);
 
         assertEquals("error", payload.get("severity").asText());
-        assertEquals(true, payload.get("unhandled").booleanValue());
+        assertTrue(payload.get("unhandled").booleanValue());
 
         JsonNode severityReason = payload.get("severityReason");
         assertNotNull(severityReason);
@@ -78,7 +81,7 @@ public class HandledStatePayloadTest {
         JsonNode payload = getJsonPayloadFromReport(report);
 
         assertEquals("warning", payload.get("severity").asText());
-        assertEquals(false, payload.get("unhandled").booleanValue());
+        assertFalse(payload.get("unhandled").booleanValue());
 
         JsonNode severityReason = payload.get("severityReason");
         assertNotNull(severityReason);
@@ -96,7 +99,7 @@ public class HandledStatePayloadTest {
         JsonNode payload = getJsonPayloadFromReport(report);
 
         assertEquals("info", payload.get("severity").asText());
-        assertEquals(false, payload.get("unhandled").booleanValue());
+        assertFalse(payload.get("unhandled").booleanValue());
 
         JsonNode severityReason = payload.get("severityReason");
         assertNotNull(severityReason);
@@ -104,6 +107,69 @@ public class HandledStatePayloadTest {
                         .toString(),
                 severityReason.get("type").asText());
         assertNull(severityReason.get("attributes"));
+    }
+
+    @Test
+    public void testUnhandledMiddlewareSerialisation() throws java.lang.Exception {
+        Report report = reportFromHandledState(HandledState.newInstance(
+                SeverityReasonType.REASON_UNHANDLED_EXCEPTION_MIDDLEWARE,
+                Collections.singletonMap("framework", "Spring")));
+        JsonNode payload = getJsonPayloadFromReport(report);
+
+        assertEquals("error", payload.get("severity").asText());
+        assertTrue(payload.get("unhandled").booleanValue());
+
+        JsonNode severityReason = payload.get("severityReason");
+        assertNotNull(severityReason);
+        assertEquals(HandledState.SeverityReasonType.REASON_UNHANDLED_EXCEPTION_MIDDLEWARE
+                        .toString(),
+                severityReason.get("type").asText());
+        assertEquals(1, severityReason.get("attributes").size());
+        assertEquals("Spring", severityReason.get("attributes").get("framework").asText());
+    }
+
+    @Test
+    public void testUnhandledExceptionClassSerialisation() throws java.lang.Exception {
+        Report report = reportFromHandledState(HandledState.newInstance(
+                SeverityReasonType.REASON_EXCEPTION_CLASS,
+                Collections.singletonMap("exceptionClass", "TypeMismatchException"),
+                Severity.INFO,
+                true));
+        JsonNode payload = getJsonPayloadFromReport(report);
+
+        assertEquals("info", payload.get("severity").asText());
+        assertTrue(payload.get("unhandled").booleanValue());
+
+        JsonNode severityReason = payload.get("severityReason");
+        assertNotNull(severityReason);
+        assertEquals(HandledState.SeverityReasonType.REASON_EXCEPTION_CLASS
+                        .toString(),
+                severityReason.get("type").asText());
+        assertEquals(1, severityReason.get("attributes").size());
+        assertEquals("TypeMismatchException",
+                severityReason.get("attributes").get("exceptionClass").asText());
+    }
+
+    @Test
+    public void testHandledExceptionClassSerialisation() throws java.lang.Exception {
+        Report report = reportFromHandledState(HandledState.newInstance(
+                SeverityReasonType.REASON_EXCEPTION_CLASS,
+                Collections.singletonMap("exceptionClass", "TypeMismatchException"),
+                Severity.INFO,
+                false));
+        JsonNode payload = getJsonPayloadFromReport(report);
+
+        assertEquals("info", payload.get("severity").asText());
+        assertFalse(payload.get("unhandled").booleanValue());
+
+        JsonNode severityReason = payload.get("severityReason");
+        assertNotNull(severityReason);
+        assertEquals(HandledState.SeverityReasonType.REASON_EXCEPTION_CLASS
+                        .toString(),
+                severityReason.get("type").asText());
+        assertEquals(1, severityReason.get("attributes").size());
+        assertEquals("TypeMismatchException",
+                severityReason.get("attributes").get("exceptionClass").asText());
     }
 
     private Report reportFromHandledState(HandledState handledState) {
