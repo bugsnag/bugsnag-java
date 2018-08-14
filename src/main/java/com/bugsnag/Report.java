@@ -46,8 +46,9 @@ public class Report {
         diagnostics = new Diagnostics(this.config);
 
         if (config.sendThreads) {
+            Throwable exc = handledState.isUnhandled() ? throwable : null;
             Map<Thread, StackTraceElement[]> allStackTraces = Thread.getAllStackTraces();
-            threadStates = ThreadState.getLiveThreads(config, currentThread, allStackTraces);
+            threadStates = ThreadState.getLiveThreads(config, currentThread, allStackTraces, exc);
         } else {
             threadStates = null;
         }

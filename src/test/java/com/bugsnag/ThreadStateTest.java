@@ -30,7 +30,7 @@ public class ThreadStateTest {
     public void setUp() throws Exception {
         config = new Configuration("apikey");
         Map<Thread, StackTraceElement[]> stackTraces = Thread.getAllStackTraces();
-        threadStates = ThreadState.getLiveThreads(config, Thread.currentThread(), stackTraces);
+        threadStates = ThreadState.getLiveThreads(config, Thread.currentThread(), stackTraces, null);
     }
 
     @Test
@@ -105,7 +105,7 @@ public class ThreadStateTest {
         threads.remove(Thread.currentThread());
         Thread otherThread = threads.keySet().iterator().next();
         Map<Thread, StackTraceElement[]> allStackTraces = Thread.getAllStackTraces();
-        List<ThreadState> state = ThreadState.getLiveThreads(config, otherThread, allStackTraces);
+        List<ThreadState> state = ThreadState.getLiveThreads(config, otherThread, allStackTraces, null);
 
         JsonNode root = serialiseThreadStateToJson(state);
         int currentThreadCount = 0;
@@ -132,7 +132,7 @@ public class ThreadStateTest {
         threads.remove(currentThread);
 
         List<ThreadState> state
-                = ThreadState.getLiveThreads(config, currentThread, threads);
+                = ThreadState.getLiveThreads(config, currentThread, threads, null);
 
         JsonNode root = serialiseThreadStateToJson(state);
         int currentThreadCount = 0;
@@ -142,6 +142,79 @@ public class ThreadStateTest {
                 assertTrue(jsonNode.get("errorReportingThread").asBoolean());
                 assertTrue(jsonNode.get("stacktrace").size() > 0);
                 currentThreadCount++;
+            }
+        }
+        assertEquals(1, currentThreadCount);
+    }
+
+
+    /**
+     * Verifies that a handled error uses {@link Thread#getAllStackTraces()} for the reporting thread stacktrace
+     */
+    @Test
+    public void testHandledStacktrace() throws Exception {
+        Map<Thread, StackTraceElement[]> threads = Thread.getAllStackTraces();
+        Thread currentThread = Thread.currentThread();
+        StackTraceElement[] expectedTrace = threads.get(currentThread);
+
+        List<ThreadState> state
+                = ThreadState.getLiveThreads(config, currentThread, threads, null);
+
+        JsonNode root = serialiseThreadStateToJson(state);
+        int currentThreadCount = 0;
+
+        for (JsonNode jsonNode : root) {
+            if (currentThread.getId() == jsonNode.get("id").asLong()) {
+                currentThreadCount++;
+
+                // the thread id + name should always be used
+                assertEquals(currentThread.getName(), jsonNode.get("name").asText());
+
+                // stacktrace should come from the thread (check same length and line numbers)
+                JsonNode stacktrace = jsonNode.get("stacktrace");
+                assertEquals(expectedTrace.length, stacktrace.size());
+
+                for (int k = 0; k < expectedTrace.length; k++) {
+                    JsonNode obj = stacktrace.get(k);
+                    assertEquals(expectedTrace[k].getLineNumber(), obj.get("lineNumber").intValue());
+                }
+            }
+        }
+        assertEquals(1, currentThreadCount);
+    }
+
+    /**
+     * Verifies that an unhandled error uses {@link com.bugsnag.Exception#getStacktrace()}
+     * for the reporting thread stacktrace
+     */
+    @Test
+    public void testUnhandledStacktrace() throws Exception {
+        Map<Thread, StackTraceElement[]> threads = Thread.getAllStackTraces();
+        Thread currentThread = Thread.currentThread();
+        RuntimeException exc = new RuntimeException("Whoops");
+        StackTraceElement[] expectedTrace = exc.getStackTrace();
+
+        List<ThreadState> state
+                = ThreadState.getLiveThreads(config, currentThread, threads, exc);
+
+        JsonNode root = serialiseThreadStateToJson(state);
+        int currentThreadCount = 0;
+
+        for (JsonNode jsonNode : root) {
+            if (currentThread.getId() == jsonNode.get("id").asLong()) {
+                currentThreadCount++;
+
+                // the thread id + name should always be used
+                assertEquals(currentThread.getName(), jsonNode.get("name").asText());
+
+                // stacktrace should come from the thread (check same length and line numbers)
+                JsonNode stacktrace = jsonNode.get("stacktrace");
+                assertEquals(expectedTrace.length, stacktrace.size());
+
+                for (int k = 0; k < expectedTrace.length; k++) {
+                    JsonNode obj = stacktrace.get(k);
+                    assertEquals(expectedTrace[k].getLineNumber(), obj.get("lineNumber").intValue());
+                }
             }
         }
         assertEquals(1, currentThreadCount);

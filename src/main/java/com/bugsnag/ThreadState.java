@@ -24,7 +24,8 @@ class ThreadState {
 
     static List<ThreadState> getLiveThreads(Configuration config,
                                             Thread currentThread,
-                                            Map<Thread, StackTraceElement[]> liveThreads) {
+                                            Map<Thread, StackTraceElement[]> liveThreads,
+                                            Throwable exc) {
         // Get current thread id (the crashing thread) and stacktraces for all live threads
         long crashingThreadId = currentThread.getId();
 
@@ -33,7 +34,9 @@ class ThreadState {
         if (!liveThreads.containsKey(currentThread)) {
             liveThreads.put(currentThread, currentThread.getStackTrace());
         }
-
+        if (exc != null) { // unhandled errors use the exception trace
+            liveThreads.put(currentThread, exc.getStackTrace());
+        }
 
         // Sort threads by thread-id
         Object[] keys = liveThreads.keySet().toArray();
