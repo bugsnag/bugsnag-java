@@ -58,18 +58,19 @@ Create a [Bintray](https://bintray.com) account:
 
 ### 3. Making a release
 
-1. Update the CHANGELOG.md file with any changes
-1. Update the version number by running `make VERSION=[number] bump`
+1. Determine the module to release, either `bugsnag-java` or `bugsnag-spring`.
+1. Update the CHANGELOG.md file in the module with any changes
+1. Update the version number by running `make MODULE=[module] VERSION=[number] bump`
 1. Commit the changes
 1. Create a release build:
-   * `./gradlew -Preleasing=true clean release`
+   * `./gradlew -Preleasing=true clean :[module]:release`
      - enter the release version (e.g. `1.2.0`)
      - accept the default development version
 1. Create a release in GitHub, attaching the changelog entry and build artifacts
 1. Upload the archives to Sonatype Nexus and Bintray:
-   * `./gradlew -Preleasing=true uploadArchives bintrayUpload`
+   * `./gradlew -Preleasing=true :[module]:uploadArchives :[module]:bintrayUpload`
 1. "Promote" the build on Maven Central:
-   * `./gradlew -Preleasing=true closeAndReleaseRepository`
+   * `./gradlew -Preleasing=true :[module]:closeAndReleaseRepository`
 1. Update the documentation (integration guide, quick start):
    * Update the version numbers of the dependencies listed in the manual
      integration guide.

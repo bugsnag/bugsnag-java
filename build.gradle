@@ -11,6 +11,8 @@ buildscript {
         }
     }
 }
+
+// This can only be applied in root project, see https://github.com/Codearte/gradle-nexus-staging-plugin/issues/47
 if (project.hasProperty('releasing')) {
-    apply from: "release.gradle"
+    apply plugin: 'io.codearte.nexus-staging'
 }
