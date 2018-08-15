@@ -20,6 +20,17 @@
         <projectPackage>com.company.package1</projectPackage>
         <projectPackage>com.company.package2</projectPackage>
 
+        <metaData>
+            <tabName>logbackTab</tabName>
+            <key>logbackKey1</key>
+            <value>logbackValue1</value>
+        </metaData>
+        <metaData>
+            <tabName>logbackTab</tabName>
+            <key>logbackKey2</key>
+            <value>logbackValue2</value>
+        </metaData>
+
         <sendThreads>true</sendThreads>
 
 	</appender>

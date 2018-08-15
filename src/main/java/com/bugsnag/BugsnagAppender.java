@@ -2,6 +2,7 @@ package com.bugsnag;
 
 import com.bugsnag.callbacks.Callback;
 import com.bugsnag.delivery.Delivery;
+import com.bugsnag.logback.MetaData;
 import com.bugsnag.logback.ProxyConfiguration;
 
 import ch.qos.logback.classic.Level;
@@ -91,6 +92,8 @@ public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
     /** Application version. */
     private String appVersion;
 
+    private List<MetaData> globalMetaData = new ArrayList<MetaData>();
+
     /** Bugsnag client. */
     private Bugsnag bugsnag = null;
 
@@ -161,6 +164,12 @@ public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
                                         "Message", event.getMessage());
                                 report.addToTab("Log event data",
                                         "Timestamp", event.getTimeStamp());
+
+                                for (MetaData metaData : globalMetaData) {
+                                    report.addToTab(metaData.getTabName(),
+                                            metaData.getKey(),
+                                            metaData.getValue());
+                                }
 
                                 // Add details from the logging context to the event
                                 populateContextData(report, event);
@@ -677,6 +686,13 @@ public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
         if (bugsnag != null) {
             bugsnag.setAppVersion(appVersion);
         }
+    }
+
+    /**
+     * @param metaData Adds meta data to every report
+     */
+    public void setMetaData(MetaData metaData) {
+        this.globalMetaData.add(metaData);
     }
 
     /**

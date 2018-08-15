@@ -108,6 +108,21 @@ public class AppenderTest {
     }
 
     @Test
+    public void testMetaDataFromLogbackFile() {
+
+        // Send a log message
+        LOGGER.warn("Test exception", new RuntimeException("test"));
+
+        // Get the notification details
+        Notification notification = delivery.getNotifications().get(0);
+        assertTrue(notification.getEvents().get(0).getMetaData().containsKey("logbackTab"));
+        Map<String, Object> myTab = getMetaDataMap(notification, "logbackTab");
+
+        assertEquals("logbackValue1", myTab.get("logbackKey1"));
+        assertEquals("logbackValue2", myTab.get("logbackKey2"));
+    }
+
+    @Test
     public void testMetaDataTypes() {
 
         BugsnagAppender.addReportMetaData("myTab", "string key", "string value");
