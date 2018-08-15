@@ -15,6 +15,7 @@ import org.junit.Test;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -135,20 +136,24 @@ public class AppenderTest {
         assertEquals(false, config.shouldAutoCaptureSessions());
 
         assertEquals(2, config.filters.length);
-        assertEquals("password", config.filters[0]);
-        assertEquals("credit_card_number", config.filters[1]);
+        ArrayList<String> filters = new ArrayList<String>(Arrays.asList(config.filters));
+        assertTrue(filters.contains("password"));
+        assertTrue(filters.contains("credit_card_number"));
 
         assertEquals(2, config.ignoreClasses.length);
-        assertEquals("com.example.Custom", config.ignoreClasses[0]);
-        assertEquals("java.io.IOException", config.ignoreClasses[1]);
+        ArrayList<String> ignoreClasses = new ArrayList<String>(Arrays.asList(config.ignoreClasses));
+        assertTrue(ignoreClasses.contains("com.example.Custom"));
+        assertTrue(ignoreClasses.contains("java.io.IOException"));
 
         assertEquals(2, config.notifyReleaseStages.length);
-        assertEquals("development", config.notifyReleaseStages[0]);
-        assertEquals("test", config.notifyReleaseStages[1]);
+        ArrayList<String> notifyReleaseStages = new ArrayList<String>(Arrays.asList(config.notifyReleaseStages));
+        assertTrue(notifyReleaseStages.contains("development"));
+        assertTrue(notifyReleaseStages.contains("test"));
 
         assertEquals(2, config.projectPackages.length);
-        assertEquals("com.company.package2", config.projectPackages[0]);
-        assertEquals("com.company.package1", config.projectPackages[1]);
+        ArrayList<String> projectPackages = new ArrayList<String>(Arrays.asList(config.projectPackages));
+        assertTrue(projectPackages.contains("com.company.package2"));
+        assertTrue(projectPackages.contains("com.company.package1"));
 
         assertEquals(true, config.sendThreads);
     }
