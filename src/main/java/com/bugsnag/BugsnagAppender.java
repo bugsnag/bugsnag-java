@@ -165,12 +165,6 @@ public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
                                 report.addToTab("Log event data",
                                         "Timestamp", event.getTimeStamp());
 
-                                for (MetaData metaData : globalMetaData) {
-                                    report.addToTab(metaData.getTabName(),
-                                            metaData.getKey(),
-                                            metaData.getValue());
-                                }
-
                                 // Add details from the logging context to the event
                                 populateContextData(report, event);
                             }
@@ -274,6 +268,18 @@ public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
         }
         bugsnag.setProjectPackages(projectPackages.toArray(new String[0]));
         bugsnag.setSendThreads(sendThreads);
+
+        // Add a callback to put global meta data on every report
+        bugsnag.addCallback(new Callback() {
+            @Override
+            public void beforeNotify(Report report) {
+                for (MetaData metaData : globalMetaData) {
+                    report.addToTab(metaData.getTabName(),
+                            metaData.getKey(),
+                            metaData.getValue());
+                }
+            }
+        });
 
         return bugsnag;
     }
