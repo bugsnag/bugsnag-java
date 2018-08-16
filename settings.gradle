@@ -1,4 +1,4 @@
-include ':bugsnag-java',
+include ':bugsnag',
         ':bugsnag-spring',
         ':examples:simple',
         ':examples:servlet',
