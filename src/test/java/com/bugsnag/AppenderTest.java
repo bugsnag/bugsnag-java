@@ -7,6 +7,7 @@ import static org.junit.Assert.assertTrue;
 
 import com.bugsnag.callbacks.Callback;
 import com.bugsnag.delivery.Delivery;
+import com.bugsnag.logback.LogbackEndpoints;
 import com.bugsnag.logback.ProxyConfiguration;
 
 import org.apache.log4j.Logger;
@@ -300,7 +301,20 @@ public class AppenderTest {
         assertEquals("the grouping hash", notification.getEvents().get(0).getGroupingHash());
         assertEquals("newapikey", notification.getEvents().get(0).getApiKey());
     }
-    
+
+    @Test
+    public void testEndpoints() {
+        LogbackEndpoints endpoints = new LogbackEndpoints();
+        endpoints.setNotifyEndpoint("https://notify.example.com");
+        endpoints.setSessionEndpoint("https://sessions.example.com");
+
+        BugsnagAppender.getInstance().setEndpoints(endpoints);
+
+        assertEquals("https://notify.example.com", delivery.getEndpoint());
+
+        assertEquals("https://sessions.example.com", sessionDelivery.getEndpoint());
+    }
+
     @Test
     public void testProxy() {
         ProxyConfiguration proxy = new ProxyConfiguration();

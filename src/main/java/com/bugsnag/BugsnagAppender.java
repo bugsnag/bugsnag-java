@@ -2,6 +2,7 @@ package com.bugsnag;
 
 import com.bugsnag.callbacks.Callback;
 import com.bugsnag.delivery.Delivery;
+import com.bugsnag.logback.LogbackEndpoints;
 import com.bugsnag.logback.LogbackMetaData;
 import com.bugsnag.logback.LogbackMetaDataKey;
 import com.bugsnag.logback.LogbackMetaDataTab;
@@ -59,11 +60,8 @@ public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
     /** Application type. */
     private String appType;
 
-    /** Bugsnag error server endpoint. */
-    private String notifyEndpoint;
-
-    /** Bugsnag session server endpoint. */
-    private String sessionEndpoint;
+    /** Bugsnag error/session server endpoints. */
+    private LogbackEndpoints logbackEndpoints;
 
     /** Property names that should be filtered out before sending to Bugsnag servers. */
     private Set<String> filteredProperties = new HashSet<String>();
@@ -238,8 +236,9 @@ public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
             bugsnag.setAppVersion(appVersion);
         }
 
-        if (notifyEndpoint != null) {
-            bugsnag.setEndpoints(notifyEndpoint, sessionEndpoint);
+        if (logbackEndpoints != null) {
+            bugsnag.setEndpoints(logbackEndpoints.getNotifyEndpoint(),
+                    logbackEndpoints.getSessionEndpoint());
         }
 
         if (proxy != null) {
@@ -539,20 +538,15 @@ public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
      * Internal use only
      * Should only be used via the logback.xml file
      *
-     * @see Bugsnag#setEndpoint(String)
+     * @see Bugsnag#setEndpoints(String, String)
      */
-    public void setNotifyEndpoint(String notifyEndpoint) {
-        this.notifyEndpoint = notifyEndpoint;
-    }
+    public void setEndpoints(LogbackEndpoints logbackEndpoints) {
+        this.logbackEndpoints = logbackEndpoints;
 
-    /**
-     * Internal use only
-     * Should only be used via the logback.xml file
-     *
-     * @see Bugsnag#setSessionEndpoint(String)
-     */
-    public void setSessionEndpoint(String sessionEndpoint) {
-        this.sessionEndpoint = sessionEndpoint;
+        if (bugsnag != null) {
+            bugsnag.setEndpoints(logbackEndpoints.getNotifyEndpoint(),
+                    logbackEndpoints.getSessionEndpoint());
+        }
     }
 
     /**

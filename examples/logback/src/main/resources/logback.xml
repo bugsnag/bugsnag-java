@@ -9,8 +9,11 @@
 
         <!--<appType>gradleTask</appType>-->
         <!--<autoCaptureSessions>false</autoCaptureSessions>-->
-        <!--<notifyEndpoint>https://notify.example.com</notifyEndpoint>-->
-        <!--<sessionEndpoint>https://sessions.example.com</sessionEndpoint>-->
+
+		<!--<endpoints>-->
+			<!--<notifyEndpoint>https://notify.example.com</notifyEndpoint>-->
+			<!--<sessionEndpoint>https://sessions.example.com</sessionEndpoint>-->
+		<!--</endpoints>-->
 
         <!--<filteredProperty>password</filteredProperty>-->
         <!--<filteredProperty>credit_card_number</filteredProperty>-->
