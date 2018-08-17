@@ -76,6 +76,7 @@ public class Bugsnag {
      * @param apiKey your Bugsnag API key from your Bugsnag dashboard
      * @deprecated use {@link Bugsnag#init(String)} instead
      */
+    @Deprecated
     public Bugsnag(String apiKey) {
         this(apiKey, true);
     }
@@ -87,6 +88,7 @@ public class Bugsnag {
      * @param sendUncaughtExceptions should we send uncaught exceptions to Bugsnag
      * @deprecated use {@link Bugsnag#init(String, boolean)} instead
      */
+    @Deprecated
     public Bugsnag(String apiKey, boolean sendUncaughtExceptions) {
         if (apiKey == null) {
             throw new NullPointerException("You must provide a Bugsnag API key");

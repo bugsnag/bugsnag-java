@@ -536,25 +536,23 @@ public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
     }
 
     /**
+     * Internal use only
+     * Should only be used via the logback.xml file
+     *
      * @see Bugsnag#setEndpoint(String)
      */
     public void setNotifyEndpoint(String notifyEndpoint) {
         this.notifyEndpoint = notifyEndpoint;
-
-        if (bugsnag != null) {
-            bugsnag.setEndpoint(notifyEndpoint);
-        }
     }
 
     /**
+     * Internal use only
+     * Should only be used via the logback.xml file
+     *
      * @see Bugsnag#setSessionEndpoint(String)
      */
     public void setSessionEndpoint(String sessionEndpoint) {
         this.sessionEndpoint = sessionEndpoint;
-
-        if (bugsnag != null) {
-            bugsnag.setSessionEndpoint(sessionEndpoint);
-        }
     }
 
     /**
