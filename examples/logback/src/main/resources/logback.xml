@@ -24,11 +24,15 @@
         <!--<projectPackage>com.company.package1</projectPackage>-->
         <!--<projectPackage>com.company.package2</projectPackage>-->
 
-        <!--<metaData>-->
-            <!--<tabName>myTab</tabName>-->
-            <!--<key>myKey</key>-->
-            <!--<value>myValue</value>-->
-        <!--</metaData>-->
+		<!--<metaData>-->
+			<!--<tab>-->
+				<!--<name>myTab</name>-->
+				<!--<key>-->
+					<!--<name>myKey</name>-->
+					<!--<value>myValue</value>-->
+				<!--</key>-->
+			<!--</tab>-->
+		<!--</metaData>-->
 
         <!--<proxy>-->
             <!--<type>HTTP</type>-->
