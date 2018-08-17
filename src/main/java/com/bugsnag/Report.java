@@ -99,22 +99,22 @@ public class Report {
     }
 
     @Expose
-    public Map getApp() {
+    public Map<String, Object> getApp() {
         return diagnostics.app;
     }
 
     @Expose
-    public Map getDevice() {
+    public Map<String, Object> getDevice() {
         return diagnostics.device;
     }
 
     @Expose
-    public Map getUser() {
+    public Map<String, String> getUser() {
         return diagnostics.user;
     }
 
     @Expose
-    public Map getMetaData() {
+    public Map<String, Object> getMetaData() {
         return new FilteredMap(diagnostics.metaData, Arrays.asList(config.filters));
     }
 

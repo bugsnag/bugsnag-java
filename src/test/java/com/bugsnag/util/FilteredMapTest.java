@@ -99,6 +99,7 @@ public class FilteredMapTest {
         Object actual = filteredMap.get(KEY_NESTED);
         assertTrue(actual instanceof FilteredMap);
 
+        @SuppressWarnings("unchecked")
         Map<String, Object> nestedMap = (Map<String, Object>) actual;
         assertEquals(VAL_UNFILTERED, nestedMap.get(KEY_UNFILTERED));
         assertEquals(PLACEHOLDER_FILTERED, nestedMap.get(KEY_FILTERED));
@@ -125,6 +126,8 @@ public class FilteredMapTest {
 
         Object nestedObj = values.toArray(new Object[1])[0];
         assertTrue(nestedObj instanceof FilteredMap);
+
+        @SuppressWarnings("unchecked")
         Map<String, Object> nestedMap = (Map<String, Object>) nestedObj;
         values = nestedMap.values();
 
@@ -157,6 +160,8 @@ public class FilteredMapTest {
                 assertTrue(value instanceof FilteredMap);
             } else if (key.equals(KEY_UNMODIFIABLE)) {
                 expectedCount++;
+
+                @SuppressWarnings("unchecked")
                 Map<String, Object> nested = (Map<String, Object>) entry.getValue();
                 assertEquals(2, nested.entrySet().size());
             }
