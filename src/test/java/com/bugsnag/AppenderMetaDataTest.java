@@ -63,7 +63,7 @@ public class AppenderMetaDataTest {
     }
 
     @Test
-    @SuppressWarnings (value="unchecked")
+    @SuppressWarnings (value = "unchecked")
     public void testMetaDataTypes() {
 
         BugsnagAppender.addReportMetaData("myTab", "string key", "string value");
@@ -138,7 +138,7 @@ public class AppenderMetaDataTest {
      * @param key The key to get
      * @return The hash map
      */
-    @SuppressWarnings (value="unchecked")
+    @SuppressWarnings (value = "unchecked")
     private Map<String, Object> getMetaDataMap(Notification notification, String key) {
         return ((Map<String, Object>) notification.getEvents().get(0).getMetaData().get(key));
     }

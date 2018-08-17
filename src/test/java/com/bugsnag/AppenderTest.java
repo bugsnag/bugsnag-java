@@ -336,7 +336,7 @@ public class AppenderTest {
     }
 
     @Test
-    @SuppressWarnings (value="unchecked")
+    @SuppressWarnings (value = "unchecked")
     public void testIncrementWithSession() {
 
         BugsnagAppender.getInstance().startSession();
@@ -417,7 +417,7 @@ public class AppenderTest {
      * @param key The key to get
      * @return The hash map
      */
-    @SuppressWarnings (value="unchecked")
+    @SuppressWarnings (value = "unchecked")
     private Map<String, Object> getMetaDataMap(Notification notification, String key) {
         return ((Map<String, Object>) notification.getEvents().get(0).getMetaData().get(key));
     }
