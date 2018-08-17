@@ -300,17 +300,7 @@ public class AppenderTest {
         assertEquals("the grouping hash", notification.getEvents().get(0).getGroupingHash());
         assertEquals("newapikey", notification.getEvents().get(0).getApiKey());
     }
-
-    @Test
-    public void testEndpoints() {
-        BugsnagAppender.getInstance().setNotifyEndpoint("https://notify.example.com");
-        BugsnagAppender.getInstance().setSessionEndpoint("https://sessions.example.com");
-
-        assertEquals("https://notify.example.com", delivery.getEndpoint());
-
-        assertEquals("https://sessions.example.com", sessionDelivery.getEndpoint());
-    }
-
+    
     @Test
     public void testProxy() {
         ProxyConfiguration proxy = new ProxyConfiguration();
