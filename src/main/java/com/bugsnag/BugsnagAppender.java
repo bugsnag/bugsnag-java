@@ -2,7 +2,9 @@ package com.bugsnag;
 
 import com.bugsnag.callbacks.Callback;
 import com.bugsnag.delivery.Delivery;
-import com.bugsnag.logback.MetaData;
+import com.bugsnag.logback.LogbackMetaData;
+import com.bugsnag.logback.LogbackMetaDataKey;
+import com.bugsnag.logback.LogbackMetaDataTab;
 import com.bugsnag.logback.ProxyConfiguration;
 
 import ch.qos.logback.classic.Level;
@@ -37,12 +39,10 @@ public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
     private static final String LOGGING_CONTEXT_TAB_SEPARATOR = ".reportTab.";
 
     /** Classes that we should not send logs for (to prevent infinite loops on error) */
-    private static final List<String> EXCLUDED_CLASSES = new ArrayList<String>() {{
-            add("com.bugsnag.Bugsnag");
-            add("com.bugsnag.delivery.OutputStreamDelivery");
-            add("com.bugsnag.delivery.SyncHttpDelivery");
-        }
-    };
+    private static final List<String> EXCLUDED_CLASSES = Arrays.asList(
+            "com.bugsnag.Bugsnag",
+            "com.bugsnag.delivery.OutputStreamDelivery",
+            "com.bugsnag.delivery.SyncHttpDelivery");
 
     /** Object mapper to serialize into logging context with */
     private static ObjectMapper mapper = new ObjectMapper();
@@ -92,7 +92,7 @@ public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
     /** Application version. */
     private String appVersion;
 
-    private List<MetaData> globalMetaData = new ArrayList<MetaData>();
+    private List<LogbackMetaData> globalMetaData = new ArrayList<LogbackMetaData>();
 
     /** Bugsnag client. */
     private Bugsnag bugsnag = null;
@@ -273,10 +273,18 @@ public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
         bugsnag.addCallback(new Callback() {
             @Override
             public void beforeNotify(Report report) {
-                for (MetaData metaData : globalMetaData) {
-                    report.addToTab(metaData.getTabName(),
-                            metaData.getKey(),
-                            metaData.getValue());
+
+                for (int i = 0; i < globalMetaData.size(); i++) {
+                    LogbackMetaData metaData = globalMetaData.get(i);
+
+                    for (LogbackMetaDataTab tab : metaData.getTabs()) {
+                        for (LogbackMetaDataKey key : tab.getKeys()) {
+                            report.addToTab(tab.getName(),
+                                    key.getName(),
+                                    key.getValue());
+                        }
+                    }
+
                 }
             }
         });
@@ -486,6 +494,7 @@ public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
     // Setters
 
     /**
+     * Internal use only
      * Should only be used via the logback.xml file
      *
      * @param apiKey The API key to use
@@ -495,6 +504,7 @@ public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
     }
 
     /**
+     * Internal use only
      * Should only be used via the logback.xml file
      *
      * @param sendUncaughtExceptions Whether or not Bugsnag should catch unhandled exceptions
@@ -695,9 +705,11 @@ public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
     }
 
     /**
+     * Used to read metadata from the logback.xml file
+     *
      * @param metaData Adds meta data to every report
      */
-    public void setMetaData(MetaData metaData) {
+    public void setMetaData(LogbackMetaData metaData) {
         this.globalMetaData.add(metaData);
     }
 

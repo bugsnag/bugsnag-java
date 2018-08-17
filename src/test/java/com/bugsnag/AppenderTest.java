@@ -1,17 +1,13 @@
 package com.bugsnag;
 
-import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 import com.bugsnag.callbacks.Callback;
 import com.bugsnag.delivery.Delivery;
-import com.bugsnag.delivery.HttpDelivery;
 import com.bugsnag.logback.ProxyConfiguration;
-import com.bugsnag.serialization.Serializer;
 
 import org.apache.log4j.Logger;
 import org.junit.After;
@@ -23,7 +19,6 @@ import java.net.Proxy;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -34,9 +29,9 @@ import java.util.Map;
  */
 public class AppenderTest {
 
-    private static final Logger LOGGER = Logger.getLogger(AppenderTest.class.getCanonicalName());
-    private static TestDelivery delivery;
-    private static TestSessionDelivery sessionDelivery;
+    private static final Logger LOGGER = Logger.getLogger(AppenderTest.class);
+    private static StubNotificationDelivery delivery;
+    private static StubSessionDelivery sessionDelivery;
     private static Delivery originalDelivery;
     private static Delivery originalSessionDelivery;
 
@@ -47,11 +42,11 @@ public class AppenderTest {
     public void swapDelivery() {
         Bugsnag bugsnag = Bugsnag.init("appenderApikey");
         originalDelivery = bugsnag.getDelivery();
-        delivery = new TestDelivery();
+        delivery = new StubNotificationDelivery();
         bugsnag.setDelivery(delivery);
 
         originalSessionDelivery = bugsnag.getSessionDelivery();
-        sessionDelivery = new TestSessionDelivery();
+        sessionDelivery = new StubSessionDelivery();
         bugsnag.setSessionDelivery(sessionDelivery);
     }
 
@@ -105,89 +100,6 @@ public class AppenderTest {
 
         notification = delivery.getNotifications().get(2);
         assertEquals(Severity.ERROR.getValue(), notification.getEvents().get(0).getSeverity());
-    }
-
-    @Test
-    public void testMetaDataFromLogbackFile() {
-
-        // Send a log message
-        LOGGER.warn("Test exception", new RuntimeException("test"));
-
-        // Get the notification details
-        Notification notification = delivery.getNotifications().get(0);
-        assertTrue(notification.getEvents().get(0).getMetaData().containsKey("logbackTab"));
-        Map<String, Object> myTab = getMetaDataMap(notification, "logbackTab");
-
-        assertEquals("logbackValue1", myTab.get("logbackKey1"));
-        assertEquals("logbackValue2", myTab.get("logbackKey2"));
-    }
-
-    @Test
-    public void testMetaDataTypes() {
-
-        BugsnagAppender.addReportMetaData("myTab", "string key", "string value");
-        BugsnagAppender.addReportMetaData("myTab", "bool key", true);
-        BugsnagAppender.addReportMetaData("myTab", "int key", 1);
-        BugsnagAppender.addReportMetaData("myTab", "float key", 1.1);
-
-        Map<String, String> map = new HashMap<String, String>();
-        map.put("key", "value");
-        BugsnagAppender.addReportMetaData("myTab", "object key", map);
-
-        Integer[] array = new Integer[] {1,2,3,4,5};
-        BugsnagAppender.addReportMetaData("myTab", "array key", array);
-
-        // Send a log message
-        LOGGER.warn("Test exception", new RuntimeException("test"));
-
-        // Get the notification details
-        Notification notification = delivery.getNotifications().get(0);
-        assertTrue(notification.getEvents().get(0).getMetaData().containsKey("myTab"));
-        Map<String, Object> myTab = getMetaDataMap(notification, "myTab");
-
-        assertEquals("string value", myTab.get("string key"));
-        assertEquals("true", myTab.get("bool key"));
-        assertEquals("1", myTab.get("int key"));
-        assertEquals("1.1", myTab.get("float key"));
-        assertEquals(map, myTab.get("object key"));
-        assertThat((List<Integer>)myTab.get("array key"), is(Arrays.asList(array)));
-    }
-
-
-    @Test
-    public void testMetaDataRemoval() {
-
-        // Add some report and some thread meta data
-        BugsnagAppender.addReportMetaData("report", "some key", "some report value");
-        BugsnagAppender.addThreadMetaData("thread", "some key", "some thread value");
-
-        // Send three test logs
-        LOGGER.warn("Test exception", new RuntimeException("test"));
-        LOGGER.warn("Test exception", new RuntimeException("test"));
-        BugsnagAppender.clearThreadMetaData();
-        LOGGER.warn("Test exception", new RuntimeException("test"));
-
-        // Check that three reports were sent to Bugsnag
-        assertEquals(3, delivery.getNotifications().size());
-
-        // Check the meta data is set as expected
-        // Should have both report and thread meta data
-        Notification notification = delivery.getNotifications().get(0);
-        assertTrue(notification.getEvents().get(0).getMetaData().containsKey("report"));
-        assertEquals("some report value", getMetaDataMap(notification, "report").get("some key"));
-        assertTrue(notification.getEvents().get(0).getMetaData().containsKey("thread"));
-        assertEquals("some thread value", getMetaDataMap(notification, "thread").get("some key"));
-
-        // Should have just thread meta data
-        notification = delivery.getNotifications().get(1);
-        assertFalse(notification.getEvents().get(0).getMetaData().containsKey("report"));
-        assertTrue(notification.getEvents().get(0).getMetaData().containsKey("thread"));
-        assertEquals("some thread value", getMetaDataMap(notification, "thread").get("some key"));
-
-        // Should have neither meta data
-        notification = delivery.getNotifications().get(2);
-        assertFalse(notification.getEvents().get(0).getMetaData().containsKey("report"));
-        assertFalse(notification.getEvents().get(0).getMetaData().containsKey("thread"));
     }
 
     @Test
@@ -506,99 +418,5 @@ public class AppenderTest {
      */
     private Map<String, Object> getMetaDataMap(Notification notification, String key) {
         return ((Map<String, Object>) notification.getEvents().get(0).getMetaData().get(key));
-    }
-
-    /**
-     * Class to intercept data from Bugsnag for testing
-     */
-    private class TestDelivery implements HttpDelivery {
-        /** The list of messages sent to Bugsnag*/
-        private List<Notification> notifications = new ArrayList<Notification>();
-        private String endpoint = null;
-        private Proxy proxy = null;
-
-        @Override
-        public void deliver(Serializer serializer, Object object, Map<String, String> headers) {
-            notifications.add((Notification)object);
-        }
-
-        @Override
-        public void setEndpoint(String endpoint) {
-            this.endpoint = endpoint;
-        }
-
-        @Override
-        public void setTimeout(int timeout) {
-
-        }
-
-        @Override
-        public void setProxy(Proxy proxy) {
-            this.proxy = proxy;
-        }
-
-        @Override
-        public void close() {
-
-        }
-
-        public List<Notification> getNotifications() {
-            return notifications;
-        }
-
-        public String getEndpoint() {
-            return endpoint;
-        }
-
-        public Proxy getProxy() {
-            return proxy;
-        }
-    }
-
-    /**
-     * Class to intercept data from Bugsnag for testing
-     */
-    private class TestSessionDelivery implements HttpDelivery {
-        /** The list of messages sent to Bugsnag*/
-        private List<SessionPayload> sessions = new ArrayList<SessionPayload>();
-        private String endpoint = null;
-        private Proxy proxy = null;
-
-        @Override
-        public void deliver(Serializer serializer, Object object, Map<String, String> headers) {
-            sessions.add((SessionPayload)object);
-        }
-
-        @Override
-        public void setEndpoint(String endpoint) {
-            this.endpoint = endpoint;
-        }
-
-        @Override
-        public void setTimeout(int timeout) {
-
-        }
-
-        @Override
-        public void setProxy(Proxy proxy) {
-            this.proxy = proxy;
-        }
-
-        @Override
-        public void close() {
-
-        }
-
-        public List<SessionPayload> getSessions() {
-            return sessions;
-        }
-
-        public String getEndpoint() {
-            return endpoint;
-        }
-
-        public Proxy getProxy() {
-            return proxy;
-        }
     }
 }
