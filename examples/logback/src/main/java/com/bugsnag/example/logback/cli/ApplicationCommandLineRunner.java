@@ -1,6 +1,7 @@
 package com.bugsnag.example.logback.cli;
 
 import com.bugsnag.BugsnagAppender;
+import com.bugsnag.logback.ExceptionWithCallback;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -56,9 +57,10 @@ public class ApplicationCommandLineRunner implements CommandLineRunner {
         try {
             throw new RuntimeException("Handled exception - custom metadata");
         } catch (RuntimeException e) {
-            BugsnagAppender.addReportMetaData("report tab", "data key 1", "data value 1");
-            BugsnagAppender.addReportMetaData("report tab", "data key 2", "data value 2");
-            LOGGER.warn("Something bad happened", e);
+            LOGGER.warn("Something bad happened", new ExceptionWithCallback(e, report -> {
+                report.addToTab("report tab", "data key 1", "data value 1");
+                report.addToTab("report tab", "data key 2", "data value 2");
+            }));
         }
 
         // Test an unhandled exception from a different thread as shutdown hooks

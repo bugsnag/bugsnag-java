@@ -248,9 +248,9 @@ public class AppenderTest {
     public void testFilters() {
 
         // Add some meta data which should be filtered by key name
-        BugsnagAppender.addReportMetaData("myTab", "password", "password value");
-        BugsnagAppender.addReportMetaData("myTab", "credit_card_number", "card number");
-        BugsnagAppender.addReportMetaData("myTab", "mysecret", "not filtered");
+        BugsnagAppender.addThreadMetaData("myTab", "password", "password value");
+        BugsnagAppender.addThreadMetaData("myTab", "credit_card_number", "card number");
+        BugsnagAppender.addThreadMetaData("myTab", "mysecret", "not filtered");
 
         // Send a log message
         LOGGER.warn("Exception with filtered meta data", new RuntimeException("test"));

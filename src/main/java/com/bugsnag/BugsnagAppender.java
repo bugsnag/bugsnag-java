@@ -2,6 +2,7 @@ package com.bugsnag;
 
 import com.bugsnag.callbacks.Callback;
 import com.bugsnag.delivery.Delivery;
+import com.bugsnag.logback.ExceptionWithCallback;
 import com.bugsnag.logback.LogbackEndpoints;
 import com.bugsnag.logback.LogbackMetaData;
 import com.bugsnag.logback.LogbackMetaDataKey;
@@ -35,8 +36,6 @@ public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
 
     private static final String LOGGING_CONTEXT_THREAD_PREFIX
             = "com.bugsnag.BugsnagAppender.thread.";
-    private static final String LOGGING_CONTEXT_REPORT_PREFIX
-            = "com.bugsnag.BugsnagAppender.report.";
     private static final String LOGGING_CONTEXT_TAB_SEPARATOR = ".reportTab.";
 
     /** Classes that we should not send logs for (to prevent infinite loops on error) */
@@ -148,6 +147,15 @@ public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
         if (bugsnag != null) {
             Throwable throwable = extractThrowable(event);
 
+            // Check to see if a callback has been provided with the error
+            final Callback reportCallback;
+            if (throwable instanceof ExceptionWithCallback) {
+                reportCallback = ((ExceptionWithCallback)throwable).getCallback();
+                throwable = throwable.getCause();
+            } else {
+                reportCallback = null;
+            }
+
             // Only send a message if there is an exception
             if (throwable != null && !detectLogFromBugsnag(throwable)) {
                 bugsnag.notify(
@@ -165,6 +173,11 @@ public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
 
                                 // Add details from the logging context to the event
                                 populateContextData(report, event);
+
+
+                                if (reportCallback != null) {
+                                    reportCallback.beforeNotify(report);
+                                }
                             }
                         });
             }
@@ -303,18 +316,6 @@ public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
     }
 
     /**
-     * Adds the given key / value to the current thread logging context
-     * Will only be used for the next report, and then removed from the context
-     *
-     * @param key the key to add
-     * @param value the value to add
-     */
-    public static void addReportMetaData(String tab, String key, Object value) {
-        MDC.put(LOGGING_CONTEXT_REPORT_PREFIX + tab
-                + LOGGING_CONTEXT_TAB_SEPARATOR + key, getStringValue(value));
-    }
-
-    /**
      * Clears all meta data added to the current thread
      */
     public static void clearThreadMetaData() {
@@ -350,13 +351,7 @@ public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
             while (iterator.hasNext()) {
                 String key = iterator.next();
 
-                if (key.startsWith(LOGGING_CONTEXT_REPORT_PREFIX)) {
-                    populateKey(key,
-                            event.getMDCPropertyMap().get(key),
-                            LOGGING_CONTEXT_REPORT_PREFIX,
-                            report);
-                    iterator.remove();
-                } else if (key.startsWith(LOGGING_CONTEXT_THREAD_PREFIX)) {
+                if (key.startsWith(LOGGING_CONTEXT_THREAD_PREFIX)) {
                     populateKey(key,
                             event.getMDCPropertyMap().get(key),
                             LOGGING_CONTEXT_THREAD_PREFIX,
