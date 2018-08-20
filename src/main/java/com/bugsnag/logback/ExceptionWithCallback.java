@@ -18,9 +18,12 @@ public class ExceptionWithCallback extends Throwable {
      * @param callback The Bugsnag callback
      */
     public ExceptionWithCallback(Throwable cause, Callback callback) {
+        // Use the same message as the cause, so the same message appears in other logs
         super(cause.getMessage(), cause);
 
         this.callback = callback;
+
+        // Set the stack traces to the same as the cause, so it appears in other logs
         this.setStackTrace(cause.getStackTrace());
     }
 
