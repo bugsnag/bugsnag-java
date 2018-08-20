@@ -1,6 +1,5 @@
 package com.bugsnag;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
@@ -9,8 +8,11 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
 @Configuration
 public class SpringConfiguration {
 
-    @Autowired
-    private Bugsnag bugsnag;
+    private final Bugsnag bugsnag;
+
+    public SpringConfiguration(final Bugsnag bugsnag) {
+        this.bugsnag = bugsnag;
+    }
 
     @Bean
     public BugsnagHandlerExceptionResolver bugsnagHandlerExceptionResolver() {
@@ -22,9 +24,14 @@ public class SpringConfiguration {
 
         @Override
         public void addInterceptors(InterceptorRegistry registry) {
-            RequestMetadataInterceptor interceptor = new RequestMetadataInterceptor();
-            bugsnag.addCallback(interceptor);
-            registry.addInterceptor(interceptor);
+            RequestMetadataInterceptor requestMetadataInterceptor =
+                    new RequestMetadataInterceptor();
+            bugsnag.addCallback(requestMetadataInterceptor);
+
+            SessionInterceptor sessionInterceptor = new SessionInterceptor(bugsnag);
+
+            registry.addInterceptor(requestMetadataInterceptor);
+            registry.addInterceptor(sessionInterceptor);
         }
     }
 }
