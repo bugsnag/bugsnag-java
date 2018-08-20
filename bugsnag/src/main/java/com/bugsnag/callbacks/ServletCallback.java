@@ -2,14 +2,11 @@ package com.bugsnag.callbacks;
 
 import com.bugsnag.Report;
 import com.bugsnag.servlet.BugsnagServletRequestListener;
+import com.bugsnag.util.RequestUtils;
 
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 
 public class ServletCallback implements Callback {
-    private static final String HEADER_X_FORWARDED_FOR = "X-FORWARDED-FOR";
 
     /**
      * @return true if the servlet request listener is available.
@@ -37,36 +34,12 @@ public class ServletCallback implements Callback {
                 .addToTab("request", "url", request.getRequestURL().toString())
                 .addToTab("request", "method", request.getMethod())
                 .addToTab("request", "params", request.getParameterMap())
-                .addToTab("request", "clientIp", getClientIp(request))
-                .addToTab("request", "headers", getHeaderMap(request));
+                .addToTab("request", "clientIp", RequestUtils.getClientIp(request))
+                .addToTab("request", "headers", RequestUtils.getHeaderMap(request));
 
         // Set default context
         if (report.getContext() == null) {
             report.setContext(request.getMethod() + " " + request.getRequestURI());
         }
-    }
-
-    private String getClientIp(HttpServletRequest request) {
-        String remoteAddr = request.getRemoteAddr();
-        String forwardedAddr = request.getHeader(HEADER_X_FORWARDED_FOR);
-        if (forwardedAddr != null) {
-            remoteAddr = forwardedAddr;
-            int idx = remoteAddr.indexOf(',');
-            if (idx > -1) {
-                remoteAddr = remoteAddr.substring(0, idx);
-            }
-        }
-        return remoteAddr;
-    }
-
-    private Map<String, String> getHeaderMap(HttpServletRequest request) {
-        Map<String, String> map = new HashMap<String, String>();
-        Enumeration headerNames = request.getHeaderNames();
-        while (headerNames.hasMoreElements()) {
-            String key = (String) headerNames.nextElement();
-            map.put(key, request.getHeader(key));
-        }
-
-        return map;
     }
 }

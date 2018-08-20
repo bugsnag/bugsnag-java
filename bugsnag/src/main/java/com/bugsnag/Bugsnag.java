@@ -62,6 +62,7 @@ public class Bugsnag {
         sessionTracker = new SessionTracker(config);
 
         // Automatically send unhandled exceptions to Bugsnag using this Bugsnag
+        config.setSendUncaughtExceptions(sendUncaughtExceptions);
         if (sendUncaughtExceptions) {
             ExceptionHandler.enable(this);
         }
@@ -548,6 +549,10 @@ public class Bugsnag {
         LOGGER.debug("Closing connection to Bugsnag");
         config.delivery.close();
         ExceptionHandler.disable(this);
+    }
+
+    Configuration getConfig() {
+        return config;
     }
 
     /**

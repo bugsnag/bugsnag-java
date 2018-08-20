@@ -25,12 +25,17 @@ class BugsnagHandlerExceptionResolver implements HandlerExceptionResolver {
                                          HttpServletResponse response,
                                          Object handler,
                                          java.lang.Exception ex) {
-        HandledState handledState = HandledState.newInstance(
-                SeverityReasonType.REASON_UNHANDLED_EXCEPTION_MIDDLEWARE,
-                Collections.singletonMap("framework", "Spring"),
-                Severity.ERROR,
-                true);
-        bugsnag.notify(ex, handledState);
+
+        if (bugsnag.getConfig().shouldSendUncaughtExceptions()) {
+            HandledState handledState = HandledState.newInstance(
+                    SeverityReasonType.REASON_UNHANDLED_EXCEPTION_MIDDLEWARE,
+                    Collections.singletonMap("framework", "Spring"),
+                    Severity.ERROR,
+                    true);
+
+            bugsnag.notify(ex, handledState);
+        }
+
         return null;
     }
 }
