@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 
 @Order(Ordered.HIGHEST_PRECEDENCE)
 class BugsnagHandlerExceptionResolver implements HandlerExceptionResolver {
+
     private final Bugsnag bugsnag;
 
     BugsnagHandlerExceptionResolver(final Bugsnag bugsnag) {

@@ -18,7 +18,7 @@ public class Report {
 
     private String apiKey;
     private final Exception exception;
-    private final HandledState handledState;
+    private HandledState handledState;
     private Severity severity;
     private String groupingHash;
     private Diagnostics diagnostics;
@@ -310,6 +310,14 @@ public class Report {
 
     public boolean getShouldCancel() {
         return this.shouldCancel;
+    }
+
+    HandledState getHandledState() {
+        return handledState;
+    }
+
+    void setHandledState(HandledState handledState) {
+        this.handledState = handledState;
     }
 
     static class SeverityReason {

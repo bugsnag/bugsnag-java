@@ -5,6 +5,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
+import javax.annotation.PostConstruct;
+
 @Configuration
 public class SpringConfiguration {
 
@@ -33,5 +35,10 @@ public class SpringConfiguration {
             registry.addInterceptor(requestMetadataInterceptor);
             registry.addInterceptor(sessionInterceptor);
         }
+    }
+
+    @PostConstruct
+    void addExceptionClassCallback() {
+        bugsnag.addCallback(new ExceptionClassCallback());
     }
 }

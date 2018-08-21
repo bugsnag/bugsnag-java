@@ -15,7 +15,6 @@ import javax.servlet.http.HttpServletResponse;
 
 class RequestMetadataInterceptor
         extends HandlerInterceptorAdapter implements Callback {
-    private static final String HEADER_X_FORWARDED_FOR = "X-FORWARDED-FOR";
 
     private static final ThreadLocal<Map<String, Object>> REQUEST_METADATA =
             new ThreadLocal<Map<String, Object>>();
