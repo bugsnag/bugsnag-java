@@ -1,6 +1,6 @@
 # Changelog
 
-## 3.2.1 (TBD)
+## 3.2.1 (2018-08-21)
 
 * Add null check when disconnecting HttpUrlConnection
 [#92](https://github.com/bugsnag/bugsnag-java/pull/92)
