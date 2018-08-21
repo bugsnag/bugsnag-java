@@ -131,8 +131,8 @@ public class HandledStatePayloadTest {
     @Test
     public void testUnhandledExceptionClassSerialisation() throws java.lang.Exception {
         Report report = reportFromHandledState(HandledState.newInstance(
-                SeverityReasonType.REASON_EXCEPTION_CLASS,
-                Collections.singletonMap("exceptionClass", "TypeMismatchException"),
+                SeverityReasonType.REASON_ERROR_CLASS,
+                Collections.singletonMap("errorClass", "TypeMismatchException"),
                 Severity.INFO,
                 true));
         JsonNode payload = getJsonPayloadFromReport(report);
@@ -142,19 +142,19 @@ public class HandledStatePayloadTest {
 
         JsonNode severityReason = payload.get("severityReason");
         assertNotNull(severityReason);
-        assertEquals(HandledState.SeverityReasonType.REASON_EXCEPTION_CLASS
+        assertEquals(HandledState.SeverityReasonType.REASON_ERROR_CLASS
                         .toString(),
                 severityReason.get("type").asText());
         assertEquals(1, severityReason.get("attributes").size());
         assertEquals("TypeMismatchException",
-                severityReason.get("attributes").get("exceptionClass").asText());
+                severityReason.get("attributes").get("errorClass").asText());
     }
 
     @Test
     public void testHandledExceptionClassSerialisation() throws java.lang.Exception {
         Report report = reportFromHandledState(HandledState.newInstance(
-                SeverityReasonType.REASON_EXCEPTION_CLASS,
-                Collections.singletonMap("exceptionClass", "TypeMismatchException"),
+                SeverityReasonType.REASON_ERROR_CLASS,
+                Collections.singletonMap("errorClass", "TypeMismatchException"),
                 Severity.INFO,
                 false));
         JsonNode payload = getJsonPayloadFromReport(report);
@@ -164,12 +164,12 @@ public class HandledStatePayloadTest {
 
         JsonNode severityReason = payload.get("severityReason");
         assertNotNull(severityReason);
-        assertEquals(HandledState.SeverityReasonType.REASON_EXCEPTION_CLASS
+        assertEquals(HandledState.SeverityReasonType.REASON_ERROR_CLASS
                         .toString(),
                 severityReason.get("type").asText());
         assertEquals(1, severityReason.get("attributes").size());
         assertEquals("TypeMismatchException",
-                severityReason.get("attributes").get("exceptionClass").asText());
+                severityReason.get("attributes").get("errorClass").asText());
     }
 
     private Report reportFromHandledState(HandledState handledState) {
