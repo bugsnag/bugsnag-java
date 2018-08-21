@@ -99,9 +99,9 @@ public class FilteredMap implements Map<String, Object> {
         return filteredCopy.entrySet();
     }
 
+    @SuppressWarnings("unchecked")
     private Object transformEntry(Object key, Object value) {
         if (value instanceof Map) {
-            //noinspection unchecked
             return new FilteredMap((Map<String, Object>) value, keyFilters);
         }
         return shouldFilterKey((String) key) ? FILTERED_PLACEHOLDER : value;

@@ -1,5 +1,13 @@
 # Changelog
 
+## 3.2.1 (2018-08-21)
+
+* Add null check when disconnecting HttpUrlConnection
+[#92](https://github.com/bugsnag/bugsnag-java/pull/92)
+
+* Make constructors public for SyncHttpDelivery
+[#97](https://github.com/bugsnag/bugsnag-java/pull/97)
+
 ## 3.2.0 (2018-07-03)
 
 This release introduces automatic tracking of sessions, which by
