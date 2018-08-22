@@ -39,7 +39,7 @@ public class ServletCallback implements Callback {
 
         // Set default context
         if (report.getContext() == null) {
-            report.setContext(request.getMethod() + " " + request.getRequestURI());
+            report.setContext(RequestUtils.generateContext(request));
         }
     }
 }

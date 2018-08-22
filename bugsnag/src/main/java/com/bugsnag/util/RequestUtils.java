@@ -39,4 +39,11 @@ public class RequestUtils {
 
         return map;
     }
+
+    /**
+     * @return Create some context for the request, i.e. HTTP method and URI
+     */
+    public static String generateContext(HttpServletRequest request) {
+        return request.getMethod() + " " + request.getRequestURI();
+    }
 }

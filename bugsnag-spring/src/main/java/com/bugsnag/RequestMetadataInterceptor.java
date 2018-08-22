@@ -30,7 +30,7 @@ class RequestMetadataInterceptor
             map.put("params", request.getParameterMap());
             map.put("clientIp", RequestUtils.getClientIp(request));
             map.put("headers", RequestUtils.getHeaderMap(request));
-            map.put("context", request.getMethod() + " " + request.getRequestURI());
+            map.put("context", RequestUtils.generateContext(request));
 
             REQUEST_METADATA.set(map);
         }
