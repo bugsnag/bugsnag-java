@@ -7,11 +7,7 @@ repositories {
 }
 
 dependencies {
-    if (project.hasProperty('releasing')) {
-        compile project(':bugsnag')
-    } else {
-        compile project(':bugsnag')
-    }
+    compile project(':bugsnag')
     compileOnly 'javax.servlet:javax.servlet-api:3.1.0'
     compileOnly 'org.springframework:spring-webmvc:4.3.18.RELEASE'
 }
