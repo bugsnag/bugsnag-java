@@ -22,11 +22,21 @@ public class SyncHttpDelivery implements HttpDelivery {
     public static final String DEFAULT_SESSION_ENDPOINT = "https://sessions.bugsnag.com";
     protected static final int DEFAULT_TIMEOUT = 5000;
 
-    protected String endpoint = DEFAULT_NOTIFY_ENDPOINT;
+    protected String endpoint;
     protected int timeout = DEFAULT_TIMEOUT;
     protected Proxy proxy;
 
-    SyncHttpDelivery(String endpoint) {
+    /**
+     * Creates a new instance, which defaults to the https://notify.bugsnag.com endpoint
+     */
+    public SyncHttpDelivery() {
+        this(SyncHttpDelivery.DEFAULT_NOTIFY_ENDPOINT);
+    }
+
+    /**
+     * Creates a new instance, which uses a custom endpoint
+     */
+    public SyncHttpDelivery(String endpoint) {
         this.endpoint = endpoint;
     }
 

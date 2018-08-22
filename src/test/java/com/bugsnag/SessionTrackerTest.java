@@ -147,13 +147,6 @@ public class SessionTrackerTest {
         assertNotNull(sessionTracker.getSession());
     }
 
-    @Test(timeout = 200)
-    public void addManySessions() throws Throwable {
-        for (int k = 0; k < 1000; k++) {
-            sessionTracker.startSession(new Date(), false);
-        }
-    }
-
     @Test
     public void zeroSessionDelivery() throws Throwable {
         CustomDelivery sessionDelivery = new CustomDelivery() {
