@@ -13,7 +13,7 @@ public class SpringConfiguration {
 
     @Configuration
     @Conditional(SpringWebLoadedCondition.class)
-    public class SpringWebConfiguration {
+    public class SpringWebConfiguration extends WebMvcConfigurerAdapter {
 
         private final Bugsnag bugsnag;
 
@@ -26,20 +26,16 @@ public class SpringConfiguration {
             return new BugsnagHandlerExceptionResolver(bugsnag);
         }
 
-        @Configuration
-        public class BugsnagInterceptorConfigurerAdapter extends WebMvcConfigurerAdapter {
+        @Override
+        public void addInterceptors(InterceptorRegistry registry) {
+            RequestMetadataInterceptor requestMetadataInterceptor =
+                    new RequestMetadataInterceptor();
+            bugsnag.addCallback(requestMetadataInterceptor);
 
-            @Override
-            public void addInterceptors(InterceptorRegistry registry) {
-                RequestMetadataInterceptor requestMetadataInterceptor =
-                        new RequestMetadataInterceptor();
-                bugsnag.addCallback(requestMetadataInterceptor);
+            SessionInterceptor sessionInterceptor = new SessionInterceptor(bugsnag);
 
-                SessionInterceptor sessionInterceptor = new SessionInterceptor(bugsnag);
-
-                registry.addInterceptor(requestMetadataInterceptor);
-                registry.addInterceptor(sessionInterceptor);
-            }
+            registry.addInterceptor(requestMetadataInterceptor);
+            registry.addInterceptor(sessionInterceptor);
         }
 
         @PostConstruct
