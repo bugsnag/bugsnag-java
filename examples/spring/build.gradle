@@ -19,5 +19,5 @@ repositories {
 dependencies {
     compile("org.springframework.boot:spring-boot-starter")
 
-    compile project(":bugsnag")
+    compile project(":bugsnag-spring")
 }
