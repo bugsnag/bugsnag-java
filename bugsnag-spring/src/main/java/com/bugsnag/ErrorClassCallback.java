@@ -23,7 +23,11 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-class ExceptionClassCallback implements Callback {
+/**
+ * A callback to assign a specified severity in a report for particular Spring exceptions.
+ * This severity can be overridden if the severity is set manually in an application.
+ */
+class ErrorClassCallback implements Callback {
 
     private static final Map<Class<?>, Severity> exceptionToSeverity;
 

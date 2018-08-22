@@ -8,24 +8,39 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
 
 import javax.annotation.PostConstruct;
 
+/**
+ * Configuration to integrate Bugsnag with Spring.
+ */
 @Configuration
 public class SpringConfiguration {
 
+    /**
+     * If spring-webmvc is loaded, add configuration for reporting unhandled exceptions
+     * and session tracking.
+     */
     @Configuration
-    @Conditional(SpringWebLoadedCondition.class)
-    public class SpringWebConfiguration extends WebMvcConfigurerAdapter {
+    @Conditional(SpringWebMvcLoadedCondition.class)
+    public class SpringWebMvcConfiguration extends WebMvcConfigurerAdapter {
 
         private final Bugsnag bugsnag;
 
-        public SpringWebConfiguration(final Bugsnag bugsnag) {
+        public SpringWebMvcConfiguration(final Bugsnag bugsnag) {
             this.bugsnag = bugsnag;
         }
 
+        /**
+         * Register an exception resolver to send unhandled reports to Bugsnag
+         * for uncaught exceptions thrown from request handlers.
+         */
         @Bean
         public BugsnagHandlerExceptionResolver bugsnagHandlerExceptionResolver() {
             return new BugsnagHandlerExceptionResolver(bugsnag);
         }
 
+        /**
+         * Add interceptors to automatically start sessions per request
+         * and add request metadata to reports.
+         */
         @Override
         public void addInterceptors(InterceptorRegistry registry) {
             RequestMetadataInterceptor requestMetadataInterceptor =
@@ -38,9 +53,12 @@ public class SpringConfiguration {
             registry.addInterceptor(sessionInterceptor);
         }
 
+        /**
+         * Add a callback to assign specified severities for some Spring exceptions.
+         */
         @PostConstruct
-        void addExceptionClassCallback() {
-            bugsnag.addCallback(new ExceptionClassCallback());
+        void addErrorClassCallback() {
+            bugsnag.addCallback(new ErrorClassCallback());
         }
     }
 }

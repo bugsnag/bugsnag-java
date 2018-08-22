@@ -8,6 +8,9 @@ import javax.servlet.DispatcherType;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+/**
+ * Automatically start a session for incoming HTTP requests.
+ */
 class SessionInterceptor extends HandlerInterceptorAdapter {
 
     private final Bugsnag bugsnag;
@@ -21,6 +24,9 @@ class SessionInterceptor extends HandlerInterceptorAdapter {
                              HttpServletResponse response,
                              Object handler) {
 
+        // If the request is available through the listener then the session has already started.
+        // This is only the case for plain Spring apps, ServletRequestListeners do not work for
+        // Spring Boot apps.
         if (BugsnagServletRequestListener.getServletRequest() == null
                 && request.getDispatcherType() != DispatcherType.ERROR
                 && bugsnag.shouldAutoCaptureSessions()) {

@@ -13,6 +13,10 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+/**
+ * Automatically adds metadata for HTTP requests which will be included in handled
+ * and unhandled reports generated during the processing of the request.
+ */
 class RequestMetadataInterceptor
         extends HandlerInterceptorAdapter implements Callback {
 
@@ -23,6 +27,9 @@ class RequestMetadataInterceptor
     public boolean preHandle(HttpServletRequest request,
                              HttpServletResponse response,
                              Object handler) {
+        // If the request is available through the listener then the request data has
+        // already been added by the ServletCallback. This is only the case for plain
+        // Spring apps, ServletRequestListeners do not work for Spring Boot apps.
         if (BugsnagServletRequestListener.getServletRequest() == null) {
             Map<String, Object> map = new HashMap<String, Object>();
             map.put("url", request.getRequestURL().toString());

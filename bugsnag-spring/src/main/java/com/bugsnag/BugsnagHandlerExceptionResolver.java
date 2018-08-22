@@ -12,6 +12,9 @@ import java.util.Collections;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+/**
+ * Reports uncaught exceptions thrown from handler mapping or execution to Bugsnag.
+ */
 @Order(Ordered.HIGHEST_PRECEDENCE)
 class BugsnagHandlerExceptionResolver implements HandlerExceptionResolver {
 
@@ -37,6 +40,7 @@ class BugsnagHandlerExceptionResolver implements HandlerExceptionResolver {
             bugsnag.notify(ex, handledState);
         }
 
+        // Returning null passes the exception onto the next resolver in the chain.
         return null;
     }
 }
