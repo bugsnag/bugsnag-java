@@ -7,9 +7,9 @@ import org.springframework.core.io.ResourceLoader;
 import org.springframework.core.type.AnnotatedTypeMetadata;
 
 /**
- * Check whether spring-webmvc is available to the application.
+ * Check whether spring-boot is available to the application.
  */
-class SpringWebMvcLoadedCondition implements Condition {
+class SpringBootLoadedCondition implements Condition {
 
     @Override
     public boolean matches(ConditionContext context,
@@ -17,6 +17,6 @@ class SpringWebMvcLoadedCondition implements Condition {
         ResourceLoader loader = context.getResourceLoader() == null
                 ? new DefaultResourceLoader() : context.getResourceLoader();
         return loader != null
-                && context.getClassLoader().getResource("org/springframework/web/servlet") != null;
+                && context.getClassLoader().getResource("org/springframework/boot") != null;
     }
 }

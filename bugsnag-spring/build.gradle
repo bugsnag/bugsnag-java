@@ -10,4 +10,5 @@ dependencies {
     compile project(':bugsnag')
     compileOnly 'javax.servlet:javax.servlet-api:3.1.0'
     compileOnly 'org.springframework:spring-webmvc:4.3.18.RELEASE'
+    compileOnly 'org.springframework.boot:spring-boot:1.5.15.RELEASE'
 }

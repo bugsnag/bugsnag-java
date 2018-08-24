@@ -15,7 +15,6 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingPathVariableException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.ServletRequestBindingException;
-import org.springframework.web.context.request.async.AsyncRequestTimeoutException;
 import org.springframework.web.multipart.support.MissingServletRequestPartException;
 import org.springframework.web.servlet.NoHandlerFoundException;
 
@@ -29,10 +28,10 @@ import java.util.Map;
  */
 class ErrorClassCallback implements Callback {
 
-    private static final Map<Class<?>, Severity> exceptionToSeverity;
+    private static final Map<Class<? extends java.lang.Exception>, Severity> exceptionToSeverity;
 
     static {
-        exceptionToSeverity = new HashMap<Class<?>, Severity>();
+        exceptionToSeverity = new HashMap<Class<? extends java.lang.Exception>, Severity>();
         exceptionToSeverity.put(HttpRequestMethodNotSupportedException.class, Severity.INFO);
         exceptionToSeverity.put(HttpMediaTypeNotSupportedException.class, Severity.INFO);
         exceptionToSeverity.put(HttpMediaTypeNotAcceptableException.class, Severity.WARNING);
@@ -47,7 +46,6 @@ class ErrorClassCallback implements Callback {
         exceptionToSeverity.put(MissingServletRequestPartException.class, Severity.INFO);
         exceptionToSeverity.put(BindException.class, Severity.INFO);
         exceptionToSeverity.put(NoHandlerFoundException.class, Severity.INFO);
-        exceptionToSeverity.put(AsyncRequestTimeoutException.class, Severity.ERROR);
     }
 
     @Override

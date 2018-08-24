@@ -1,8 +1,12 @@
 package com.bugsnag;
 
+import com.bugsnag.callbacks.Callback;
+
+import org.springframework.boot.SpringBootVersion;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Conditional;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.SpringVersion;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
@@ -12,7 +16,45 @@ import javax.annotation.PostConstruct;
  * Configuration to integrate Bugsnag with Spring.
  */
 @Configuration
-public class SpringConfiguration {
+public class BugsnagSpringConfiguration {
+
+    private final Bugsnag bugsnag;
+
+    public BugsnagSpringConfiguration(final Bugsnag bugsnag) {
+        this.bugsnag = bugsnag;
+    }
+
+    /**
+     * Add a callback to add the version of Spring used by the application
+     */
+    @Bean
+    public Callback springVersionCallback() {
+        Callback callback = new Callback() {
+            @Override
+            public void beforeNotify(Report report) {
+                report.addToTab("device", "springVersion", SpringVersion.getVersion());
+            }
+        };
+        bugsnag.addCallback(callback);
+        return callback;
+    }
+
+    /**
+     * If Spring Boot is used, add a callback to add the version of Spring used
+     * by the application.
+     */
+    @Bean
+    @Conditional(SpringBootLoadedCondition.class)
+    public Callback springBootVersionCallback() {
+        Callback callback = new Callback() {
+            @Override
+            public void beforeNotify(Report report) {
+                report.addToTab("device", "springBootVersion", SpringBootVersion.getVersion());
+            }
+        };
+        bugsnag.addCallback(callback);
+        return callback;
+    }
 
     /**
      * If spring-webmvc is loaded, add configuration for reporting unhandled exceptions
@@ -21,12 +63,6 @@ public class SpringConfiguration {
     @Configuration
     @Conditional(SpringWebMvcLoadedCondition.class)
     public class SpringWebMvcConfiguration extends WebMvcConfigurerAdapter {
-
-        private final Bugsnag bugsnag;
-
-        public SpringWebMvcConfiguration(final Bugsnag bugsnag) {
-            this.bugsnag = bugsnag;
-        }
 
         /**
          * Register an exception resolver to send unhandled reports to Bugsnag

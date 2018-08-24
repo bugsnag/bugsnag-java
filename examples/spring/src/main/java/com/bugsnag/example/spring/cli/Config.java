@@ -1,7 +1,7 @@
 package com.bugsnag.example.spring.cli;
 
 import com.bugsnag.Bugsnag;
-import com.bugsnag.SpringConfiguration;
+import com.bugsnag.BugsnagSpringConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Import;
 import java.util.Date;
 
 @Configuration
-@Import(SpringConfiguration.class)
+@Import(BugsnagSpringConfiguration.class)
 public class Config {
 
     // Define singleton bean "bugsnag" which can be injected into any Spring managed class with @Autowired.

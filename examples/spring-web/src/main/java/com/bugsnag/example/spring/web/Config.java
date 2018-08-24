@@ -1,7 +1,8 @@
 package com.bugsnag.example.spring.web;
 
 import com.bugsnag.Bugsnag;
-import com.bugsnag.SpringConfiguration;
+import com.bugsnag.BugsnagSpringConfiguration;
+import org.springframework.boot.SpringBootVersion;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
@@ -9,7 +10,7 @@ import org.springframework.context.annotation.Import;
 import java.util.Date;
 
 @Configuration
-@Import(SpringConfiguration.class)
+@Import(BugsnagSpringConfiguration.class)
 public class Config {
 
     // Define singleton bean "bugsnag" which can be injected into any Spring managed class with @Autowired.
@@ -35,7 +36,7 @@ public class Config {
             report.setUserEmail("user@example.com");
             report.setUserId("12345");
         });
-
+        SpringBootVersion.getVersion();
         return bugsnag;
     }
 
