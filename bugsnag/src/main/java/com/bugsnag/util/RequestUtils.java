@@ -11,9 +11,29 @@ public class RequestUtils {
     private static final String HEADER_X_FORWARDED_FOR = "X-FORWARDED-FOR";
 
     /**
+     * @return A map of metadata from a request
+     */
+    public static Map<String, Object> getRequestMetadata(HttpServletRequest request) {
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put("url", request.getRequestURL().toString());
+        map.put("method", request.getMethod());
+        map.put("params", request.getParameterMap());
+        map.put("clientIp", RequestUtils.getClientIp(request));
+        map.put("headers", RequestUtils.getHeaderMap(request));
+        return map;
+    }
+
+    /**
+     * @return Create some context for the request, i.e. HTTP method and URI
+     */
+    public static String generateContext(HttpServletRequest request) {
+        return request.getMethod() + " " + request.getRequestURI();
+    }
+
+    /**
      * @return The client IP from the request
      */
-    public static String getClientIp(HttpServletRequest request) {
+    private static String getClientIp(HttpServletRequest request) {
         String remoteAddr = request.getRemoteAddr();
         String forwardedAddr = request.getHeader(HEADER_X_FORWARDED_FOR);
         if (forwardedAddr != null) {
@@ -29,21 +49,14 @@ public class RequestUtils {
     /**
      * @return All the headers from the request
      */
-    public static Map<String, String> getHeaderMap(HttpServletRequest request) {
+    private static Map<String, String> getHeaderMap(HttpServletRequest request) {
         Map<String, String> map = new HashMap<String, String>();
-        Enumeration headerNames = request.getHeaderNames();
-        while (headerNames.hasMoreElements()) {
-            String key = (String) headerNames.nextElement();
+        Enumeration<String> headerNames = request.getHeaderNames();
+        while (headerNames != null && headerNames.hasMoreElements()) {
+            String key = headerNames.nextElement();
             map.put(key, request.getHeader(key));
         }
 
         return map;
-    }
-
-    /**
-     * @return Create some context for the request, i.e. HTTP method and URI
-     */
-    public static String generateContext(HttpServletRequest request) {
-        return request.getMethod() + " " + request.getRequestURI();
     }
 }

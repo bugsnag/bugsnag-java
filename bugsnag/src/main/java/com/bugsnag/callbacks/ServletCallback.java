@@ -30,12 +30,7 @@ public class ServletCallback implements Callback {
         }
 
         // Add request information to metaData
-        report
-                .addToTab("request", "url", request.getRequestURL().toString())
-                .addToTab("request", "method", request.getMethod())
-                .addToTab("request", "params", request.getParameterMap())
-                .addToTab("request", "clientIp", RequestUtils.getClientIp(request))
-                .addToTab("request", "headers", RequestUtils.getHeaderMap(request));
+        report.addToTab("request", RequestUtils.getRequestMetadata(request));
 
         // Set default context
         if (report.getContext() == null) {
