@@ -60,14 +60,14 @@ class ErrorClassCallback implements Callback {
             return;
         }
 
-        Class errorClass = report.getException().getClass();
+        Class exceptionClass = report.getException().getClass();
 
-        if (exceptionToSeverity.containsKey(errorClass)) {
-            Severity severity = exceptionToSeverity.get(errorClass);
+        if (exceptionToSeverity.containsKey(exceptionClass)) {
+            Severity severity = exceptionToSeverity.get(exceptionClass);
             report.setSeverity(severity);
             report.setHandledState(HandledState.newInstance(
-                    SeverityReasonType.REASON_ERROR_CLASS,
-                    Collections.singletonMap("errorClass", errorClass.getSimpleName()),
+                    SeverityReasonType.REASON_EXCEPTION_CLASS,
+                    Collections.singletonMap("exceptionClass", exceptionClass.getName()),
                     severity,
                     handledState.isUnhandled()));
         }

@@ -76,32 +76,32 @@ public class HandledStateTest {
     @Test
     public void testUnhandledExceptionClass() {
         Map<String, String> attributes =
-                Collections.singletonMap("errorClass", "TypeMismatchException");
+                Collections.singletonMap("exceptionClass", "TypeMismatchException");
         HandledState unhandled = HandledState.newInstance(
-                HandledState.SeverityReasonType.REASON_ERROR_CLASS, attributes,
+                HandledState.SeverityReasonType.REASON_EXCEPTION_CLASS, attributes,
                 Severity.INFO, true);
         assertNotNull(unhandled);
         assertTrue(unhandled.isUnhandled());
         assertEquals(Severity.INFO, unhandled.getCurrentSeverity());
-        assertEquals(HandledState.SeverityReasonType.REASON_ERROR_CLASS,
+        assertEquals(HandledState.SeverityReasonType.REASON_EXCEPTION_CLASS,
                 unhandled.getSeverityReasonType());
         assertEquals("TypeMismatchException",
-                unhandled.getSeverityReasonAttributes().get("errorClass"));
+                unhandled.getSeverityReasonAttributes().get("exceptionClass"));
     }
 
     @Test
     public void testHandledExceptionClass() {
         Map<String, String> attributes =
-                Collections.singletonMap("errorClass", "TypeMismatchException");
+                Collections.singletonMap("exceptionClass", "TypeMismatchException");
         HandledState handled = HandledState.newInstance(
-                HandledState.SeverityReasonType.REASON_ERROR_CLASS, attributes,
+                HandledState.SeverityReasonType.REASON_EXCEPTION_CLASS, attributes,
                 Severity.INFO, false);
         assertNotNull(handled);
         assertFalse(handled.isUnhandled());
         assertEquals(Severity.INFO, handled.getCurrentSeverity());
-        assertEquals(HandledState.SeverityReasonType.REASON_ERROR_CLASS,
+        assertEquals(HandledState.SeverityReasonType.REASON_EXCEPTION_CLASS,
                 handled.getSeverityReasonType());
         assertEquals("TypeMismatchException",
-                handled.getSeverityReasonAttributes().get("errorClass"));
+                handled.getSeverityReasonAttributes().get("exceptionClass"));
     }
 }

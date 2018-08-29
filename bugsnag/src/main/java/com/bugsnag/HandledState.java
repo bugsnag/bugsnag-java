@@ -11,7 +11,7 @@ final class HandledState {
         REASON_USER_SPECIFIED("userSpecifiedSeverity"),
         REASON_CALLBACK_SPECIFIED("userCallbackSetSeverity"),
         REASON_UNHANDLED_EXCEPTION_MIDDLEWARE("unhandledExceptionMiddleware"),
-        REASON_ERROR_CLASS("errorClass");
+        REASON_EXCEPTION_CLASS("exceptionClass");
 
         private final String name;
 
@@ -60,7 +60,7 @@ final class HandledState {
             case REASON_USER_SPECIFIED:
                 return new HandledState(
                         severityReasonType, severityReasonAttributes, severity, false);
-            case REASON_ERROR_CLASS:
+            case REASON_EXCEPTION_CLASS:
                 return new HandledState(
                         severityReasonType, severityReasonAttributes, severity, unhandled);
             default:
