@@ -1,8 +1,15 @@
 package com.bugsnag.mazerunner;
 
 import com.bugsnag.Bugsnag;
+import com.bugsnag.delivery.Delivery;
+import com.bugsnag.serialization.Serializer;
 import org.apache.log4j.Logger;
 import org.springframework.util.StringUtils;
+
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.util.Date;
+import java.util.Map;
 
 
 public abstract class Scenario {
@@ -26,7 +33,7 @@ public abstract class Scenario {
         LOGGER.info("using " + path + " to send Bugsnags");
 
         bugsnag = new Bugsnag(apiKey);
-        bugsnag.setEndpoint(path);
+        bugsnag.setEndpoints(path, path);
     }
 
     public abstract void run();
@@ -36,5 +43,41 @@ public abstract class Scenario {
      */
     protected Throwable generateException(){
         return new RuntimeException(getClass().getSimpleName());
+    }
+
+    /**
+     * Prevents sessions from being delivered
+     */
+    protected void disableSessionDelivery() {
+        bugsnag.setSessionDelivery(new Delivery() {
+            @Override
+            public void deliver(Serializer serializer, Object object, Map<String, String> headers) {
+                // Do nothing
+            }
+
+            @Override
+            public void close() {
+                // Do nothing
+            }
+        });
+    }
+
+    /**
+     * Flushes sessions from the Bugsnag object
+     */
+    protected void flushAllSessions() {
+        try {
+            Field field = bugsnag.getClass().getDeclaredField("sessionTracker");
+            field.setAccessible(true);
+            Object sessionTracker = field.get(bugsnag);
+
+            Method method = sessionTracker.getClass().getDeclaredMethod("flushSessions", Date.class);
+            method.setAccessible(true);
+            method.invoke(sessionTracker, new Date(System.nanoTime() + 60000));
+
+            Thread.sleep(1000);
+        } catch (java.lang.Exception ex) {
+            LOGGER.error("failed to flush sessions", ex);
+        }
     }
 }
