@@ -67,7 +67,7 @@ class ExceptionClassCallback implements Callback {
             report.setSeverity(severity);
             report.setHandledState(HandledState.newInstance(
                     SeverityReasonType.REASON_EXCEPTION_CLASS,
-                    Collections.singletonMap("exceptionClass", exceptionClass.getName()),
+                    Collections.singletonMap("exceptionClass", exceptionClass.getSimpleName()),
                     severity,
                     handledState.isUnhandled()));
         }
