@@ -93,8 +93,8 @@ public class BugsnagSpringConfiguration {
          * Add a callback to assign specified severities for some Spring exceptions.
          */
         @PostConstruct
-        void addErrorClassCallback() {
-            bugsnag.addCallback(new ErrorClassCallback());
+        void addExceptionClassCallback() {
+            bugsnag.addCallback(new ExceptionClassCallback());
         }
     }
 }

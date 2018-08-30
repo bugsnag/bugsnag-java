@@ -26,7 +26,7 @@ import java.util.Map;
  * A callback to assign a specified severity in a report for particular Spring exceptions.
  * This severity can be overridden if the severity is set manually in an application.
  */
-class ErrorClassCallback implements Callback {
+class ExceptionClassCallback implements Callback {
 
     private static final Map<Class<? extends java.lang.Exception>, Severity> exceptionToSeverity;
 
