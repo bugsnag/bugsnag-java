@@ -16,6 +16,12 @@ repositories {
     jcenter()
 }
 
+bootRun {
+    if (project.hasProperty('args')) {
+        args project.args.split(',')
+    }
+}
+
 bootRepackage.enabled = false
 
 dependencies {
