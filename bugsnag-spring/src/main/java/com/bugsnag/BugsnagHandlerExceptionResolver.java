@@ -13,7 +13,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * Reports uncaught exceptions thrown from handler mapping or execution to Bugsnag.
+ * Reports uncaught exceptions thrown from handler mapping or execution to Bugsnag
+ * and then passes the exception to the next handler in the chain.
+ *
+ * Set to highest precedence so that it should be called before other exception
+ * resolvers.
  */
 @Order(Ordered.HIGHEST_PRECEDENCE)
 class BugsnagHandlerExceptionResolver implements HandlerExceptionResolver {
