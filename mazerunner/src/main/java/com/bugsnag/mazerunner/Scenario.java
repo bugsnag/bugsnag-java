@@ -72,20 +72,26 @@ public abstract class Scenario {
             field.setAccessible(true);
             Object sessionTracker = field.get(bugsnag);
 
-            Method method = sessionTracker.getClass().getDeclaredMethod("flushSessions", Date.class);
-            method.setAccessible(true);
-            method.invoke(sessionTracker, new Date(System.nanoTime() + 120000));
-
-            // Wait until the sessions have been flushed
-            Thread.sleep(5000);
-
             field = sessionTracker.getClass().getDeclaredField("enqueuedSessionCounts");
             field.setAccessible(true);
             Collection sessionCounts = (Collection) field.get(sessionTracker);
+
+            LOGGER.info("Session count = " + sessionCounts.size());
+
+            Method method = sessionTracker.getClass().getDeclaredMethod("flushSessions", Date.class);
+            method.setAccessible(true);
+            method.invoke(sessionTracker, new Date(new Date().toInstant().plusSeconds(120).getEpochSecond() * 1000));
+            //method.invoke(sessionTracker, new Date(System.nanoTime() + 120000));
+
+            LOGGER.info("Session count = " + sessionCounts.size());
+
             while (sessionCounts.size() > 0) {
                 Thread.sleep(1000);
+
+                LOGGER.info("Session count = " + sessionCounts.size());
             }
 
+            LOGGER.info("Session count = " + sessionCounts.size());
         } catch (java.lang.Exception ex) {
             LOGGER.error("failed to flush sessions", ex);
         }
