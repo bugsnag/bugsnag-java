@@ -76,16 +76,16 @@ public abstract class Scenario {
             method.setAccessible(true);
             method.invoke(sessionTracker, new Date(System.nanoTime() + 120000));
 
+            // Wait until the sessions have been flushed
+            Thread.sleep(5000);
+
             field = sessionTracker.getClass().getDeclaredField("enqueuedSessionCounts");
             field.setAccessible(true);
             Collection sessionCounts = (Collection) field.get(sessionTracker);
-
-            // Wait until the sessions have been flushed
             while (sessionCounts.size() > 0) {
                 Thread.sleep(1000);
             }
-            
-            Thread.sleep(5000);
+
         } catch (java.lang.Exception ex) {
             LOGGER.error("failed to flush sessions", ex);
         }
