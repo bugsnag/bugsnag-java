@@ -15,21 +15,25 @@ jobs:
     jdk: openjdk8
     script:
       - ./gradlew check :test
+      - bundle install
       - bundle exec bugsnag-maze-runner
   - stage: test
     jdk: oraclejdk9
     script:
       - ./gradlew check :test
+      - bundle install
       - bundle exec bugsnag-maze-runner
   - stage: test
     jdk: oraclejdk8
     script:
       - ./gradlew check :test
+      - bundle install
       - bundle exec bugsnag-maze-runner
   - stage: test
     jdk: openjdk7
     script:
       - ./gradlew check :test
+      - bundle install
       - bundle exec bugsnag-maze-runner
     before_install: # Work around missing crypto in openjdk7
     - sudo wget "https://bouncycastle.org/download/bcprov-ext-jdk15on-158.jar" -O "${JAVA_HOME}/jre/lib/ext/bcprov-ext-jdk15on-158.jar"
