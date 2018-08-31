@@ -8,6 +8,7 @@ import org.springframework.util.StringUtils;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.Collection;
 import java.util.Date;
 import java.util.Map;
 
@@ -75,7 +76,14 @@ public abstract class Scenario {
             method.setAccessible(true);
             method.invoke(sessionTracker, new Date(System.nanoTime() + 120000));
 
-            Thread.sleep(60000);
+            field = sessionTracker.getClass().getDeclaredField("enqueuedSessionCounts");
+            field.setAccessible(true);
+            Collection sessionCounts = (Collection) field.get(sessionTracker);
+
+            // Wait until the sessions have been flushed
+            while (sessionCounts.size() > 0) {
+                Thread.sleep(1000);
+            }
         } catch (java.lang.Exception ex) {
             LOGGER.error("failed to flush sessions", ex);
         }
