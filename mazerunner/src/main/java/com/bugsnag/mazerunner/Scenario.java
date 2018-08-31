@@ -76,22 +76,15 @@ public abstract class Scenario {
             field.setAccessible(true);
             Collection sessionCounts = (Collection) field.get(sessionTracker);
 
-            LOGGER.info("Session count = " + sessionCounts.size());
-
+            // Flush the sessions
             Method method = sessionTracker.getClass().getDeclaredMethod("flushSessions", Date.class);
             method.setAccessible(true);
             method.invoke(sessionTracker, new Date(new Date().toInstant().plusSeconds(120).getEpochSecond() * 1000));
-            //method.invoke(sessionTracker, new Date(System.nanoTime() + 120000));
 
-            LOGGER.info("Session count = " + sessionCounts.size());
-
+            // Wait until sessions are flushed
             while (sessionCounts.size() > 0) {
                 Thread.sleep(1000);
-
-                LOGGER.info("Session count = " + sessionCounts.size());
             }
-
-            LOGGER.info("Session count = " + sessionCounts.size());
         } catch (java.lang.Exception ex) {
             LOGGER.error("failed to flush sessions", ex);
         }

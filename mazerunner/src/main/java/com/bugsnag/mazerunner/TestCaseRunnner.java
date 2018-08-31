@@ -4,6 +4,7 @@ import com.bugsnag.Bugsnag;
 import org.apache.log4j.Logger;
 import org.springframework.beans.BeansException;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.boot.ExitCodeGenerator;
 import org.springframework.boot.SpringApplication;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -47,7 +48,12 @@ public class TestCaseRunnner implements CommandLineRunner, ApplicationContextAwa
 
         // Exit the application
         LOGGER.info("Exiting spring");
-        SpringApplication.exit(ctx, () -> 0);
+        SpringApplication.exit(ctx, new ExitCodeGenerator() {
+            @Override
+            public int getExitCode() {
+                return 0;
+            }
+        });
         System.exit(0);
     }
 
