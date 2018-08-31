@@ -1,6 +1,8 @@
 package com.bugsnag.example.spring.cli;
 
 import com.bugsnag.Bugsnag;
+import com.bugsnag.Report;
+import com.bugsnag.callbacks.Callback;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -23,14 +25,17 @@ public class Config {
         // Create and attach a simple Bugsnag callback.
         // Use Callbacks to send custom diagnostic data which changes during
         // the lifecyle of your application
-        bugsnag.addCallback((report) -> {
-            report.addToTab("diagnostics", "timestamp", new Date());
-            report.addToTab("customer", "name", "acme-inc");
-            report.addToTab("customer", "paying", true);
-            report.addToTab("customer", "spent", 1234);
-            report.setUserName("User Name");
-            report.setUserEmail("user@example.com");
-            report.setUserId("12345");
+        bugsnag.addCallback(new Callback() {
+            @Override
+            public void beforeNotify(Report report) {
+                report.addToTab("diagnostics", "timestamp", new Date());
+                report.addToTab("customer", "name", "acme-inc");
+                report.addToTab("customer", "paying", true);
+                report.addToTab("customer", "spent", 1234);
+                report.setUserName("User Name");
+                report.setUserEmail("user@example.com");
+                report.setUserId("12345");
+            }
         });
 
         return bugsnag;

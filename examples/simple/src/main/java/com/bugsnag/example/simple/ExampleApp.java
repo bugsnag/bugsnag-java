@@ -1,7 +1,9 @@
 package com.bugsnag.example.simple;
 
 import com.bugsnag.Bugsnag;
+import com.bugsnag.Report;
 import com.bugsnag.Severity;
+import com.bugsnag.callbacks.Callback;
 
 import java.util.Date;
 
@@ -18,14 +20,17 @@ public class ExampleApp {
         // Create and attach a simple Bugsnag callback.
         // Use Callbacks to send custom diagnostic data which changes during
         // the lifecyle of your application
-        bugsnag.addCallback((report) -> {
-            report.addToTab("diagnostics", "timestamp", new Date());
-            report.addToTab("customer", "name", "acme-inc");
-            report.addToTab("customer", "paying", true);
-            report.addToTab("customer", "spent", 1234);
-            report.setUserName("User Name");
-            report.setUserEmail("user@example.com");
-            report.setUserId("12345");
+        bugsnag.addCallback(new Callback() {
+            @Override
+            public void beforeNotify(Report report) {
+                report.addToTab("diagnostics", "timestamp", new Date());
+                report.addToTab("customer", "name", "acme-inc");
+                report.addToTab("customer", "paying", true);
+                report.addToTab("customer", "spent", 1234);
+                report.setUserName("User Name");
+                report.setUserEmail("user@example.com");
+                report.setUserId("12345");
+            }
         });
 
         // Send a handled exception to Bugsnag
@@ -46,10 +51,13 @@ public class ExampleApp {
         try {
             throw new RuntimeException("Handled exception - custom metadata");
         } catch (RuntimeException e) {
-            bugsnag.notify(e, (report) -> {
-                report.setSeverity(Severity.WARNING);
-                report.addToTab("report", "something", "that happened");
-                report.setContext("the context");
+            bugsnag.notify(e, new Callback() {
+                @Override
+                public void beforeNotify(Report report) {
+                    report.setSeverity(Severity.WARNING);
+                    report.addToTab("report", "something", "that happened");
+                    report.setContext("the context");
+                }
             });
         }
 

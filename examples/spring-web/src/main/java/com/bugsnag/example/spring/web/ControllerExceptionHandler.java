@@ -1,7 +1,9 @@
 package com.bugsnag.example.spring.web;
 
 import com.bugsnag.Bugsnag;
+import com.bugsnag.Report;
 import com.bugsnag.Severity;
+import com.bugsnag.callbacks.Callback;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -24,8 +26,11 @@ public class ControllerExceptionHandler {
     @ResponseBody
     public String handleException(Exception e) {
         LOGGER.info("Handling exception with Spring ExceptionHandler");
-        bugsnag.notify(e, (report) -> {
-            report.setSeverity(Severity.ERROR);
+        bugsnag.notify(e, new Callback() {
+            @Override
+            public void beforeNotify(Report report) {
+                report.setSeverity(Severity.ERROR);
+            }
         });
         return exampleWebsiteLinks + "<br/>Sent a Spring handled exception to Bugsnag";
     }
