@@ -73,9 +73,9 @@ public abstract class Scenario {
 
             Method method = sessionTracker.getClass().getDeclaredMethod("flushSessions", Date.class);
             method.setAccessible(true);
-            method.invoke(sessionTracker, new Date(System.nanoTime() + 60000));
+            method.invoke(sessionTracker, new Date(System.nanoTime() + 120000));
 
-            Thread.sleep(1000);
+            Thread.sleep(2000);
         } catch (java.lang.Exception ex) {
             LOGGER.error("failed to flush sessions", ex);
         }
