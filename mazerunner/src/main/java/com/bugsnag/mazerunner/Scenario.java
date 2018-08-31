@@ -8,6 +8,7 @@ import org.springframework.util.StringUtils;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Map;
@@ -79,7 +80,9 @@ public abstract class Scenario {
             // Flush the sessions
             Method method = sessionTracker.getClass().getDeclaredMethod("flushSessions", Date.class);
             method.setAccessible(true);
-            method.invoke(sessionTracker, new Date(new Date().toInstant().plusSeconds(120).getEpochSecond() * 1000));
+            Calendar calendar = Calendar.getInstance();
+            calendar.add(Calendar.MINUTE, 2);
+            method.invoke(sessionTracker, calendar.getTime());
 
             // Wait until sessions are flushed
             while (sessionCounts.size() > 0) {

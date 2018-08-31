@@ -12,7 +12,7 @@ public class CrashHandlerScenario extends Scenario {
         Thread t1 = new Thread(new Runnable() {
             public void run()
             {
-                Thread.UncaughtExceptionHandler previousHandler = Thread.getDefaultUncaughtExceptionHandler();
+                final Thread.UncaughtExceptionHandler previousHandler = Thread.getDefaultUncaughtExceptionHandler();
 
                 Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
                     @Override

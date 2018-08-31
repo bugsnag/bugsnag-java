@@ -27,8 +27,6 @@ public class TestCaseRunnner implements CommandLineRunner, ApplicationContextAwa
 
     @Override
     public void run(String... args) throws Exception {
-        LOGGER.info("args were:" + String.join(",", args));
-
         // Put args into the system property so that they can be used later
         for (String arg : args) {
             String[] argParts = arg.split("=");
