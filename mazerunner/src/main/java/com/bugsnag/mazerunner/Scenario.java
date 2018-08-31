@@ -84,6 +84,8 @@ public abstract class Scenario {
             while (sessionCounts.size() > 0) {
                 Thread.sleep(1000);
             }
+            
+            Thread.sleep(5000);
         } catch (java.lang.Exception ex) {
             LOGGER.error("failed to flush sessions", ex);
         }
