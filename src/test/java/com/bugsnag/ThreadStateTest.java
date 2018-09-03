@@ -4,8 +4,9 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Before;
@@ -71,7 +72,6 @@ public class ThreadStateTest {
         for (JsonNode jsonNode : root) {
             assertNotNull(jsonNode.get("id").asText());
             assertNotNull(jsonNode.get("name").asText());
-            assertNotNull(jsonNode.get("stacktrace"));
         }
     }
 
@@ -225,8 +225,14 @@ public class ThreadStateTest {
         assertEquals(1, currentThreadCount);
     }
 
+    @SuppressWarnings("deprecation")
     private JsonNode serialiseThreadStateToJson(List<ThreadState> threadStates) throws IOException {
         ObjectMapper mapper = new ObjectMapper();
+        mapper
+                .setSerializationInclusion(JsonInclude.Include.NON_EMPTY)
+                .setVisibilityChecker(mapper.getVisibilityChecker()
+                        .with(JsonAutoDetect.Visibility.NONE));
+
         String json = mapper.writeValueAsString(threadStates);
         return mapper.readTree(json);
     }
