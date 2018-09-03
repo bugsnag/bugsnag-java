@@ -76,7 +76,6 @@ class ThreadState {
     }
 
     @JsonProperty("errorReportingThread")
-    @JsonInclude(JsonInclude.Include.NON_NULL)
     public Boolean isErrorReportingThread() {
         return errorReportingThread;
     }
