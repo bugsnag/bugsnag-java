@@ -36,7 +36,7 @@ public class Config {
             report.setUserEmail("user@example.com");
             report.setUserId("12345");
         });
-        SpringBootVersion.getVersion();
+
         return bugsnag;
     }
 
