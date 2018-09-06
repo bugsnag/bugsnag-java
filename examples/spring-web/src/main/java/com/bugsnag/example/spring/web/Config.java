@@ -2,7 +2,6 @@ package com.bugsnag.example.spring.web;
 
 import com.bugsnag.Bugsnag;
 import com.bugsnag.BugsnagSpringConfiguration;
-import org.springframework.boot.SpringBootVersion;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
