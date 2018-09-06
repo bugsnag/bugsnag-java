@@ -184,20 +184,6 @@ public class Report {
     }
 
     /**
-     * Add a map of key value pairs to a metadata tab.
-     *
-     * @param tabName  the name of the tab to add the metadata to
-     * @param metadata the map of metadata to add
-     * @return the modified report
-     */
-    public Report addToTab(String tabName, Map<String, Object> metadata) {
-        for (Map.Entry<String, Object> entry : metadata.entrySet()) {
-            diagnostics.metaData.addToTab(tabName, entry.getKey(), entry.getValue());
-        }
-        return this;
-    }
-
-    /**
      * Clear all of the keys from the given tab.
      *
      * @param tabName the name of the tab to clear.
