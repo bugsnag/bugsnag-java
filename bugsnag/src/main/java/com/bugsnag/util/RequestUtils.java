@@ -17,7 +17,7 @@ public class RequestUtils {
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("url", request.getRequestURL().toString());
         map.put("method", request.getMethod());
-        map.put("params", request.getParameterMap());
+        map.put("params", new HashMap<String, String[]>(request.getParameterMap()));
         map.put("clientIp", RequestUtils.getClientIp(request));
         map.put("headers", RequestUtils.getHeaderMap(request));
         return map;

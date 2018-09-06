@@ -555,6 +555,10 @@ public class Bugsnag {
         return config;
     }
 
+    SessionTracker getSessionTracker() {
+        return sessionTracker;
+    }
+
     /**
      * Retrieves all instances of {@link Bugsnag} which are registered to
      * catch uncaught exceptions.
