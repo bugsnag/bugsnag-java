@@ -5,7 +5,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyMap;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -22,15 +23,17 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
-import org.mockito.ArgumentMatchers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringBootVersion;
+import org.springframework.boot.context.embedded.LocalServerPort;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
-import org.springframework.boot.web.server.LocalServerPort;
+import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.core.SpringVersion;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.test.web.reactive.server.WebTestClient;
 
 import java.lang.reflect.Field;
 import java.util.Collection;
@@ -47,14 +50,14 @@ import java.util.Map;
         webEnvironment = WebEnvironment.RANDOM_PORT)
 public class SpringMvcTest {
 
-    @Autowired
-    private Bugsnag bugsnag;
-
     @LocalServerPort
     private int randomServerPort;
 
     @Autowired
-    private WebTestClient webClient;
+    private TestRestTemplate restTemplate;
+
+    @Autowired
+    private Bugsnag bugsnag;
 
     private Delivery delivery;
 
@@ -232,43 +235,49 @@ public class SpringMvcTest {
     }
 
     private void callUnhandledTypeMismatchExceptionEndpoint() {
-        this.webClient.get().uri("/throw-type-mismatch-exception").exchange();
+        this.restTemplate.getForEntity(
+                "/throw-type-mismatch-exception", String.class);
     }
 
     private void callHandledTypeMismatchExceptionUserSeverityEndpoint() {
-        this.webClient.get().uri("/handled-type-mismatch-exception-user-severity").exchange();
+        this.restTemplate.getForEntity(
+                "/handled-type-mismatch-exception-user-severity", String.class);
     }
 
     private void callHandledTypeMismatchExceptionCallbackSeverityEndpoint() {
-        this.webClient.get().uri("/handled-type-mismatch-exception-callback-severity").exchange();
+        this.restTemplate.getForEntity(
+                "/handled-type-mismatch-exception-callback-severity", String.class);
     }
 
     private void callRuntimeExceptionEndpoint() {
-        this.webClient
-                .get()
-                .uri("/throw-runtime-exception"
-                        + "?param1=paramVal1"
-                        + "&param2=paramVal2")
-                .header("header1", "headerVal1")
-                .header("header2", "headerVal2")
-                .exchange();
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("header1", "headerVal1");
+        headers.add("header2", "headerVal2");
+        HttpEntity<String> entity = new HttpEntity<String>("parameters", headers);
+        this.restTemplate.exchange(
+                "/throw-runtime-exception?param1=paramVal1&param2=paramVal2",
+                HttpMethod.GET,
+                entity,
+                String.class);
     }
 
+    @SuppressWarnings(value = "unchecked")
     private Report verifyAndGetReport() {
         ArgumentCaptor<Notification> notificationCaptor =
                 ArgumentCaptor.forClass(Notification.class);
         verify(delivery, times(1)).deliver(
                 any(Serializer.class),
                 notificationCaptor.capture(),
-                ArgumentMatchers.<String, String>anyMap());
+                anyMap());
         return notificationCaptor.getValue().getEvents().get(0);
     }
 
+    @SuppressWarnings(value = "unchecked")
     private void verifyNoReport() {
         verify(delivery, times(0)).deliver(
                 any(Serializer.class),
                 any(),
-                ArgumentMatchers.<String, String>anyMap());
+                anyMap());
     }
 
     private void assertSessionsStarted(int sessionsStarted) {
