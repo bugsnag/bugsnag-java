@@ -10,7 +10,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Conditional;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.SpringVersion;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
 import javax.annotation.PostConstruct;
 import javax.servlet.ServletRequestListener;
@@ -81,7 +80,7 @@ public class BugsnagSpringConfiguration {
      */
     @Configuration
     @Conditional(SpringWebMvcLoadedCondition.class)
-    public class SpringWebMvcConfiguration extends WebMvcConfigurerAdapter {
+    public class SpringWebMvcConfiguration {
 
         /**
          * Register an exception resolver to send unhandled reports to Bugsnag
