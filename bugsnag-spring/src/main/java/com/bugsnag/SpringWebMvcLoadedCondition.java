@@ -16,7 +16,6 @@ class SpringWebMvcLoadedCondition implements Condition {
                            AnnotatedTypeMetadata metadata) {
         ResourceLoader loader = context.getResourceLoader() == null
                 ? new DefaultResourceLoader() : context.getResourceLoader();
-        return loader != null
-                && context.getClassLoader().getResource("org/springframework/web/servlet") != null;
+        return loader != null && loader.getResource("org/springframework/web/servlet") != null;
     }
 }

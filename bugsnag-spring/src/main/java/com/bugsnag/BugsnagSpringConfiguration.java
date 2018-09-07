@@ -2,6 +2,7 @@ package com.bugsnag;
 
 import com.bugsnag.callbacks.Callback;
 
+import com.bugsnag.servlet.BugsnagServletContainerInitializer;
 import com.bugsnag.servlet.BugsnagServletRequestListener;
 
 import org.springframework.boot.SpringBootVersion;
@@ -47,6 +48,7 @@ public class BugsnagSpringConfiguration {
     @Configuration
     @Conditional(SpringBootLoadedCondition.class)
     public class SpringBootConfiguration {
+
         /**
          * Add a callback to add the version of Spring Boot used by the application.
          */
@@ -63,7 +65,9 @@ public class BugsnagSpringConfiguration {
         }
 
         /**
-         * Add a callback to add the version of Spring Boot used by the application.
+         * The {@link BugsnagServletContainerInitializer} does not work for Spring Boot, need to
+         * register the {@link BugsnagServletRequestListener} a different way. This adds session
+         * tracking and automatic servlet request metadata collection.
          */
         @Bean
         public ServletListenerRegistrationBean<ServletRequestListener> listenerRegistrationBean() {
@@ -75,8 +79,7 @@ public class BugsnagSpringConfiguration {
     }
 
     /**
-     * If spring-webmvc is loaded, add configuration for reporting unhandled exceptions
-     * and session tracking.
+     * If spring-webmvc is loaded, add configuration for reporting unhandled exceptions.
      */
     @Configuration
     @Conditional(SpringWebMvcLoadedCondition.class)

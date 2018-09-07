@@ -37,33 +37,31 @@ public class TestController {
      * Report a handled exception where the severity reason is exceptionClass
      */
     @RequestMapping("/handled-type-mismatch-exception")
-    public String handledTypeMismatchException() {
+    public void handledTypeMismatchException() {
         try {
             throw new TypeMismatchException("Test", String.class);
         } catch (TypeMismatchException ex) {
             bugsnag.notify(ex);
         }
-        return "The exception was handled";
     }
 
     /**
      * Report a handled exception where the severity is set in the notify call
      */
     @RequestMapping("/handled-type-mismatch-exception-user-severity")
-    public String handledTypeMismatchExceptionUserSeverity() {
+    public void handledTypeMismatchExceptionUserSeverity() {
         try {
             throw new TypeMismatchException("Test", String.class);
         } catch (TypeMismatchException ex) {
             bugsnag.notify(ex, Severity.WARNING);
         }
-        return "The exception was handled";
     }
 
     /**
      * Report a handled exception where the severity reason is set in a callback
      */
     @RequestMapping("/handled-type-mismatch-exception-callback-severity")
-    public String handledTypeMismatchExceptionCallbackSeverity() {
+    public void handledTypeMismatchExceptionCallbackSeverity() {
         try {
             throw new TypeMismatchException("Test", String.class);
         } catch (TypeMismatchException ex) {
@@ -74,6 +72,5 @@ public class TestController {
                 }
             });
         }
-        return "The exception was handled";
     }
 }
