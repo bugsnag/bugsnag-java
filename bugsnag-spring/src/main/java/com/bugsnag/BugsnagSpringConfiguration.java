@@ -70,6 +70,7 @@ public class BugsnagSpringConfiguration {
          * tracking and automatic servlet request metadata collection.
          */
         @Bean
+        @Conditional(SpringWebMvcLoadedCondition.class)
         public ServletListenerRegistrationBean<ServletRequestListener> listenerRegistrationBean() {
             ServletListenerRegistrationBean<ServletRequestListener> srb =
                     new ServletListenerRegistrationBean<ServletRequestListener>();

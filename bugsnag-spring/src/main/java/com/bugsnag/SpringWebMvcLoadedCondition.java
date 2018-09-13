@@ -2,8 +2,6 @@ package com.bugsnag;
 
 import org.springframework.context.annotation.Condition;
 import org.springframework.context.annotation.ConditionContext;
-import org.springframework.core.io.DefaultResourceLoader;
-import org.springframework.core.io.ResourceLoader;
 import org.springframework.core.type.AnnotatedTypeMetadata;
 
 /**
@@ -14,8 +12,7 @@ class SpringWebMvcLoadedCondition implements Condition {
     @Override
     public boolean matches(ConditionContext context,
                            AnnotatedTypeMetadata metadata) {
-        ResourceLoader loader = context.getResourceLoader() == null
-                ? new DefaultResourceLoader() : context.getResourceLoader();
-        return loader != null && loader.getResource("org/springframework/web/servlet") != null;
+        return context.getClassLoader() != null
+                && context.getClassLoader().getResource("org/springframework/web/servlet") != null;
     }
 }
