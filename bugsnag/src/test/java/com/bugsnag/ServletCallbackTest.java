@@ -1,19 +1,20 @@
-package com.bugsnag.servlet;
+package com.bugsnag;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import com.bugsnag.Bugsnag;
-import com.bugsnag.Report;
 import com.bugsnag.callbacks.ServletCallback;
+
+import com.bugsnag.servlet.BugsnagServletRequestListener;
 
 import org.junit.Before;
 import org.junit.Test;
 
 import java.lang.StringBuffer;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
@@ -43,10 +44,14 @@ public class ServletCallbackTest {
         when(request.getRemoteAddr()).thenReturn("12.0.4.57");
 
         Enumeration<String> headers = new Vector<String>(
-                Arrays.asList("Content-Type", "Content-Length")).elements();
+                Arrays.asList("Content-Type", "Content-Length", "X-Custom-Header")).elements();
         when(request.getHeaderNames()).thenReturn(headers);
-        when(request.getHeader("Content-Type")).thenReturn("application/json");
-        when(request.getHeader("Content-Length")).thenReturn("54");
+        when(request.getHeaders("Content-Type")).thenReturn(
+                new Vector<String>(Collections.singletonList("application/json")).elements());
+        when(request.getHeaders("Content-Length")).thenReturn(
+                new Vector<String>(Collections.singletonList("54")).elements());
+        when(request.getHeaders("X-Custom-Header")).thenReturn(
+                new Vector<String>(Arrays.asList("some-data-1", "some-data-2")).elements());
 
         ServletContext context = mock(ServletContext.class);
         BugsnagServletRequestListener listener = new BugsnagServletRequestListener();
@@ -56,7 +61,7 @@ public class ServletCallbackTest {
     @SuppressWarnings("unchecked")
     @Test
     public void testRequestMetadataAdded() {
-        Report report = generateReport(new Exception("Spline reticulation failed"));
+        Report report = generateReport(new java.lang.Exception("Spline reticulation failed"));
         ServletCallback callback = new ServletCallback();
         callback.beforeNotify(report);
 
@@ -72,6 +77,7 @@ public class ServletCallbackTest {
         Map<String, String> headers = (Map<String, String>)request.get("headers");
         assertEquals("application/json", headers.get("Content-Type"));
         assertEquals("54", headers.get("Content-Length"));
+        assertEquals("some-data-1,some-data-2", headers.get("X-Custom-Header"));
 
         assertTrue(request.containsKey("params"));
         Map<String, String[]> params = (Map<String, String[]>)request.get("params");
@@ -86,7 +92,7 @@ public class ServletCallbackTest {
 
     @Test
     public void testRequestContextSet() {
-        Report report = generateReport(new Exception("Spline reticulation failed"));
+        Report report = generateReport(new java.lang.Exception("Spline reticulation failed"));
         ServletCallback callback = new ServletCallback();
         callback.beforeNotify(report);
 
@@ -95,7 +101,7 @@ public class ServletCallbackTest {
 
     @Test
     public void testExistingContextNotOverridden() {
-        Report report = generateReport(new Exception("Spline reticulation failed"));
+        Report report = generateReport(new java.lang.Exception("Spline reticulation failed"));
         report.setContext("Honey nut corn flakes");
         ServletCallback callback = new ServletCallback();
         callback.beforeNotify(report);
@@ -103,7 +109,7 @@ public class ServletCallbackTest {
         assertEquals("Honey nut corn flakes", report.getContext());
     }
 
-    Report generateReport(Exception exception) {
+    Report generateReport(java.lang.Exception exception) {
         Bugsnag bugsnag = new Bugsnag("apikey", false);
         bugsnag.setDelivery(null);
 

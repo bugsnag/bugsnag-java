@@ -148,11 +148,12 @@ public class SpringMvcTest {
         assertEquals("paramVal1", params.get("param1")[0]);
         assertEquals("paramVal2", params.get("param2")[0]);
 
-        // Assert that the request headers are as expected
+        // Assert that the request headers are as expected, including headers with
+        // multiple values represented as a comma-separated string.
         @SuppressWarnings(value = "unchecked") Map<String, String> headers =
                 (Map<String, String>) requestMetadata.get("headers");
-        assertEquals("headerVal1", headers.get("header1"));
-        assertEquals("headerVal2", headers.get("header2"));
+        assertEquals("header1Val1,header1Val2", headers.get("header1"));
+        assertEquals("header2Val1", headers.get("header2"));
     }
 
     @Test
@@ -251,8 +252,9 @@ public class SpringMvcTest {
 
     private void callRuntimeExceptionEndpoint() {
         HttpHeaders headers = new HttpHeaders();
-        headers.add("header1", "headerVal1");
-        headers.add("header2", "headerVal2");
+        headers.add("header1", "header1Val1");
+        headers.add("header1", "header1Val2");
+        headers.add("header2", "header2Val1");
         HttpEntity<String> entity = new HttpEntity<String>("parameters", headers);
         this.restTemplate.exchange(
                 "/throw-runtime-exception?param1=paramVal1&param2=paramVal2",

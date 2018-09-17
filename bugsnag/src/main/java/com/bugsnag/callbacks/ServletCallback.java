@@ -62,10 +62,20 @@ public class ServletCallback implements Callback {
 
     private Map<String, String> getHeaderMap(HttpServletRequest request) {
         Map<String, String> map = new HashMap<String, String>();
-        Enumeration headerNames = request.getHeaderNames();
+        Enumeration<String> headerNames = request.getHeaderNames();
         while (headerNames.hasMoreElements()) {
-            String key = (String) headerNames.nextElement();
-            map.put(key, request.getHeader(key));
+            String key = headerNames.nextElement();
+            Enumeration<String> headerValues = request.getHeaders(key);
+            StringBuilder value = new StringBuilder(headerValues.nextElement());
+
+            // If there are multiple values for the header, do comma-separated concat
+            // as per RFC 2616:
+            // https://www.w3.org/Protocols/rfc2616/rfc2616-sec4.html#sec4.2
+            while (headerValues.hasMoreElements()) {
+                value.append(",").append(headerValues.nextElement());
+            }
+
+            map.put(key, value.toString());
         }
 
         return map;
