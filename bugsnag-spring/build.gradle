@@ -1,0 +1,11 @@
+apply plugin: 'java-library'
+
+apply from: '../common.gradle'
+
+repositories {
+    jcenter()
+}
+
+dependencies {
+    compile project(':bugsnag')
+}
