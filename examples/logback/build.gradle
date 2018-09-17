@@ -1,0 +1,14 @@
+apply plugin: 'application'
+
+repositories {
+    jcenter()
+}
+
+dependencies {
+    compile 'org.slf4j:slf4j-api:1.7.21'
+    compile 'ch.qos.logback:logback-classic:1.1.7'
+    compile rootProject
+    compile project(':logback-appender')
+}
+
+mainClassName = "com.bugsnag.examples.logback.ExampleApp"

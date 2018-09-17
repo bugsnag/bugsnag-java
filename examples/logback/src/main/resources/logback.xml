@@ -1,0 +1,18 @@
+<configuration>
+
+    <!-- Set up console appender -->
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%-4relative [%thread] %-5level %logger{35} - %msg %n</pattern>
+        </encoder>
+    </appender>
+
+    <!-- Set up Bugsnag appender -->
+    <appender name="BUGSNAG" class="com.bugsnag.example.logback.ExampleAppLogAppender" />
+
+    <root level="DEBUG">
+        <appender-ref ref="STDOUT" />
+        <appender-ref ref="BUGSNAG" />
+    </root>
+
+</configuration>

@@ -1,0 +1,59 @@
+apply plugin: 'java'
+apply plugin: 'net.researchgate.release'
+apply plugin: 'maven'
+
+sourceCompatibility = 1.6
+targetCompatibility = 1.6
+
+repositories {
+    jcenter()
+}
+
+dependencies {
+    compile 'ch.qos.logback:logback-classic:1.1.7'
+    compile rootProject
+}
+
+// Required to upload releases to Sonatype
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+
+            repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
+                authentication(userName: sonatypeUsername, password: sonatypePassword)
+            }
+
+            pom.artifactId = 'bugsnag'
+            pom.groupId = 'com.bugsnag.logback-appender'
+
+            pom.project {
+                name 'bugsnag-logback-appender'
+                packaging 'jar'
+                description 'Official Bugsnag notifier for Java applications - Logback appender'
+                url 'http://bugsnag.com/'
+
+                scm {
+                    url 'https://github.com/bugsnag/bugsnag-java/logback-appender'
+                    connection 'scm:git:git@github.com:bugsnag/bugsnag-java.git'
+                    developerConnection 'scm:git:git@github.com:bugsnag/bugsnag-java.git'
+                }
+
+                licenses {
+                    license {
+                        name 'MIT'
+                        url 'http://opensource.org/licenses/MIT'
+                        distribution 'repo'
+                    }
+                }
+
+                developers {
+                    developer {
+                        id 'james'
+                        name 'James Smith'
+                    }
+                }
+            }
+        }
+    }
+}
