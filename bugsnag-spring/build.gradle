@@ -7,4 +7,5 @@ repositories {
 }
 
 dependencies {
+    compile project(':bugsnag')
 }
