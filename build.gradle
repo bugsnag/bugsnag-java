@@ -16,3 +16,10 @@ buildscript {
 if (project.hasProperty('releasing')) {
     apply plugin: 'io.codearte.nexus-staging'
 }
+
+gradle.projectsEvaluated {
+    tasks.withType(JavaCompile) {
+        // fail build on warnings, disable options complaining about Java 6 compatibility when building with JDK 7+
+        options.compilerArgs << "-Xlint:all" << "-Werror" << "-Xlint:-options"
+    }
+}

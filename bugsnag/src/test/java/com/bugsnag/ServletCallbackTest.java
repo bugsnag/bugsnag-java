@@ -65,7 +65,7 @@ public class ServletCallbackTest {
         ServletCallback callback = new ServletCallback();
         callback.beforeNotify(report);
 
-        Map<String, Object> metadata = (Map<String, Object>)report.getMetaData();
+        Map<String, Object> metadata = report.getMetaData();
         assertTrue(metadata.containsKey("request"));
 
         Map<String, Object> request = (Map<String, Object>)metadata.get("request");
