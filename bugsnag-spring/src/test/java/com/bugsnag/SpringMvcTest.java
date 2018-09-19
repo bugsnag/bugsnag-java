@@ -6,7 +6,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyMap;
+import static org.mockito.Matchers.anyMapOf;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -263,23 +263,21 @@ public class SpringMvcTest {
                 String.class);
     }
 
-    @SuppressWarnings(value = "unchecked")
     private Report verifyAndGetReport() {
         ArgumentCaptor<Notification> notificationCaptor =
                 ArgumentCaptor.forClass(Notification.class);
         verify(delivery, times(1)).deliver(
                 any(Serializer.class),
                 notificationCaptor.capture(),
-                anyMap());
+                anyMapOf(String.class, String.class));
         return notificationCaptor.getValue().getEvents().get(0);
     }
 
-    @SuppressWarnings(value = "unchecked")
     private void verifyNoReport() {
         verify(delivery, times(0)).deliver(
                 any(Serializer.class),
                 any(),
-                anyMap());
+                anyMapOf(String.class, String.class));
     }
 
     private void assertSessionsStarted(int sessionsStarted) {

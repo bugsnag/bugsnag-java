@@ -61,23 +61,28 @@ public class ServletCallback implements Callback {
     }
 
     private Map<String, String> getHeaderMap(HttpServletRequest request) {
-        Map<String, String> map = new HashMap<String, String>();
+        Map<String, String> headers = new HashMap<String, String>();
         Enumeration<String> headerNames = request.getHeaderNames();
-        while (headerNames.hasMoreElements()) {
+
+        while (headerNames != null && headerNames.hasMoreElements()) {
             String key = headerNames.nextElement();
             Enumeration<String> headerValues = request.getHeaders(key);
-            StringBuilder value = new StringBuilder(headerValues.nextElement());
+            StringBuilder value = new StringBuilder();
 
-            // If there are multiple values for the header, do comma-separated concat
-            // as per RFC 2616:
-            // https://www.w3.org/Protocols/rfc2616/rfc2616-sec4.html#sec4.2
-            while (headerValues.hasMoreElements()) {
-                value.append(",").append(headerValues.nextElement());
+            if (headerValues != null && headerValues.hasMoreElements()) {
+                value.append(headerValues.nextElement());
+
+                // If there are multiple values for the header, do comma-separated concat
+                // as per RFC 2616:
+                // https://www.w3.org/Protocols/rfc2616/rfc2616-sec4.html#sec4.2
+                while (headerValues.hasMoreElements()) {
+                    value.append(",").append(headerValues.nextElement());
+                }
             }
 
-            map.put(key, value.toString());
+            headers.put(key, value.toString());
         }
 
-        return map;
+        return headers;
     }
 }

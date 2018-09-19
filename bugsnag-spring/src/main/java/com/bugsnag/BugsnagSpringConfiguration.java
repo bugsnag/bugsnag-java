@@ -66,8 +66,9 @@ public class BugsnagSpringConfiguration {
 
         /**
          * The {@link BugsnagServletContainerInitializer} does not work for Spring Boot, need to
-         * register the {@link BugsnagServletRequestListener} a different way. This adds session
-         * tracking and automatic servlet request metadata collection.
+         * register the {@link BugsnagServletRequestListener} using a Spring Boot
+         * {@link ServletListenerRegistrationBean} instead. This adds session tracking and
+         * automatic servlet request metadata collection.
          */
         @Bean
         @Conditional(SpringWebMvcLoadedCondition.class)

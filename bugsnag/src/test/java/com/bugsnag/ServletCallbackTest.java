@@ -18,7 +18,6 @@ import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Vector;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletRequestEvent;
 import javax.servlet.http.HttpServletRequest;
@@ -43,15 +42,14 @@ public class ServletCallbackTest {
         when(request.getRequestURI()).thenReturn("/foo/bar");
         when(request.getRemoteAddr()).thenReturn("12.0.4.57");
 
-        Enumeration<String> headers = new Vector<String>(
-                Arrays.asList("Content-Type", "Content-Length", "X-Custom-Header")).elements();
-        when(request.getHeaderNames()).thenReturn(headers);
+        when(request.getHeaderNames()).thenReturn(
+                stringsToEnumeration("Content-Type", "Content-Length", "X-Custom-Header"));
         when(request.getHeaders("Content-Type")).thenReturn(
-                new Vector<String>(Collections.singletonList("application/json")).elements());
+                stringsToEnumeration("application/json"));
         when(request.getHeaders("Content-Length")).thenReturn(
-                new Vector<String>(Collections.singletonList("54")).elements());
+                stringsToEnumeration("54"));
         when(request.getHeaders("X-Custom-Header")).thenReturn(
-                new Vector<String>(Arrays.asList("some-data-1", "some-data-2")).elements());
+                stringsToEnumeration("some-data-1", "some-data-2"));
 
         ServletContext context = mock(ServletContext.class);
         BugsnagServletRequestListener listener = new BugsnagServletRequestListener();
@@ -109,10 +107,14 @@ public class ServletCallbackTest {
         assertEquals("Honey nut corn flakes", report.getContext());
     }
 
-    Report generateReport(java.lang.Exception exception) {
+    private Report generateReport(java.lang.Exception exception) {
         Bugsnag bugsnag = new Bugsnag("apikey", false);
         bugsnag.setDelivery(null);
 
         return bugsnag.buildReport(exception);
+    }
+
+    private Enumeration<String> stringsToEnumeration(String... strings) {
+        return Collections.enumeration(Arrays.asList(strings));
     }
 }
