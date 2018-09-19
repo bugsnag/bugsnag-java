@@ -66,5 +66,7 @@ public class ExampleApp {
 
         // Wait for unhandled exception thread to finish before exiting
         thread.join();
+
+        System.exit(0);
     }
 }
