@@ -20,11 +20,11 @@ import javax.servlet.http.HttpServletResponse;
  * resolvers.
  */
 @Order(Ordered.HIGHEST_PRECEDENCE)
-class BugsnagHandlerExceptionResolver implements HandlerExceptionResolver {
+class BugsnagMvcExceptionHandler implements HandlerExceptionResolver {
 
     private final Bugsnag bugsnag;
 
-    BugsnagHandlerExceptionResolver(final Bugsnag bugsnag) {
+    BugsnagMvcExceptionHandler(final Bugsnag bugsnag) {
         this.bugsnag = bugsnag;
     }
 

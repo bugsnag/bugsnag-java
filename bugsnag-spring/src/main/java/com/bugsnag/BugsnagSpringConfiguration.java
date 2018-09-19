@@ -99,8 +99,8 @@ public class BugsnagSpringConfiguration {
          * for uncaught exceptions thrown from request handlers.
          */
         @Bean
-        public BugsnagHandlerExceptionResolver bugsnagHandlerExceptionResolver() {
-            return new BugsnagHandlerExceptionResolver(bugsnag);
+        public BugsnagMvcExceptionHandler bugsnagHandlerExceptionResolver() {
+            return new BugsnagMvcExceptionHandler(bugsnag);
         }
 
         /**
@@ -118,8 +118,8 @@ public class BugsnagSpringConfiguration {
     @Configuration
     public class SchedulingTaskConfiguration implements SchedulingConfigurer {
 
-        private BugsnagScheduledTaskErrorHandler bugsnagErrorHandler =
-                new BugsnagScheduledTaskErrorHandler(bugsnag);
+        private BugsnagScheduledTaskExceptionHandler bugsnagErrorHandler =
+                new BugsnagScheduledTaskExceptionHandler(bugsnag);
 
         /**
          * Add bugsnag error handling to a task scheduler
