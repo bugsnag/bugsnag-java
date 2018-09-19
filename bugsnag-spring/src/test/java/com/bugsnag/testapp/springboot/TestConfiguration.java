@@ -21,7 +21,7 @@ import org.springframework.util.ErrorHandler;
 public class TestConfiguration implements SchedulingConfigurer {
 
     @Autowired(required = false)
-    private ErrorHandler errorHandler;
+    private ErrorHandler scheduledTaskErrorHandler;
 
     @Bean
     public Bugsnag bugsnag() {
@@ -31,7 +31,7 @@ public class TestConfiguration implements SchedulingConfigurer {
     @Bean
     ThreadPoolTaskScheduler scheduler() {
         ThreadPoolTaskScheduler taskScheduler = new ThreadPoolTaskScheduler();
-        taskScheduler.setErrorHandler(errorHandler);
+        taskScheduler.setErrorHandler(scheduledTaskErrorHandler);
         return taskScheduler;
     }
 

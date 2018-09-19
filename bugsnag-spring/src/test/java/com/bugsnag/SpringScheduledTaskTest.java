@@ -19,29 +19,27 @@ import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.util.ErrorHandler;
 
 import java.util.Collections;
+import java.util.concurrent.ExecutionException;
 
 /**
  * Test that a Spring Boot application configured with the
  * {@link BugsnagSpringConfiguration} performs as expected.
  */
 @RunWith(SpringRunner.class)
-@SpringBootTest(
-        classes = TestSpringBootApplication.class,
-        webEnvironment = WebEnvironment.RANDOM_PORT)
+@SpringBootTest(classes = TestSpringBootApplication.class)
 public class SpringScheduledTaskTest {
 
     @Autowired
-    private TestRestTemplate restTemplate;
+    private Bugsnag bugsnag;
 
     @Autowired
-    private Bugsnag bugsnag;
+    private ThreadPoolTaskScheduler scheduler;
 
     @MockBean
     private ErrorHandler mockErrorHandler;
@@ -58,8 +56,19 @@ public class SpringScheduledTaskTest {
     }
 
     @Test
-    public void bugsnagNotifyWhenScheduledTaskException() {
-        this.restTemplate.getForEntity("/execute-scheduled-task", String.class);
+    public void bugsnagNotifyWhenScheduledTaskException()
+            throws ExecutionException, InterruptedException {
+
+        // The task to schedule
+        Runnable exampleRunnable = new Runnable() {
+            @Override
+            public void run() {
+                throw new RuntimeException("Scheduled test");
+            }
+        };
+
+        // Run the task now and wait for it to finish
+        scheduler.submit(exampleRunnable).get();
 
         Report report = verifyAndGetReport(delivery);
 
