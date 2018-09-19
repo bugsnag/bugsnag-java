@@ -36,7 +36,7 @@ public class Configuration {
     public Delivery delivery = new AsyncHttpDelivery(SyncHttpDelivery.DEFAULT_NOTIFY_ENDPOINT);
     public Delivery sessionDelivery =
             new AsyncHttpDelivery(SyncHttpDelivery.DEFAULT_SESSION_ENDPOINT);
-    public String[] filters = new String[]{"password"};
+    public String[] filters = new String[]{"password", "Authorization"};
     public String[] ignoreClasses;
     public String[] notifyReleaseStages = null;
     public String[] projectPackages;

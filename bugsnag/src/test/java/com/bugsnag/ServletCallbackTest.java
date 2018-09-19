@@ -43,13 +43,16 @@ public class ServletCallbackTest {
         when(request.getRemoteAddr()).thenReturn("12.0.4.57");
 
         when(request.getHeaderNames()).thenReturn(
-                stringsToEnumeration("Content-Type", "Content-Length", "X-Custom-Header"));
+                stringsToEnumeration(
+                        "Content-Type", "Content-Length", "X-Custom-Header", "Authorization"));
         when(request.getHeaders("Content-Type")).thenReturn(
                 stringsToEnumeration("application/json"));
         when(request.getHeaders("Content-Length")).thenReturn(
                 stringsToEnumeration("54"));
         when(request.getHeaders("X-Custom-Header")).thenReturn(
                 stringsToEnumeration("some-data-1", "some-data-2"));
+        when(request.getHeaders("Authorization")).thenReturn(
+                stringsToEnumeration("Basic ABC123"));
 
         ServletContext context = mock(ServletContext.class);
         BugsnagServletRequestListener listener = new BugsnagServletRequestListener();
@@ -76,6 +79,9 @@ public class ServletCallbackTest {
         assertEquals("application/json", headers.get("Content-Type"));
         assertEquals("54", headers.get("Content-Length"));
         assertEquals("some-data-1,some-data-2", headers.get("X-Custom-Header"));
+
+        // Make sure that actual Authorization header value is not in the report
+        assertEquals("[FILTERED]", headers.get("Authorization"));
 
         assertTrue(request.containsKey("params"));
         Map<String, String[]> params = (Map<String, String[]>)request.get("params");
