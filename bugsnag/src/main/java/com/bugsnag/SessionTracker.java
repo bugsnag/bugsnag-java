@@ -69,6 +69,10 @@ class SessionTracker {
         return session.get();
     }
 
+    SessionCount getBatchCount() {
+        return batchCount.get();
+    }
+
     void flushSessions(Date now) {
         if (shuttingDown.get()) {
             return;

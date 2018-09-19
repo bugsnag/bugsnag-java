@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 class MetaData extends HashMap<String, Object> {
+    private static final long serialVersionUID = 2530038179702722770L;
+
     public void addToTab(String tabName, String key, Object value) {
         Map<String, Object> tab = getTab(tabName);
         tab.put(key, value);

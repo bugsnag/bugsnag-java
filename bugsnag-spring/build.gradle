@@ -1,3 +1,8 @@
+ext {
+    springVersion = '4.3.18.RELEASE'
+    springBootVersion = '1.5.15.RELEASE'
+}
+
 apply plugin: 'java-library'
 
 apply from: '../common.gradle'
@@ -8,4 +13,12 @@ repositories {
 
 dependencies {
     compile project(':bugsnag')
+    compileOnly "javax.servlet:javax.servlet-api:3.1.0"
+    compileOnly "org.springframework:spring-webmvc:${springVersion}"
+    compileOnly "org.springframework.boot:spring-boot:${springBootVersion}"
+
+    testCompile "junit:junit:4.12"
+    testCompile "javax.servlet:javax.servlet-api:3.1.0"
+    testCompile "org.springframework.boot:spring-boot-starter-test:${springBootVersion}"
+    testCompile "org.springframework.boot:spring-boot-starter-web:${springBootVersion}"
 }

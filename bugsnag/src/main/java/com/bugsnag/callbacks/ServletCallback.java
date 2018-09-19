@@ -36,7 +36,8 @@ public class ServletCallback implements Callback {
         report
                 .addToTab("request", "url", request.getRequestURL().toString())
                 .addToTab("request", "method", request.getMethod())
-                .addToTab("request", "params", request.getParameterMap())
+                .addToTab("request", "params",
+                        new HashMap<String, String[]>(request.getParameterMap()))
                 .addToTab("request", "clientIp", getClientIp(request))
                 .addToTab("request", "headers", getHeaderMap(request));
 
@@ -60,13 +61,28 @@ public class ServletCallback implements Callback {
     }
 
     private Map<String, String> getHeaderMap(HttpServletRequest request) {
-        Map<String, String> map = new HashMap<String, String>();
-        Enumeration headerNames = request.getHeaderNames();
-        while (headerNames.hasMoreElements()) {
-            String key = (String) headerNames.nextElement();
-            map.put(key, request.getHeader(key));
+        Map<String, String> headers = new HashMap<String, String>();
+        Enumeration<String> headerNames = request.getHeaderNames();
+
+        while (headerNames != null && headerNames.hasMoreElements()) {
+            String key = headerNames.nextElement();
+            Enumeration<String> headerValues = request.getHeaders(key);
+            StringBuilder value = new StringBuilder();
+
+            if (headerValues != null && headerValues.hasMoreElements()) {
+                value.append(headerValues.nextElement());
+
+                // If there are multiple values for the header, do comma-separated concat
+                // as per RFC 2616:
+                // https://www.w3.org/Protocols/rfc2616/rfc2616-sec4.html#sec4.2
+                while (headerValues.hasMoreElements()) {
+                    value.append(",").append(headerValues.nextElement());
+                }
+            }
+
+            headers.put(key, value.toString());
         }
 
-        return map;
+        return headers;
     }
 }

@@ -18,7 +18,7 @@ public class Report {
 
     private String apiKey;
     private final Exception exception;
-    private final HandledState handledState;
+    private HandledState handledState;
     private Severity severity;
     private String groupingHash;
     private Diagnostics diagnostics;
@@ -100,22 +100,22 @@ public class Report {
     }
 
     @Expose
-    public Map getApp() {
+    public Map<String, Object> getApp() {
         return diagnostics.app;
     }
 
     @Expose
-    public Map getDevice() {
+    public Map<String, Object> getDevice() {
         return diagnostics.device;
     }
 
     @Expose
-    public Map getUser() {
+    public Map<String, String> getUser() {
         return diagnostics.user;
     }
 
     @Expose
-    public Map getMetaData() {
+    public Map<String, Object> getMetaData() {
         return new FilteredMap(diagnostics.metaData, Arrays.asList(config.filters));
     }
 
@@ -310,6 +310,14 @@ public class Report {
 
     public boolean getShouldCancel() {
         return this.shouldCancel;
+    }
+
+    HandledState getHandledState() {
+        return handledState;
+    }
+
+    void setHandledState(HandledState handledState) {
+        this.handledState = handledState;
     }
 
     static class SeverityReason {

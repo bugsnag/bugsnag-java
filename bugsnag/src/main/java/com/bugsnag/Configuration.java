@@ -36,7 +36,7 @@ public class Configuration {
     public Delivery delivery = new AsyncHttpDelivery(SyncHttpDelivery.DEFAULT_NOTIFY_ENDPOINT);
     public Delivery sessionDelivery =
             new AsyncHttpDelivery(SyncHttpDelivery.DEFAULT_SESSION_ENDPOINT);
-    public String[] filters = new String[]{"password"};
+    public String[] filters = new String[]{"password", "Authorization"};
     public String[] ignoreClasses;
     public String[] notifyReleaseStages = null;
     public String[] projectPackages;
@@ -46,6 +46,7 @@ public class Configuration {
     Collection<Callback> callbacks = new ArrayList<Callback>();
     Serializer serializer = new Serializer();
     private final AtomicBoolean autoCaptureSessions = new AtomicBoolean(true);
+    private final AtomicBoolean sendUncaughtExceptions = new AtomicBoolean(true);
 
     Configuration(String apiKey) {
         this.apiKey = apiKey;
@@ -100,6 +101,14 @@ public class Configuration {
 
     public boolean shouldAutoCaptureSessions() {
         return autoCaptureSessions.get();
+    }
+
+    public void setSendUncaughtExceptions(boolean sendUncaughtExceptions) {
+        this.sendUncaughtExceptions.set(sendUncaughtExceptions);
+    }
+
+    public boolean shouldSendUncaughtExceptions() {
+        return sendUncaughtExceptions.get();
     }
 
     /**
