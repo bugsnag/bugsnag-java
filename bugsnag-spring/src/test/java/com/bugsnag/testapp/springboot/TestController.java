@@ -8,14 +8,20 @@ import com.bugsnag.callbacks.Callback;
 
 import org.springframework.beans.TypeMismatchException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+
+import java.util.concurrent.ExecutionException;
 
 @Controller
 public class TestController {
 
     @Autowired
     private Bugsnag bugsnag;
+
+    @Autowired
+    private ThreadPoolTaskScheduler scheduler;
 
     /**
      * Throw a runtime exception
@@ -72,5 +78,21 @@ public class TestController {
                 }
             });
         }
+    }
+
+    /**
+     * Schedule a task to throw an unhandled exception
+     */
+    @RequestMapping("/execute-scheduled-task")
+    public void executeScheduledTask() throws ExecutionException, InterruptedException {
+        Runnable exampleRunnable = new Runnable() {
+            @Override
+            public void run() {
+                throw new RuntimeException("Scheduled test");
+            }
+        };
+
+        // Run the task now and wait for it to finish
+        scheduler.submit(exampleRunnable).get();
     }
 }
