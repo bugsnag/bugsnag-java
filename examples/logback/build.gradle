@@ -20,5 +20,5 @@ dependencies {
     compile("org.springframework.boot:spring-boot-starter")
     compile("ch.qos.logback:logback-classic:1.2.3")
 
-    compile rootProject
+    compile project(':bugsnag')
 }

@@ -1,1 +1,7 @@
-include ':examples:simple', ':examples:servlet', ':examples:spring', ':examples:spring-web', 'examples:logback'
+include ':bugsnag',
+        ':bugsnag-spring',
+        ':examples:simple',
+        ':examples:servlet',
+        ':examples:spring',
+        ':examples:spring-web',
+        ':examples:logback'

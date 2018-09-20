@@ -1,5 +1,3 @@
-apply plugin: 'java-library'
-apply plugin: 'checkstyle'
 buildscript {
     repositories {
         jcenter()
@@ -13,43 +11,10 @@ buildscript {
         }
     }
 }
+
+// This can only be applied in root project, see https://github.com/Codearte/gradle-nexus-staging-plugin/issues/47
 if (project.hasProperty('releasing')) {
-    apply from: "release.gradle"
-}
-
-sourceCompatibility = 1.6
-targetCompatibility = 1.6
-
-repositories {
-    jcenter()
-}
-
-dependencies {
-    compile 'com.fasterxml.jackson.core:jackson-databind:2.9.1'
-    compile 'org.slf4j:slf4j-api:1.7.25'
-    compileOnly 'javax.servlet:javax.servlet-api:3.1.0'
-    compileOnly('ch.qos.logback:logback-classic:1.2.3') {
-        exclude group: 'org.slf4j'
-    }
-
-
-    testCompile('ch.qos.logback:logback-classic:1.2.3') {
-        exclude group: 'org.slf4j'
-    }
-    testCompile 'junit:junit:4.12'
-    testCompile 'org.slf4j:log4j-over-slf4j:1.7.25'
-    testCompile 'javax.servlet:javax.servlet-api:3.1.0'
-    testCompile 'org.mockito:mockito-core:2.10.0'
-}
-
-test {
-    testLogging {
-        events "passed", "skipped", "failed", "standardOut", "standardError"
-    }
-}
-
-checkstyle {
-    toolVersion = "6.16"
+    apply plugin: 'io.codearte.nexus-staging'
 }
 
 gradle.projectsEvaluated {

@@ -1,0 +1,19 @@
+apply plugin: 'checkstyle'
+
+if (project.hasProperty('releasing')) {
+    apply from: "../release.gradle"
+}
+
+sourceCompatibility = 1.6
+targetCompatibility = 1.6
+
+test {
+    testLogging {
+        events "passed", "skipped", "failed", "standardOut", "standardError"
+    }
+}
+
+checkstyle {
+    toolVersion = "6.16"
+    configFile = new File(rootDir, "config/checkstyle/checkstyle.xml")
+}
