@@ -16,7 +16,7 @@ public class Config {
     @Bean
     public Bugsnag bugsnag() {
         // Create a Bugsnag client
-        Bugsnag bugsnag = new Bugsnag("YOUR-API-KEY");
+        Bugsnag bugsnag = Bugsnag.init("YOUR-API-KEY");
 
         // Set some diagnostic data which will not change during the
         // lifecycle of the application

@@ -114,7 +114,7 @@ public class ServletCallbackTest {
     }
 
     private Report generateReport(java.lang.Exception exception) {
-        Bugsnag bugsnag = new Bugsnag("apikey", false);
+        Bugsnag bugsnag = Bugsnag.init("apikey", false);
         bugsnag.setDelivery(null);
 
         return bugsnag.buildReport(exception);

@@ -3,5 +3,5 @@ include ':bugsnag',
         ':examples:simple',
         ':examples:servlet',
         ':examples:spring',
-        ':examples:spring-web'
-
+        ':examples:spring-web',
+        ':examples:logback'

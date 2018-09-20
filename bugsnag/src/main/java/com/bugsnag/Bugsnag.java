@@ -42,7 +42,41 @@ public class Bugsnag {
      * Initialize a Bugsnag client and automatically send uncaught exceptions.
      *
      * @param apiKey your Bugsnag API key from your Bugsnag dashboard
+     * @return The Bugsnag client instance
      */
+    public static Bugsnag init(String apiKey) {
+        return init(apiKey, true);
+    }
+
+    /**
+     * Initialize a Bugsnag client.
+     *
+     * @param apiKey                 your Bugsnag API key
+     * @param sendUncaughtExceptions should we send uncaught exceptions to Bugsnag
+     * @return The Bugsnag client instance
+     */
+    public static Bugsnag init(String apiKey, boolean sendUncaughtExceptions) {
+        if (apiKey == null) {
+            throw new NullPointerException("You must provide a Bugsnag API key");
+        }
+
+        // Look for an existing instance of Bugsnag in the appender
+        BugsnagAppender appender = BugsnagAppender.getInstance(apiKey);
+
+        if (appender != null && appender.getBugsnag() != null) {
+            return appender.getBugsnag();
+        }
+
+        return new Bugsnag(apiKey, sendUncaughtExceptions);
+    }
+
+    /**
+     * Initialize a Bugsnag client and automatically send uncaught exceptions.
+     *
+     * @param apiKey your Bugsnag API key from your Bugsnag dashboard
+     * @deprecated use {@link Bugsnag#init(String)} instead
+     */
+    @Deprecated
     public Bugsnag(String apiKey) {
         this(apiKey, true);
     }
@@ -52,7 +86,9 @@ public class Bugsnag {
      *
      * @param apiKey                 your Bugsnag API key
      * @param sendUncaughtExceptions should we send uncaught exceptions to Bugsnag
+     * @deprecated use {@link Bugsnag#init(String, boolean)} instead
      */
+    @Deprecated
     public Bugsnag(String apiKey, boolean sendUncaughtExceptions) {
         if (apiKey == null) {
             throw new NullPointerException("You must provide a Bugsnag API key");
@@ -128,6 +164,17 @@ public class Bugsnag {
     public Delivery getDelivery() {
         return config.delivery;
     }
+
+    /**
+     * Get the delivery to use to send sessions.
+     *
+     * @return the delivery to use to send sessions.
+     * @see Delivery
+     */
+    public Delivery getSessionDelivery() {
+        return config.sessionDelivery;
+    }
+
 
     /**
      * Set the application type sent to Bugsnag.
@@ -510,7 +557,7 @@ public class Bugsnag {
      * Set the endpoint to deliver Bugsnag sessions to. This is a convenient
      * shorthand for bugsnag.getSessionDelivery().setEndpoint();
      *
-     * @param endpoint the endpoint to send reports to
+     * @param endpoint the endpoint to send sessions to
      * @see #setDelivery
      * @deprecated use {@link Configuration#setEndpoints(String, String)} instead
      */

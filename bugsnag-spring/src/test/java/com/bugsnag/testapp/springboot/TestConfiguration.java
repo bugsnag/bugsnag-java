@@ -16,6 +16,6 @@ import org.springframework.context.annotation.Import;
 public class TestConfiguration {
     @Bean
     public Bugsnag bugsnag() {
-        return new Bugsnag("apiKey");
+        return Bugsnag.init("apiKey");
     }
 }

@@ -49,7 +49,7 @@ public class ExceptionTest {
 
     @Test
     public void testReportCallback() throws Throwable {
-        Bugsnag bugsnag = new Bugsnag("apikey");
+        Bugsnag bugsnag = Bugsnag.init("apikey");
         bugsnag.setDelivery(new Delivery() {
             @Override
             public void deliver(Serializer serializer, Object object, Map<String, String> headers) {
