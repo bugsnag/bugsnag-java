@@ -1,5 +1,6 @@
 package com.bugsnag;
 
+import static com.bugsnag.TestUtils.verifyAndGetReport;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -22,7 +23,6 @@ import com.bugsnag.testapp.springboot.TestSpringBootApplication;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringBootVersion;
 import org.springframework.boot.context.embedded.LocalServerPort;
@@ -83,7 +83,7 @@ public class SpringMvcTest {
     public void bugsnagNotifyWhenUncaughtControllerException() {
         callRuntimeExceptionEndpoint();
 
-        Report report = verifyAndGetReport();
+        Report report = verifyAndGetReport(delivery);
 
         // Assert that the exception was detected correctly
         assertEquals("Test", report.getExceptionMessage());
@@ -129,7 +129,7 @@ public class SpringMvcTest {
     public void requestMetadataSetCorrectly() {
         callRuntimeExceptionEndpoint();
 
-        Report report = verifyAndGetReport();
+        Report report = verifyAndGetReport(delivery);
 
         // Check that the context is set to the HTTP method and URI of the endpoint
         assertEquals("GET /throw-runtime-exception", report.getContext());
@@ -160,7 +160,7 @@ public class SpringMvcTest {
     public void springVersionSetCorrectly() {
         callRuntimeExceptionEndpoint();
 
-        Report report = verifyAndGetReport();
+        Report report = verifyAndGetReport(delivery);
 
         // Check that the Spring version is set as expected
         @SuppressWarnings(value = "unchecked") Map<String, Object> deviceMetadata =
@@ -173,7 +173,7 @@ public class SpringMvcTest {
     public void unhandledTypeMismatchExceptionSeverityInfo() {
         callUnhandledTypeMismatchExceptionEndpoint();
 
-        Report report = verifyAndGetReport();
+        Report report = verifyAndGetReport(delivery);
 
         assertTrue(report.getUnhandled());
         assertEquals("info", report.getSeverity());
@@ -198,7 +198,7 @@ public class SpringMvcTest {
 
             callUnhandledTypeMismatchExceptionEndpoint();
 
-            report = verifyAndGetReport();
+            report = verifyAndGetReport(delivery);
         } finally {
             // Remove the callback via reflection so that subsequent tests do not use it
             Field callbacksField = Configuration.class.getDeclaredField("callbacks");
@@ -216,7 +216,7 @@ public class SpringMvcTest {
     public void handledTypeMismatchExceptionUserSeverity() {
         callHandledTypeMismatchExceptionUserSeverityEndpoint();
 
-        Report report = verifyAndGetReport();
+        Report report = verifyAndGetReport(delivery);
 
         assertFalse(report.getUnhandled());
         assertEquals("warning", report.getSeverity());
@@ -228,7 +228,7 @@ public class SpringMvcTest {
     public void handledTypeMismatchExceptionCallbackSeverity() {
         callHandledTypeMismatchExceptionCallbackSeverityEndpoint();
 
-        Report report = verifyAndGetReport();
+        Report report = verifyAndGetReport(delivery);
 
         assertFalse(report.getUnhandled());
         assertEquals("warning", report.getSeverity());
@@ -261,16 +261,6 @@ public class SpringMvcTest {
                 HttpMethod.GET,
                 entity,
                 String.class);
-    }
-
-    private Report verifyAndGetReport() {
-        ArgumentCaptor<Notification> notificationCaptor =
-                ArgumentCaptor.forClass(Notification.class);
-        verify(delivery, times(1)).deliver(
-                any(Serializer.class),
-                notificationCaptor.capture(),
-                anyMapOf(String.class, String.class));
-        return notificationCaptor.getValue().getEvents().get(0);
     }
 
     private void verifyNoReport() {
