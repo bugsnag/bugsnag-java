@@ -10,13 +10,13 @@ import java.util.Collections;
  * Reports uncaught exceptions thrown from scheduled task execution to Bugsnag
  * and then passes the exception to any other existing error handler.
  */
-class BugsnagScheduledTaskErrorHandler implements ErrorHandler {
+class BugsnagScheduledTaskExceptionHandler implements ErrorHandler {
 
     private final Bugsnag bugsnag;
 
     private ErrorHandler existingErrorHandler;
 
-    BugsnagScheduledTaskErrorHandler(Bugsnag bugsnag) {
+    BugsnagScheduledTaskExceptionHandler(Bugsnag bugsnag) {
         this.bugsnag = bugsnag;
     }
 
@@ -33,7 +33,7 @@ class BugsnagScheduledTaskErrorHandler implements ErrorHandler {
         }
 
         if (existingErrorHandler != null
-                && !(existingErrorHandler instanceof BugsnagScheduledTaskErrorHandler)) {
+                && !(existingErrorHandler instanceof BugsnagScheduledTaskExceptionHandler)) {
             existingErrorHandler.handleError(throwable);
         }
     }

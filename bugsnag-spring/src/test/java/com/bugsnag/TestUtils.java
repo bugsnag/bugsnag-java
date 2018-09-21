@@ -2,7 +2,7 @@ package com.bugsnag;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyMapOf;
-import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.timeout;
 import static org.mockito.Mockito.verify;
 
 import com.bugsnag.delivery.Delivery;
@@ -18,7 +18,7 @@ class TestUtils {
     static Report verifyAndGetReport(Delivery delivery) {
         ArgumentCaptor<Notification> notificationCaptor =
                 ArgumentCaptor.forClass(Notification.class);
-        verify(delivery, times(1)).deliver(
+        verify(delivery, timeout(100).times(1)).deliver(
                 any(Serializer.class),
                 notificationCaptor.capture(),
                 anyMapOf(String.class, String.class));
