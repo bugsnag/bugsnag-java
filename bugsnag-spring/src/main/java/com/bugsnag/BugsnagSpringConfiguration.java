@@ -50,6 +50,24 @@ public class BugsnagSpringConfiguration {
     }
 
     /**
+     * Stop any configured Logback appender from creating Bugsnag reports for Spring log
+     * messages as they effectively duplicate error reports for unhandled exceptions.
+     */
+    @PostConstruct
+    void excludeLoggers() {
+        BugsnagAppender.excludeLoggers(
+                // Exclude Tomcat logger when processing HTTP requests via the DispatcherServlet
+                "org.apache.catalina.core.ContainerBase."
+                        + "[Tomcat].[localhost].[/].[dispatcherServlet]",
+
+                // Exclude Jetty logger when processing HTTP requests via the HttpChannel
+                "org.eclipse.jetty.server.HttpChannel",
+
+                // Exclude Undertow logger when processing HTTP requests
+                "io.undertow.request");
+    }
+
+    /**
      * If spring-boot is loaded, add configuration specific to Spring Boot
      */
     @Configuration

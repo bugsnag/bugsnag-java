@@ -1,0 +1,12 @@
+<!--Configuring Bugsnag via logback to check that the Spring notifier plays nicely-->
+<configuration>
+    <include resource="org/springframework/boot/logging/logback/defaults.xml" />
+
+    <appender name="BUGSNAG" class="com.bugsnag.BugsnagAppender">
+        <apiKey>apiKey</apiKey>
+    </appender>
+
+    <root level="INFO">
+        <appender-ref ref="BUGSNAG" />
+    </root>
+</configuration>

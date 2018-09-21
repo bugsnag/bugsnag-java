@@ -44,6 +44,9 @@ public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
             "com.bugsnag.delivery.OutputStreamDelivery",
             "com.bugsnag.delivery.SyncHttpDelivery");
 
+    /** Logger names that should not cause reports to be sent to Bugsnag. **/
+    private static final List<String> EXCLUDED_LOGGERS = new ArrayList<String>();
+
     /** Object mapper to serialize into logging context with */
     private static ObjectMapper mapper = new ObjectMapper();
 
@@ -156,8 +159,11 @@ public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
                 reportCallback = null;
             }
 
-            // Only send a message if there is an exception
-            if (throwable != null && !detectLogFromBugsnag(throwable)) {
+            // Only send a message if there is an exception, the log does not come
+            // from the this library and the logger is not in the list of excluded loggers.
+            if (throwable != null
+                    && !detectLogFromBugsnag(throwable)
+                    && !isExcludedLogger(event.getLoggerName())) {
                 bugsnag.notify(
                         throwable,
                         calculateSeverity(event),
@@ -173,7 +179,6 @@ public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
 
                                 // Add details from the logging context to the event
                                 populateContextData(report, event);
-
 
                                 if (reportCallback != null) {
                                     reportCallback.beforeNotify(report);
@@ -197,7 +202,6 @@ public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
         }
         return Severity.INFO;
     }
-
 
     /**
      * Checks to see if a stack trace came from the Bugsnag library
@@ -715,5 +719,22 @@ public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
      */
     Bugsnag getBugsnag() {
         return bugsnag;
+    }
+
+    /**
+     * Add loggers that should not generate Bugsnag reports (used internally only)
+     * @param loggerNames The names of loggers that should be excluded
+     */
+    static void excludeLoggers(String... loggerNames) {
+        EXCLUDED_LOGGERS.addAll(Arrays.asList(loggerNames));
+    }
+
+    /**
+     * Whether or not a logger is excluded from generating Bugsnag reports
+     * @param loggerName The name of the logger
+     * @return true if the logger should be excluded
+     */
+    private boolean isExcludedLogger(String loggerName) {
+        return EXCLUDED_LOGGERS.contains(loggerName);
     }
 }

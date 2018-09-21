@@ -13,12 +13,13 @@ repositories {
 
 dependencies {
     compile project(':bugsnag')
-    compileOnly "javax.servlet:javax.servlet-api:3.1.0"
+    compileOnly "javax.servlet:javax.servlet-api:${servletApiVersion}"
     compileOnly "org.springframework:spring-webmvc:${springVersion}"
     compileOnly "org.springframework.boot:spring-boot:${springBootVersion}"
+    compileOnly "ch.qos.logback:logback-core:${logbackVersion}"
 
     testCompile "junit:junit:4.12"
-    testCompile "javax.servlet:javax.servlet-api:3.1.0"
+    testCompile "javax.servlet:javax.servlet-api:${servletApiVersion}"
     testCompile "org.springframework.boot:spring-boot-starter-test:${springBootVersion}"
     testCompile "org.springframework.boot:spring-boot-starter-web:${springBootVersion}"
 }

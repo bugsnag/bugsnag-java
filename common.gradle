@@ -1,3 +1,8 @@
+ext {
+    servletApiVersion = "3.1.0"
+    logbackVersion = "1.2.3"
+}
+
 apply plugin: 'checkstyle'
 
 if (project.hasProperty('releasing')) {
