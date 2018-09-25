@@ -1,6 +1,6 @@
 # Changelog
 
-## 3.X.X (TBD)
+## 3.3.0 (2018-09-26)
 
 * Capture trace of error reporting thread and identify with boolean flag
   [#87](https://github.com/bugsnag/bugsnag-java/pull/87)
