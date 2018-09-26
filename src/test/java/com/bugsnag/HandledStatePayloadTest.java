@@ -107,7 +107,7 @@ public class HandledStatePayloadTest {
     }
 
     private Report reportFromHandledState(HandledState handledState) {
-        return new Report(config, new RuntimeException(), handledState);
+        return new Report(config, new RuntimeException(), handledState, Thread.currentThread());
     }
 
     private JsonNode getJsonPayloadFromReport(Report report) throws IOException {
