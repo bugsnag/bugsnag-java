@@ -25,6 +25,14 @@ Scenario: Test handled Exception with Session information
     And the payload field "events.0.session.startedAt" is not null
     And the payload field "events.0.session.events.handled" equals 1
 
+Scenario: Test handled Exception with no session information
+    When I run "HandledExceptionScenario" with the defaults
+    Then I should receive a request
+    And the request is a valid for the error reporting API
+    And the "Bugsnag-API-Key" header equals "a35a2a72bd230ac0aa0f52715bbdc6aa"
+    And the payload field "events" is an array with 1 element
+    And the event "session" is null
+
 Scenario: Test unhandled Exception with Session information
     When I run "UnhandledSessionScenario" with the defaults
     Then I should receive a request
@@ -37,3 +45,11 @@ Scenario: Test unhandled Exception with Session information
     And the payload field "events.0.session.id" is not null
     And the payload field "events.0.session.startedAt" is not null
     And the payload field "events.0.session.events.unhandled" equals 1
+
+Scenario: Test unhandled exception with no session information
+    When I run "CrashHandlerScenario" with the defaults
+    Then I should receive a request
+    And the request is a valid for the error reporting API
+    And the "Bugsnag-API-Key" header equals "a35a2a72bd230ac0aa0f52715bbdc6aa"
+    And the payload field "events" is an array with 1 element
+    And the event "session" is not null
