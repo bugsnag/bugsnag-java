@@ -7,7 +7,6 @@ cache:
   directories:
   - $HOME/.gradle/caches/
   - $HOME/.gradle/wrapper/
-  bundler
 install: ./gradlew :assemble
 
 jobs:
