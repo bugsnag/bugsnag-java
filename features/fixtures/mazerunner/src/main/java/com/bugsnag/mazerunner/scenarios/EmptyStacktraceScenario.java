@@ -11,8 +11,10 @@ public class EmptyStacktraceScenario extends Scenario {
         bugsnag.notify(new EmptyException("EmptyStacktraceScenario"));
     }
 
-    private class EmptyException extends Throwable {
-        public EmptyException(String message) {
+    private static class EmptyException extends Throwable {
+        private static final long serialVersionUID = 6420625703155845924L;
+
+        EmptyException(String message) {
             super(message, null, true, false);
         }
     }

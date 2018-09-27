@@ -30,8 +30,12 @@ public class TestCaseRunnner implements CommandLineRunner, ApplicationContextAwa
         // Put args into the system property so that they can be used later
         for (String arg : args) {
             String[] argParts = arg.split("=");
-            LOGGER.info("Setting property " + argParts[0] + "=" + argParts[1]);
-            System.setProperty(argParts[0], argParts[1]);
+            if (argParts.length == 2) {
+                LOGGER.info("Setting property " + argParts[0] + "=" + argParts[1]);
+                System.setProperty(argParts[0], argParts[1]);
+            } else {
+                LOGGER.error("Invalid argument " + arg);
+            }
         }
 
         // Create and run the test case
@@ -41,7 +45,7 @@ public class TestCaseRunnner implements CommandLineRunner, ApplicationContextAwa
             LOGGER.info("running test case");
             s.run();
         } else {
-            LOGGER.info("No test case found!");
+            LOGGER.error("No test case found!");
         }
 
         // Exit the application

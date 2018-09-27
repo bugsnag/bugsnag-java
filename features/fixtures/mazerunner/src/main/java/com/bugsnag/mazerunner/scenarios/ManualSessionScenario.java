@@ -13,12 +13,6 @@ public class ManualSessionScenario extends Scenario {
         bugsnag.setAppVersion("1.2.3");
         bugsnag.startSession();
 
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
         flushAllSessions();
     }
 }

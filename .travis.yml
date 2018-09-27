@@ -33,6 +33,8 @@ jobs:
     jdk: openjdk7
     script:
       - ./gradlew check :test
+      - bundle install
+      - bundle exec bugsnag-maze-runner
     before_install: # Work around missing crypto in openjdk7
     - sudo wget "https://bouncycastle.org/download/bcprov-ext-jdk15on-158.jar" -O "${JAVA_HOME}/jre/lib/ext/bcprov-ext-jdk15on-158.jar"
     - sudo perl -pi.bak -e 's/^(security\.provider\.)([0-9]+)/$1.($2+1)/ge' /etc/java-7-openjdk/security/java.security
