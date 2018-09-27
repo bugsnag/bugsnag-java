@@ -29,7 +29,7 @@ class BugsnagScheduledTaskExceptionHandler implements ErrorHandler {
                     Severity.ERROR,
                     true);
 
-            bugsnag.notify(throwable, handledState);
+            bugsnag.notify(throwable, handledState, Thread.currentThread());
         }
 
         if (existingErrorHandler != null

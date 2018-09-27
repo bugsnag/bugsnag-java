@@ -32,7 +32,7 @@ public class BugsnagAsyncExceptionHandler implements AsyncUncaughtExceptionHandl
                     Severity.ERROR,
                     true);
 
-            bugsnag.notify(throwable, handledState);
+            bugsnag.notify(throwable, handledState, Thread.currentThread());
         }
     }
 }

@@ -41,7 +41,7 @@ class BugsnagMvcExceptionHandler implements HandlerExceptionResolver {
                     Severity.ERROR,
                     true);
 
-            bugsnag.notify(ex, handledState);
+            bugsnag.notify(ex, handledState, Thread.currentThread());
         }
 
         // Returning null passes the exception onto the next resolver in the chain.
