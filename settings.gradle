@@ -1,1 +1,1 @@
-include ':examples:simple', ':examples:servlet', ':examples:spring', ':examples:spring-web', 'examples:logback', ':mazerunner'
+include ':examples:simple', ':examples:servlet', ':examples:spring', ':examples:spring-web', 'examples:logback', ':features:fixtures:mazerunner'

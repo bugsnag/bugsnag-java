@@ -1,5 +1,6 @@
 # Configure app environment
 
 run_required_commands([
-  ["./gradlew", "build -p mazerunner"],
+  ["./gradlew", "build -p features/fixtures/mazerunner"],
 ])
+
