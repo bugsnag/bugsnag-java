@@ -55,7 +55,7 @@ class ExceptionHandler implements UncaughtExceptionHandler {
 
             HandledState handledState = HandledState.newInstance(
                     HandledState.SeverityReasonType.REASON_UNHANDLED_EXCEPTION, Severity.ERROR);
-            bugsnag.notify(throwable, handledState);
+            bugsnag.notify(throwable, handledState, thread);
         }
 
         // Pass exception on to original exception handler

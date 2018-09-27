@@ -1,5 +1,10 @@
 # Changelog
 
+## 3.3.0 (2018-09-26)
+
+* Capture trace of error reporting thread and identify with boolean flag
+  [#87](https://github.com/bugsnag/bugsnag-java/pull/87)
+
 ## 3.2.1 (2018-08-21)
 
 * Add null check when disconnecting HttpUrlConnection
