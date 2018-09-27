@@ -42,7 +42,6 @@ public class TestCaseRunnner implements CommandLineRunner, ApplicationContextAwa
             s.run();
         } else {
             LOGGER.info("No test case found!");
-            throw new IllegalStateException("No test case found");
         }
 
         // Exit the application
