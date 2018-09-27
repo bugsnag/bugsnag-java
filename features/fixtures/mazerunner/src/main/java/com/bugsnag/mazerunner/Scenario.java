@@ -21,6 +21,10 @@ public abstract class Scenario {
     protected Bugsnag bugsnag;
 
     public Scenario() {
+        this(true);
+    }
+
+    public Scenario(boolean sendUncaughtExceptions) {
 
         String apiKey = "YOUR-API-KEY";
         if (!StringUtils.isEmpty(System.getProperty("BUGSNAG_API_KEY"))) {
@@ -34,7 +38,7 @@ public abstract class Scenario {
 
         LOGGER.info("using " + path + " to send Bugsnags");
 
-        bugsnag = new Bugsnag(apiKey);
+        bugsnag = new Bugsnag(apiKey, sendUncaughtExceptions);
         bugsnag.setEndpoints(path, path);
     }
 

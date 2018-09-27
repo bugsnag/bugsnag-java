@@ -1,6 +1,6 @@
 Feature: Reporting app version
 
-Scenario: Test handled Android Exception
+Scenario: Test handled Exception
     When I run "AppVersionScenario" with the defaults
     Then I should receive a request
     And the request is a valid for the error reporting API
