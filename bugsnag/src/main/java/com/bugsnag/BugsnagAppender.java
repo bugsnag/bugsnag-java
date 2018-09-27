@@ -243,6 +243,8 @@ public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
     private Bugsnag createBugsnag() {
         Bugsnag bugsnag = Bugsnag.init(apiKey, sendUncaughtExceptions);
 
+        bugsnag.setLogbackAppenderInUse();
+
         bugsnag.setAutoCaptureSessions(autoCaptureSessions);
 
         if (appType != null) {
@@ -282,6 +284,7 @@ public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
         if (notifyReleaseStages.size() > 0) {
             bugsnag.setNotifyReleaseStages(notifyReleaseStages.toArray(new String[0]));
         }
+
         bugsnag.setProjectPackages(projectPackages.toArray(new String[0]));
         bugsnag.setSendThreads(sendThreads);
 
@@ -705,6 +708,15 @@ public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
     }
 
     /**
+     * Add a regex logger name pattern to match loggers that should not generate Bugsnag reports
+     *
+     * @param loggerNameRegex The regex pattern for logger names that should be excluded
+     */
+    public static void setExcludeLoggerRegex(String loggerNameRegex) {
+        EXCLUDED_LOGGERS.add(loggerNameRegex);
+    }
+
+    /**
      * Splits the given string on commas
      * @param value The string to split
      * @return The list of parts
@@ -722,19 +734,16 @@ public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
     }
 
     /**
-     * Add loggers that should not generate Bugsnag reports (used internally only)
-     * @param loggerNames The names of loggers that should be excluded
-     */
-    static void excludeLoggers(String... loggerNames) {
-        EXCLUDED_LOGGERS.addAll(Arrays.asList(loggerNames));
-    }
-
-    /**
      * Whether or not a logger is excluded from generating Bugsnag reports
      * @param loggerName The name of the logger
      * @return true if the logger should be excluded
      */
     private boolean isExcludedLogger(String loggerName) {
-        return EXCLUDED_LOGGERS.contains(loggerName);
+        for (String excludedLogger : EXCLUDED_LOGGERS) {
+            if (loggerName.matches(excludedLogger)) {
+                return true;
+            }
+        }
+        return false;
     }
 }

@@ -33,6 +33,7 @@ public class Bugsnag {
 
     private Configuration config;
     private final SessionTracker sessionTracker;
+    private static boolean logbackAppenderInUse = false;
 
     //
     // Constructors
@@ -60,11 +61,13 @@ public class Bugsnag {
             throw new NullPointerException("You must provide a Bugsnag API key");
         }
 
-        // Look for an existing instance of Bugsnag in the appender
-        BugsnagAppender appender = BugsnagAppender.getInstance(apiKey);
+        if (logbackAppenderInUse) {
+            // Look for an existing instance of Bugsnag in the appender
+            BugsnagAppender appender = BugsnagAppender.getInstance(apiKey);
 
-        if (appender != null && appender.getBugsnag() != null) {
-            return appender.getBugsnag();
+            if (appender != null && appender.getBugsnag() != null) {
+                return appender.getBugsnag();
+            }
         }
 
         return new Bugsnag(apiKey, sendUncaughtExceptions);
@@ -604,6 +607,14 @@ public class Bugsnag {
 
     SessionTracker getSessionTracker() {
         return sessionTracker;
+    }
+
+    boolean isLogbackAppenderInUse() {
+        return logbackAppenderInUse;
+    }
+
+    void setLogbackAppenderInUse() {
+        logbackAppenderInUse = true;
     }
 
     /**

@@ -31,6 +31,8 @@ import java.util.Map;
 public class AppenderTest {
 
     private static final Logger LOGGER = Logger.getLogger(AppenderTest.class);
+    private static final Logger EXCLUDED_LOGGER_1 = Logger.getLogger(DateUtils.class);
+    private static final Logger EXCLUDED_LOGGER_2 = Logger.getLogger(MetaData.class);
     private static StubNotificationDelivery delivery;
     private static StubSessionDelivery sessionDelivery;
     private static Delivery originalDelivery;
@@ -385,6 +387,21 @@ public class AppenderTest {
         // Check the details of the session
         assertEquals("1.0.1", session.getApp().get("version"));
         assertEquals("test", session.getApp().get("releaseStage"));
+    }
+
+    @Test
+    public void testExcludedLoggers() {
+        RuntimeException exception = new RuntimeException("test");
+        StackTraceElement[] trace = exception.getStackTrace();
+
+        // Send logs from loggers that have been excluded in the logback.xml file
+        exception.setStackTrace(trace);
+        EXCLUDED_LOGGER_1.warn("Test exception", exception);
+        exception.setStackTrace(trace);
+        EXCLUDED_LOGGER_2.warn("Test exception", exception);
+
+        // Check that no reports were sent to Bugsnag
+        assertEquals(0, delivery.getNotifications().size());
     }
 
     private StackTraceElement changeClassName(StackTraceElement element, String className) {

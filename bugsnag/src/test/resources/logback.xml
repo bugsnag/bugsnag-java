@@ -36,6 +36,9 @@
 
         <sendThreads>true</sendThreads>
 
+        <excludeLoggerRegex>com.bugsnag.DateUtils</excludeLoggerRegex>
+        <excludeLoggerRegex>.*\.Meta.*</excludeLoggerRegex>
+
 	</appender>
 
 	<root level="INFO">
