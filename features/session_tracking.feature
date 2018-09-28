@@ -52,4 +52,4 @@ Scenario: Test unhandled exception with no session information
     And the request is a valid for the error reporting API
     And the "Bugsnag-API-Key" header equals "a35a2a72bd230ac0aa0f52715bbdc6aa"
     And the payload field "events" is an array with 1 element
-    And the event "session" is not null
+    And the event "session" is null
