@@ -34,6 +34,9 @@ jobs:
     script:
       - ./gradlew check :test
       - bundle install
+      - cd features/fixtures/mazerunner
+      - ./gradlew clean build
+      - cd ../../../
       - bundle exec bugsnag-maze-runner
     before_install: # Work around missing crypto in openjdk7
     - sudo wget "https://bouncycastle.org/download/bcprov-ext-jdk15on-158.jar" -O "${JAVA_HOME}/jre/lib/ext/bcprov-ext-jdk15on-158.jar"
