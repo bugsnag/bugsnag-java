@@ -33,7 +33,7 @@ dependencies {
 
     compile 'com.fasterxml.jackson.core:jackson-annotations:2.9.1'
     compile 'com.fasterxml.jackson.core:jackson-databind:2.9.1'
-    compile("com.bugsnag:bugsnag-java:3.2.1")
+    compile("com.bugsnag:bugsnag-java:3.3.0")
 
     testCompile group: 'junit', name: 'junit', version: '4.12'
 }

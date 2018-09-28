@@ -5,8 +5,8 @@
 run_required_commands([
   ["./gradlew", ":assemble"],
   ["mkdir", "-p", "features/fixtures/mazerunner/libs"],
-  ["cp", "build/libs/bugsnag-java-3.2.1.jar",
-   "features/fixtures/mazerunner/libs/bugsnag-java-3.2.1.jar"],
+  ["cp", "build/libs/bugsnag-java-3.3.0.jar",
+   "features/fixtures/mazerunner/libs/bugsnag-java-3.3.0.jar"],
 ])
 
 # Build the harness app
