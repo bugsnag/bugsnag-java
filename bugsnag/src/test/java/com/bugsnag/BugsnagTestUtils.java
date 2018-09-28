@@ -2,6 +2,7 @@ package com.bugsnag;
 
 import com.bugsnag.delivery.Delivery;
 import com.bugsnag.serialization.Serializer;
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
