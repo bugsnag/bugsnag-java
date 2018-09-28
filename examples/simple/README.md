@@ -1,15 +1,19 @@
 # Bugsnag Plain Java Example
 
-A simple example application to show how to use Bugsnag in a plain Java application.
+Demonstrates how to use Bugsnag in a plain Java application.
 
-- Build the app
+1. Open `ExampleApp` and alter the value of `bugsnag = Bugsnag.init("YOUR-API-KEY");` to match your API key
+
+2. Build the app
 
     ```shell
     ../../gradlew clean assemble
     ```
 
-- Run the app
+3. Run the app
 
     ```shell
     ../../gradlew run
     ```
+
+4. View the captured errors in [your dashboard](https://app.bugsnag.com)

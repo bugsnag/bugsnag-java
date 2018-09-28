@@ -1,13 +1,15 @@
 # Bugsnag Spring web Java Example
 
-A Spring Boot example application to show how to use Bugsnag in a Spring web based Java application.
+Demonstrates how to use Bugsnag in a Spring Boot based Java application.
 
-- Start the web server
+1. Open `Config` and alter the value of `bugsnag = Bugsnag.init("YOUR-API-KEY");` to match your API key
+
+2. Run the app
 
     ```shell
     ../../gradlew clean bootRun
     ```
 
-- Cause a crash
+3. Cause a crash by visiting [http://localhost:8080](http://localhost:8080)
 
-    http://localhost:8080/
+4. View the captured errors in [your dashboard](https://app.bugsnag.com)
