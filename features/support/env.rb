@@ -12,7 +12,7 @@ run_required_commands([
 # Build the harness app
 Dir.chdir('features/fixtures/mazerunner') do
   run_required_commands([
-    ["./gradlew", "clean", "build"],
+    ["./gradlew", "clean", "build", "-v"],
   ])
 end
 
