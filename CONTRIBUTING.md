@@ -22,6 +22,44 @@ Runs tests and checkstyle.
 ./gradlew check
 ```
 
+## Installing/testing against a local maven repository
+
+Sometimes its helpful to build and install the bugsnag-java libraries into a
+local repository and test the entire dependency flow inside of a sample
+application.
+
+To get started:
+
+1. In the `bugsnag-java` directory, run
+   `./gradlew -Preleasing=true publishToMavenLocal`.
+   This installs `bugsnag-java` and `bugsnag-spring` into your local
+   maven repository.
+2. In your sample application `build.gradle`, add `mavenLocal()` to the *top* of
+   your `allprojects` repositories section:
+
+   ```groovy
+   allprojects {
+     repositories {
+       mavenLocal()
+       // other repos as needed
+     }
+   }
+   ```
+3. In your sample application `app/build.gradle`, add the following to the
+   dependencies section, inserting the exact version number required:
+
+   ```groovy
+   dependencies {
+     implementation 'com.bugsnag:bugsnag:[VERSION NUMBER]'
+   }
+   ```
+4. Clean your sample application and reload dependencies *every time* you
+   rebuild/republish the local dependencies:
+
+   ```
+   ./gradlew clean --refresh-dependencies
+   ```
+
 ## Making a Release
 
 ### 1. Ensure you have permission to make a release
