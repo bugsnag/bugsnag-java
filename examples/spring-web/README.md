@@ -1,6 +1,6 @@
 # Bugsnag Spring web Java Example
 
-Demonstrates how to use Bugsnag in a Spring Boot based Java application.
+Demonstrates how to use Bugsnag in a Spring Boot web based Java application.
 
 1. Open `Config` and alter the value of `bugsnag = Bugsnag.init("YOUR-API-KEY");` to match your API key
 
