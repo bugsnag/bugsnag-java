@@ -45,7 +45,7 @@ public class TestCaseRunnner implements CommandLineRunner, ApplicationContextAwa
             LOGGER.info("running test case");
             s.run();
         } else {
-            LOGGER.error("No test case found!");
+            LOGGER.error("No test case found for " + System.getProperty("EVENT_TYPE"));
         }
 
         // Exit the application
@@ -66,6 +66,7 @@ public class TestCaseRunnner implements CommandLineRunner, ApplicationContextAwa
             Constructor constructor = clz.getConstructors()[0];
             return (Scenario) constructor.newInstance();
         } catch(Exception ex) {
+            LOGGER.error("Error getting scenario", ex);
             return null;
         }
     }

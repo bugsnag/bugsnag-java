@@ -1,5 +1,3 @@
-apply plugin: 'spring-boot'
-
 buildscript {
     ext {
         springBootVersion = '1.4.1.RELEASE'
@@ -12,21 +10,39 @@ buildscript {
     }
 }
 
+plugins {
+    id 'java'
+}
+
+group 'mazerunner'
+version '1.0-SNAPSHOT'
+
+sourceCompatibility = 1.8
+
 repositories {
+    mavenCentral()
+    flatDir {
+        dirs 'libs'
+    }
     jcenter()
 }
 
+dependencies {
+    compile("org.springframework.boot:spring-boot-starter")
+    compile("ch.qos.logback:logback-classic:1.2.3")
+
+    compile 'com.fasterxml.jackson.core:jackson-annotations:2.9.1'
+    compile 'com.fasterxml.jackson.core:jackson-databind:2.9.1'
+    compile("com.bugsnag:bugsnag-java:3.2.1")
+
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+}
+
+apply plugin: 'spring-boot'
+bootRepackage.enabled = false
 bootRun {
     if (project.hasProperty('args')) {
         args project.args.split(',')
     }
 }
 
-bootRepackage.enabled = false
-
-dependencies {
-    compile("org.springframework.boot:spring-boot-starter")
-    compile("ch.qos.logback:logback-classic:1.2.3")
-
-    compile rootProject
-}
