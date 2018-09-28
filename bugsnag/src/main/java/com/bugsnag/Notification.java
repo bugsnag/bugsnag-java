@@ -2,7 +2,6 @@ package com.bugsnag;
 
 import com.bugsnag.serialization.Expose;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -23,7 +22,7 @@ class Notification {
 
     @Expose
     public Notifier getNotifier() {
-        return new Notifier();
+        return NotifierUtils.getNotifier();
     }
 
     @Expose
