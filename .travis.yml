@@ -34,6 +34,9 @@ jobs:
     script:
       - ./gradlew check :test
       - bundle install
+      - ./gradlew clean :assemble
+      - mkdir -p features/fixtures/mazerunner/libs
+      - cp build/libs/bugsnag-java-3.2.1.jar features/fixtures/mazerunner/libs/bugsnag-java-3.2.1.jar
       - cd features/fixtures/mazerunner
       - ./gradlew clean build
       - cd ../../../
