@@ -14,7 +14,7 @@ class BugsnagScheduledTaskExceptionHandler implements ErrorHandler {
 
     private final Bugsnag bugsnag;
 
-    private ErrorHandler existingErrorHandler;
+    private volatile ErrorHandler existingErrorHandler;
 
     BugsnagScheduledTaskExceptionHandler(Bugsnag bugsnag) {
         this.bugsnag = bugsnag;
@@ -22,6 +22,11 @@ class BugsnagScheduledTaskExceptionHandler implements ErrorHandler {
 
     @Override
     public void handleError(Throwable throwable) {
+
+        if (throwable == null) {
+            return;
+        }
+
         if (bugsnag.getConfig().shouldSendUncaughtExceptions()) {
             HandledState handledState = HandledState.newInstance(
                     SeverityReasonType.REASON_UNHANDLED_EXCEPTION_MIDDLEWARE,

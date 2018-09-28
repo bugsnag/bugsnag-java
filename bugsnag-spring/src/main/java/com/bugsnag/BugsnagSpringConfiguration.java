@@ -5,6 +5,8 @@ import com.bugsnag.callbacks.Callback;
 import com.bugsnag.servlet.BugsnagServletContainerInitializer;
 import com.bugsnag.servlet.BugsnagServletRequestListener;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringBootVersion;
 import org.springframework.boot.web.servlet.ServletListenerRegistrationBean;
 import org.springframework.context.annotation.Bean;
@@ -28,9 +30,11 @@ import javax.servlet.ServletRequestListener;
 @Configuration
 public class BugsnagSpringConfiguration {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(BugsnagSpringConfiguration.class);
+
     private final Bugsnag bugsnag;
 
-    public BugsnagSpringConfiguration(final Bugsnag bugsnag) {
+    BugsnagSpringConfiguration(final Bugsnag bugsnag) {
         this.bugsnag = bugsnag;
     }
 
@@ -38,7 +42,7 @@ public class BugsnagSpringConfiguration {
      * Add a callback to add the version of Spring used by the application
      */
     @Bean
-    public Callback springVersionCallback() {
+    Callback springVersionCallback() {
         Callback callback = new Callback() {
             @Override
             public void beforeNotify(Report report) {
@@ -82,13 +86,13 @@ public class BugsnagSpringConfiguration {
      */
     @Configuration
     @Conditional(SpringBootLoadedCondition.class)
-    public class SpringBootConfiguration {
+    class SpringBootConfiguration {
 
         /**
          * Add a callback to add the version of Spring Boot used by the application.
          */
         @Bean
-        public Callback springBootVersionCallback() {
+        Callback springBootVersionCallback() {
             Callback callback = new Callback() {
                 @Override
                 public void beforeNotify(Report report) {
@@ -107,7 +111,7 @@ public class BugsnagSpringConfiguration {
          */
         @Bean
         @Conditional(SpringWebMvcLoadedCondition.class)
-        public ServletListenerRegistrationBean<ServletRequestListener> listenerRegistrationBean() {
+        ServletListenerRegistrationBean<ServletRequestListener> listenerRegistrationBean() {
             ServletListenerRegistrationBean<ServletRequestListener> srb =
                     new ServletListenerRegistrationBean<ServletRequestListener>();
             srb.setListener(new BugsnagServletRequestListener());
@@ -120,14 +124,14 @@ public class BugsnagSpringConfiguration {
      */
     @Configuration
     @Conditional(SpringWebMvcLoadedCondition.class)
-    public class SpringWebMvcConfiguration {
+    class SpringWebMvcConfiguration {
 
         /**
          * Register an exception resolver to send unhandled reports to Bugsnag
          * for uncaught exceptions thrown from request handlers.
          */
         @Bean
-        public BugsnagMvcExceptionHandler bugsnagHandlerExceptionResolver() {
+        BugsnagMvcExceptionHandler bugsnagHandlerExceptionResolver() {
             return new BugsnagMvcExceptionHandler(bugsnag);
         }
 
@@ -144,9 +148,9 @@ public class BugsnagSpringConfiguration {
      * Add configuration for reporting unhandled exceptions for scheduled tasks.
      */
     @Configuration
-    public class SchedulingTaskConfiguration implements SchedulingConfigurer {
+    class SchedulingTaskConfiguration implements SchedulingConfigurer {
 
-        private BugsnagScheduledTaskExceptionHandler bugsnagErrorHandler =
+        private final BugsnagScheduledTaskExceptionHandler bugsnagErrorHandler =
                 new BugsnagScheduledTaskExceptionHandler(bugsnag);
 
         /**
@@ -173,13 +177,13 @@ public class BugsnagSpringConfiguration {
                 // not the TaskScheduler interface.
                 try {
                     Field errorHandlerField =
-                            ThreadPoolTaskScheduler.class.getDeclaredField("errorHandler");
+                            taskScheduler.getClass().getDeclaredField("errorHandler");
                     errorHandlerField.setAccessible(true);
                     Object existingErrorHandler = errorHandlerField.get(taskScheduler);
 
                     // If an error handler has already been defined then make the Bugsnag handler
                     // call this afterwards
-                    if (existingErrorHandler != null) {
+                    if (existingErrorHandler instanceof ErrorHandler) {
                         bugsnagErrorHandler.setExistingErrorHandler(
                                 (ErrorHandler) existingErrorHandler);
                     }
@@ -187,11 +191,19 @@ public class BugsnagSpringConfiguration {
                     // Add the bugsnag error handler to the scheduler.
                     errorHandlerField.set(taskScheduler, bugsnagErrorHandler);
                 } catch (NoSuchFieldException ex) {
-                    // This will only be the case for custom implementations of a TaskScheduler.
+                    logScheduledErrorHandlerNotConfigured();
+                } catch (IllegalArgumentException ex) {
+                    logScheduledErrorHandlerNotConfigured();
                 } catch (IllegalAccessException ex) {
-                    // This will only be the case for custom implementations of a TaskScheduler.
+                    logScheduledErrorHandlerNotConfigured();
+                } catch (SecurityException ex) {
+                    logScheduledErrorHandlerNotConfigured();
                 }
             }
+        }
+
+        private void logScheduledErrorHandlerNotConfigured() {
+            LOGGER.warn("Bugsnag scheduled task exception handler could not be configured");
         }
     }
 }
