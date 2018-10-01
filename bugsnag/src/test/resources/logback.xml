@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+	<appender name="BUGSNAG" class="com.bugsnag.BugsnagAppender">
+		<apiKey>appenderApikey</apiKey>
+        <releaseStage>test</releaseStage>
+        <appVersion>1.0.1</appVersion>
+
+        <appType>gradleTask</appType>
+        <autoCaptureSessions>false</autoCaptureSessions>
+
+        <filteredProperty>password</filteredProperty>
+        <filteredProperty>credit_card_number</filteredProperty>
+
+        <ignoredClass>java.io.IOException</ignoredClass>
+        <ignoredClass>com.example.Custom</ignoredClass>
+
+        <notifyReleaseStage>test</notifyReleaseStage>
+        <notifyReleaseStage>development</notifyReleaseStage>
+
+        <projectPackage>com.company.package1</projectPackage>
+        <projectPackage>com.company.package2</projectPackage>
+
+        <metaData>
+            <tab>
+                <name>logbackTab</name>
+                <key>
+                    <name>logbackKey1</name>
+                    <value>logbackValue1</value>
+                </key>
+                <key>
+                    <name>logbackKey2</name>
+                    <value>logbackValue2</value>
+                </key>
+            </tab>
+        </metaData>
+
+        <sendThreads>true</sendThreads>
+
+        <excludeLoggerRegex>com.bugsnag.DateUtils</excludeLoggerRegex>
+        <excludeLoggerRegex>.*\.Meta.*</excludeLoggerRegex>
+
+	</appender>
+
+	<root level="INFO">
+		<appender-ref ref="BUGSNAG"/>
+	</root>
+
+	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+		<encoder>
+			<pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{50} - %msg%n</pattern>
+		</encoder>
+	</appender>
+    <appender name="STDERR" class="ch.qos.logback.core.ConsoleAppender">
+        <target>System.err</target>
+        <encoder>
+            <pattern>%date [%thread] - 5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+    <root level="DEBUG">
+        <appender-ref ref="STDOUT" />
+        <appender-ref ref="STDERR" />
+    </root>
+</configuration>

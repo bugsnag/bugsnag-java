@@ -3,10 +3,10 @@
 
 # Install latest versions of bugsnag-java
 run_required_commands([
-  ["./gradlew", "clean", ":assemble", "-Pversion=9.9.9-test"],
+  ["./gradlew", "clean", "bugsnag:assemble", "-Pversion=9.9.9-test"],
   ["mkdir", "-p", "features/fixtures/mazerunner/libs"],
-  ["cp", "build/libs/bugsnag-java-9.9.9-test.jar",
-   "features/fixtures/mazerunner/libs/bugsnag-java-9.9.9-test.jar"],
+  ["cp", "bugsnag/build/libs/bugsnag-9.9.9-test.jar",
+   "features/fixtures/mazerunner/libs/bugsnag-9.9.9-test.jar"],
 ])
 
 # Build the harness app

@@ -7,4 +7,3 @@ endif
 	@sed -i '' "s/NOTIFIER_VERSION = .*;/NOTIFIER_VERSION = \"$(VERSION)\";/"\
 	 src/main/java/com/bugsnag/Notifier.java
 
-

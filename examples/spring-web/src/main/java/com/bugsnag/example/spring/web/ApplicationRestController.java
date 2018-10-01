@@ -76,28 +76,8 @@ public class ApplicationRestController {
 
     @RequestMapping("/send-unhandled-exception")
     public String sendUnhandledException() throws InterruptedException {
-        // Test an unhanded exception from a different thread as shutdown hooks
-        // won't be called if executed from this thread
         LOGGER.info("Sending an unhandled exception to Bugsnag");
-        Thread thread = new Thread() {
-            @Override
-            public void run() {
-                throw new RuntimeException("Unhandled exception");
-            }
-        };
-
-        thread.start();
-
-        // Wait for unhandled exception thread to finish
-        thread.join();
-
-        return exampleWebsiteLinks + "<br/>Sent an unhandled exception to Bugsnag";
-    }
-
-    @RequestMapping("/send-spring-handled-exception")
-    public String sendSpringHandledException() {
-        LOGGER.info("Sending a Spring handled exception to Bugsnag");
-        throw new RuntimeException("Spring handled exception");
+        throw new RuntimeException("Unhandled exception");
     }
 
     @RequestMapping("/shutdown")

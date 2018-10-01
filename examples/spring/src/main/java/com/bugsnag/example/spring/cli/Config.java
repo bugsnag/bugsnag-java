@@ -1,21 +1,24 @@
 package com.bugsnag.example.spring.cli;
 
 import com.bugsnag.Bugsnag;
+import com.bugsnag.BugsnagSpringConfiguration;
 import com.bugsnag.Report;
 import com.bugsnag.callbacks.Callback;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 
 import java.util.Date;
 
 @Configuration
+@Import(BugsnagSpringConfiguration.class)
 public class Config {
 
     // Define singleton bean "bugsnag" which can be injected into any Spring managed class with @Autowired.
     @Bean
     public Bugsnag bugsnag() {
         // Create a Bugsnag client
-        Bugsnag bugsnag = new Bugsnag("YOUR-API-KEY");
+        Bugsnag bugsnag = Bugsnag.init("YOUR-API-KEY");
 
         // Set some diagnostic data which will not change during the
         // lifecycle of the application

@@ -1,21 +1,24 @@
 package com.bugsnag.example.spring.web;
 
 import com.bugsnag.Bugsnag;
+import com.bugsnag.BugsnagSpringConfiguration;
 import com.bugsnag.Report;
 import com.bugsnag.callbacks.Callback;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 
 import java.util.Date;
 
 @Configuration
+@Import(BugsnagSpringConfiguration.class)
 public class Config {
 
     // Define singleton bean "bugsnag" which can be injected into any Spring managed class with @Autowired.
     @Bean
     public Bugsnag bugsnag() {
         // Create a Bugsnag client
-        Bugsnag bugsnag = new Bugsnag("YOUR-API-KEY");
+        Bugsnag bugsnag = Bugsnag.init("YOUR-API-KEY");
 
         // Set some diagnostic data which will not change during the
         // lifecycle of the application
@@ -48,7 +51,6 @@ public class Config {
                 + "<a href=\"/send-handled-exception-info\">Send a handled exception to Bugsnag with INFO severity</a><br/>"
                 + "<a href=\"/send-handled-exception-with-metadata\">Send a handled exception to Bugsnag with custom MetaData</a><br/>"
                 + "<a href=\"/send-unhandled-exception\">Send an unhandled exception to Bugsnag</a><br/>"
-                + "<a href=\"/send-spring-handled-exception\">Send an exception handled by Spring @ExceptionHandler to Bugsnag</a><br/>"
                 + "<a href=\"/shutdown\">Shutdown the application</a><br/>";
     }
 }
