@@ -32,8 +32,7 @@ jobs:
   - stage: test
     jdk: openjdk7
     script:
-      - ./gradlew check bugsnag:test 
-      - ./gradlew check bugsnag-spring:test
+      - for dir in examples/*/; do echo "-x examples:`basename $dir`:test"; done | xargs ./gradlew test
       - bundle install
       - bundle exec bugsnag-maze-runner
 
