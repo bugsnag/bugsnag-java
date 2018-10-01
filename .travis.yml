@@ -32,7 +32,8 @@ jobs:
   - stage: test
     jdk: openjdk7
     script:
-      - ./gradlew check bugsnag:test bugsnag-spring:test
+      - ./gradlew check bugsnag:test 
+      - ./gradlew check bugsnag-spring:test
       - bundle install
       - bundle exec bugsnag-maze-runner
 
