@@ -1,6 +1,5 @@
 package com.bugsnag.mazerunner;
 
-import com.bugsnag.Bugsnag;
 import org.apache.log4j.Logger;
 import org.springframework.beans.BeansException;
 import org.springframework.boot.CommandLineRunner;
@@ -11,12 +10,11 @@ import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 
 @Component
-public class TestCaseRunnner implements CommandLineRunner, ApplicationContextAware {
+public class TestCaseRunner implements CommandLineRunner, ApplicationContextAware {
 
-    private static final Logger LOGGER = Logger.getLogger(TestCaseRunnner.class);
+    private static final Logger LOGGER = Logger.getLogger(TestCaseRunner.class);
 
     private ApplicationContext ctx;
 
