@@ -2,7 +2,6 @@ package com.bugsnag;
 
 import com.bugsnag.serialization.Expose;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
