@@ -96,6 +96,17 @@ Create a [Bintray](https://bintray.com) account:
 
 ### 3. Making a release
 
+#### Pre-release Checklist
+- [ ] Does the build pass on the CI server?
+- [ ] Are all Docs PRs ready to go?
+- [ ] Has all new functionality been manually tested on a release build?
+  - [ ] Ensure the example app sends an unhandled error
+  - [ ] Ensure the example app sends a handled error
+- [ ] Have the installation instructions been updated on the [dashboard](https://github.com/bugsnag/bugsnag-website/tree/master/app/views/dashboard/projects/install) as well as the [docs site](https://github.com/bugsnag/docs.bugsnag.com)?
+- [ ] Do the installation instructions work for a manual integration?
+
+#### Making the release
+1. Merge any remaining PRs to master, ensuring the commit message matches the release tag (e.g. v4.0.0)
 1. Update the CHANGELOG.md file with any changes
 1. Update the version number by running `make VERSION=[number] bump`
 1. Commit the changes
@@ -113,3 +124,8 @@ Create a [Bintray](https://bintray.com) account:
      integration guide.
    * For a major version change, update the version numbers in the integration
      instructions on docs.bugsnag.com and the quick start guides on the website.
+
+#### Post-release Checklist
+- [ ] Have all Docs PRs been merged?
+- [ ] Do the existing example apps send an error report using the released artifact?
+- [ ] Make releases to downstream libraries, if appropriate (generally for bug fixes)
