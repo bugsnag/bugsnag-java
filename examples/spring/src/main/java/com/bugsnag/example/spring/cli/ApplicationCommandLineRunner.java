@@ -72,6 +72,6 @@ public class ApplicationCommandLineRunner implements CommandLineRunner {
         thread.join();
 
         // Exit the spring application
-        SpringApplication.exit(applicationContext);
+        System.exit(SpringApplication.exit(applicationContext));
     }
 }
