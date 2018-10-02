@@ -13,6 +13,8 @@ repositories {
 
 dependencies {
     compile project(':bugsnag')
+    testCompile project(path: ':bugsnag', configuration: 'testRuntime')
+
     compileOnly "javax.servlet:javax.servlet-api:${servletApiVersion}"
     compileOnly "org.springframework:spring-webmvc:${springVersion}"
     compileOnly "org.springframework.boot:spring-boot:${springBootVersion}"
