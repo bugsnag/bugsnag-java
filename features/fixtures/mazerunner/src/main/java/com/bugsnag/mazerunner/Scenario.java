@@ -38,7 +38,7 @@ public abstract class Scenario {
 
         LOGGER.info("using " + path + " to send Bugsnags");
 
-        bugsnag = new Bugsnag(apiKey, sendUncaughtExceptions);
+        bugsnag = Bugsnag.init(apiKey, sendUncaughtExceptions);
         bugsnag.setEndpoints(path, path);
     }
 
