@@ -5,7 +5,7 @@ Upgrading
 
 If you develop a [Spring Framework](https://spring.io/) application, it is recommended that you migrate from bugsnag-java to bugsnag-spring. bugsnag-spring adds support for various Spring-specific features, such as automatic detection of exceptions within scheduled tasks. To upgrade:
 
-1. Replace the `bugsnag` artefact with `bugsnag-spring` in your build.gradle:
+1. Replace the `bugsnag` artifact with `bugsnag-spring` in your build.gradle:
 
 ```groovy
 //compile 'com.bugsnag:bugsnag:3.+'
