@@ -23,6 +23,7 @@ import java.net.InetSocketAddress;
 import java.net.Proxy;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -721,7 +722,10 @@ public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
      * @param value The string to split
      * @return The list of parts
      */
-    private List<String> split(String value) {
+    List<String> split(String value) {
+        if (value == null) {
+            return Collections.emptyList();
+        }
         String[] parts = value.split(",", -1);
         return Arrays.asList(parts);
     }

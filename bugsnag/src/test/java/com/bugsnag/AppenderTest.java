@@ -1,5 +1,6 @@
 package com.bugsnag;
 
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -402,6 +403,16 @@ public class AppenderTest {
 
         // Check that no reports were sent to Bugsnag
         assertEquals(0, delivery.getNotifications().size());
+    }
+
+    @Test
+    public void testSplit() {
+        BugsnagAppender appender = BugsnagAppender.getInstance();
+        assertTrue(appender.split(null).isEmpty());
+        assertArrayEquals(new String[]{""}, appender.split("").toArray());
+
+        String[] expected = {"one", "two", "three"};
+        assertArrayEquals(expected, appender.split("one,two,three").toArray());
     }
 
     private StackTraceElement changeClassName(StackTraceElement element, String className) {
