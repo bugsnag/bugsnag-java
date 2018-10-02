@@ -1,6 +1,7 @@
 package com.bugsnag;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -34,7 +35,7 @@ public class NotifierTest {
 
         assertEquals("Bugsnag Spring", notifier.get("name").asText());
         assertEquals("https://github.com/bugsnag/bugsnag-java", notifier.get("url").asText());
-        assertNotNull(notifier.get("version").asText());
+        assertFalse(notifier.get("version").asText().isEmpty());
     }
 
     @Test
@@ -44,6 +45,6 @@ public class NotifierTest {
 
         assertEquals("Bugsnag Spring", notifier.get("name").asText());
         assertEquals("https://github.com/bugsnag/bugsnag-java", notifier.get("url").asText());
-        assertNotNull(notifier.get("version").asText());
+        assertFalse(notifier.get("version").asText().isEmpty());
     }
 }
