@@ -713,7 +713,7 @@ public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
      *
      * @param loggerNameRegex The regex pattern for logger names that should be excluded
      */
-    public static void setExcludeLoggerRegex(String loggerNameRegex) {
+    static void setExcludeLoggerRegex(String loggerNameRegex) {
         EXCLUDED_LOGGERS.add(loggerNameRegex);
     }
 

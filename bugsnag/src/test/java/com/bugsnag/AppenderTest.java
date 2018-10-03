@@ -391,21 +391,6 @@ public class AppenderTest {
     }
 
     @Test
-    public void testExcludedLoggers() {
-        RuntimeException exception = new RuntimeException("test");
-        StackTraceElement[] trace = exception.getStackTrace();
-
-        // Send logs from loggers that have been excluded in the logback.xml file
-        exception.setStackTrace(trace);
-        EXCLUDED_LOGGER_1.warn("Test exception", exception);
-        exception.setStackTrace(trace);
-        EXCLUDED_LOGGER_2.warn("Test exception", exception);
-
-        // Check that no reports were sent to Bugsnag
-        assertEquals(0, delivery.getNotifications().size());
-    }
-
-    @Test
     public void testSplit() {
         BugsnagAppender appender = BugsnagAppender.getInstance();
         assertTrue(appender.split(null).isEmpty());
