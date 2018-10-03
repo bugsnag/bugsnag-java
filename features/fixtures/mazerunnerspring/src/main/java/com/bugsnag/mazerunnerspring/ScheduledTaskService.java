@@ -1,7 +1,7 @@
 package com.bugsnag.mazerunnerspring;
 
 import org.apache.log4j.Logger;
-import org.springframework.context.annotation.Bean;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
@@ -26,5 +26,16 @@ public class ScheduledTaskService {
         if (throwException) {
             throw new RuntimeException("Unhandled exception from ScheduledTaskService");
         }
+    }
+
+    @Async
+    public void doSomethingAsync() {
+        try {
+            Thread.sleep(100);
+        } catch (InterruptedException e) {
+            // ignore
+        }
+
+        throw new RuntimeException("Unhandled exception from AsyncTask");
     }
 }
