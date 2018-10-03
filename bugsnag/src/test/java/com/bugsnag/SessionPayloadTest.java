@@ -39,7 +39,7 @@ public class SessionPayloadTest {
     }
 
     @Test
-    public void testJsonSerialisation() throws Throwable {
+    public void testJsonSerialisation() {
         assertNotNull(rootNode);
 
         JsonNode notifier = rootNode.get("notifier");

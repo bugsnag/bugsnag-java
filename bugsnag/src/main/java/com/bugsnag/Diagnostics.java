@@ -1,7 +1,6 @@
 package com.bugsnag;
 
 import com.bugsnag.callbacks.DeviceCallback;
-import com.bugsnag.serialization.Expose;
 
 import java.util.HashMap;
 import java.util.Map;

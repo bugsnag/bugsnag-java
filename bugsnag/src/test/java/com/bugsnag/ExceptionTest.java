@@ -26,14 +26,14 @@ public class ExceptionTest {
      * @throws Throwable if config couldn't be initialised
      */
     @Before
-    public void setUp() throws Throwable {
+    public void setUp() {
         Configuration config = new Configuration("api-key");
         ogThrowable = new RuntimeException("Test");
         exception = new Exception(config, ogThrowable);
     }
 
     @Test
-    public void testDefaults() throws Throwable {
+    public void testDefaults() {
         assertEquals("java.lang.RuntimeException", exception.getErrorClass());
         assertEquals("Test", exception.getMessage());
         assertEquals(ogThrowable, exception.getThrowable());
@@ -41,14 +41,14 @@ public class ExceptionTest {
     }
 
     @Test
-    public void testClassOverride() throws Throwable {
+    public void testClassOverride() {
         exception.setErrorClass("Hello");
         assertEquals("Hello", exception.getErrorClass());
         assertEquals("Test", exception.getMessage());
     }
 
     @Test
-    public void testReportCallback() throws Throwable {
+    public void testReportCallback() {
         Bugsnag bugsnag = Bugsnag.init("apikey");
         bugsnag.setDelivery(new Delivery() {
             @Override

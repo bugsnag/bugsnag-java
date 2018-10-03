@@ -26,7 +26,7 @@ public class NotificationTest {
      * @throws Throwable the throwable
      */
     @Before
-    public void setUp() throws Throwable {
+    public void setUp() {
         config = new Configuration("api-key");
         config.appVersion = "1.2.3";
         config.releaseStage = "dev";
@@ -67,7 +67,7 @@ public class NotificationTest {
         assertNull(rootNode.get("events").get("session"));
     }
 
-    private void validateErrorReport(JsonNode rootNode) throws Throwable {
+    private void validateErrorReport(JsonNode rootNode) {
         assertNotNull(rootNode);
         assertNotNull(rootNode.get("apiKey").asText());
         assertNotNull(rootNode.get("notifier"));

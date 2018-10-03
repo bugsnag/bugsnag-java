@@ -116,7 +116,7 @@ public class AppenderTest {
         assertEquals("test", config.releaseStage);
         assertEquals("1.0.1", config.appVersion);
         assertEquals("gradleTask", config.appType);
-        assertEquals(false, config.shouldAutoCaptureSessions());
+        assertFalse(config.shouldAutoCaptureSessions());
 
         assertEquals(2, config.filters.length);
         ArrayList<String> filters = new ArrayList<String>(Arrays.asList(config.filters));
@@ -141,7 +141,7 @@ public class AppenderTest {
         assertTrue(projectPackages.contains("com.company.package2"));
         assertTrue(projectPackages.contains("com.company.package1"));
 
-        assertEquals(true, config.sendThreads);
+        assertTrue(config.sendThreads);
     }
 
     @Test

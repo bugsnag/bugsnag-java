@@ -294,9 +294,7 @@ public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
             @Override
             public void beforeNotify(Report report) {
 
-                for (int i = 0; i < globalMetaData.size(); i++) {
-                    LogbackMetaData metaData = globalMetaData.get(i);
-
+                for (LogbackMetaData metaData : globalMetaData) {
                     for (LogbackMetaDataTab tab : metaData.getTabs()) {
                         for (LogbackMetaDataKey key : tab.getKeys()) {
                             report.addToTab(tab.getName(),
@@ -331,12 +329,9 @@ public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
             Map<String, String> context = MDC.getCopyOfContextMap();
 
             if (context != null) {
-                Iterator<String> iterator = context.keySet().iterator();
 
                 // Loop over the keys and remove the thread ones
-                while (iterator.hasNext()) {
-                    String key = iterator.next();
-
+                for (String key : context.keySet()) {
                     if (key.startsWith(LOGGING_CONTEXT_THREAD_PREFIX)) {
                         MDC.remove(key);
                     }
@@ -352,18 +347,16 @@ public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
      * @param event The values in the logging context
      */
     private void populateContextData(Report report, ILoggingEvent event) {
-        if (event.getMDCPropertyMap() != null) {
-            Iterator<String> iterator = event.getMDCPropertyMap().keySet().iterator();
+        Map<String, String> propertyMap = event.getMDCPropertyMap();
 
+        if (propertyMap != null) {
             // Loop through all the keys and put them in the correct tabs
-            while (iterator.hasNext()) {
-                String key = iterator.next();
+
+            for (Map.Entry<String, String> entry : propertyMap.entrySet()) {
+                String key = entry.getKey();
 
                 if (key.startsWith(LOGGING_CONTEXT_THREAD_PREFIX)) {
-                    populateKey(key,
-                            event.getMDCPropertyMap().get(key),
-                            LOGGING_CONTEXT_THREAD_PREFIX,
-                            report);
+                    populateKey(key, entry.getValue(), LOGGING_CONTEXT_THREAD_PREFIX, report);
                 }
             }
         }
