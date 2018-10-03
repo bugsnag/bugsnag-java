@@ -30,3 +30,7 @@ Scenario: Exception reported when inside Notify release stage array
     And the request is a valid for the error reporting API
     And the exception "errorClass" equals "java.lang.RuntimeException"
     And the exception "message" equals "ArrayNotifyReleaseStageScenario"
+
+Scenario: Test logback appender with ignored release stage
+    When I run "LogbackScenario" with logback config "ignored_release_stage_config.xml"
+    Then I should receive no requests

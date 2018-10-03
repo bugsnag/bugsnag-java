@@ -3,16 +3,17 @@
 	<include resource="org/springframework/boot/logging/logback/base.xml" />
 
 	<appender name="BUGSNAG" class="com.bugsnag.BugsnagAppender">
-		<apiKey>a35a2a72bd230ac0aa0f52715bbdc6aa</apiKey>
-        <releaseStage>production</releaseStage>
+		<apiKey>__BUGSNAG_API_KEY__</apiKey>
+        <releaseStage>staging</releaseStage>
         <appVersion>1.0.0</appVersion>
 
-		<endpoints>
-			<notifyEndpoint>http://localhost:9339</notifyEndpoint>
-			<sessionEndpoint>http://localhost:9339</sessionEndpoint>
-		</endpoints>
+		<notifyReleaseStage>production</notifyReleaseStage>
+		<notifyReleaseStage>development</notifyReleaseStage>
 
-        <sendThreads>true</sendThreads>
+		<endpoints>
+			<notifyEndpoint>__BUGSNAG_MOCK_PATH__</notifyEndpoint>
+			<sessionEndpoint>__BUGSNAG_MOCK_PATH__</sessionEndpoint>
+		</endpoints>
 	</appender>
 
 	<root level="INFO">
