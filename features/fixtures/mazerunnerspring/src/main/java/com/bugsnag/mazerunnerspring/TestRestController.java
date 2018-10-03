@@ -12,6 +12,9 @@ public class TestRestController {
     Bugsnag bugsnag;
 
 
+    @Autowired
+    private ScheduledTaskService scheduledTaskService;
+
     @RequestMapping("/send-unhandled-exception")
     public String sendUnhandledException() throws InterruptedException {
         throw new RuntimeException("Unhandled exception from TestRestController");
