@@ -21,19 +21,9 @@ public abstract class Scenario {
     protected Bugsnag bugsnag;
 
     public Scenario() {
-        this(true);
-    }
-
-    public Scenario(boolean sendUncaughtExceptions) {
-
-        String apiKey = "YOUR-API-KEY";
-        if (!StringUtils.isEmpty(System.getProperty("BUGSNAG_API_KEY"))) {
-            apiKey = System.getProperty("BUGSNAG_API_KEY");
-        }
-
         // NOTE: this should already be configured by @Config
         // all this does is get the instance
-        bugsnag = Bugsnag.init(apiKey, sendUncaughtExceptions);
+        bugsnag = TestRestController.getBugsnag();
     }
 
     public abstract void run();

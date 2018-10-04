@@ -23,6 +23,8 @@ public class Config {
     public Bugsnag bugsnag() {
         Bugsnag bugsnag = Bugsnag.init(bugsnagApiKey);
         bugsnag.setEndpoints(bugsnagEndpoint, bugsnagEndpoint);
+        bugsnag.setReleaseStage("production");
+        bugsnag.setAppVersion("1.0.0");
         return bugsnag;
     }
 }

@@ -17,9 +17,24 @@ public class TestRestController {
     @Autowired
     private ScheduledTaskService scheduledTaskService;
 
+    private static TestRestController instance;
+    public TestRestController() {
+        instance = this;
+    }
+    public static Bugsnag getBugsnag() {
+        return instance.bugsnag;
+    }
+
     @RequestMapping("/send-unhandled-exception")
     public String sendUnhandledException() throws InterruptedException {
         throw new RuntimeException("Unhandled exception from TestRestController");
+    }
+
+    @RequestMapping("/add-session")
+    public String addSession() throws InterruptedException {
+        // A session should be automatically recorded by Bugsnag if automatic sessions are enabled
+        LOGGER.info("Starting a new session");
+        return "";
     }
 
     @RequestMapping("/run-async-task")
