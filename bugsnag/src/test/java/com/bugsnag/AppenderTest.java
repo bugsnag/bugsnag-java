@@ -32,8 +32,6 @@ import java.util.Map;
 public class AppenderTest {
 
     private static final Logger LOGGER = Logger.getLogger(AppenderTest.class);
-    private static final Logger EXCLUDED_LOGGER_1 = Logger.getLogger(DateUtils.class);
-    private static final Logger EXCLUDED_LOGGER_2 = Logger.getLogger(MetaData.class);
     private static StubNotificationDelivery delivery;
     private static StubSessionDelivery sessionDelivery;
     private static Delivery originalDelivery;
