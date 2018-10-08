@@ -7,23 +7,23 @@ If you develop a [Spring Framework](https://spring.io/) application, it is recom
 
 1. Replace the `bugsnag` artifact with `bugsnag-spring` in your build.gradle:
 
-```groovy
-//compile 'com.bugsnag:bugsnag:3.+'
-compile 'com.bugsnag:bugsnag-spring:3.+'
-```
+    ```groovy
+    //compile 'com.bugsnag:bugsnag:3.+'
+    compile 'com.bugsnag:bugsnag-spring:3.+'
+    ```
 
 2. Create a Spring `Configuration` class which exposes `Bugsnag` as a Spring bean and imports the configuration class `BugsnagSpringConfiguration`. This should replace any previous instantiation of `Bugsnag`:
 
-```java
-@Configuration
-@Import(BugsnagSpringConfiguration.class)
-public class BugsnagConfig {
-    @Bean
-    public Bugsnag bugsnag() {
-        return Bugsnag.init("your-api-key-here");
+    ```java
+    @Configuration
+    @Import(BugsnagSpringConfiguration.class)
+    public class BugsnagConfig {
+        @Bean
+        public Bugsnag bugsnag() {
+            return Bugsnag.init("your-api-key-here");
+        }
     }
-}
-```
+    ```
 
 3. If you wish to configure Logback, capture uncaught exceptions in async methods, or otherwise customise your integration, please [see the docs](https://docs.bugsnag.com/platforms/java/spring/#installation) for further information.
 
