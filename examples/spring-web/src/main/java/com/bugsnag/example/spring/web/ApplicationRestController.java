@@ -11,6 +11,9 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
+
 @RestController
 public class ApplicationRestController {
 
@@ -25,6 +28,9 @@ public class ApplicationRestController {
 
     @Autowired
     private String exampleWebsiteLinks;
+
+    @Autowired
+    private AsyncService asyncService;
 
     @RequestMapping("/")
     public String index() {
@@ -75,15 +81,29 @@ public class ApplicationRestController {
     }
 
     @RequestMapping("/send-unhandled-exception")
-    public String sendUnhandledException() throws InterruptedException {
+    public String sendUnhandledException() {
         LOGGER.info("Sending an unhandled exception to Bugsnag");
-        throw new RuntimeException("Unhandled exception");
+        throw new RuntimeException("Sent an unhandled exception to Bugsnag");
+    }
+
+    @RequestMapping("/send-unhandled-exception-async")
+    public String sendUnhandledExceptionAsync() {
+        asyncService.throwExceptionAsync();
+        return exampleWebsiteLinks + "<br/>Sent an unhandled exception from an async method";
+    }
+
+    @RequestMapping("/send-unhandled-exception-async-future")
+    public String sendUnhandledExceptionAsyncFuture() throws ExecutionException, InterruptedException {
+        Future future = asyncService.throwExceptionAsyncFuture();
+        future.get();
+
+        return "Exception is thrown before this";
     }
 
     @RequestMapping("/shutdown")
     public void shutdown() {
         LOGGER.info("Shutting down application");
 
-        SpringApplication.exit(applicationContext);
+        System.exit(SpringApplication.exit(applicationContext));
     }
 }

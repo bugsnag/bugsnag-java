@@ -51,6 +51,8 @@ public class Config {
                 + "<a href=\"/send-handled-exception-info\">Send a handled exception to Bugsnag with INFO severity</a><br/>"
                 + "<a href=\"/send-handled-exception-with-metadata\">Send a handled exception to Bugsnag with custom MetaData</a><br/>"
                 + "<a href=\"/send-unhandled-exception\">Send an unhandled exception to Bugsnag</a><br/>"
+                + "<a href=\"/send-unhandled-exception-async\">Send an unhandled exception to Bugsnag from an async method</a><br/>"
+                + "<a href=\"/send-unhandled-exception-async-future\">Send an unhandled exception to Bugsnag from an async method that returns a Future</a><br/>"
                 + "<a href=\"/shutdown\">Shutdown the application</a><br/>";
     }
 }

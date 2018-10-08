@@ -14,6 +14,7 @@ public class ControllerExceptionHandler {
     @ExceptionHandler(Exception.class)
     @ResponseBody
     public String handleException(Exception e) {
-        return exampleWebsiteLinks + "<br/>Sent a Spring unhandled exception to Bugsnag";
+        String message = e.getCause() == null ? e.getMessage() : e.getCause().getMessage();
+        return exampleWebsiteLinks + "<br/>" + message;
     }
 }
