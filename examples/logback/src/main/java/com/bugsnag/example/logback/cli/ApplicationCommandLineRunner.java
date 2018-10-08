@@ -82,6 +82,6 @@ public class ApplicationCommandLineRunner implements CommandLineRunner {
         BugsnagAppender.clearThreadMetaData();
 
         // Exit the spring application
-        SpringApplication.exit(applicationContext);
+        System.exit(SpringApplication.exit(applicationContext));
     }
 }
