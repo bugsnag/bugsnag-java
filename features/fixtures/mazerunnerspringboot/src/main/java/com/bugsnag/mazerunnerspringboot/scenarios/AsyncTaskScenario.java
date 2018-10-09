@@ -1,7 +1,7 @@
-package com.bugsnag.mazerunnerspring.scenarios;
+package com.bugsnag.mazerunnerspringboot.scenarios;
 
-import com.bugsnag.mazerunnerspring.Scenario;
-import com.bugsnag.mazerunnerspring.ScheduledTaskService;
+import com.bugsnag.mazerunnerspringboot.Scenario;
+import com.bugsnag.mazerunnerspringboot.ScheduledTaskService;
 import org.springframework.web.client.RestTemplate;
 
 /**

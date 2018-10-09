@@ -1,4 +1,4 @@
-package com.bugsnag.mazerunnerspring;
+package com.bugsnag.mazerunnerspringboot;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.BeansException;
@@ -60,7 +60,7 @@ public class TestCaseRunner implements CommandLineRunner, ApplicationContextAwar
     private static Scenario testCaseForName(String eventType) {
 
         try {
-            Class clz = Class.forName("com.bugsnag.mazerunnerspring.scenarios." + eventType);
+            Class clz = Class.forName("com.bugsnag.mazerunnerspringboot.scenarios." + eventType);
             Constructor constructor = clz.getConstructors()[0];
             return (Scenario) constructor.newInstance();
         } catch(Exception ex) {

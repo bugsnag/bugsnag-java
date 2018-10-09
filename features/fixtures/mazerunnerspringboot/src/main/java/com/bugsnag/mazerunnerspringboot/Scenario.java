@@ -1,4 +1,4 @@
-package com.bugsnag.mazerunnerspring;
+package com.bugsnag.mazerunnerspringboot;
 
 import com.bugsnag.Bugsnag;
 import com.bugsnag.delivery.Delivery;

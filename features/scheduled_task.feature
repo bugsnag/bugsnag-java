@@ -1,7 +1,7 @@
 Feature: Reporting Unhandled exceptions in a scheduled task
 
 Scenario: Report an exception from a scheduled task
-    When I run spring "ScheduledTaskScenario" with the defaults
+    When I run spring boot "ScheduledTaskScenario" with the defaults
     Then I should receive a request
     And the request is a valid for the error reporting API
     And the "Bugsnag-API-Key" header equals "a35a2a72bd230ac0aa0f52715bbdc6aa"

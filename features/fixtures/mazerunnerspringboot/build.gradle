@@ -14,7 +14,7 @@ plugins {
     id 'java'
 }
 
-group 'com.bugsnag.mazerunnerspring'
+group 'com.bugsnag.mazerunnerspringboot'
 version '1.0-SNAPSHOT'
 
 sourceCompatibility = 1.7

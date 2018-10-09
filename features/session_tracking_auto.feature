@@ -1,7 +1,7 @@
 Feature: Auto Session Tracking
 
 Scenario: Report automatic session from a spring app
-    When I run spring "AutoSessionScenario" with the defaults
+    When I run spring boot "AutoSessionScenario" with the defaults
     Then I should receive a request
     And the request is a valid for the session tracking API
     And the "Bugsnag-API-Key" header equals "a35a2a72bd230ac0aa0f52715bbdc6aa"

@@ -1,7 +1,7 @@
 Feature: Reporting Unhandled exceptions in a rest controller
 
 Scenario: Report an exception from a rest controller
-    When I run spring "RestControllerScenario" with the defaults
+    When I run spring boot "RestControllerScenario" with the defaults
     Then I should receive a request
     And the request is a valid for the error reporting API
     And the "Bugsnag-API-Key" header equals "a35a2a72bd230ac0aa0f52715bbdc6aa"

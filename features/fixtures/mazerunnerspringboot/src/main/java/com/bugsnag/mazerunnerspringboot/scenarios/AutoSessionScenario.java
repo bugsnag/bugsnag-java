@@ -1,6 +1,6 @@
-package com.bugsnag.mazerunnerspring.scenarios;
+package com.bugsnag.mazerunnerspringboot.scenarios;
 
-import com.bugsnag.mazerunnerspring.Scenario;
+import com.bugsnag.mazerunnerspringboot.Scenario;
 import org.springframework.web.client.RestTemplate;
 
 /**
