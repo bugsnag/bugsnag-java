@@ -26,7 +26,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -344,6 +343,27 @@ public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
      * Adds thread logging context values to the given report meta data
      *
      * @param report The report being sent to Bugsnag
+     */
+    public static void populateContextData(Report report) {
+        if (MDC.getMDCAdapter() != null) {
+            Map<String, String> context = MDC.getCopyOfContextMap();
+            if (context != null) {
+                // Loop through all the keys and put them in the correct tabs
+                for (Map.Entry<String, String> entry : context.entrySet()) {
+                    String key = entry.getKey();
+
+                    if (key.startsWith(LOGGING_CONTEXT_THREAD_PREFIX)) {
+                        populateKey(key, entry.getValue(), LOGGING_CONTEXT_THREAD_PREFIX, report);
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * Adds thread logging context values to the given report meta data
+     *
+     * @param report The report being sent to Bugsnag
      * @param event The values in the logging context
      */
     private void populateContextData(Report report, ILoggingEvent event) {
@@ -370,7 +390,7 @@ public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
      * @param prefix The prefix of the key
      * @param report The report to add the value to
      */
-    private void populateKey(String key, String value, String prefix, Report report) {
+    private static void populateKey(String key, String value, String prefix, Report report) {
         if (key.contains(LOGGING_CONTEXT_TAB_SEPARATOR)) {
             String[] parts = key
                     .substring(prefix.length())

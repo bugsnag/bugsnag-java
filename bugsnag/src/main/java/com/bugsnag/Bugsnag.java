@@ -492,6 +492,11 @@ public class Bugsnag {
             }
         }
 
+        // If using the log appender, add thread-based metadata to unhandled exceptions
+        if (logbackAppenderInUse && report.getUnhandled()) {
+            BugsnagAppender.populateContextData(report);
+        }
+
         if (config.delivery == null) {
             LOGGER.debug("Error not reported to Bugsnag - no delivery is set");
             return false;
