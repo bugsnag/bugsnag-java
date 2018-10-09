@@ -9,6 +9,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 public class ErrorHandler extends HttpServlet {
+
+    private static final long serialVersionUID = 4926619146717832212L;
+
     private Bugsnag bugsnag;
 
     /**

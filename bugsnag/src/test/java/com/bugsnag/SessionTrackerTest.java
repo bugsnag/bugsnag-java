@@ -33,7 +33,7 @@ public class SessionTrackerTest {
      * @throws Throwable the throwable
      */
     @Before
-    public void setUp() throws Throwable {
+    public void setUp() {
         configuration = new Configuration("api-key");
         sessionDelivery = new ConfigurationTest.FakeHttpDelivery();
         configuration.sessionDelivery = sessionDelivery;
@@ -42,33 +42,33 @@ public class SessionTrackerTest {
     }
 
     @Test
-    public void startManualSessionAutoEnabled() throws Throwable {
+    public void startManualSessionAutoEnabled() {
         sessionTracker.startSession(new Date(), false);
         assertNotNull(sessionTracker.getSession());
     }
 
     @Test
-    public void startManualSessionAutoDisabled() throws Throwable {
+    public void startManualSessionAutoDisabled() {
         configuration.setAutoCaptureSessions(false);
         sessionTracker.startSession(new Date(), false);
         assertNotNull(sessionTracker.getSession());
     }
 
     @Test
-    public void startAutoSessionAutoEnabled() throws Throwable {
+    public void startAutoSessionAutoEnabled() {
         sessionTracker.startSession(new Date(), true);
         assertNotNull(sessionTracker.getSession());
     }
 
     @Test
-    public void startAutoSessionAutoDisabled() throws Throwable {
+    public void startAutoSessionAutoDisabled() {
         configuration.setAutoCaptureSessions(false);
         sessionTracker.startSession(new Date(), true);
         assertNull(sessionTracker.getSession());
     }
 
     @Test
-    public void startSessionNoEndpoint() throws Throwable {
+    public void startSessionNoEndpoint() {
         configuration.setEndpoints("http://example.com", null);
         sessionTracker.startSession(new Date(), true);
         assertNull(sessionTracker.getSession());
@@ -104,7 +104,7 @@ public class SessionTrackerTest {
     }
 
     @Test
-    public void startTwoSessionsSameThread() throws Throwable {
+    public void startTwoSessionsSameThread() {
         sessionTracker.startSession(new Date(), false);
         Session first = sessionTracker.getSession();
 
@@ -132,7 +132,7 @@ public class SessionTrackerTest {
     }
 
     @Test
-    public void disabledReleaseStage() throws Throwable {
+    public void disabledReleaseStage() {
         configuration.notifyReleaseStages = new String[]{"prod"};
         configuration.releaseStage = "dev";
         sessionTracker.startSession(new Date(), false);
@@ -140,7 +140,7 @@ public class SessionTrackerTest {
     }
 
     @Test
-    public void enabledReleaseStage() throws Throwable {
+    public void enabledReleaseStage() {
         configuration.notifyReleaseStages = new String[]{"prod"};
         configuration.releaseStage = "prod";
         sessionTracker.startSession(new Date(), false);
@@ -148,7 +148,7 @@ public class SessionTrackerTest {
     }
 
     @Test
-    public void zeroSessionDelivery() throws Throwable {
+    public void zeroSessionDelivery() {
         CustomDelivery sessionDelivery = new CustomDelivery() {
             @Override
             public void deliver(Serializer serializer, Object object, Map<String, String> headers) {
@@ -162,7 +162,7 @@ public class SessionTrackerTest {
     }
 
     @Test
-    public void noDateChangeSessionDelivery() throws Throwable {
+    public void noDateChangeSessionDelivery() {
         CustomDelivery sessionDelivery = new CustomDelivery() {
             @Override
             public void deliver(Serializer serializer, Object object, Map<String, String> headers) {
@@ -177,7 +177,7 @@ public class SessionTrackerTest {
     }
 
     @Test
-    public void multiSessionDelivery() throws Throwable {
+    public void multiSessionDelivery() {
         CustomDelivery sessionDelivery = new CustomDelivery() {
             @Override
             public void deliver(Serializer serializer, Object object, Map<String, String> headers) {
@@ -211,7 +211,7 @@ public class SessionTrackerTest {
     }
 
     @Test
-    public void sessionDeliveryDiffMin() throws Throwable {
+    public void sessionDeliveryDiffMin() {
         CustomDelivery sessionDelivery = new CustomDelivery() {
             @Override
             public void deliver(Serializer serializer, Object object, Map<String, String> headers) {
@@ -234,7 +234,7 @@ public class SessionTrackerTest {
     }
 
     @Test
-    public void sessionDeliverySameMin() throws Throwable {
+    public void sessionDeliverySameMin() {
         CustomDelivery sessionDelivery = new CustomDelivery() {
             @Override
             public void deliver(Serializer serializer, Object object, Map<String, String> headers) {
@@ -257,7 +257,7 @@ public class SessionTrackerTest {
     }
 
     @Test
-    public void sessionDeliveryMultiFlush() throws Throwable {
+    public void sessionDeliveryMultiFlush() {
         CustomDelivery sessionDelivery = new CustomDelivery() {
             @Override
             public void deliver(Serializer serializer, Object object, Map<String, String> headers) {
@@ -282,7 +282,7 @@ public class SessionTrackerTest {
     }
 
     @Test
-    public void zeroSessionCount() throws Throwable {
+    public void zeroSessionCount() {
         CustomDelivery sessionDelivery = new CustomDelivery() {};
         configuration.sessionDelivery = sessionDelivery;
         sessionTracker.flushSessions(new Date(10120000L));

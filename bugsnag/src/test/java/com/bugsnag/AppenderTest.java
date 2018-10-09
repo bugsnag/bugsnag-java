@@ -1,5 +1,6 @@
 package com.bugsnag;
 
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -31,8 +32,6 @@ import java.util.Map;
 public class AppenderTest {
 
     private static final Logger LOGGER = Logger.getLogger(AppenderTest.class);
-    private static final Logger EXCLUDED_LOGGER_1 = Logger.getLogger(DateUtils.class);
-    private static final Logger EXCLUDED_LOGGER_2 = Logger.getLogger(MetaData.class);
     private static StubNotificationDelivery delivery;
     private static StubSessionDelivery sessionDelivery;
     private static Delivery originalDelivery;
@@ -115,7 +114,7 @@ public class AppenderTest {
         assertEquals("test", config.releaseStage);
         assertEquals("1.0.1", config.appVersion);
         assertEquals("gradleTask", config.appType);
-        assertEquals(false, config.shouldAutoCaptureSessions());
+        assertFalse(config.shouldAutoCaptureSessions());
 
         assertEquals(2, config.filters.length);
         ArrayList<String> filters = new ArrayList<String>(Arrays.asList(config.filters));
@@ -140,7 +139,7 @@ public class AppenderTest {
         assertTrue(projectPackages.contains("com.company.package2"));
         assertTrue(projectPackages.contains("com.company.package1"));
 
-        assertEquals(true, config.sendThreads);
+        assertTrue(config.sendThreads);
     }
 
     @Test
@@ -390,18 +389,13 @@ public class AppenderTest {
     }
 
     @Test
-    public void testExcludedLoggers() {
-        RuntimeException exception = new RuntimeException("test");
-        StackTraceElement[] trace = exception.getStackTrace();
+    public void testSplit() {
+        BugsnagAppender appender = BugsnagAppender.getInstance();
+        assertTrue(appender.split(null).isEmpty());
+        assertArrayEquals(new String[]{""}, appender.split("").toArray());
 
-        // Send logs from loggers that have been excluded in the logback.xml file
-        exception.setStackTrace(trace);
-        EXCLUDED_LOGGER_1.warn("Test exception", exception);
-        exception.setStackTrace(trace);
-        EXCLUDED_LOGGER_2.warn("Test exception", exception);
-
-        // Check that no reports were sent to Bugsnag
-        assertEquals(0, delivery.getNotifications().size());
+        String[] expected = {"one", "two", "three"};
+        assertArrayEquals(expected, appender.split("one,two,three").toArray());
     }
 
     private StackTraceElement changeClassName(StackTraceElement element, String className) {

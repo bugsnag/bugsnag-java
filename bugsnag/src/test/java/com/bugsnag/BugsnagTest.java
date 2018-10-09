@@ -484,7 +484,7 @@ public class BugsnagTest {
     }
 
     @Test(expected = UnsupportedOperationException.class)
-    public void testUncaughtHandlerModification() throws Throwable {
+    public void testUncaughtHandlerModification() {
         Set<Bugsnag> bugsnags = Bugsnag.uncaughtExceptionClients();
         bugsnags.clear();
     }

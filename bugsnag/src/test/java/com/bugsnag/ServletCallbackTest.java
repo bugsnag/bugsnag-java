@@ -44,7 +44,11 @@ public class ServletCallbackTest {
 
         when(request.getHeaderNames()).thenReturn(
                 stringsToEnumeration(
-                        "Content-Type", "Content-Length", "X-Custom-Header", "Authorization"));
+                        "Content-Type",
+                        "Content-Length",
+                        "X-Custom-Header",
+                        "Authorization",
+                        "Cookie"));
         when(request.getHeaders("Content-Type")).thenReturn(
                 stringsToEnumeration("application/json"));
         when(request.getHeaders("Content-Length")).thenReturn(
@@ -53,6 +57,8 @@ public class ServletCallbackTest {
                 stringsToEnumeration("some-data-1", "some-data-2"));
         when(request.getHeaders("Authorization")).thenReturn(
                 stringsToEnumeration("Basic ABC123"));
+        when(request.getHeaders("Cookie")).thenReturn(
+                stringsToEnumeration("name1=val1; name2=val2"));
 
         ServletContext context = mock(ServletContext.class);
         BugsnagServletRequestListener listener = new BugsnagServletRequestListener();
@@ -82,6 +88,9 @@ public class ServletCallbackTest {
 
         // Make sure that actual Authorization header value is not in the report
         assertEquals("[FILTERED]", headers.get("Authorization"));
+
+        // Make sure that actual cookies are not in the report
+        assertEquals("[FILTERED]", headers.get("Cookie"));
 
         assertTrue(request.containsKey("params"));
         Map<String, String[]> params = (Map<String, String[]>)request.get("params");

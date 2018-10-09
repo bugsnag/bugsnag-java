@@ -30,19 +30,19 @@ public class ConfigurationTest {
      * @throws Throwable if setup failed
      */
     @Before
-    public void setUp() throws Throwable {
+    public void setUp() {
         config = new Configuration("foo");
         config.delivery = new FakeHttpDelivery();
         config.sessionDelivery = new FakeHttpDelivery();
     }
 
     @Test
-    public void testDefaults() throws java.lang.Exception {
+    public void testDefaults() {
         assertTrue(config.shouldAutoCaptureSessions());
     }
 
     @Test
-    public void testErrorApiHeaders() throws java.lang.Exception {
+    public void testErrorApiHeaders() {
         Map<String, String> headers = config.getErrorApiHeaders();
         assertEquals(config.apiKey, headers.get("Bugsnag-Api-Key"));
         assertNotNull(headers.get("Bugsnag-Sent-At"));
@@ -50,7 +50,7 @@ public class ConfigurationTest {
     }
 
     @Test
-    public void testSessionApiHeaders() throws java.lang.Exception {
+    public void testSessionApiHeaders() {
         Map<String, String> headers = config.getSessionApiHeaders();
         assertEquals(config.apiKey, headers.get("Bugsnag-Api-Key"));
         assertNotNull(headers.get("Bugsnag-Sent-At"));

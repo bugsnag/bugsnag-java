@@ -66,7 +66,7 @@ public class MetaDataTest {
 
         assertEquals(1, metaData.size());
 
-        assertNull(((Map<String, Object>) metaData.get("tab-name-1")));
+        assertNull(metaData.get("tab-name-1"));
         assertEquals(1, ((Map<String, Object>) metaData.get("tab-name-2")).size());
     }
 }

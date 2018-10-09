@@ -28,7 +28,7 @@ public class ThreadStateTest {
      * @throws Exception if the thread state could not be constructed
      */
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         config = new Configuration("apikey");
         Map<Thread, StackTraceElement[]> stackTraces = Thread.getAllStackTraces();
         Thread currentThread = Thread.currentThread();

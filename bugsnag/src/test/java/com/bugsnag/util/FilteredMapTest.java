@@ -30,7 +30,7 @@ public class FilteredMapTest {
      * @throws Exception an exception
      */
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         HashMap<String, Object> map = new HashMap<String, Object>();
         map.put(KEY_UNFILTERED, VAL_UNFILTERED);
         map.put(KEY_FILTERED, VAL_FILTERED);
@@ -51,7 +51,7 @@ public class FilteredMapTest {
     }
 
     @Test
-    public void testIsEmpty() throws Exception {
+    public void testIsEmpty() {
         assertFalse(filteredMap.isEmpty());
         Map<String, Object> map = Collections.emptyMap();
         FilteredMap emptyMap = new FilteredMap(map, Collections.<String>emptyList());
@@ -59,14 +59,14 @@ public class FilteredMapTest {
     }
 
     @Test
-    public void testClear() throws Exception {
+    public void testClear() {
         assertEquals(4, filteredMap.size());
         filteredMap.clear();
         assertTrue(filteredMap.isEmpty());
     }
 
     @Test
-    public void testContainsKey() throws Exception {
+    public void testContainsKey() {
         assertTrue(filteredMap.containsKey(KEY_FILTERED));
         assertTrue(filteredMap.containsKey(KEY_UNFILTERED));
         assertTrue(filteredMap.containsKey(KEY_NESTED));
@@ -74,7 +74,7 @@ public class FilteredMapTest {
     }
 
     @Test
-    public void testRemove() throws Exception {
+    public void testRemove() {
         HashMap<String, Object> map = new HashMap<String, Object>();
         map.put(KEY_UNFILTERED, VAL_UNFILTERED);
         map.put(KEY_FILTERED, VAL_FILTERED);
@@ -92,7 +92,7 @@ public class FilteredMapTest {
     }
 
     @Test
-    public void testGet() throws Exception {
+    public void testGet() {
         assertEquals(PLACEHOLDER_FILTERED, filteredMap.get(KEY_FILTERED));
         assertEquals(VAL_UNFILTERED, filteredMap.get(KEY_UNFILTERED));
 
@@ -106,7 +106,7 @@ public class FilteredMapTest {
     }
 
     @Test
-    public void testKeySet() throws Exception {
+    public void testKeySet() {
         Set<String> keySet = filteredMap.keySet();
         assertEquals(4, keySet.size());
         assertTrue(keySet.contains(KEY_FILTERED));
@@ -115,7 +115,7 @@ public class FilteredMapTest {
     }
 
     @Test
-    public void testValues() throws Exception {
+    public void testValues() {
         Collection<Object> values = filteredMap.values();
         assertEquals(4, values.size());
         assertTrue(values.contains(VAL_UNFILTERED));
@@ -137,7 +137,7 @@ public class FilteredMapTest {
     }
 
     @Test
-    public void testEntrySet() throws Exception {
+    public void testEntrySet() {
         Set<Map.Entry<String, Object>> entries = filteredMap.entrySet();
         assertEquals(4, entries.size());
 
