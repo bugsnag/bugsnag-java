@@ -23,14 +23,14 @@ class SchedulingTaskConfiguration implements SchedulingConfigurer {
     @Autowired
     private Bugsnag bugsnag;
 
-    private final BugsnagScheduledTaskExceptionHandler bugsnagErrorHandler =
-            new BugsnagScheduledTaskExceptionHandler(bugsnag);
-
     /**
      * Add bugsnag error handling to a task scheduler
      */
     @Override
     public void configureTasks(ScheduledTaskRegistrar taskRegistrar) {
+        BugsnagScheduledTaskExceptionHandler bugsnagErrorHandler =
+                new BugsnagScheduledTaskExceptionHandler(bugsnag);
+
         if (taskRegistrar.getScheduler() == null) {
 
             // If no task scheduler has been defined by the application, create one
