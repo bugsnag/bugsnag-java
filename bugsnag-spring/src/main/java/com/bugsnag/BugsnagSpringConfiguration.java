@@ -56,14 +56,14 @@ public class BugsnagSpringConfiguration {
         // [Tomcat].[localhost].[/].[dispatcherServlet]
         // but could be something like:
         // [Tomcat-1].[127.0.0.1].[/subdomain/].[customDispatcher]
-        BugsnagAppender.setExcludeLoggerRegex("org.apache.catalina.core.ContainerBase."
+        BugsnagAppender.addExcludedLoggerPattern("org.apache.catalina.core.ContainerBase."
                 + "\\[Tomcat.*\\][.]\\[.*\\][.]\\[/.*\\][.]\\[.*\\]");
 
         // Exclude Jetty logger when processing HTTP requests via the HttpChannel
-        BugsnagAppender.setExcludeLoggerRegex("org.eclipse.jetty.server.HttpChannel");
+        BugsnagAppender.addExcludedLoggerPattern("org.eclipse.jetty.server.HttpChannel");
 
         // Exclude Undertow logger when processing HTTP requests
-        BugsnagAppender.setExcludeLoggerRegex("io.undertow.request");
+        BugsnagAppender.addExcludedLoggerPattern("io.undertow.request");
     }
 
 }

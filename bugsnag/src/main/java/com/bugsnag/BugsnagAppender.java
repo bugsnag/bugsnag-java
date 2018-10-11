@@ -26,10 +26,10 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 
 /** Sends events to Bugsnag using its Java client library. */
@@ -45,8 +45,8 @@ public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
             "com.bugsnag.delivery.OutputStreamDelivery",
             "com.bugsnag.delivery.SyncHttpDelivery");
 
-    /** Logger names that should not cause reports to be sent to Bugsnag. **/
-    private static final List<String> EXCLUDED_LOGGERS = new ArrayList<String>();
+    /** Logger name patterns that should not cause reports to be sent to Bugsnag. **/
+    private static final List<Pattern> EXCLUDED_LOGGER_PATTERNS = new ArrayList<Pattern>();
 
     /** Object mapper to serialize into logging context with */
     private static ObjectMapper mapper = new ObjectMapper();
@@ -706,8 +706,8 @@ public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
      *
      * @param loggerNameRegex The regex pattern for logger names that should be excluded
      */
-    static void setExcludeLoggerRegex(String loggerNameRegex) {
-        EXCLUDED_LOGGERS.add(loggerNameRegex);
+    static void addExcludedLoggerPattern(String loggerNameRegex) {
+        EXCLUDED_LOGGER_PATTERNS.add(Pattern.compile(loggerNameRegex));
     }
 
     /**
@@ -736,8 +736,8 @@ public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
      * @return true if the logger should be excluded
      */
     private boolean isExcludedLogger(String loggerName) {
-        for (String excludedLogger : EXCLUDED_LOGGERS) {
-            if (loggerName.matches(excludedLogger)) {
+        for (Pattern excludedLoggerPattern : EXCLUDED_LOGGER_PATTERNS) {
+            if (excludedLoggerPattern.matcher(loggerName).matches()) {
                 return true;
             }
         }
