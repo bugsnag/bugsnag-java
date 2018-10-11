@@ -16,9 +16,9 @@ import java.lang.reflect.Field;
  * Add configuration for reporting unhandled exceptions for scheduled tasks.
  */
 @Configuration
-class SchedulingTaskConfiguration implements SchedulingConfigurer {
+class ScheduledTaskConfiguration implements SchedulingConfigurer {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(SchedulingTaskConfiguration.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ScheduledTaskConfiguration.class);
 
     @Autowired
     private Bugsnag bugsnag;

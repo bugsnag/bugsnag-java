@@ -12,7 +12,7 @@ import javax.annotation.PostConstruct;
  */
 @Configuration
 @Conditional(SpringWebMvcLoadedCondition.class)
-class SpringWebMvcConfiguration {
+class MvcConfiguration {
 
     @Autowired
     private Bugsnag bugsnag;
