@@ -1,14 +1,8 @@
-apply plugin: 'spring-boot'
+apply plugin: 'application'
 
 buildscript {
-    ext {
-        springBootVersion = '1.4.1.RELEASE'
-    }
     repositories {
         jcenter()
-    }
-    dependencies {
-        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
     }
 }
 
@@ -17,8 +11,8 @@ repositories {
 }
 
 dependencies {
-    compile("org.springframework.boot:spring-boot-starter")
     compile("ch.qos.logback:logback-classic:1.2.3")
-
     compile project(':bugsnag')
 }
+
+mainClassName = "com.bugsnag.example.logback.cli.Application"
