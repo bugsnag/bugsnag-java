@@ -71,7 +71,7 @@ public class Application {
         // Remove the thread meta data so it won't be added to future reports on this thread
         BugsnagAppender.clearThreadMetaData();
 
-        // Exit the spring application
+        // Exit the application
         System.exit(0);
     }
 }
