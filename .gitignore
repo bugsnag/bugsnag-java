@@ -30,3 +30,10 @@ local.properties
 
 # Locally stored "Eclipse launch configurations"
 *.launch
+
+# jars
+features/fixtures/mazerunner/libs
+features/fixtures/mazerunnerspringboot/libs
+
+# test output files
+maze_output/

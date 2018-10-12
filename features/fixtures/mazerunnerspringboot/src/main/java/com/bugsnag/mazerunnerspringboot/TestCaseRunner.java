@@ -48,13 +48,13 @@ public class TestCaseRunner implements CommandLineRunner, ApplicationContextAwar
 
         // Exit the application
         LOGGER.info("Exiting spring");
-        SpringApplication.exit(ctx, new ExitCodeGenerator() {
+        int code = SpringApplication.exit(ctx, new ExitCodeGenerator() {
             @Override
             public int getExitCode() {
                 return 0;
             }
         });
-        System.exit(0);
+        System.exit(code);
     }
 
     private static Scenario testCaseForName(String eventType) {

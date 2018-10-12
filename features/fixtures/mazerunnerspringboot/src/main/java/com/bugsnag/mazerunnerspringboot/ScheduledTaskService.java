@@ -10,7 +10,7 @@ public class ScheduledTaskService {
 
     private static final Logger LOGGER = Logger.getLogger(ScheduledTaskService.class);
 
-    private boolean throwException = false;
+    private volatile boolean throwException = false;
 
     private static ScheduledTaskService instance;
     public ScheduledTaskService() {
