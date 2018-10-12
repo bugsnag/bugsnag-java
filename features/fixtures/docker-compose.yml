@@ -1,0 +1,11 @@
+version: '3.4'
+services:
+  plainspringapp:
+    build:
+      context: mazerunnerplainspring
+    environment:
+    - BUGSNAG_API_KEY
+    - MOCK_API_PATH
+    ports:
+    - "1235:8080"
+    restart: "no"

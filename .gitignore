@@ -32,8 +32,7 @@ local.properties
 *.launch
 
 # jars
-features/fixtures/mazerunner/libs
-features/fixtures/mazerunnerspringboot/libs
+features/fixtures/*/libs
 
 # test output files
 maze_output/
