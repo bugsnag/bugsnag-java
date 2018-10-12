@@ -54,15 +54,4 @@ public class TestRestController {
         return "";
     }
 
-    @RequestMapping("/run-async-task-with-future")
-    public Future<String> runAsyncTaskWithFuture() throws InterruptedException {
-        try {
-            return asyncMethodService.doSomethingAsyncWithFuture();
-        } catch (Exception ex) {
-            // This should not happen
-            LOGGER.info("Saw exception from async call: " + ex.getMessage());
-        }
-
-        return null;
-    }
 }
