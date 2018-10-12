@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.concurrent.Future;
+
 @RestController
 public class TestRestController {
 
@@ -16,6 +18,9 @@ public class TestRestController {
 
     @Autowired
     private ScheduledTaskService scheduledTaskService;
+
+    @Autowired
+    private AsyncMethodService asyncMethodService;
 
     private static TestRestController instance;
     public TestRestController() {
@@ -40,7 +45,7 @@ public class TestRestController {
     @RequestMapping("/run-async-task")
     public String runAsyncTask() throws InterruptedException {
         try {
-            scheduledTaskService.doSomethingAsync();
+            asyncMethodService.doSomethingAsync();
         } catch (Exception ex) {
             // This should not happen
             LOGGER.info("Saw exception from async call");
@@ -49,4 +54,15 @@ public class TestRestController {
         return "";
     }
 
+    @RequestMapping("/run-async-task-with-future")
+    public Future<String> runAsyncTaskWithFuture() throws InterruptedException {
+        try {
+            return asyncMethodService.doSomethingAsyncWithFuture();
+        } catch (Exception ex) {
+            // This should not happen
+            LOGGER.info("Saw exception from async call: " + ex.getMessage());
+        }
+
+        return null;
+    }
 }

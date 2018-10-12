@@ -27,15 +27,4 @@ public class ScheduledTaskService {
             throw new RuntimeException("Unhandled exception from ScheduledTaskService");
         }
     }
-
-    @Async
-    public void doSomethingAsync() {
-        try {
-            Thread.sleep(100);
-        } catch (InterruptedException e) {
-            // ignore
-        }
-
-        throw new RuntimeException("Unhandled exception from AsyncTask");
-    }
 }

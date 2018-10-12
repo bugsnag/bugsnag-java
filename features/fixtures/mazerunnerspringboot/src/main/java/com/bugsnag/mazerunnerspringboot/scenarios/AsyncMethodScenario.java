@@ -5,9 +5,9 @@ import com.bugsnag.mazerunnerspringboot.ScheduledTaskService;
 import org.springframework.web.client.RestTemplate;
 
 /**
- * Causes an unhandled exception in an async task
+ * Causes an unhandled exception in an async method
  */
-public class AsyncTaskScenario extends Scenario {
+public class AsyncMethodScenario extends Scenario {
     @Override
     public void run() {
 
