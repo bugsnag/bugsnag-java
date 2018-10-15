@@ -693,7 +693,8 @@ public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
     }
 
     /**
-     * Used to read metadata from the logback.xml file
+     * Internal use only
+     * Should only be used via the logback.xml file
      *
      * @param metaData Adds meta data to every report
      */
