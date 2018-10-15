@@ -33,7 +33,7 @@ public class Bugsnag {
 
     private Configuration config;
     private final SessionTracker sessionTracker;
-    private static boolean logbackAppenderInUse = false;
+    private static volatile boolean logbackAppenderInUse = false;
 
     //
     // Constructors
