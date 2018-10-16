@@ -19,11 +19,14 @@ public class BugsnagConfig {
     @Value("${MOCK_API_PATH}")
     private String bugsnagEndpoint;
 
+    @Value("${AUTO_CAPTURE_SESSIONS:false}")
+    private boolean autoCaptureSessions;
+
     @Bean
     public Bugsnag bugsnag() {
         Bugsnag bugsnag = Bugsnag.init(bugsnagApiKey);
         bugsnag.setEndpoints(bugsnagEndpoint, bugsnagEndpoint);
-        bugsnag.setAutoCaptureSessions(false);
+        bugsnag.setAutoCaptureSessions(autoCaptureSessions);
         bugsnag.setReleaseStage("production");
         bugsnag.setAppVersion("1.0.0");
         return bugsnag;

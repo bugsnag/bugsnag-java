@@ -17,9 +17,6 @@ public class TestRestController {
     Bugsnag bugsnag;
 
     @Autowired
-    private ScheduledTaskService scheduledTaskService;
-
-    @Autowired
     private AsyncMethodService asyncMethodService;
 
     private static TestRestController instance;

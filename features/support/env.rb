@@ -46,7 +46,7 @@ Dir.chdir('features/fixtures/mazerunnerspringboot') do
   ])
 end
 
-# Build the plain spring harness app
+# Build the plain spring app war file
 Dir.chdir('features/fixtures/mazerunnerplainspring') do
   run_required_commands([
     ["./gradlew", "clean", "build"],

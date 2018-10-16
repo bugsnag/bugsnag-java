@@ -6,6 +6,8 @@ services:
     environment:
     - BUGSNAG_API_KEY
     - MOCK_API_PATH
+    - RUN_SCHEDULED_TASK
+    - AUTO_CAPTURE_SESSIONS
     ports:
     - "1235:8080"
     restart: "no"
