@@ -3,8 +3,9 @@ package com.bugsnag.mazerunnerspringboot;
 import com.bugsnag.Bugsnag;
 import com.bugsnag.delivery.Delivery;
 import com.bugsnag.serialization.Serializer;
-import org.apache.log4j.Logger;
-import org.springframework.util.StringUtils;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -16,7 +17,7 @@ import java.util.Map;
 
 public abstract class Scenario {
 
-    private static final Logger LOGGER = Logger.getLogger(Scenario.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(Scenario.class);
 
     protected Bugsnag bugsnag;
 
@@ -31,7 +32,7 @@ public abstract class Scenario {
     /**
      * Returns a throwable with the message as the current classname
      */
-    protected Throwable generateException(){
+    protected Throwable generateException() {
         return new RuntimeException(getClass().getSimpleName());
     }
 

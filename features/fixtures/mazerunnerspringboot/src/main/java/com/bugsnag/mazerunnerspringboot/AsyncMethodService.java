@@ -1,11 +1,7 @@
 package com.bugsnag.mazerunnerspringboot;
 
-import org.apache.log4j.Logger;
 import org.springframework.scheduling.annotation.Async;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
-
-import java.util.concurrent.Future;
 
 @Service
 public class AsyncMethodService {
@@ -14,7 +10,7 @@ public class AsyncMethodService {
     public void doSomethingAsync() {
         try {
             Thread.sleep(100);
-        } catch (InterruptedException e) {
+        } catch (InterruptedException ex) {
             // ignore
         }
 

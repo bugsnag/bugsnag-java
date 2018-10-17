@@ -1,6 +1,7 @@
 package com.bugsnag.mazerunnerspringboot;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.ExitCodeGenerator;
@@ -14,7 +15,7 @@ import java.lang.reflect.Constructor;
 @Component
 public class TestCaseRunner implements CommandLineRunner, ApplicationContextAware {
 
-    private static final Logger LOGGER = Logger.getLogger(TestCaseRunner.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(TestCaseRunner.class);
 
     private ApplicationContext ctx;
 
@@ -24,7 +25,7 @@ public class TestCaseRunner implements CommandLineRunner, ApplicationContextAwar
     }
 
     @Override
-    public void run(String... args) throws Exception {
+    public void run(String... args) {
         // Put args into the system property so that they can be used later
         for (String arg : args) {
             String[] argParts = arg.split("=");
@@ -38,23 +39,17 @@ public class TestCaseRunner implements CommandLineRunner, ApplicationContextAwar
 
         // Create and run the test case
         LOGGER.info("Creating test case");
-        Scenario s = testCaseForName(System.getProperty("EVENT_TYPE"));
-        if (s != null) {
+        Scenario scenario = testCaseForName(System.getProperty("EVENT_TYPE"));
+        if (scenario != null) {
             LOGGER.info("running test case");
-            s.run();
+            scenario.run();
         } else {
             LOGGER.error("No test case found for " + System.getProperty("EVENT_TYPE"));
         }
 
         // Exit the application
         LOGGER.info("Exiting spring");
-        int code = SpringApplication.exit(ctx, new ExitCodeGenerator() {
-            @Override
-            public int getExitCode() {
-                return 0;
-            }
-        });
-        System.exit(code);
+        System.exit(SpringApplication.exit(ctx, (ExitCodeGenerator) () -> 0));
     }
 
     private static Scenario testCaseForName(String eventType) {
@@ -63,7 +58,7 @@ public class TestCaseRunner implements CommandLineRunner, ApplicationContextAwar
             Class clz = Class.forName("com.bugsnag.mazerunnerspringboot.scenarios." + eventType);
             Constructor constructor = clz.getConstructors()[0];
             return (Scenario) constructor.newInstance();
-        } catch(Exception ex) {
+        } catch (Exception ex) {
             LOGGER.error("Error getting scenario", ex);
             return null;
         }
