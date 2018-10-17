@@ -8,9 +8,6 @@ sourceCompatibility = 1.7
 
 repositories {
     mavenCentral()
-    flatDir {
-        dirs 'libs'
-    }
     jcenter()
 }
 
@@ -21,6 +18,10 @@ dependencies {
 
     compile("com.fasterxml.jackson.core:jackson-annotations:2.9.1")
     compile("com.fasterxml.jackson.core:jackson-databind:2.9.1")
-    compile("com.bugsnag:bugsnag:9.9.9-test")
-    compile("com.bugsnag:bugsnag-spring:9.9.9-test")
+    compile project(':bugsnag')
+    compile project(':bugsnag-spring')
+}
+
+war {
+    archiveName = 'mazerunnerplainspring.war'
 }

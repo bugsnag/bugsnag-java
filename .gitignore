@@ -31,8 +31,5 @@ local.properties
 # Locally stored "Eclipse launch configurations"
 *.launch
 
-# jars
-features/fixtures/*/libs
-
 # test output files
 maze_output/

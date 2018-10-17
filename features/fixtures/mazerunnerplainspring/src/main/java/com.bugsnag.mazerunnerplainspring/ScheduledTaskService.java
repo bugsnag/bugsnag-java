@@ -1,7 +1,6 @@
 package com.bugsnag.mazerunnerplainspring;
 
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
@@ -13,7 +12,7 @@ public class ScheduledTaskService {
 
     private volatile boolean exceptionSent = false;
 
-    @Scheduled(fixedDelay=3000)
+    @Scheduled(fixedDelay = 3000)
     public void doSomething() {
         if (throwException && !exceptionSent) {
             exceptionSent = true;

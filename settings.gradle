@@ -4,5 +4,10 @@ include ':bugsnag',
         ':examples:servlet',
         ':examples:spring',
         ':examples:spring-web',
-        ':examples:logback'
+        ':examples:logback',
+        ':features:fixtures:mazerunner',
+        ':features:fixtures:mazerunnerplainspring',
+        ':features:fixtures:mazerunnerspringboot'
+
+
 
