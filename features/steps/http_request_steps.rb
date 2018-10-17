@@ -10,7 +10,7 @@ When("I wait for the app to respond on port {string}") do |port|
       uri = URI("http://localhost:#{port}/")
       response = Net::HTTP.get_response(uri)
       up = (response.code == "200")
-    rescue EOFError
+    rescue EOFError, Errno::ECONNRESET
     end
     sleep 1
   end
