@@ -1,5 +1,6 @@
 package com.bugsnag.mazerunnerspringboot;
 
+import com.bugsnag.mazerunner.scenarios.Scenario;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
@@ -26,25 +27,14 @@ public class TestCaseRunner implements CommandLineRunner, ApplicationContextAwar
 
     @Override
     public void run(String... args) {
-        // Put args into the system property so that they can be used later
-        for (String arg : args) {
-            String[] argParts = arg.split("=");
-            if (argParts.length == 2) {
-                LOGGER.info("Setting property " + argParts[0] + "=" + argParts[1]);
-                System.setProperty(argParts[0], argParts[1]);
-            } else {
-                LOGGER.error("Invalid argument " + arg);
-            }
-        }
-
         // Create and run the test case
         LOGGER.info("Creating test case");
-        Scenario scenario = testCaseForName(System.getProperty("EVENT_TYPE"));
+        Scenario scenario = testCaseForName(System.getenv("EVENT_TYPE"));
         if (scenario != null) {
             LOGGER.info("running test case");
             scenario.run();
         } else {
-            LOGGER.error("No test case found for " + System.getProperty("EVENT_TYPE"));
+            LOGGER.error("No test case found for " + System.getenv("EVENT_TYPE"));
         }
 
         // Exit the application
@@ -53,9 +43,8 @@ public class TestCaseRunner implements CommandLineRunner, ApplicationContextAwar
     }
 
     private static Scenario testCaseForName(String eventType) {
-
         try {
-            Class clz = Class.forName("com.bugsnag.mazerunnerspringboot.scenarios." + eventType);
+            Class clz = Class.forName("com.bugsnag.mazerunner.scenarios." + eventType);
             Constructor constructor = clz.getConstructors()[0];
             return (Scenario) constructor.newInstance();
         } catch (Exception ex) {

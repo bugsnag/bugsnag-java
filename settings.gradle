@@ -5,9 +5,7 @@ include ':bugsnag',
         ':examples:spring',
         ':examples:spring-web',
         ':examples:logback',
+        ':features:fixtures:scenarios',
         ':features:fixtures:mazerunner',
         ':features:fixtures:mazerunnerplainspring',
         ':features:fixtures:mazerunnerspringboot'
-
-
-

@@ -1,0 +1,16 @@
+apply plugin: 'java'
+
+group 'com.bugsnag.mazerunner'
+
+sourceCompatibility = 1.7
+
+repositories {
+    mavenCentral()
+    jcenter()
+}
+
+dependencies {
+    compile("ch.qos.logback:logback-classic:1.2.3")
+    compile project(':bugsnag')
+}
+
