@@ -26,7 +26,7 @@ public class AutoSessionScenario extends Scenario {
         try {
             Thread.sleep(2000);
         } catch (InterruptedException ex) {
-            e.printStackTrace();
+            ex.printStackTrace();
         }
     }
 }
