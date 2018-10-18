@@ -8,7 +8,7 @@ Scenario: Test logback appender with no project packages
     And the payload field "events" is an array with 1 element
     And the exception "errorClass" equals "java.lang.RuntimeException"
     And the exception "message" equals "LogbackScenario"
-    And the event "exceptions.0.stacktrace.0.method" equals "com.bugsnag.mazerunner.Scenario.generateException"
+    And the event "exceptions.0.stacktrace.0.method" equals "com.bugsnag.mazerunner.scenarios.Scenario.generateException"
     And the event "exceptions.0.stacktrace.0.inProject" is false
     And the event "exceptions.0.stacktrace.1.method" equals "com.bugsnag.mazerunner.scenarios.LogbackScenario.run"
     And the event "exceptions.0.stacktrace.1.inProject" is false
@@ -25,7 +25,7 @@ Scenario: Test logback appender with a project package "com.bugsnag.mazerunner" 
     And the payload field "events" is an array with 1 element
     And the exception "errorClass" equals "java.lang.RuntimeException"
     And the exception "message" equals "LogbackScenario"
-    And the event "exceptions.0.stacktrace.0.method" equals "com.bugsnag.mazerunner.Scenario.generateException"
+    And the event "exceptions.0.stacktrace.0.method" equals "com.bugsnag.mazerunner.scenarios.Scenario.generateException"
     And the event "exceptions.0.stacktrace.0.inProject" is true
     And the event "exceptions.0.stacktrace.1.method" equals "com.bugsnag.mazerunner.scenarios.LogbackScenario.run"
     And the event "exceptions.0.stacktrace.1.inProject" is true
