@@ -9,3 +9,24 @@ Scenario: Test logback appender with app type 'testAppType'
     And the exception "errorClass" equals "java.lang.RuntimeException"
     And the exception "message" equals "LogbackScenario"
     And the event "app.type" equals "testAppType"
+
+Scenario: Test Java app with app type 'testAppType'
+    When I run "AppTypeScenario" with the defaults
+    Then I should receive a request
+    And the request is a valid for the error reporting API
+    And the exception "message" equals "AppTypeScenario"
+    And the event "app.type" equals "testAppType"
+
+Scenario: Test Spring Boot app with app type 'testAppType'
+    When I run spring boot "AppTypeScenario" with the defaults
+    Then I should receive a request
+    And the request is a valid for the error reporting API
+    And the exception "message" equals "AppTypeScenario"
+    And the event "app.type" equals "testAppType"
+
+Scenario: Test Spring app with app type 'testAppType'
+    When I run plain Spring "AppTypeScenario" with the defaults
+    Then I should receive a request
+    And the request is a valid for the error reporting API
+    And the exception "message" equals "AppTypeScenario"
+    And the event "app.type" equals "testAppType"
