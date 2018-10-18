@@ -17,7 +17,7 @@ apply plugin: 'io.spring.dependency-management'
 group 'com.bugsnag.mazerunnerspringboot'
 version '1.0-SNAPSHOT'
 
-sourceCompatibility = 1.8
+sourceCompatibility = 1.7
 
 repositories {
     mavenCentral()
