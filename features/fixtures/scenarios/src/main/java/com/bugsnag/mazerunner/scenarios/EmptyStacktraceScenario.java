@@ -1,9 +1,16 @@
 package com.bugsnag.mazerunner.scenarios;
 
+import com.bugsnag.Bugsnag;
+
 /**
  * Attempts to deliver a handled exception with no stacktrace.
  */
 public class EmptyStacktraceScenario extends Scenario {
+
+    public EmptyStacktraceScenario(Bugsnag bugsnag) {
+        super(bugsnag);
+    }
+
     @Override
     public void run() {
         bugsnag.notify(new EmptyException("EmptyStacktraceScenario"));

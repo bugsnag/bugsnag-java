@@ -1,11 +1,17 @@
 package com.bugsnag.mazerunner.scenarios;
 
+import com.bugsnag.Bugsnag;
 import org.springframework.web.client.RestTemplate;
 
 /**
  * Causes an unhandled exception in an async method
  */
 public class AsyncMethodScenario extends Scenario {
+
+    public AsyncMethodScenario(Bugsnag bugsnag) {
+        super(bugsnag);
+    }
+
     @Override
     public void run() {
 

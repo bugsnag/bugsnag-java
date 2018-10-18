@@ -1,9 +1,11 @@
 package com.bugsnag.mazerunnerspringboot;
 
+import com.bugsnag.Bugsnag;
 import com.bugsnag.mazerunner.scenarios.Scenario;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.ExitCodeGenerator;
 import org.springframework.boot.SpringApplication;
@@ -19,6 +21,9 @@ public class TestCaseRunner implements CommandLineRunner, ApplicationContextAwar
     private static final Logger LOGGER = LoggerFactory.getLogger(TestCaseRunner.class);
 
     private ApplicationContext ctx;
+
+    @Autowired
+    private Bugsnag bugsnag;
 
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
@@ -42,11 +47,11 @@ public class TestCaseRunner implements CommandLineRunner, ApplicationContextAwar
         System.exit(SpringApplication.exit(ctx, (ExitCodeGenerator) () -> 0));
     }
 
-    private static Scenario testCaseForName(String eventType) {
+    private Scenario testCaseForName(String eventType) {
         try {
             Class clz = Class.forName("com.bugsnag.mazerunner.scenarios." + eventType);
             Constructor constructor = clz.getConstructors()[0];
-            return (Scenario) constructor.newInstance();
+            return (Scenario) constructor.newInstance(bugsnag);
         } catch (Exception ex) {
             LOGGER.error("Error getting scenario", ex);
             return null;

@@ -22,7 +22,7 @@ public class TestRestController {
     private static final Logger LOGGER = LoggerFactory.getLogger(TestRestController.class);
 
     @Autowired
-    Bugsnag bugsnag;
+    private Bugsnag bugsnag;
 
     @Autowired
     private AsyncMethodService asyncMethodService;
@@ -56,7 +56,7 @@ public class TestRestController {
         try {
             Class clz = Class.forName("com.bugsnag.mazerunner.scenarios." + scenario);
             Constructor constructor = clz.getConstructors()[0];
-            ((Scenario) constructor.newInstance()).run();
+            ((Scenario) constructor.newInstance(bugsnag)).run();
         } catch (Exception ex) {
             LOGGER.error("Error getting scenario", ex);
         }

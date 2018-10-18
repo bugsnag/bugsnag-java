@@ -1,5 +1,6 @@
 package com.bugsnag.mazerunner;
 
+import com.bugsnag.Bugsnag;
 import com.bugsnag.mazerunner.scenarios.Scenario;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,6 +21,8 @@ public class TestCaseRunner implements CommandLineRunner, ApplicationContextAwar
 
     private ApplicationContext ctx;
 
+    private Bugsnag bugsnag;
+
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
         ctx = applicationContext;
@@ -27,6 +30,8 @@ public class TestCaseRunner implements CommandLineRunner, ApplicationContextAwar
 
     @Override
     public void run(String... args) {
+        setupBugsnag();
+
         // Create and run the test case
         LOGGER.info("Creating test case");
         Scenario scenario = testCaseForName(System.getenv("EVENT_TYPE"));
@@ -42,12 +47,31 @@ public class TestCaseRunner implements CommandLineRunner, ApplicationContextAwar
         System.exit(SpringApplication.exit(ctx, (ExitCodeGenerator) () -> 0));
     }
 
-    private static Scenario testCaseForName(String eventType) {
+    private void setupBugsnag() {
+        String apiKey = "YOUR-API-KEY";
+        if (System.getenv("BUGSNAG_API_KEY") != null) {
+            apiKey = System.getenv("BUGSNAG_API_KEY");
+            LOGGER.info("got " + apiKey + " from env vars");
+        }
+
+        String path = "http://localhost:9339";
+        if (System.getenv("MOCK_API_PATH") != null) {
+            path = System.getenv("MOCK_API_PATH");
+            LOGGER.info("got " + path + " from env vars");
+        }
+
+        LOGGER.info("using " + path + " to send Bugsnags");
+
+        bugsnag = Bugsnag.init(apiKey, true);
+        bugsnag.setEndpoints(path, path);
+    }
+
+    private Scenario testCaseForName(String eventType) {
 
         try {
             Class clz = Class.forName("com.bugsnag.mazerunner.scenarios." + eventType);
             Constructor constructor = clz.getConstructors()[0];
-            return (Scenario) constructor.newInstance();
+            return (Scenario) constructor.newInstance(bugsnag);
         } catch (Exception ex) {
             LOGGER.error("Error getting scenario", ex);
             return null;

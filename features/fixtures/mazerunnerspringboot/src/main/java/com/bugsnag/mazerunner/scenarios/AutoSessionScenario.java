@@ -1,11 +1,17 @@
 package com.bugsnag.mazerunner.scenarios;
 
+import com.bugsnag.Bugsnag;
 import org.springframework.web.client.RestTemplate;
 
 /**
  * Causes an unhandled exception in the rest controller
  */
 public class AutoSessionScenario extends Scenario {
+
+    public AutoSessionScenario(Bugsnag bugsnag) {
+        super(bugsnag);
+    }
+
     @Override
     public void run() {
         bugsnag.setAutoCaptureSessions(true);

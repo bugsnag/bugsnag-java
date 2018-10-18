@@ -1,5 +1,6 @@
 package com.bugsnag.mazerunner.scenarios;
 
+import com.bugsnag.Bugsnag;
 import com.bugsnag.Report;
 import com.bugsnag.callbacks.Callback;
 import com.bugsnag.logback.ExceptionWithCallback;
@@ -13,6 +14,10 @@ import org.slf4j.LoggerFactory;
 public class LogbackMetaDataScenario extends Scenario {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(LogbackMetaDataScenario.class);
+
+    public LogbackMetaDataScenario(Bugsnag bugsnag) {
+        super(bugsnag);
+    }
 
     @Override
     public void run() {

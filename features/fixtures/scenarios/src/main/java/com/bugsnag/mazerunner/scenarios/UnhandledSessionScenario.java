@@ -1,5 +1,6 @@
 package com.bugsnag.mazerunner.scenarios;
 
+import com.bugsnag.Bugsnag;
 import com.bugsnag.delivery.Delivery;
 import com.bugsnag.serialization.Serializer;
 
@@ -9,6 +10,11 @@ import java.util.Map;
  * Sends an unhandled exception to Bugsnag that contains session information
  */
 public class UnhandledSessionScenario extends Scenario {
+
+    public UnhandledSessionScenario(Bugsnag bugsnag) {
+        super(bugsnag);
+    }
+
     @Override
     public void run() {
         bugsnag.setAppVersion("1.2.3");

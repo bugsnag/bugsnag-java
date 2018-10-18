@@ -1,9 +1,16 @@
 package com.bugsnag.mazerunner.scenarios;
 
+import com.bugsnag.Bugsnag;
+
 /**
  * Sends an unhandled exception to Bugsnag, when another exception handler is installed.
  */
 public class CrashHandlerScenario extends Scenario {
+
+    public CrashHandlerScenario(Bugsnag bugsnag) {
+        super(bugsnag);
+    }
+
     @Override
     public void run() {
 

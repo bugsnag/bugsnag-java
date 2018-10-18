@@ -20,28 +20,8 @@ public abstract class Scenario {
 
     protected Bugsnag bugsnag;
 
-    public Scenario() {
-        this(true);
-    }
-
-    public Scenario(boolean sendUncaughtExceptions) {
-
-        String apiKey = "YOUR-API-KEY";
-        if (System.getenv("BUGSNAG_API_KEY") != null) {
-            apiKey = System.getenv("BUGSNAG_API_KEY");
-            LOGGER.info("got " + apiKey + " from env vars");
-        }
-
-        String path = "http://localhost:9339";
-        if (System.getenv("MOCK_API_PATH") != null) {
-            path = System.getenv("MOCK_API_PATH");
-            LOGGER.info("got " + path + " from env vars");
-        }
-
-        LOGGER.info("using " + path + " to send Bugsnags");
-
-        bugsnag = Bugsnag.init(apiKey, sendUncaughtExceptions);
-        bugsnag.setEndpoints(path, path);
+    public Scenario(Bugsnag bugsnag) {
+        this.bugsnag = bugsnag;
     }
 
     public abstract void run();

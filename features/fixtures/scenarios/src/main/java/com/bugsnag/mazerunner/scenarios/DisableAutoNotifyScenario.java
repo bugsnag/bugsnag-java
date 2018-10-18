@@ -1,13 +1,18 @@
 package com.bugsnag.mazerunner.scenarios;
 
+import com.bugsnag.Bugsnag;
+
+import static com.bugsnag.TestHooks.disableSendUncaughtExceptions;
+
 /**
  * Throws an unhandled exception in a thread, when uncaught exceptions are disabled
  * in Bugsnag. Nothing should be reported
  */
 public class DisableAutoNotifyScenario extends Scenario {
 
-    public DisableAutoNotifyScenario() {
-        super(false);
+    public DisableAutoNotifyScenario(Bugsnag bugsnag) {
+        super(bugsnag);
+        disableSendUncaughtExceptions(bugsnag);
     }
 
     @Override

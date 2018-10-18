@@ -1,11 +1,17 @@
 package com.bugsnag.mazerunner.scenarios;
 
+import com.bugsnag.Bugsnag;
 import org.springframework.web.client.RestTemplate;
 
 /**
  * Causes an unhandled exception in the rest controller
  */
 public class RestControllerScenario extends Scenario {
+
+    public RestControllerScenario(Bugsnag bugsnag) {
+        super(bugsnag);
+    }
+
     @Override
     public void run() {
         // Don't report any sessions during this test
