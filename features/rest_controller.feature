@@ -9,6 +9,7 @@ Scenario: Report an exception from a spring boot rest controller
     And the payload field "events" is an array with 1 element
     And the event "unhandled" is true
     And the event "severity" equals "error"
+    And the event "context" equals "GET /send-unhandled-exception"
     And the exception "errorClass" equals "java.lang.RuntimeException"
     And the exception "message" equals "Unhandled exception from TestRestController"
     And the event "metaData.request.url" ends with "/send-unhandled-exception"
@@ -25,6 +26,7 @@ Scenario: Report an exception from a plain spring rest controller
     And the payload field "events" is an array with 1 element
     And the event "unhandled" is true
     And the event "severity" equals "error"
+    And the event "context" equals "GET /mazerunnerplainspring/send-unhandled-exception"
     And the exception "errorClass" equals "java.lang.RuntimeException"
     And the exception "message" equals "Unhandled exception from TestRestController"
     And the event "metaData.request.url" ends with "/send-unhandled-exception"
