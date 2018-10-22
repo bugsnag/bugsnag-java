@@ -1,0 +1,4 @@
+include ':mazerunner',
+        ':mazerunnerplainspring',
+        ':mazerunnerspringboot',
+        ':scenarios'

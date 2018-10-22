@@ -1,6 +1,6 @@
 buildscript {
     ext {
-        springBootVersion = '1.4.1.RELEASE'
+        springBootVersion = '2.0.5.RELEASE'
     }
     repositories {
         jcenter()
@@ -10,11 +10,11 @@ buildscript {
     }
 }
 
-plugins {
-    id 'java'
-}
+apply plugin: 'java'
+apply plugin: 'org.springframework.boot'
+apply plugin: 'io.spring.dependency-management'
 
-group 'mazerunner'
+group 'com.bugsnag.mazerunner'
 version '1.0-SNAPSHOT'
 
 sourceCompatibility = 1.7
@@ -22,7 +22,7 @@ sourceCompatibility = 1.7
 repositories {
     mavenCentral()
     flatDir {
-        dirs 'libs'
+        dirs '../libs'
     }
     jcenter()
 }
@@ -31,18 +31,11 @@ dependencies {
     compile("org.springframework.boot:spring-boot-starter")
     compile("ch.qos.logback:logback-classic:1.2.3")
 
-    compile 'com.fasterxml.jackson.core:jackson-annotations:2.9.1'
-    compile 'com.fasterxml.jackson.core:jackson-databind:2.9.1'
+    compile("com.fasterxml.jackson.core:jackson-annotations:2.9.1")
+    compile("com.fasterxml.jackson.core:jackson-databind:2.9.1")
     compile("com.bugsnag:bugsnag:9.9.9-test")
+    compile project(":scenarios")
 
     testCompile group: 'junit', name: 'junit', version: '4.12'
-}
-
-apply plugin: 'spring-boot'
-bootRepackage.enabled = false
-bootRun {
-    if (project.hasProperty('args')) {
-        args project.args.split(',')
-    }
 }
 

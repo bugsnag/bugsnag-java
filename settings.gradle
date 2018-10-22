@@ -5,4 +5,3 @@ include ':bugsnag',
         ':examples:spring',
         ':examples:spring-web',
         ':examples:logback'
-

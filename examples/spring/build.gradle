@@ -21,3 +21,5 @@ dependencies {
 
     compile project(":bugsnag-spring")
 }
+
+bootRepackage.enabled = false

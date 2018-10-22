@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+	<include resource="org/springframework/boot/logging/logback/base.xml" />
+
+	<appender name="BUGSNAG" class="com.bugsnag.BugsnagAppender">
+		<apiKey>__BUGSNAG_API_KEY__</apiKey>
+        <releaseStage>production</releaseStage>
+        <appVersion>1.0.0</appVersion>
+
+		<projectPackage>com.bugsnag.mazerunner</projectPackage>
+
+		<endpoints>
+			<notifyEndpoint>__BUGSNAG_MOCK_PATH__</notifyEndpoint>
+			<sessionEndpoint>__BUGSNAG_MOCK_PATH__</sessionEndpoint>
+		</endpoints>
+	</appender>
+
+	<root level="INFO">
+		<appender-ref ref="BUGSNAG"/>
+	</root>
+</configuration>

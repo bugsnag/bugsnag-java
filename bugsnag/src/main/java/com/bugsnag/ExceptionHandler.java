@@ -52,10 +52,11 @@ class ExceptionHandler implements UncaughtExceptionHandler {
     public void uncaughtException(Thread thread, Throwable throwable) {
         // Notify any subscribed clients of the uncaught exception
         for (Bugsnag bugsnag : clientMap.keySet()) {
-
-            HandledState handledState = HandledState.newInstance(
-                    HandledState.SeverityReasonType.REASON_UNHANDLED_EXCEPTION, Severity.ERROR);
-            bugsnag.notify(throwable, handledState, thread);
+            if (bugsnag.getConfig().shouldSendUncaughtExceptions()) {
+                HandledState handledState = HandledState.newInstance(
+                        HandledState.SeverityReasonType.REASON_UNHANDLED_EXCEPTION, Severity.ERROR);
+                bugsnag.notify(throwable, handledState, thread);
+            }
         }
 
         // Pass exception on to original exception handler
