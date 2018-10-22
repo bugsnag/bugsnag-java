@@ -9,4 +9,4 @@ else
    > "features/fixtures/mazerunner/src/main/resources/logback.xml"
 fi
 
-./gradlew :features:fixtures:mazerunner:bootRun
+./gradlew -p features/fixtures/mazerunner bootRun

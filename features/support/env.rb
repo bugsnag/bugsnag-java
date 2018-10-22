@@ -12,3 +12,14 @@ def current_ip
   end
 end
 
+# Install latest versions of the notifiers and clean fixtures
+run_required_commands([
+  ["mkdir", "-p", "features/fixtures/libs"],
+  ["./gradlew", "clean", "bugsnag:assemble", "-Pversion=9.9.9-test"],
+  ["cp", "bugsnag/build/libs/bugsnag-9.9.9-test.jar",
+   "features/fixtures/libs/bugsnag-9.9.9-test.jar"],
+  ["./gradlew", "clean", "bugsnag-spring:assemble", "-Pversion=9.9.9-test"],
+  ["cp", "bugsnag-spring/build/libs/bugsnag-spring-9.9.9-test.jar",
+   "features/fixtures/libs/bugsnag-spring-9.9.9-test.jar"],
+  ["./gradlew", "-p", "features/fixtures", "clean"],
+])

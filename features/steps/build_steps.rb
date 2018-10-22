@@ -31,6 +31,7 @@ Given("I run the plain spring app") do
     And I set environment variable "MOCK_API_PATH" to "http://#{current_ip}:#{MOCK_API_PORT}"
     And I set environment variable "BUGSNAG_API_KEY" to "a35a2a72bd230ac0aa0f52715bbdc6aa"
     And I run the script "features/scripts/build-plain-spring-app.sh" synchronously
+    And I stop the service "plainspringapp"
     And I start the service "plainspringapp"
     And I wait for the app to respond on port "1235"
   }

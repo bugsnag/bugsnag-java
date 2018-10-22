@@ -1,3 +1,3 @@
 #!/usr/bin/env bash
 
-./gradlew :features:fixtures:mazerunnerplainspring:war
+./gradlew -p features/fixtures/mazerunnerplainspring war

@@ -1,3 +1,3 @@
 #!/usr/bin/env bash
 
-./gradlew :features:fixtures:mazerunnerspringboot:bootRun
+./gradlew -p features/fixtures/mazerunnerspringboot bootRun

@@ -6,11 +6,14 @@ sourceCompatibility = 1.7
 
 repositories {
     mavenCentral()
+    flatDir {
+        dirs '../libs'
+    }
     jcenter()
 }
 
 dependencies {
     compile("ch.qos.logback:logback-classic:1.2.3")
-    compile project(':bugsnag')
+    compile("com.bugsnag:bugsnag:9.9.9-test")
 }
 
