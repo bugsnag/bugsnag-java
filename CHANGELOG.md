@@ -1,6 +1,10 @@
 # Changelog
 
-## TBD
+## 3.4.0-alpha01 (2018-10-22)
+
+**Important**: This is an alpha release that provides early access to the following new features:
+- Enhanced support for Spring applications with the new `bugsnag-spring` notifier
+- The ability to report throwables to Bugsnag with the [logback](https://logback.qos.ch/) appender `BugsnagAppender`  
 
 Two artifacts are now available for this platform:
 
@@ -18,6 +22,9 @@ No upgrade steps are required for `bugsnag-java` in this release.
 * [Spring] Automatically attach request metadata to reports
 * [Spring] Automatically attach Spring version information to reports
 * [Spring] Automatically track sessions for each MVC request
+
+**Deprecation notice**: `Bugsnag.init(...)` is now the preferred way to get an instance of the Bugsnag client
+instead of `new Bugsnag(...)`.
 
 See [UPGRADING](UPGRADING.md) for upgrade details and [the docs](https://docs.bugsnag.com/platforms/java/spring) for further information on new functionality.
 
