@@ -6,6 +6,22 @@ Scenario: Sends a handled exception which includes custom metadata added in a no
     And the request is a valid for the error reporting API
     And the event "metaData.Custom.foo" equals "Hello World!"
 
+Scenario: Sends a handled exception which includes custom metadata added in a notify callback for Spring Boot app
+    When I run spring boot "MetaDataScenario" with the defaults
+    Then I should receive a request
+    And the request is a valid for the error reporting API
+    And the event "metaData.device.springVersion" is not null
+    And the event "metaData.device.springBootVersion" is not null
+    And the event "metaData.Custom.foo" equals "Hello World!"
+
+Scenario: Sends a handled exception which includes custom metadata added in a notify callback for plain Spring app
+    When I run plain Spring "MetaDataScenario" with the defaults
+    Then I should receive a request
+    And the request is a valid for the error reporting API
+    And the event "metaData.Custom.foo" equals "Hello World!"
+    And the event "metaData.device.springVersion" is not null
+    And the event "metaData.device.springBootVersion" is null
+
 Scenario: Test logback appender with meta data in the config file
     When I run "LogbackScenario" with logback config "meta_data_config.xml"
     Then I should receive a request
