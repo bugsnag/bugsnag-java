@@ -29,3 +29,21 @@ Scenario: Adding a custom metadata filter using logback
     And the event "metaData.custom.foo" equals "[FILTERED]"
     And the event "metaData.user.foo" equals "[FILTERED]"
     And the event "metaData.custom.bar" equals "hunter2"
+
+Scenario: Using the default metadata filter in Spring Boot app
+    When I run spring boot "AutoFilterScenario" with the defaults
+    Then I should receive a request
+    And the request is a valid for the error reporting API
+    And the exception "message" equals "AutoFilterScenario"
+    And the event "metaData.custom.foo" equals "hunter2"
+    And the event "metaData.custom.password" equals "[FILTERED]"
+    And the event "metaData.user.password" equals "[FILTERED]"
+
+Scenario: Using the default metadata filter in Spring app
+    When I run plain Spring "AutoFilterScenario" with the defaults
+    Then I should receive a request
+    And the request is a valid for the error reporting API
+    And the exception "message" equals "AutoFilterScenario"
+    And the event "metaData.custom.foo" equals "hunter2"
+    And the event "metaData.custom.password" equals "[FILTERED]"
+    And the event "metaData.user.password" equals "[FILTERED]"
