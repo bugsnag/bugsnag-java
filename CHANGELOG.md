@@ -1,6 +1,6 @@
 # Changelog
 
-## 3.4.0-alpha01 (2018-10-22)
+## 3.4.0-SNAPSHOT (2018-10-22)
 
 **Important**: This is an alpha release that provides early access to the following new features:
 - Enhanced support for Spring applications with the new `bugsnag-spring` notifier
