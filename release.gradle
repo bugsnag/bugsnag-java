@@ -3,7 +3,7 @@ apply plugin: 'com.bmuschko.nexus'
 apply plugin: 'net.researchgate.release'
 apply plugin: 'maven-publish'
 
-archivesBaseName = 'bugsnag'
+archivesBaseName = project.findProperty('artifactId')
 
 release {
     tagTemplate = 'v${version}'
