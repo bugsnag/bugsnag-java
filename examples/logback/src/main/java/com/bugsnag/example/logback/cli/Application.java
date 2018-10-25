@@ -1,5 +1,6 @@
 package com.bugsnag.example.logback.cli;
 
+import com.bugsnag.Bugsnag;
 import com.bugsnag.BugsnagAppender;
 import com.bugsnag.logback.ExceptionWithCallback;
 import org.slf4j.Logger;
@@ -24,7 +25,7 @@ public class Application {
         });
 
         // Add meta data that will be added to all reports on the current thread
-        BugsnagAppender.addThreadMetaData("thread tab", "thread key 1", "thread value 1");
+        Bugsnag.addThreadMetaData("thread tab", "thread key 1", "thread value 1");
 
         // Send a handled exception to Bugsnag
         LOGGER.info("Sending a handled exception to Bugsnag");
@@ -69,7 +70,7 @@ public class Application {
         thread.join();
 
         // Remove the thread meta data so it won't be added to future reports on this thread
-        BugsnagAppender.clearThreadMetaData();
+        Bugsnag.clearThreadMetaData();
 
         // Exit the application
         System.exit(0);

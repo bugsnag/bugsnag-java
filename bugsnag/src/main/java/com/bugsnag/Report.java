@@ -330,6 +330,10 @@ public class Report {
         this.handledState = handledState;
     }
 
+    void mergeMetaData(MetaData metaData) {
+        diagnostics.metaData.merge(metaData);
+    }
+
     static class SeverityReason {
         private final String type;
         private final Map<String, String> attributes;

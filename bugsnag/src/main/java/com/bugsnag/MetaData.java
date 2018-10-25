@@ -15,6 +15,17 @@ class MetaData extends HashMap<String, Object> {
         remove(tabName);
     }
 
+    public void clearKey(String tabName, String key) {
+        Map<String, Object> tab = getTab(tabName);
+        tab.remove(key);
+    }
+
+    void merge(MetaData metaData) {
+        for (String tabName : metaData.keySet()) {
+            getTab(tabName).putAll(metaData.getTab(tabName));
+        }
+    }
+
     @SuppressWarnings(value = "unchecked")
     private Map<String, Object> getTab(String tabName) {
         Map<String, Object> tab = (Map<String, Object>) get(tabName);

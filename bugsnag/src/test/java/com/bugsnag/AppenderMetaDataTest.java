@@ -68,17 +68,17 @@ public class AppenderMetaDataTest {
     @SuppressWarnings (value = "unchecked")
     public void testMetaDataTypes() {
 
-        BugsnagAppender.addThreadMetaData("myTab", "string key", "string value");
-        BugsnagAppender.addThreadMetaData("myTab", "bool key", true);
-        BugsnagAppender.addThreadMetaData("myTab", "int key", 1);
-        BugsnagAppender.addThreadMetaData("myTab", "float key", 1.1);
+        Bugsnag.addThreadMetaData("myTab", "string key", "string value");
+        Bugsnag.addThreadMetaData("myTab", "bool key", true);
+        Bugsnag.addThreadMetaData("myTab", "int key", 1);
+        Bugsnag.addThreadMetaData("myTab", "float key", 1.1);
 
         Map<String, String> map = new HashMap<String, String>();
         map.put("key", "value");
-        BugsnagAppender.addThreadMetaData("myTab", "object key", map);
+        Bugsnag.addThreadMetaData("myTab", "object key", map);
 
         Integer[] array = new Integer[] {1,2,3,4,5};
-        BugsnagAppender.addThreadMetaData("myTab", "array key", array);
+        Bugsnag.addThreadMetaData("myTab", "array key", array);
 
         // Send a log message
         LOGGER.warn("Test exception", new RuntimeException("test"));
@@ -89,18 +89,18 @@ public class AppenderMetaDataTest {
         Map<String, Object> myTab = getMetaDataMap(notification, "myTab");
 
         assertEquals("string value", myTab.get("string key"));
-        assertEquals("true", myTab.get("bool key"));
-        assertEquals("1", myTab.get("int key"));
-        assertEquals("1.1", myTab.get("float key"));
+        assertEquals(true, myTab.get("bool key"));
+        assertEquals(1, myTab.get("int key"));
+        assertEquals(1.1, myTab.get("float key"));
         assertEquals(map, myTab.get("object key"));
-        assertThat((List<Integer>)myTab.get("array key"), is(Arrays.asList(array)));
+        assertThat((Integer[])myTab.get("array key"), is(array));
     }
 
     @Test
     public void testMetaDataRemoval() {
 
         // Add some thread meta data
-        BugsnagAppender.addThreadMetaData("thread", "some key", "some thread value");
+        Bugsnag.addThreadMetaData("thread", "some key", "some thread value");
 
         // Send three test logs, the first one with report meta data added
         LOGGER.warn("Test exception", new ExceptionWithCallback(new RuntimeException("test"),
@@ -112,7 +112,7 @@ public class AppenderMetaDataTest {
                 }));
 
         LOGGER.warn("Test exception", new RuntimeException("test"));
-        BugsnagAppender.clearThreadMetaData();
+        Bugsnag.clearThreadMetaData();
         LOGGER.warn("Test exception", new RuntimeException("test"));
 
         // Check that three reports were sent to Bugsnag
