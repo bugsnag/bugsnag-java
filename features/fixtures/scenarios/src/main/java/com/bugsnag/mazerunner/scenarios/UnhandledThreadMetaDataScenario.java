@@ -31,6 +31,7 @@ public class UnhandledThreadMetaDataScenario extends Scenario {
                 Bugsnag.addThreadMetaData("Custom", "something", "This should not be on the report");
             }
         });
+        t1.start();
 
         try {
             t1.join();

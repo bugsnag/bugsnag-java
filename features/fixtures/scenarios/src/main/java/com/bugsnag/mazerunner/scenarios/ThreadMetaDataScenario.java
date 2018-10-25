@@ -36,6 +36,8 @@ public class ThreadMetaDataScenario extends Scenario {
             }
         });
 
+        t1.start();
+
         try {
             t1.join();
         } catch (InterruptedException ex) {
