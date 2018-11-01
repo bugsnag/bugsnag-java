@@ -126,7 +126,8 @@ Scenario: Test logback appender with thread meta data
     And the event "metaData.Custom.something" is null
 
 Scenario: Test thread meta data in plain spring async method
-    When I run plain Spring "AsyncMethodScenario" with the defaults
+    Given I run the plain spring app
+    When I navigate to the route "/mazerunnerplainspring/run-async-task" on port "1235"
     Then I should receive a request
     And the request is a valid for the error reporting API
     And the event "metaData.thread.key1" is null
@@ -140,7 +141,8 @@ Scenario: Test thread meta data in spring boot async method
     And the event "metaData.thread.key2" equals "should be included in meta data"
 
 Scenario: Test thread meta data in plain spring scheduled task
-    When I run plain Spring "ScheduledTaskScenario" with the defaults
+    Given I set environment variable "RUN_SCHEDULED_TASK" to "true"
+    And I run the plain spring app
     Then I should receive a request
     And the request is a valid for the error reporting API
     And the event "metaData.thread.key1" is null
