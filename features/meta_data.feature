@@ -124,3 +124,33 @@ Scenario: Test logback appender with thread meta data
     And the event "metaData.thread.foo" equals "threadvalue1"
     And the event "metaData.thread.bar" equals "threadvalue2"
     And the event "metaData.Custom.something" is null
+
+Scenario: Test thread meta data in plain spring async method
+    When I run plain Spring "AsyncMethodScenario" with the defaults
+    Then I should receive a request
+    And the request is a valid for the error reporting API
+    And the event "metaData.thread.key1" is null
+    And the event "metaData.thread.key2" equals "should be included in meta data"
+
+Scenario: Test thread meta data in spring boot async method
+    When I run spring boot "AsyncMethodScenario" with the defaults
+    Then I should receive a request
+    And the request is a valid for the error reporting API
+    And the event "metaData.thread.key1" is null
+    And the event "metaData.thread.key2" equals "should be included in meta data"
+
+Scenario: Test thread meta data in plain spring scheduled task
+    When I run plain Spring "ScheduledTaskScenario" with the defaults
+    Then I should receive a request
+    And the request is a valid for the error reporting API
+    And the event "metaData.thread.key1" is null
+    And the event "metaData.thread.key2" equals "should be included in meta data"
+
+Scenario: Test thread meta data in spring boot scheduled task
+    When I run spring boot "ScheduledTaskScenario" with the defaults
+    Then I should receive a request
+    And the request is a valid for the error reporting API
+    And the event "metaData.thread.key1" is null
+    And the event "metaData.thread.key2" equals "should be included in meta data"
+
+

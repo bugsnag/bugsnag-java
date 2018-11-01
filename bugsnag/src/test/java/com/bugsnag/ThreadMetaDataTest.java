@@ -1,21 +1,16 @@
 package com.bugsnag;
 
-import com.bugsnag.callbacks.Callback;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import com.bugsnag.delivery.Delivery;
-import com.bugsnag.serialization.Serializer;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.HashMap;
 import java.util.Map;
-
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
 
 public class ThreadMetaDataTest {
 
@@ -97,7 +92,8 @@ public class ThreadMetaDataTest {
         Report report = notification.getEvents().get(0);
 
         assertTrue(report.getMetaData().containsKey("innerthread"));
-        assertEquals("value should be in report", getMetaDataMap(notification, "innerthread").get("some key"));
+        assertEquals("value should be in report",
+                getMetaDataMap(notification, "innerthread").get("some key"));
 
         assertFalse(report.getMetaData().containsKey("outerthread"));
     }
@@ -135,7 +131,8 @@ public class ThreadMetaDataTest {
 
         assertTrue(report.getMetaData().containsKey("thread"));
         assertFalse(getMetaDataMap(notification, "thread").containsKey("key1"));
-        assertEquals("should be included in meta data", getMetaDataMap(notification, "thread").get("key2"));
+        assertEquals("should be included in meta data",
+                getMetaDataMap(notification, "thread").get("key2"));
     }
 
     @Test
@@ -168,7 +165,8 @@ public class ThreadMetaDataTest {
         Report report = notification.getEvents().get(0);
 
         assertTrue(report.getMetaData().containsKey("innerthread"));
-        assertEquals("value should be in report", getMetaDataMap(notification, "innerthread").get("some key"));
+        assertEquals("value should be in report",
+                getMetaDataMap(notification, "innerthread").get("some key"));
 
         assertFalse(report.getMetaData().containsKey("outerthread"));
     }
