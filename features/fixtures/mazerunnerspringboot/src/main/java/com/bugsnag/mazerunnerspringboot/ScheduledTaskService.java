@@ -1,5 +1,6 @@
 package com.bugsnag.mazerunnerspringboot;
 
+import com.bugsnag.Bugsnag;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
