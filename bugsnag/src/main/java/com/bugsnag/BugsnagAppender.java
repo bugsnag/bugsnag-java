@@ -2,6 +2,7 @@ package com.bugsnag;
 
 import com.bugsnag.callbacks.Callback;
 import com.bugsnag.delivery.Delivery;
+import com.bugsnag.logback.BugsnagMarker;
 import com.bugsnag.logback.LogbackEndpoints;
 import com.bugsnag.logback.LogbackMetaData;
 import com.bugsnag.logback.LogbackMetaDataKey;
@@ -150,6 +151,13 @@ public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
         if (bugsnag != null) {
             Throwable throwable = extractThrowable(event);
 
+            final Callback reportCallback;
+            if (event.getMarker() != null && event.getMarker() instanceof BugsnagMarker) {
+                reportCallback = ((BugsnagMarker) event.getMarker()).getCallback();
+            } else {
+                reportCallback = null;
+            }
+
             // Only send a message if there is an exception, the log does not come
             // from the this library and the logger is not in the list of excluded loggers.
             if (throwable != null
@@ -170,6 +178,10 @@ public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
 
                                 // Add details from the logging context to the event
                                 populateContextData(report, event);
+
+                                if (reportCallback != null) {
+                                    reportCallback.beforeNotify(report);
+                                }
                             }
                         });
             }

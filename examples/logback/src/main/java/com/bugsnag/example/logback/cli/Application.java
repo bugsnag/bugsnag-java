@@ -1,8 +1,10 @@
 package com.bugsnag.example.logback.cli;
 
 import com.bugsnag.BugsnagAppender;
+import com.bugsnag.logback.BugsnagMarker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.Marker;
 
 import java.util.Date;
 
@@ -55,6 +57,10 @@ public class Application {
 
         // Wait for unhandled exception thread to finish before exiting
         thread.join();
+
+        LOGGER.error(new BugsnagMarker((report) -> {
+            report.addToTab("report", "key1", "value added in callback");
+        }), "Something bad happend", new RuntimeException("Something bad happened"));
 
         // Remove the thread meta data so it won't be added to future reports on this thread
         BugsnagAppender.clearThreadMetaData();
