@@ -11,11 +11,11 @@ class MetaData extends HashMap<String, Object> {
         tab.put(key, value);
     }
 
-    public void clearTab(String tabName) {
+    void clearTab(String tabName) {
         remove(tabName);
     }
 
-    public void clearKey(String tabName, String key) {
+    void clearKey(String tabName, String key) {
         Map<String, Object> tab = getTab(tabName);
         tab.remove(key);
     }

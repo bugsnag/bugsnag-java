@@ -14,9 +14,9 @@ import java.util.Map;
 
 public class ThreadMetaDataTest {
 
-    private static StubNotificationDelivery delivery;
-    private static Delivery originalDelivery;
-    private static Bugsnag bugsnag;
+    private StubNotificationDelivery delivery;
+    private Delivery originalDelivery;
+    private Bugsnag bugsnag;
 
     /**
      * Create a new test delivery and assign it to the Bugsnag client
@@ -38,7 +38,7 @@ public class ThreadMetaDataTest {
     }
 
     @Test
-    public void testMetaDataRemoval() {
+    public void testMetaDataClearAll() {
 
         // Add some thread meta data
         Bugsnag.addThreadMetaData("thread", "some key", "some thread value");
@@ -63,6 +63,65 @@ public class ThreadMetaDataTest {
     }
 
     @Test
+    public void testMetaDataClearTab() {
+
+        // Add some thread meta data
+        Bugsnag.addThreadMetaData("tab1", "some key", "some value");
+        Bugsnag.addThreadMetaData("tab2", "some key", "some value");
+
+        bugsnag.notify(new RuntimeException("test"));
+        Bugsnag.clearThreadMetaData("tab2");
+        bugsnag.notify(new RuntimeException("test"));
+
+        // Check that two reports were sent to Bugsnag
+        assertEquals(2, delivery.getNotifications().size());
+
+        // Check that both tabs are populated in the first report
+        Notification notification = delivery.getNotifications().get(0);
+        Report report = notification.getEvents().get(0);
+        assertTrue(report.getMetaData().containsKey("tab1"));
+        assertEquals("some value", getMetaDataMap(notification, "tab1").get("some key"));
+        assertTrue(report.getMetaData().containsKey("tab2"));
+        assertEquals("some value", getMetaDataMap(notification, "tab2").get("some key"));
+
+        // Check that only the first tab is in the second tab
+        notification = delivery.getNotifications().get(1);
+        report = notification.getEvents().get(0);
+        assertTrue(report.getMetaData().containsKey("tab1"));
+        assertEquals("some value", getMetaDataMap(notification, "tab1").get("some key"));
+        assertFalse(report.getMetaData().containsKey("tab2"));
+    }
+
+    @Test
+    public void testMetaDataClearKey() {
+
+        // Add some thread meta data
+        Bugsnag.addThreadMetaData("tab1", "key1", "some value");
+        Bugsnag.addThreadMetaData("tab1", "key2", "some value");
+
+        bugsnag.notify(new RuntimeException("test"));
+        Bugsnag.clearThreadMetaData("tab1", "key2");
+        bugsnag.notify(new RuntimeException("test"));
+
+        // Check that two reports were sent to Bugsnag
+        assertEquals(2, delivery.getNotifications().size());
+
+        // Check that both keys are populated in the first report
+        Notification notification = delivery.getNotifications().get(0);
+        Report report = notification.getEvents().get(0);
+        assertTrue(report.getMetaData().containsKey("tab1"));
+        assertEquals("some value", getMetaDataMap(notification, "tab1").get("key1"));
+        assertEquals("some value", getMetaDataMap(notification, "tab1").get("key2"));
+
+        // Check that only the first tab is in the second tab
+        notification = delivery.getNotifications().get(1);
+        report = notification.getEvents().get(0);
+        assertTrue(report.getMetaData().containsKey("tab1"));
+        assertEquals("some value", getMetaDataMap(notification, "tab1").get("key1"));
+        assertFalse(getMetaDataMap(notification, "tab1").containsKey("key2"));
+    }
+
+    @Test
     public void testInnerThreadMetaData() {
 
         // Add some thread meta data in the outer thread
@@ -82,7 +141,7 @@ public class ThreadMetaDataTest {
 
         // Wait for thread to run
         try {
-            Thread.sleep(2000);
+            thread.join();
         } catch (InterruptedException ex) {
             // ignore
         }
@@ -120,7 +179,7 @@ public class ThreadMetaDataTest {
 
         // Wait for thread to run
         try {
-            Thread.sleep(2000);
+            thread.join();
         } catch (InterruptedException ex) {
             // ignore
         }
@@ -155,7 +214,7 @@ public class ThreadMetaDataTest {
 
         // Wait for thread to run
         try {
-            Thread.sleep(2000);
+            thread.join();
         } catch (InterruptedException ex) {
             // ignore
         }

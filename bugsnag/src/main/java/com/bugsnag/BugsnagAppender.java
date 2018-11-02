@@ -40,9 +40,6 @@ public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
     /** Logger name patterns that should not cause reports to be sent to Bugsnag. **/
     private static final List<Pattern> EXCLUDED_LOGGER_PATTERNS = new ArrayList<Pattern>();
 
-    /** Object mapper to serialize into logging context with */
-    private static ObjectMapper mapper = new ObjectMapper();
-
     /** Bugsnag API key; the appender doesn't do anything if it's not available. */
     private String apiKey;
 
