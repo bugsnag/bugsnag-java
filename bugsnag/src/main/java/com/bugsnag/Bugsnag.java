@@ -35,6 +35,13 @@ public class Bugsnag {
     private final SessionTracker sessionTracker;
     private static volatile boolean logbackAppenderInUse = false;
 
+    private static final ThreadLocal<MetaData> THREAD_METADATA = new ThreadLocal<MetaData>() {
+        @Override
+        public MetaData initialValue() {
+            return new MetaData();
+        }
+    };
+
     //
     // Constructors
     //
@@ -475,6 +482,9 @@ public class Bugsnag {
             }
         }
 
+        // Add thread metadata to the report
+        report.mergeMetaData(THREAD_METADATA.get());
+
         // Run the report-specific beforeNotify callback, if given
         if (reportCallback != null) {
             try {
@@ -599,6 +609,45 @@ public class Bugsnag {
         LOGGER.debug("Closing connection to Bugsnag");
         config.delivery.close();
         ExceptionHandler.disable(this);
+    }
+
+    // Thread metadata
+
+    /**
+     * Add a key value pair to a metadata tab just for this thread.
+     *
+     * @param tabName the name of the tab to add the key value pair to
+     * @param key     the key of the metadata to add
+     * @param value   the metadata value to add
+     */
+    public static void addThreadMetaData(String tabName, String key, Object value) {
+        THREAD_METADATA.get().addToTab(tabName, key, value);
+    }
+
+    /**
+     * Clears all metadata added to the current thread
+     */
+    public static void clearThreadMetaData() {
+        THREAD_METADATA.get().clear();
+    }
+
+    /**
+     * Clears all metadata added to a given tab on the current thread
+     *
+     * @param tabName the name of the tab to remove
+     */
+    public static void clearThreadMetaData(String tabName) {
+        THREAD_METADATA.get().clearTab(tabName);
+    }
+
+    /**
+     * Clears a metadata key/value pair from a tab on the current thread
+     *
+     * @param tabName the name of the tab to that the metadata is in
+     * @param key     the key of the metadata to remove
+     */
+    public static void clearThreadMetaData(String tabName, String key) {
+        THREAD_METADATA.get().clearKey(tabName, key);
     }
 
     Configuration getConfig() {
