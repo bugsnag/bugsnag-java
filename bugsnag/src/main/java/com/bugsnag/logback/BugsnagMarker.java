@@ -1,6 +1,7 @@
 package com.bugsnag.logback;
 
 import com.bugsnag.callbacks.Callback;
+
 import org.slf4j.Marker;
 
 import java.util.ArrayList;
