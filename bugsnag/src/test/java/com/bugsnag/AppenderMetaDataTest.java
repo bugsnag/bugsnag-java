@@ -8,17 +8,15 @@ import static org.junit.Assert.assertTrue;
 
 import com.bugsnag.callbacks.Callback;
 import com.bugsnag.delivery.Delivery;
-
 import com.bugsnag.logback.BugsnagMarker;
-import org.slf4j.Logger;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
