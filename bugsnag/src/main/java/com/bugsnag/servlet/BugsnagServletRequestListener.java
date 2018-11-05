@@ -29,6 +29,7 @@ public class BugsnagServletRequestListener implements ServletRequestListener {
     @Override
     public void requestDestroyed(ServletRequestEvent servletRequestEvent) {
         SERVLET_REQUEST.remove();
+        Bugsnag.clearThreadMetaData();
     }
 
     private void trackServletSession() {

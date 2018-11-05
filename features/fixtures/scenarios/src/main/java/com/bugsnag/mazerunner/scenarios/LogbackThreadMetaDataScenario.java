@@ -20,8 +20,24 @@ public class LogbackThreadMetaDataScenario extends Scenario {
 
     @Override
     public void run() {
-        BugsnagAppender.addThreadMetaData("thread", "foo", "threadvalue1");
-        BugsnagAppender.addThreadMetaData("thread", "bar", "threadvalue2");
+        Bugsnag.addThreadMetaData("thread", "foo", "threadvalue1");
+        Bugsnag.addThreadMetaData("thread", "bar", "threadvalue2");
+
+        // Thread metadata on a different thread should not get added
+        Thread t1 = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                Bugsnag.addThreadMetaData("Custom", "something", "This should not be on the report");
+            }
+        });
+
+        t1.start();
+
+        try {
+            t1.join();
+        } catch (InterruptedException ex) {
+            // ignore
+        }
 
         LOGGER.warn("Error sent to Bugsnag using the logback appender", generateException());
     }
