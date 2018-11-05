@@ -6,17 +6,17 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
-import com.bugsnag.callbacks.Callback;
 import com.bugsnag.delivery.Delivery;
 
-import org.apache.log4j.Logger;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.Arrays;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
+
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -24,7 +24,7 @@ import java.util.Map;
  */
 public class AppenderMetaDataTest {
 
-    private static final Logger LOGGER = Logger.getLogger(AppenderMetaDataTest.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(AppenderMetaDataTest.class);
     private static StubNotificationDelivery delivery;
     private static Delivery originalDelivery;
 
@@ -124,6 +124,25 @@ public class AppenderMetaDataTest {
         report = notification.getEvents().get(0);
         assertFalse(report.getMetaData().containsKey("report"));
         assertFalse(report.getMetaData().containsKey("thread"));
+    }
+
+    @Test
+    @SuppressWarnings (value = "unchecked")
+    public void testMetaDataFromMdc() {
+
+        MDC.put("context key1", "context value1");
+        MDC.put("context key2", "context value2");
+
+        // Send a log message
+        LOGGER.warn("Test exception", new RuntimeException("test"));
+
+        // Get the notification details
+        Notification notification = delivery.getNotifications().get(0);
+        assertTrue(notification.getEvents().get(0).getMetaData().containsKey("Context"));
+        Map<String, Object> myTab = getMetaDataMap(notification, "Context");
+
+        assertEquals("context value1", myTab.get("context key1"));
+        assertEquals("context value2", myTab.get("context key2"));
     }
 
     /**
