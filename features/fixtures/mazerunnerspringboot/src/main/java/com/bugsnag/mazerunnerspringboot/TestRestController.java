@@ -53,4 +53,19 @@ public class TestRestController {
         return "";
     }
 
+    @RequestMapping("/notify-async-task")
+    public String notifyAsyncTask() {
+
+        // Add some thread meta data
+        Bugsnag.addThreadMetaData("thread", "controllerMethod", "meta data from controller method");
+
+        // Notify before calling the async method
+        bugsnag.notify(new RuntimeException("test from before async"));
+
+        // Call the async method (also notifies)
+        asyncMethodService.notifyAsync();
+
+        return "";
+    }
+
 }
