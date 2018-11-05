@@ -44,6 +44,17 @@ public class Application {
             LOGGER.info(e.getMessage(), e);
         }
 
+        // Send a handled exception with custom MetaData
+        LOGGER.info("Sending a handled exception to Bugsnag with custom MetaData");
+        try {
+            throw new RuntimeException("Handled exception - custom metadata");
+        } catch (RuntimeException e) {
+            LOGGER.warn(new BugsnagMarker((report) -> {
+                report.addToTab("report tab", "data key 1", "data value 1");
+                report.addToTab("report tab", "data key 2", "data value 2");
+            }), "Something bad happened", e);
+        }
+
         // Test an unhandled exception from a different thread as shutdown hooks
         // won't be called if executed from this thread
         LOGGER.info("Sending an unhandled exception to Bugsnag");
@@ -58,10 +69,6 @@ public class Application {
 
         // Wait for unhandled exception thread to finish before exiting
         thread.join();
-
-        LOGGER.error(new BugsnagMarker((report) -> {
-            report.addToTab("report", "key1", "value added in callback");
-        }), "Something bad happend", new RuntimeException("Something bad happened"));
 
         // Remove the thread meta data so it won't be added to future reports on this thread
         Bugsnag.clearThreadMetaData();

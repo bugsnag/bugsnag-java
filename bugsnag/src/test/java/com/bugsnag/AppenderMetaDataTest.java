@@ -9,10 +9,12 @@ import static org.junit.Assert.assertTrue;
 import com.bugsnag.callbacks.Callback;
 import com.bugsnag.delivery.Delivery;
 
-import org.apache.log4j.Logger;
+import com.bugsnag.logback.BugsnagMarker;
+import org.slf4j.Logger;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.slf4j.LoggerFactory;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -24,7 +26,7 @@ import java.util.Map;
  */
 public class AppenderMetaDataTest {
 
-    private static final Logger LOGGER = Logger.getLogger(AppenderMetaDataTest.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(AppenderMetaDataTest.class);
     private static StubNotificationDelivery delivery;
     private static Delivery originalDelivery;
 
@@ -100,14 +102,22 @@ public class AppenderMetaDataTest {
 
         // Add some thread meta data
         Bugsnag.addThreadMetaData("thread", "some key", "some thread value");
-        Bugsnag.addThreadMetaData("report", "some key", "some report value");
+
+        // Send three test logs, the first one with report meta data added
+        LOGGER.warn(new BugsnagMarker(new Callback() {
+            @Override
+            public void beforeNotify(Report report) {
+                report.addToTab("report", "some key", "some report value");
+            }
+        }), "Test exception", new RuntimeException("test"));
+
 
         LOGGER.warn("Test exception", new RuntimeException("test"));
         Bugsnag.clearThreadMetaData();
         LOGGER.warn("Test exception", new RuntimeException("test"));
 
         // Check that three reports were sent to Bugsnag
-        assertEquals(2, delivery.getNotifications().size());
+        assertEquals(3, delivery.getNotifications().size());
 
         // Check the meta data is set as expected
         // Should have both report and thread meta data
@@ -119,8 +129,15 @@ public class AppenderMetaDataTest {
         assertEquals("some report value", getMetaDataMap(notification, "report").get("some key"));
         assertEquals("some thread value", getMetaDataMap(notification, "thread").get("some key"));
 
-        // Should have neither meta data
+        // Should have just thread meta data
         notification = delivery.getNotifications().get(1);
+        report = notification.getEvents().get(0);
+        assertFalse(report.getMetaData().containsKey("report"));
+        assertTrue(report.getMetaData().containsKey("thread"));
+        assertEquals("some thread value", getMetaDataMap(notification, "thread").get("some key"));
+
+        // Should have neither meta data
+        notification = delivery.getNotifications().get(2);
         report = notification.getEvents().get(0);
         assertFalse(report.getMetaData().containsKey("report"));
         assertFalse(report.getMetaData().containsKey("thread"));
