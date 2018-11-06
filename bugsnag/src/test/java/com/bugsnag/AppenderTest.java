@@ -7,7 +7,6 @@ import static org.junit.Assert.assertTrue;
 
 import com.bugsnag.callbacks.Callback;
 import com.bugsnag.delivery.Delivery;
-import com.bugsnag.logback.LogbackEndpoints;
 import com.bugsnag.logback.ProxyConfiguration;
 
 import org.apache.log4j.Logger;
@@ -20,7 +19,6 @@ import java.lang.reflect.Field;
 import java.net.Proxy;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -310,15 +308,9 @@ public class AppenderTest {
 
     @Test
     public void testEndpoints() {
-        LogbackEndpoints endpoints = new LogbackEndpoints();
-        endpoints.setNotifyEndpoint("https://notify.example.com");
-        endpoints.setSessionEndpoint("https://sessions.example.com");
-
-        appender.setEndpoints(endpoints);
+        appender.setEndpoint("https://notify.example.com");
 
         assertEquals("https://notify.example.com", delivery.getEndpoint());
-
-        assertEquals("https://sessions.example.com", sessionDelivery.getEndpoint());
     }
 
     @Test

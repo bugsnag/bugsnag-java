@@ -79,16 +79,19 @@ public class ConfigurationTest {
 
     @Test
     public void testInvalidSessionEndpoint() {
+        config.setAutoCaptureSessions(true);
         config.setEndpoints("http://example.com", null);
         assertFalse(config.shouldAutoCaptureSessions());
         assertNull(getDeliveryEndpoint(config.sessionDelivery));
 
+        config.setAutoCaptureSessions(true);
         config.setEndpoints("http://example.com", "");
         assertFalse(config.shouldAutoCaptureSessions());
         assertNull(getDeliveryEndpoint(config.sessionDelivery));
 
+        config.setAutoCaptureSessions(true);
         config.setEndpoints("http://example.com", "http://sessions.example.com");
-        assertFalse(config.shouldAutoCaptureSessions());
+        assertTrue(config.shouldAutoCaptureSessions());
         assertEquals("http://sessions.example.com", getDeliveryEndpoint(config.sessionDelivery));
     }
 
