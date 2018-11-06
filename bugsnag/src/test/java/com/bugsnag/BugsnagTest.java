@@ -12,6 +12,8 @@ import com.bugsnag.delivery.HttpDelivery;
 import com.bugsnag.delivery.OutputStreamDelivery;
 import com.bugsnag.serialization.Serializer;
 
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 
 import java.io.ByteArrayOutputStream;
@@ -24,9 +26,26 @@ import java.util.Set;
 
 public class BugsnagTest {
 
+    private Bugsnag bugsnag;
+
+    /**
+     * Create a new test Bugsnag client
+     */
+    @Before
+    public void initBugsnag() {
+        bugsnag = Bugsnag.init("apikey");
+    }
+
+    /**
+     * Close test Bugsnag
+     */
+    @After
+    public void closeBugsnag() {
+        bugsnag.close();
+    }
+
     @Test
     public void testNoDeliveryFails() {
-        Bugsnag bugsnag = Bugsnag.init("apikey");
         bugsnag.setDelivery(null);
 
         boolean result = bugsnag.notify(new RuntimeException());
@@ -35,7 +54,6 @@ public class BugsnagTest {
 
     @Test
     public void testIgnoreClasses() {
-        Bugsnag bugsnag = Bugsnag.init("apikey");
         bugsnag.setDelivery(BugsnagTestUtils.generateDelivery());
 
         // Ignore neither
@@ -56,7 +74,6 @@ public class BugsnagTest {
 
     @Test
     public void testNotifyReleaseStages() {
-        Bugsnag bugsnag = Bugsnag.init("apikey");
         bugsnag.setDelivery(BugsnagTestUtils.generateDelivery());
 
         bugsnag.setReleaseStage("production");
@@ -80,7 +97,6 @@ public class BugsnagTest {
 
     @Test
     public void testProjectPackages() {
-        Bugsnag bugsnag = Bugsnag.init("apikey");
         bugsnag.setDelivery(new Delivery() {
             @Override
             public void deliver(Serializer serializer, Object object, Map<String, String> headers) {
@@ -99,7 +115,6 @@ public class BugsnagTest {
 
     @Test
     public void testAppVersion() {
-        Bugsnag bugsnag = Bugsnag.init("apikey");
         bugsnag.setAppVersion("1.2.3");
         bugsnag.setDelivery(new Delivery() {
             @Override
@@ -117,7 +132,6 @@ public class BugsnagTest {
 
     @Test
     public void testAppType() {
-        Bugsnag bugsnag = Bugsnag.init("apikey");
         bugsnag.setAppType("testtype");
         bugsnag.setDelivery(new Delivery() {
             @Override
@@ -135,7 +149,6 @@ public class BugsnagTest {
 
     @Test
     public void testSeverity() {
-        Bugsnag bugsnag = Bugsnag.init("apikey");
         bugsnag.setDelivery(new Delivery() {
             @Override
             public void deliver(Serializer serializer, Object object, Map<String, String> headers) {
@@ -152,7 +165,6 @@ public class BugsnagTest {
 
     @Test
     public void testFilters() {
-        Bugsnag bugsnag = Bugsnag.init("apikey");
         bugsnag.setFilters("testfilter1", "testfilter2");
         bugsnag.setDelivery(new Delivery() {
             @SuppressWarnings("unchecked")
@@ -186,7 +198,6 @@ public class BugsnagTest {
 
     @Test
     public void testFilterHeaders() {
-        Bugsnag bugsnag = Bugsnag.init("apikey");
         bugsnag.setDelivery(new Delivery() {
             @SuppressWarnings("unchecked")
             @Override
@@ -225,7 +236,6 @@ public class BugsnagTest {
 
     @Test
     public void testUser() {
-        Bugsnag bugsnag = Bugsnag.init("apikey");
         bugsnag.setDelivery(new Delivery() {
             @Override
             public void deliver(Serializer serializer, Object object, Map<String, String> headers) {
@@ -249,7 +259,6 @@ public class BugsnagTest {
 
     @Test
     public void testContext() {
-        Bugsnag bugsnag = Bugsnag.init("apikey");
         bugsnag.addCallback(new Callback() {
             @Override
             public void beforeNotify(Report report) {
@@ -272,7 +281,6 @@ public class BugsnagTest {
 
     @Test
     public void testGroupingHash() {
-        Bugsnag bugsnag = Bugsnag.init("apikey");
         bugsnag.addCallback(new Callback() {
             @Override
             public void beforeNotify(Report report) {
@@ -295,7 +303,6 @@ public class BugsnagTest {
 
     @Test
     public void testSingleCallback() {
-        Bugsnag bugsnag = Bugsnag.init("apikey");
         bugsnag.addCallback(new Callback() {
             @Override
             public void beforeNotify(Report report) {
@@ -318,7 +325,6 @@ public class BugsnagTest {
 
     @Test
     public void testSingleCallbackInNotify() {
-        Bugsnag bugsnag = Bugsnag.init("apikey");
         bugsnag.setDelivery(new Delivery() {
             @Override
             public void deliver(Serializer serializer, Object object, Map<String, String> headers) {
@@ -341,7 +347,6 @@ public class BugsnagTest {
 
     @Test
     public void testCallbackOrder() {
-        Bugsnag bugsnag = Bugsnag.init("apikey");
         bugsnag.addCallback(new Callback() {
             @Override
             public void beforeNotify(Report report) {
@@ -370,7 +375,6 @@ public class BugsnagTest {
 
     @Test
     public void testCallbackCancel() {
-        Bugsnag bugsnag = Bugsnag.init("apikey");
         bugsnag.setDelivery(BugsnagTestUtils.generateDelivery());
         bugsnag.addCallback(new Callback() {
             @Override
@@ -385,7 +389,6 @@ public class BugsnagTest {
     @SuppressWarnings("deprecation") // ensures deprecated setEndpoint method still works correctly
     @Test
     public void testEndpoint() {
-        Bugsnag bugsnag = Bugsnag.init("apikey");
         bugsnag.setDelivery(new HttpDelivery() {
             String endpoint;
 
@@ -418,7 +421,6 @@ public class BugsnagTest {
 
     @Test
     public void testProxy() {
-        Bugsnag bugsnag = Bugsnag.init("apikey");
         bugsnag.setDelivery(new HttpDelivery() {
             Proxy proxy;
 
@@ -452,7 +454,6 @@ public class BugsnagTest {
 
     @Test
     public void testSendThreads() {
-        Bugsnag bugsnag = Bugsnag.init("apikey");
         bugsnag.setSendThreads(true);
         bugsnag.setDelivery(new Delivery() {
             @Override
@@ -471,7 +472,6 @@ public class BugsnagTest {
 
     @Test
     public void testHandledIncrementNoSession() {
-        Bugsnag bugsnag = Bugsnag.init("apikey");
         bugsnag.setDelivery(new Delivery() {
             @Override
             public void deliver(Serializer serializer, Object object, Map<String, String> headers) {
@@ -488,7 +488,6 @@ public class BugsnagTest {
 
     @Test
     public void testHandledIncrementWithSession() {
-        Bugsnag bugsnag = Bugsnag.init("apikey");
         bugsnag.startSession();
         bugsnag.setDelivery(new Delivery() {
             @Override
@@ -515,7 +514,6 @@ public class BugsnagTest {
     public void testSerialization() {
         ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
 
-        Bugsnag bugsnag = Bugsnag.init("apikey");
         bugsnag.setDelivery(new OutputStreamDelivery(byteStream));
         bugsnag.notify(new RuntimeException());
 
