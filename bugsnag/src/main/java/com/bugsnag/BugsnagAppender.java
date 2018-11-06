@@ -157,8 +157,29 @@ public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
                                         "Message", event.getMessage());
                                 report.addToTab("Log event data",
                                         "Timestamp", event.getTimeStamp());
+
+                                // Add details from the logging context to the event
+                                populateContextData(report, event);
                             }
                         });
+            }
+        }
+    }
+
+    /**
+     * Adds logging context values to the given report meta data
+     *
+     * @param report The report being sent to Bugsnag
+     * @param event The logging event
+     */
+    private void populateContextData(Report report, ILoggingEvent event) {
+        Map<String, String> propertyMap = event.getMDCPropertyMap();
+
+        if (propertyMap != null) {
+            // Loop through all the keys and put them in the correct tabs
+
+            for (Map.Entry<String, String> entry : propertyMap.entrySet()) {
+                report.addToTab("Context", entry.getKey(), entry.getValue());
             }
         }
     }
