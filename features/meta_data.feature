@@ -53,6 +53,16 @@ Scenario: Test logback appender with meta data in a callback
     And the event "metaData.custom.foo" equals "hunter2"
     And the event "metaData.custom.bar" equals "hunter2"
 
+Scenario: Test logback appender with meta data from the MDC
+    When I run "LogbackMDCScenario" with logback config "basic_config.xml"
+    Then I should receive a request
+    And the request is a valid for the error reporting API
+    And the "Bugsnag-API-Key" header equals "a35a2a72bd230ac0aa0f52715bbdc6aa"
+    And the payload field "events" is an array with 1 element
+    And the exception "errorClass" equals "java.lang.RuntimeException"
+    And the event "metaData.Context.foo" equals "hunter2"
+    And the event "metaData.Context.bar" equals "hunter2"
+
 Scenario: Test thread meta data
     When I run "ThreadMetaDataScenario" with the defaults
     Then I should receive a request

@@ -17,6 +17,7 @@ import org.junit.Test;
 import java.io.ByteArrayOutputStream;
 import java.net.InetSocketAddress;
 import java.net.Proxy;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
@@ -179,6 +180,45 @@ public class BugsnagTest {
                 report.addToTab("firsttab", "testfilter2", "secretpassword");
                 report.addToTab("firsttab", "testfilter3", "secretpassword");
                 report.addToTab("secondtab", "testfilter1", "secretpassword");
+            }
+        }));
+    }
+
+    @Test
+    public void testFilterHeaders() {
+        Bugsnag bugsnag = Bugsnag.init("apikey");
+        bugsnag.setDelivery(new Delivery() {
+            @SuppressWarnings("unchecked")
+            @Override
+            public void deliver(Serializer serializer, Object object, Map<String, String> headers) {
+                Report report = ((Notification) object).getEvents().get(0);
+                Map<String, Object> requestTab =
+                        (Map<String, Object>) report.getMetaData().get("request");
+
+                Map<String, Object> headersMap =
+                        (Map<String, Object>) requestTab.get("headers");
+
+                assertEquals("[FILTERED]", headersMap.get("Authorization"));
+                assertEquals("User:Password", headersMap.get("authorization"));
+                assertEquals("[FILTERED]", headersMap.get("Cookie"));
+                assertEquals("123456ABCDEF", headersMap.get("cookie"));
+            }
+
+            @Override
+            public void close() {
+            }
+        });
+
+        assertTrue(bugsnag.notify(new Throwable(), new Callback() {
+            @Override
+            public void beforeNotify(Report report) {
+                Map<String, String> headers = new HashMap<String, String>();
+                headers.put("Authorization", "User:Password");
+                headers.put("authorization", "User:Password");
+                headers.put("Cookie", "123456ABCDEF");
+                headers.put("cookie", "123456ABCDEF");
+
+                report.addToTab("request", "headers", headers);
             }
         }));
     }
