@@ -4,3 +4,4 @@ Then("the request used the Spring notifier") do
     And the payload field "notifier.url" equals "https://github.com/bugsnag/bugsnag-java"
   }
 end
+
