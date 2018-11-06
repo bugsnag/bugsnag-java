@@ -13,6 +13,8 @@ import java.util.List;
  */
 public class BugsnagMarker implements Marker {
 
+    private static final long serialVersionUID = -8536034181100363313L;
+
     private static final String BUGSNAG_MARKER_NAME = "BUGSNAG_MARKER";
 
     private Callback callback;
@@ -27,10 +29,6 @@ public class BugsnagMarker implements Marker {
         return callback;
     }
 
-    public void setCallback(Callback callback) {
-        this.callback = callback;
-    }
-
     @Override
     public String getName() {
         return BUGSNAG_MARKER_NAME;
@@ -38,7 +36,7 @@ public class BugsnagMarker implements Marker {
 
     @Override
     public void add(Marker reference) {
-
+        references.add(reference);
     }
 
     @Override

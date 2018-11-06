@@ -15,6 +15,7 @@ import ch.qos.logback.classic.spi.IThrowableProxy;
 import ch.qos.logback.classic.spi.ThrowableProxy;
 import ch.qos.logback.core.UnsynchronizedAppenderBase;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.slf4j.Marker;
 
 import java.net.InetSocketAddress;
 import java.net.Proxy;
@@ -142,8 +143,9 @@ public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
             Throwable throwable = extractThrowable(event);
 
             final Callback reportCallback;
-            if (event.getMarker() != null && event.getMarker() instanceof BugsnagMarker) {
-                reportCallback = ((BugsnagMarker) event.getMarker()).getCallback();
+            Marker marker = event.getMarker();
+            if (marker instanceof BugsnagMarker) {
+                reportCallback = ((BugsnagMarker) marker).getCallback();
             } else {
                 reportCallback = null;
             }
