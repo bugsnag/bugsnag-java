@@ -2,8 +2,10 @@ package com.bugsnag.example.logback.cli;
 
 import com.bugsnag.Bugsnag;
 import com.bugsnag.BugsnagAppender;
+import com.bugsnag.logback.BugsnagMarker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.Marker;
 
 import java.util.Date;
 
@@ -40,6 +42,17 @@ public class Application {
             throw new RuntimeException("Handled exception - INFO severity");
         } catch (RuntimeException e) {
             LOGGER.info(e.getMessage(), e);
+        }
+
+        // Send a handled exception with custom MetaData
+        LOGGER.info("Sending a handled exception to Bugsnag with custom MetaData");
+        try {
+            throw new RuntimeException("Handled exception - custom metadata");
+        } catch (RuntimeException e) {
+            LOGGER.warn(new BugsnagMarker((report) -> {
+                report.addToTab("report tab", "data key 1", "data value 1");
+                report.addToTab("report tab", "data key 2", "data value 2");
+            }), "Something bad happened", e);
         }
 
         // Test an unhandled exception from a different thread as shutdown hooks
