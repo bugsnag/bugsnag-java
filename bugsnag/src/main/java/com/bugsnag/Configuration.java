@@ -142,7 +142,7 @@ public class Configuration {
         boolean invalidSessionsEndpoint = sessions == null || sessions.isEmpty();
         String sessionEndpoint = null;
 
-        if (invalidSessionsEndpoint) {
+        if (invalidSessionsEndpoint && this.autoCaptureSessions.get()) {
             LOGGER.warn("The session tracking endpoint has not been"
                     + " set. Session tracking is disabled");
             this.autoCaptureSessions.set(false);

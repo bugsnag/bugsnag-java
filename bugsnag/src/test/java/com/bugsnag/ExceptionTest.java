@@ -84,6 +84,8 @@ public class ExceptionTest {
                 }
             }
         }));
+
+        bugsnag.close();
     }
 
 }

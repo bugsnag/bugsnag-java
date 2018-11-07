@@ -3,24 +3,22 @@ package com.bugsnag;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import com.bugsnag.callbacks.Callback;
 import com.bugsnag.delivery.Delivery;
-import com.bugsnag.logback.LogbackEndpoints;
 import com.bugsnag.logback.ProxyConfiguration;
 
 import org.apache.log4j.Logger;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Field;
 import java.net.Proxy;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -32,17 +30,24 @@ import java.util.Map;
 public class AppenderTest {
 
     private static final Logger LOGGER = Logger.getLogger(AppenderTest.class);
-    private static StubNotificationDelivery delivery;
-    private static StubSessionDelivery sessionDelivery;
-    private static Delivery originalDelivery;
-    private static Delivery originalSessionDelivery;
+    private StubNotificationDelivery delivery;
+    private StubSessionDelivery sessionDelivery;
+    private Delivery originalDelivery;
+    private Delivery originalSessionDelivery;
+    private BugsnagAppender appender;
 
     /**
      * Create a new test delivery and assign it to the Bugsnag client
      */
     @Before
     public void swapDelivery() {
-        Bugsnag bugsnag = Bugsnag.init("appenderApikey");
+
+        ch.qos.logback.classic.Logger rootLogger =
+                (ch.qos.logback.classic.Logger)LoggerFactory
+                        .getLogger(org.slf4j.Logger.ROOT_LOGGER_NAME);
+        appender = (BugsnagAppender)rootLogger.getAppender("BUGSNAG");
+
+        Bugsnag bugsnag = appender.getClient();
         originalDelivery = bugsnag.getDelivery();
         delivery = new StubNotificationDelivery();
         bugsnag.setDelivery(delivery);
@@ -57,7 +62,7 @@ public class AppenderTest {
      */
     @After
     public void revertDelivery() {
-        Bugsnag bugsnag = Bugsnag.init("appenderApikey");
+        Bugsnag bugsnag = appender.getClient();
         bugsnag.setDelivery(originalDelivery);
         bugsnag.setSessionDelivery(originalSessionDelivery);
     }
@@ -108,9 +113,7 @@ public class AppenderTest {
     public void testBugsnagConfig() {
 
         // Get the Bugsnag instance
-        Bugsnag bugsnag = Bugsnag.init("appenderApikey");
-
-        Configuration config = getConfig(bugsnag);
+        Configuration config = getConfig(appender.getClient());
         assertEquals("test", config.releaseStage);
         assertEquals("1.0.1", config.appVersion);
         assertEquals("gradleTask", config.appType);
@@ -182,14 +185,14 @@ public class AppenderTest {
     @Test
     public void testNotifyReleaseStages() {
         // Send a log with the release stage set to an excluded one
-        BugsnagAppender.getInstance().setReleaseStage("ignoredReleaseStage");
+        appender.setReleaseStage("ignoredReleaseStage");
         LOGGER.warn("Release stage ignored", new RuntimeException("test"));
 
         // Check that no reports were sent to Bugsnag
         assertEquals(0, delivery.getNotifications().size());
 
         // Reset the release stage and send another log
-        BugsnagAppender.getInstance().setReleaseStage("test");
+        appender.setReleaseStage("test");
         LOGGER.warn("Release stage notified", new RuntimeException("test"));
 
         // Check that a report was sent to Bugsnag
@@ -272,7 +275,7 @@ public class AppenderTest {
     public void testCallback() {
 
         // Setup a callback to set the user
-        BugsnagAppender.getInstance().addCallback(new Callback() {
+        appender.addCallback(new Callback() {
             @Override
             public void beforeNotify(Report report) {
                 report.setUserName("User Name");
@@ -305,15 +308,9 @@ public class AppenderTest {
 
     @Test
     public void testEndpoints() {
-        LogbackEndpoints endpoints = new LogbackEndpoints();
-        endpoints.setNotifyEndpoint("https://notify.example.com");
-        endpoints.setSessionEndpoint("https://sessions.example.com");
-
-        BugsnagAppender.getInstance().setEndpoints(endpoints);
+        appender.setEndpoint("https://notify.example.com");
 
         assertEquals("https://notify.example.com", delivery.getEndpoint());
-
-        assertEquals("https://sessions.example.com", sessionDelivery.getEndpoint());
     }
 
     @Test
@@ -322,7 +319,7 @@ public class AppenderTest {
         proxy.setType(Proxy.Type.HTTP);
         proxy.setHostname("127.0.0.1");
         proxy.setPort(8080);
-        BugsnagAppender.getInstance().setProxy(proxy);
+        appender.setProxy(proxy);
 
         assertEquals("/127.0.0.1:8080", delivery.getProxy().address().toString());
         assertEquals("/127.0.0.1:8080", sessionDelivery.getProxy().address().toString());
@@ -341,56 +338,7 @@ public class AppenderTest {
     }
 
     @Test
-    @SuppressWarnings (value = "unchecked")
-    public void testIncrementWithSession() {
-
-        BugsnagAppender.getInstance().startSession();
-
-        // Send a log message
-        LOGGER.warn("Exception with threads", new RuntimeException("test"));
-
-        // Check that a report was sent to Bugsnag with session information
-        assertEquals(1, delivery.getNotifications().size());
-        Notification notification = delivery.getNotifications().get(0);
-
-        Map<String, Object> session = notification.getEvents().get(0).getSession();
-        assertNotNull(session);
-
-        Map<String, Object> handledCounts = (Map<String, Object>) session.get("events");
-        assertEquals(1, handledCounts.get("handled"));
-        assertEquals(0, handledCounts.get("unhandled"));
-    }
-
-    @Test
-    public void testSendSession() {
-
-        // Send a session
-        BugsnagAppender.getInstance().startSession();
-
-        // Flush the sessions
-        Bugsnag bugsnag = Bugsnag.init("appenderApikey");
-        getSessionTracker(bugsnag).flushSessions(new Date(System.nanoTime() + 60000));
-
-        try {
-            while (sessionDelivery.getSessions().size() == 0) {
-                Thread.sleep(100);
-            }
-        } catch (InterruptedException exception) {
-            // ignore
-        }
-
-        // Check that a session was sent
-        assertEquals(1, sessionDelivery.getSessions().size());
-        SessionPayload session = sessionDelivery.getSessions().get(0);
-
-        // Check the details of the session
-        assertEquals("1.0.1", session.getApp().get("version"));
-        assertEquals("test", session.getApp().get("releaseStage"));
-    }
-
-    @Test
     public void testSplit() {
-        BugsnagAppender appender = BugsnagAppender.getInstance();
         assertTrue(appender.split(null).isEmpty());
         assertArrayEquals(new String[]{""}, appender.split("").toArray());
 

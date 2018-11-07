@@ -23,7 +23,7 @@ public class ThreadMetaDataTest {
      */
     @Before
     public void swapDelivery() {
-        bugsnag = Bugsnag.init("apikey");
+        bugsnag = Bugsnag.init("testapikey");
         originalDelivery = bugsnag.getDelivery();
         delivery = new StubNotificationDelivery();
         bugsnag.setDelivery(delivery);
@@ -35,6 +35,7 @@ public class ThreadMetaDataTest {
     @After
     public void revertDelivery() {
         bugsnag.setDelivery(originalDelivery);
+        bugsnag.close();
     }
 
     @Test

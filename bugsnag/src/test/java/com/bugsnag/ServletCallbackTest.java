@@ -9,6 +9,7 @@ import com.bugsnag.callbacks.ServletCallback;
 
 import com.bugsnag.servlet.BugsnagServletRequestListener;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -24,12 +25,17 @@ import javax.servlet.http.HttpServletRequest;
 
 public class ServletCallbackTest {
 
+    private Bugsnag bugsnag;
+
     /**
      * Generate a new request instance which will be read by the servlet
      * context and callback
      */
     @Before
     public void setUp() {
+        bugsnag = Bugsnag.init("apikey", false);
+        bugsnag.setDelivery(null);
+
         HttpServletRequest request = mock(HttpServletRequest.class);
 
         Map<String, String[]> params = new HashMap<String, String[]>();
@@ -63,6 +69,14 @@ public class ServletCallbackTest {
         ServletContext context = mock(ServletContext.class);
         BugsnagServletRequestListener listener = new BugsnagServletRequestListener();
         listener.requestInitialized(new ServletRequestEvent(context, request));
+    }
+
+    /**
+     * Close test Bugsnag
+     */
+    @After
+    public void closeBugsnag() {
+        bugsnag.close();
     }
 
     @SuppressWarnings("unchecked")
@@ -123,9 +137,6 @@ public class ServletCallbackTest {
     }
 
     private Report generateReport(java.lang.Exception exception) {
-        Bugsnag bugsnag = Bugsnag.init("apikey", false);
-        bugsnag.setDelivery(null);
-
         return bugsnag.buildReport(exception);
     }
 

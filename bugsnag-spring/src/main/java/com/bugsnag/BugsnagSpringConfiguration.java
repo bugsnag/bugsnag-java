@@ -44,12 +44,6 @@ public class BugsnagSpringConfiguration {
      */
     @PostConstruct
     void excludeLoggers() {
-
-        // Don't try to do anything if Logback is not being used by the application
-        if (!bugsnag.isLogbackAppenderInUse()) {
-            return;
-        }
-
         // Exclude Tomcat logger when processing HTTP requests via a servlet.
         // Regex specified to match the servlet variable parts of the logger name, e.g.
         // the Spring Boot default is:

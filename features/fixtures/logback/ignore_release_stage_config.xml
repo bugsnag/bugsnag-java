@@ -10,10 +10,7 @@
 		<notifyReleaseStage>production</notifyReleaseStage>
 		<notifyReleaseStage>development</notifyReleaseStage>
 
-		<endpoints>
-			<notifyEndpoint>__BUGSNAG_MOCK_PATH__</notifyEndpoint>
-			<sessionEndpoint>__BUGSNAG_MOCK_PATH__</sessionEndpoint>
-		</endpoints>
+		<endpoint>__BUGSNAG_MOCK_PATH__</endpoint>
 	</appender>
 
 	<root level="INFO">

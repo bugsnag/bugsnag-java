@@ -33,7 +33,6 @@ public class Bugsnag {
 
     private Configuration config;
     private final SessionTracker sessionTracker;
-    private static volatile boolean logbackAppenderInUse = false;
 
     private static final ThreadLocal<MetaData> THREAD_METADATA = new ThreadLocal<MetaData>() {
         @Override
@@ -66,15 +65,6 @@ public class Bugsnag {
     public static Bugsnag init(String apiKey, boolean sendUncaughtExceptions) {
         if (apiKey == null) {
             throw new NullPointerException("You must provide a Bugsnag API key");
-        }
-
-        if (logbackAppenderInUse) {
-            // Look for an existing instance of Bugsnag in the appender
-            BugsnagAppender appender = BugsnagAppender.getInstance(apiKey);
-
-            if (appender != null && appender.getBugsnag() != null) {
-                return appender.getBugsnag();
-            }
         }
 
         return new Bugsnag(apiKey, sendUncaughtExceptions);
@@ -607,7 +597,9 @@ public class Bugsnag {
      */
     public void close() {
         LOGGER.debug("Closing connection to Bugsnag");
-        config.delivery.close();
+        if (config.delivery != null) {
+            config.delivery.close();
+        }
         ExceptionHandler.disable(this);
     }
 
@@ -656,14 +648,6 @@ public class Bugsnag {
 
     SessionTracker getSessionTracker() {
         return sessionTracker;
-    }
-
-    boolean isLogbackAppenderInUse() {
-        return logbackAppenderInUse;
-    }
-
-    void setLogbackAppenderInUse() {
-        logbackAppenderInUse = true;
     }
 
     /**

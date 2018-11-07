@@ -26,15 +26,21 @@ import java.util.Map;
 public class AppenderMetaDataTest {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AppenderMetaDataTest.class);
-    private static StubNotificationDelivery delivery;
-    private static Delivery originalDelivery;
+    private StubNotificationDelivery delivery;
+    private Delivery originalDelivery;
+    private BugsnagAppender appender;
 
     /**
      * Create a new test delivery and assign it to the Bugsnag client
      */
     @Before
     public void swapDelivery() {
-        Bugsnag bugsnag = Bugsnag.init("appenderApikey");
+        ch.qos.logback.classic.Logger rootLogger =
+                (ch.qos.logback.classic.Logger)LoggerFactory
+                        .getLogger(org.slf4j.Logger.ROOT_LOGGER_NAME);
+        appender = (BugsnagAppender)rootLogger.getAppender("BUGSNAG");
+
+        Bugsnag bugsnag = appender.getClient();
         originalDelivery = bugsnag.getDelivery();
         delivery = new StubNotificationDelivery();
         bugsnag.setDelivery(delivery);
@@ -45,7 +51,7 @@ public class AppenderMetaDataTest {
      */
     @After
     public void revertDelivery() {
-        Bugsnag bugsnag = Bugsnag.init("appenderApikey");
+        Bugsnag bugsnag = appender.getClient();
         bugsnag.setDelivery(originalDelivery);
     }
 

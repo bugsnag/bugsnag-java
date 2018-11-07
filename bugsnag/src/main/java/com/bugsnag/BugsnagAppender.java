@@ -3,7 +3,6 @@ package com.bugsnag;
 import com.bugsnag.callbacks.Callback;
 import com.bugsnag.delivery.Delivery;
 import com.bugsnag.logback.BugsnagMarker;
-import com.bugsnag.logback.LogbackEndpoints;
 import com.bugsnag.logback.LogbackMetaData;
 import com.bugsnag.logback.LogbackMetaDataKey;
 import com.bugsnag.logback.LogbackMetaDataTab;
@@ -45,17 +44,11 @@ public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
     /** Bugsnag API key; the appender doesn't do anything if it's not available. */
     private String apiKey;
 
-    /** Whether or not to send unhandled exceptions to Bugsnag */
-    private boolean sendUncaughtExceptions = true;
-
-    /** Whether or not to automatically capture session information */
-    private boolean autoCaptureSessions = true;
-
     /** Application type. */
     private String appType;
 
-    /** Bugsnag error/session server endpoints. */
-    private LogbackEndpoints logbackEndpoints;
+    /** Bugsnag error server endpoint. */
+    private String endpoint;
 
     /** Property names that should be filtered out before sending to Bugsnag servers. */
     private Set<String> filteredProperties = new HashSet<String>();
@@ -89,42 +82,9 @@ public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
     /** Bugsnag client. */
     private Bugsnag bugsnag = null;
 
-    /** The appender instance */
-    private static Map<String, BugsnagAppender> instances = new HashMap<String, BugsnagAppender>();
-
-    /**
-     * @return A running instance of the appender (if one has been created)
-     */
-    public static BugsnagAppender getInstance() {
-        if (instances.size() == 0) {
-            return null;
-        } else  if (instances.size() == 1) {
-            return instances.get(instances.keySet().toArray(new String[1])[0]);
-        } else {
-            throw new IllegalStateException(
-                    "Multiple log appenders have been created, please supply API key parameter");
-        }
-    }
-
-    /**
-     * @param apiKey The API key of the appender to get (only required if using multiple API keys)
-     * @return A running instance of the appender (if one has been created)
-     */
-    public static BugsnagAppender getInstance(String apiKey) {
-        if (instances.containsKey(apiKey)) {
-            return instances.get(apiKey);
-        } else {
-            return null;
-        }
-    }
-
     @Override
     public void start() {
-        if (apiKey != null && !apiKey.isEmpty()) {
-            this.bugsnag = createBugsnag();
-
-            instances.put(apiKey, this);
-        }
+        this.bugsnag = createBugsnag();
         super.start();
     }
 
@@ -133,7 +93,6 @@ public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
         super.stop();
         if (bugsnag != null) {
             bugsnag.close();
-            instances.remove(apiKey);
         }
     }
 
@@ -250,11 +209,8 @@ public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
      * @return Create a Bugsnag instance with parameters from the logback configuration
      */
     private Bugsnag createBugsnag() {
-        Bugsnag bugsnag = Bugsnag.init(apiKey, sendUncaughtExceptions);
-
-        bugsnag.setLogbackAppenderInUse();
-
-        bugsnag.setAutoCaptureSessions(autoCaptureSessions);
+        Bugsnag bugsnag = Bugsnag.init(apiKey, false);
+        bugsnag.setAutoCaptureSessions(false);
 
         if (appType != null) {
             bugsnag.setAppType(appType);
@@ -264,9 +220,8 @@ public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
             bugsnag.setAppVersion(appVersion);
         }
 
-        if (logbackEndpoints != null) {
-            bugsnag.setEndpoints(logbackEndpoints.getNotifyEndpoint(),
-                    logbackEndpoints.getSessionEndpoint());
+        if (endpoint != null) {
+            bugsnag.setEndpoints(endpoint, null);
         }
 
         if (proxy != null) {
@@ -335,23 +290,6 @@ public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
     }
 
     /**
-     * Manually starts tracking a new session.
-     *
-     * Note: sessions are currently tracked on a per-thread basis. Therefore, if this method were
-     * called from Thread A then Thread B, two sessions would be considered 'active'. Any custom
-     * strategy used to track sessions should take this into account.
-     *
-     * Automatic session tracking can be enabled via
-     * {@link BugsnagAppender#setAutoCaptureSessions(boolean)}, which will automatically
-     * create a new session for each request
-     */
-    public void startSession() {
-        if (bugsnag != null) {
-            bugsnag.startSession();
-        }
-    }
-
-    /**
      * Set the method of delivery for Bugsnag error report. By default we'll
      * send reports asynchronously using a thread pool to
      * https://notify.bugsnag.com, but you can override this to use a
@@ -396,27 +334,6 @@ public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
     }
 
     /**
-     * Internal use only
-     * Should only be used via the logback.xml file
-     *
-     * @param sendUncaughtExceptions Whether or not Bugsnag should catch unhandled exceptions
-     */
-    public void setSendUncaughtExceptions(boolean sendUncaughtExceptions) {
-        this.sendUncaughtExceptions = sendUncaughtExceptions;
-    }
-
-    /**
-     * @see Bugsnag#setAutoCaptureSessions(boolean)
-     */
-    public void setAutoCaptureSessions(boolean autoCaptureSessions) {
-        this.autoCaptureSessions = autoCaptureSessions;
-
-        if (bugsnag != null) {
-            bugsnag.setAutoCaptureSessions(autoCaptureSessions);
-        }
-    }
-
-    /**
      * @see Bugsnag#setAppType(String)
      */
     public void setAppType(String appType) {
@@ -433,12 +350,11 @@ public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
      *
      * @see Bugsnag#setEndpoints(String, String)
      */
-    public void setEndpoints(LogbackEndpoints logbackEndpoints) {
-        this.logbackEndpoints = logbackEndpoints;
+    public void setEndpoint(String endpoint) {
+        this.endpoint = endpoint;
 
         if (bugsnag != null) {
-            bugsnag.setEndpoints(logbackEndpoints.getNotifyEndpoint(),
-                    logbackEndpoints.getSessionEndpoint());
+            bugsnag.setEndpoints(endpoint, null);
         }
     }
 
@@ -622,9 +538,9 @@ public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
     }
 
     /**
-     * @return The Bugsnag instance (used internally only)
+     * @return The Bugsnag instance
      */
-    Bugsnag getBugsnag() {
+    public Bugsnag getClient() {
         return bugsnag;
     }
 

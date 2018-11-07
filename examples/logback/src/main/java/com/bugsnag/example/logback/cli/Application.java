@@ -1,5 +1,6 @@
 package com.bugsnag.example.logback.cli;
 
+import ch.qos.logback.core.Appender;
 import com.bugsnag.Bugsnag;
 import com.bugsnag.BugsnagAppender;
 import com.bugsnag.logback.BugsnagMarker;
@@ -14,16 +15,21 @@ public class Application {
     private static final Logger LOGGER = LoggerFactory.getLogger(Application.class);
 
     public static void main(String[] args) throws Exception {
-        // Set some global meta data (added to each report)
-        BugsnagAppender.getInstance().addCallback((report) -> {
-            report.addToTab("diagnostics", "timestamp", new Date());
-            report.addToTab("customer", "name", "acme-inc");
-            report.addToTab("customer", "paying", true);
-            report.addToTab("customer", "spent", 1234);
-            report.setUserName("User Name");
-            report.setUserEmail("user@example.com");
-            report.setUserId("12345");
-        });
+
+        ch.qos.logback.classic.Logger rootLogger = (ch.qos.logback.classic.Logger)LoggerFactory.getLogger(org.slf4j.Logger.ROOT_LOGGER_NAME);
+        Appender appender = rootLogger.getAppender("BUGSNAG");
+        if (appender instanceof BugsnagAppender) {
+            // Set some global meta data (added to each report)
+            ((BugsnagAppender) appender).getClient().addCallback((report) -> {
+                report.addToTab("diagnostics", "timestamp", new Date());
+                report.addToTab("customer", "name", "acme-inc");
+                report.addToTab("customer", "paying", true);
+                report.addToTab("customer", "spent", 1234);
+                report.setUserName("User Name");
+                report.setUserEmail("user@example.com");
+                report.setUserId("12345");
+            });
+        }
 
         // Add meta data that will be added to all reports on the current thread
         Bugsnag.addThreadMetaData("thread tab", "thread key 1", "thread value 1");
