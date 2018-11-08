@@ -125,7 +125,9 @@ public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
                                 report.addToTab("Log event data",
                                         "Message", event.getMessage());
                                 report.addToTab("Log event data",
-                                        "Timestamp", event.getTimeStamp());
+                                        "Logger name", event.getLoggerName());
+                                report.addToTab("Log event data",
+                                        "Log level", event.getLevel());
 
                                 // Add details from the logging context to the event
                                 populateContextData(report, event);
