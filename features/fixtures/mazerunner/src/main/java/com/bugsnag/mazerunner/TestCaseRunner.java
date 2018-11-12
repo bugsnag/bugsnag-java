@@ -67,7 +67,7 @@ public class TestCaseRunner implements CommandLineRunner, ApplicationContextAwar
 
         LOGGER.info("using " + path + " to send Bugsnags");
 
-        bugsnag = Bugsnag.init(apiKey, true);
+        bugsnag = new Bugsnag(apiKey, true);
         bugsnag.setEndpoints(path, path);
     }
 

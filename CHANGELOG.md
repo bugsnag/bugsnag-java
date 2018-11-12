@@ -23,9 +23,6 @@ No upgrade steps are required for `bugsnag-java` in this release.
 * [Spring] Automatically attach Spring version information to reports
 * [Spring] Automatically track sessions for each MVC request
 
-**Deprecation notice**: `Bugsnag.init(...)` is now the preferred way to get an instance of the Bugsnag client
-instead of `new Bugsnag(...)`.
-
 See [UPGRADING](UPGRADING.md) for upgrade details and [the docs](https://docs.bugsnag.com/platforms/java/spring) for further information on new functionality.
 
 ## 3.3.0 (2018-09-26)

@@ -19,7 +19,7 @@ public class ExampleServlet extends HttpServlet {
      * Simple servlet example
      */
     public ExampleServlet() {
-        bugsnag = Bugsnag.init("YOUR-API-KEY");
+        bugsnag = new Bugsnag("YOUR-API-KEY");
         bugsnag.setProjectPackages("com.bugsnag.example");
     }
 

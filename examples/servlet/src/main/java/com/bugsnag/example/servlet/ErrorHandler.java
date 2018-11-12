@@ -18,7 +18,7 @@ public class ErrorHandler extends HttpServlet {
      * Error handler to report the error to Bugsnag
      */
     public ErrorHandler() {
-        bugsnag = Bugsnag.init("YOUR-API-KEY");
+        bugsnag = new Bugsnag("YOUR-API-KEY");
         bugsnag.setProjectPackages("com.bugsnag.example");
     }
 

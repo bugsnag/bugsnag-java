@@ -209,7 +209,7 @@ public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
      * @return Create a Bugsnag instance with parameters from the logback configuration
      */
     private Bugsnag createBugsnag() {
-        Bugsnag bugsnag = Bugsnag.init(apiKey, false);
+        Bugsnag bugsnag = new Bugsnag(apiKey, false);
         bugsnag.setAutoCaptureSessions(false);
 
         if (appType != null) {

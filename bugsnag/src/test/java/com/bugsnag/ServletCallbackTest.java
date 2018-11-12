@@ -33,7 +33,7 @@ public class ServletCallbackTest {
      */
     @Before
     public void setUp() {
-        bugsnag = Bugsnag.init("apikey", false);
+        bugsnag = new Bugsnag("apikey", false);
         bugsnag.setDelivery(null);
 
         HttpServletRequest request = mock(HttpServletRequest.class);

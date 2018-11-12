@@ -2,7 +2,7 @@
 
 Demonstrates how to use Bugsnag in a plain Java application.
 
-1. Open `ExampleApp` and alter the value of `bugsnag = Bugsnag.init("YOUR-API-KEY");` to match your API key
+1. Open `ExampleApp` and alter the value of `bugsnag = new Bugsnag("YOUR-API-KEY");` to match your API key
 
 2. Build the app
 

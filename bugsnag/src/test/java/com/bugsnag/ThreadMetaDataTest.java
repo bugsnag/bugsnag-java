@@ -23,7 +23,7 @@ public class ThreadMetaDataTest {
      */
     @Before
     public void swapDelivery() {
-        bugsnag = Bugsnag.init("testapikey");
+        bugsnag = new Bugsnag("testapikey");
         originalDelivery = bugsnag.getDelivery();
         delivery = new StubNotificationDelivery();
         bugsnag.setDelivery(delivery);

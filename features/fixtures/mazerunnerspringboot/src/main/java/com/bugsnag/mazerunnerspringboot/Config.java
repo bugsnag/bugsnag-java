@@ -19,7 +19,7 @@ public class Config {
 
     @Bean
     public Bugsnag bugsnag() {
-        Bugsnag bugsnag = Bugsnag.init(bugsnagApiKey);
+        Bugsnag bugsnag = new Bugsnag(bugsnagApiKey);
         bugsnag.setEndpoints(bugsnagEndpoint, bugsnagEndpoint);
         bugsnag.setReleaseStage("production");
         bugsnag.setAppVersion("1.0.0");

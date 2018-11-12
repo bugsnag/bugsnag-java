@@ -33,7 +33,7 @@ public class BugsnagTest {
      */
     @Before
     public void initBugsnag() {
-        bugsnag = Bugsnag.init("apikey");
+        bugsnag = new Bugsnag("apikey");
     }
 
     /**

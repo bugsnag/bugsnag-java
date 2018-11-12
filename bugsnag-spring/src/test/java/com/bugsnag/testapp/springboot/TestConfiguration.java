@@ -28,7 +28,7 @@ public class TestConfiguration extends AsyncConfigurerSupport implements Schedul
 
     @Bean
     public Bugsnag bugsnag() {
-        return Bugsnag.init("apiKey");
+        return new Bugsnag("apiKey");
     }
 
     @Bean

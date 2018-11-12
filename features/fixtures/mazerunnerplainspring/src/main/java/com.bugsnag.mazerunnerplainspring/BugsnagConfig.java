@@ -24,7 +24,7 @@ public class BugsnagConfig {
 
     @Bean
     public Bugsnag bugsnag() {
-        Bugsnag bugsnag = Bugsnag.init(bugsnagApiKey);
+        Bugsnag bugsnag = new Bugsnag(bugsnagApiKey);
         bugsnag.setEndpoints(bugsnagEndpoint, bugsnagEndpoint);
         bugsnag.setAutoCaptureSessions(autoCaptureSessions);
         bugsnag.setReleaseStage("production");

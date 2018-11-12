@@ -20,7 +20,7 @@ If you develop a [Spring Framework](https://spring.io/) application, it is recom
     public class BugsnagConfig {
         @Bean
         public Bugsnag bugsnag() {
-            return Bugsnag.init("your-api-key-here");
+            return new Bugsnag("your-api-key-here");
         }
     }
     ```
