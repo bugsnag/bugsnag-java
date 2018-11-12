@@ -22,6 +22,44 @@ Runs tests and checkstyle.
 ./gradlew check
 ```
 
+## Installing/testing against a local maven repository
+
+Sometimes its helpful to build and install the bugsnag-java libraries into a
+local repository and test the entire dependency flow inside of a sample
+application.
+
+To get started:
+
+1. In the `bugsnag-java` directory, run
+   `./gradlew -Preleasing=true publishToMavenLocal`.
+   This installs `bugsnag-java` and `bugsnag-spring` into your local
+   maven repository.
+2. In your sample application `build.gradle`, add `mavenLocal()` to the *top* of
+   your `allprojects` repositories section:
+
+   ```groovy
+   allprojects {
+     repositories {
+       mavenLocal()
+       // other repos as needed
+     }
+   }
+   ```
+3. In your sample application `app/build.gradle`, add the following to the
+   dependencies section, inserting the exact version number required:
+
+   ```groovy
+   dependencies {
+     implementation 'com.bugsnag:bugsnag:[VERSION NUMBER]'
+   }
+   ```
+4. Clean your sample application and reload dependencies *every time* you
+   rebuild/republish the local dependencies:
+
+   ```
+   ./gradlew clean --refresh-dependencies
+   ```
+
 ## Making a Release
 
 ### 1. Ensure you have permission to make a release
@@ -58,6 +96,17 @@ Create a [Bintray](https://bintray.com) account:
 
 ### 3. Making a release
 
+#### Pre-release Checklist
+- [ ] Does the build pass on the CI server?
+- [ ] Are all Docs PRs ready to go?
+- [ ] Has all new functionality been manually tested on a release build?
+  - [ ] Ensure the example app sends an unhandled error
+  - [ ] Ensure the example app sends a handled error
+- [ ] Have the installation instructions been updated on the [dashboard](https://github.com/bugsnag/bugsnag-website/tree/master/app/views/dashboard/projects/install) as well as the [docs site](https://github.com/bugsnag/docs.bugsnag.com)?
+- [ ] Do the installation instructions work for a manual integration?
+
+#### Making the release
+1. Merge any remaining PRs to master, ensuring the commit message matches the release tag (e.g. v4.0.0)
 1. Update the CHANGELOG.md file with any changes
 1. Update the version number by running `make VERSION=[number] bump`
 1. Commit the changes
@@ -75,3 +124,8 @@ Create a [Bintray](https://bintray.com) account:
      integration guide.
    * For a major version change, update the version numbers in the integration
      instructions on docs.bugsnag.com and the quick start guides on the website.
+
+#### Post-release Checklist
+- [ ] Have all Docs PRs been merged?
+- [ ] Do the existing example apps send an error report using the released artifact?
+- [ ] Make releases to downstream libraries, if appropriate (generally for bug fixes)

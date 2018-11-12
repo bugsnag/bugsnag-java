@@ -1,0 +1,31 @@
+plugins {
+    id "war"
+}
+
+group 'com.bugsnag.mazerunnerplainspring'
+
+sourceCompatibility = 1.7
+
+repositories {
+    mavenCentral()
+    flatDir {
+        dirs '../libs'
+    }
+    jcenter()
+}
+
+dependencies {
+    compile("org.springframework:spring-webmvc:4.2.0.RELEASE")
+    compile("javax.servlet:javax.servlet-api:3.1.0")
+    compile("ch.qos.logback:logback-classic:1.2.3")
+
+    compile("com.fasterxml.jackson.core:jackson-annotations:2.9.1")
+    compile("com.fasterxml.jackson.core:jackson-databind:2.9.1")
+    compile("com.bugsnag:bugsnag:9.9.9-test")
+    compile("com.bugsnag:bugsnag-spring:9.9.9-test")
+    compile project(":scenarios")
+}
+
+war {
+    archiveName = 'mazerunnerplainspring.war'
+}

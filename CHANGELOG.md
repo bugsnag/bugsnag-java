@@ -1,5 +1,30 @@
 # Changelog
 
+## 3.4.0-SNAPSHOT (2018-10-22)
+
+**Important**: This is an alpha release that provides early access to the following new features:
+- Enhanced support for Spring applications with the new `bugsnag-spring` notifier
+- The ability to report throwables to Bugsnag with the [logback](https://logback.qos.ch/) appender `BugsnagAppender`  
+
+Two artifacts are now available for this platform:
+
+- `bugsnag-java` - intended for plain Java applications
+- `bugsnag-spring` - provides enhanced support for Spring applications
+
+It is recommended that you migrate to `bugsnag-spring` if you develop a Spring application, as it enhances the quantity and quality of error reports which are sent automatically. Full upgrade instructions can be found [here](UPGRADING.md).
+
+No upgrade steps are required for `bugsnag-java` in this release.
+
+* Added `BugsnagAppender` that can report throwables from existing log statements to Bugsnag, using [logback](https://logback.qos.ch/)
+* [Spring] Automatically report exceptions thrown when processing MVC/REST requests
+* [Spring] Automatically report exceptions thrown in scheduled tasks
+* [Spring] Added `BugsnagAsyncConfig` class to simplify capture of uncaught exceptions in async tasks
+* [Spring] Automatically attach request metadata to reports
+* [Spring] Automatically attach Spring version information to reports
+* [Spring] Automatically track sessions for each MVC request
+
+See [UPGRADING](UPGRADING.md) for upgrade details and [the docs](https://docs.bugsnag.com/platforms/java/spring) for further information on new functionality.
+
 ## 3.3.0 (2018-09-26)
 
 * Capture trace of error reporting thread and identify with boolean flag

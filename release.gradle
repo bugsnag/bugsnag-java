@@ -1,10 +1,9 @@
 apply plugin: 'com.jfrog.bintray'
 apply plugin: 'com.bmuschko.nexus'
-apply plugin: 'io.codearte.nexus-staging'
 apply plugin: 'net.researchgate.release'
 apply plugin: 'maven-publish'
 
-archivesBaseName = 'bugsnag'
+archivesBaseName = project.findProperty('artifactId')
 
 release {
     tagTemplate = 'v${version}'
@@ -16,8 +15,8 @@ nexusStaging {
 
 modifyPom {
     project {
-        name 'Bugsnag'
-        description 'Official Bugsnag notifier for Java applications'
+        name = project.findProperty('projectName')
+        description = project.findProperty('projectDescription')
         url 'https://github.com/bugsnag/bugsnag-java'
 
         scm {
@@ -52,9 +51,9 @@ modifyPom {
 publishing {
     publications {
         Publication(MavenPublication) {
-            from components.java
+            from project(':' + project.name).components.java
             groupId 'com.bugsnag'
-            artifactId 'bugsnag'
+            artifactId project.findProperty('artifactId')
             version project.version
         }
     }
@@ -66,7 +65,7 @@ bintray {
     publications = ['Publication']
     pkg {
         repo = 'maven'
-        name = 'bugsnag'
+        name = project.findProperty('artifactId')
         userOrg = 'bugsnag'
         licenses = ['MIT']
         vcsUrl = 'https://github.com/bugsnag/bugsnag-java.git'
