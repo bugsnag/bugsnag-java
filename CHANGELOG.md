@@ -1,8 +1,7 @@
 # Changelog
 
-## 3.4.0-SNAPSHOT (2018-10-22)
+## 3.4.0 (2018-11-13)
 
-**Important**: This is an alpha release that provides early access to the following new features:
 - Enhanced support for Spring applications with the new `bugsnag-spring` notifier
 - The ability to report throwables to Bugsnag with the [logback](https://logback.qos.ch/) appender `BugsnagAppender`  
 
