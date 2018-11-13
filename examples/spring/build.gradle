@@ -19,5 +19,7 @@ repositories {
 dependencies {
     compile("org.springframework.boot:spring-boot-starter")
 
-    compile rootProject
+    compile project(":bugsnag-spring")
 }
+
+bootRepackage.enabled = false

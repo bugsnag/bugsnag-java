@@ -1,13 +1,18 @@
 package com.bugsnag.example.spring.web;
 
 import com.bugsnag.Bugsnag;
+import com.bugsnag.Report;
 import com.bugsnag.Severity;
+import com.bugsnag.callbacks.Callback;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.context.ApplicationContext;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 
 @RestController
 public class ApplicationRestController {
@@ -23,6 +28,9 @@ public class ApplicationRestController {
 
     @Autowired
     private String exampleWebsiteLinks;
+
+    @Autowired
+    private AsyncService asyncService;
 
     @RequestMapping("/")
     public String index() {
@@ -59,10 +67,13 @@ public class ApplicationRestController {
         try {
             throw new RuntimeException("Handled exception - custom metadata");
         } catch (RuntimeException e) {
-            bugsnag.notify(e, (report) -> {
-                report.setSeverity(Severity.WARNING);
-                report.addToTab("report", "something", "that happened");
-                report.setContext("the context");
+            bugsnag.notify(e, new Callback() {
+                @Override
+                public void beforeNotify(Report report) {
+                    report.setSeverity(Severity.WARNING);
+                    report.addToTab("report", "something", "that happened");
+                    report.setContext("the context");
+                }
             });
         }
 
@@ -70,35 +81,29 @@ public class ApplicationRestController {
     }
 
     @RequestMapping("/send-unhandled-exception")
-    public String sendUnhandledException() throws InterruptedException {
-        // Test an unhanded exception from a different thread as shutdown hooks
-        // won't be called if executed from this thread
+    public String sendUnhandledException() {
         LOGGER.info("Sending an unhandled exception to Bugsnag");
-        Thread thread = new Thread() {
-            @Override
-            public void run() {
-                throw new RuntimeException("Unhandled exception");
-            }
-        };
-
-        thread.start();
-
-        // Wait for unhandled exception thread to finish
-        thread.join();
-
-        return exampleWebsiteLinks + "<br/>Sent an unhandled exception to Bugsnag";
+        throw new RuntimeException("Sent an unhandled exception to Bugsnag");
     }
 
-    @RequestMapping("/send-spring-handled-exception")
-    public String sendSpringHandledException() {
-        LOGGER.info("Sending a Spring handled exception to Bugsnag");
-        throw new RuntimeException("Spring handled exception");
+    @RequestMapping("/send-unhandled-exception-async")
+    public String sendUnhandledExceptionAsync() {
+        asyncService.throwExceptionAsync();
+        return exampleWebsiteLinks + "<br/>Sent an unhandled exception from an async method";
+    }
+
+    @RequestMapping("/send-unhandled-exception-async-future")
+    public String sendUnhandledExceptionAsyncFuture() throws ExecutionException, InterruptedException {
+        Future future = asyncService.throwExceptionAsyncFuture();
+        future.get();
+
+        return "Exception is thrown before this";
     }
 
     @RequestMapping("/shutdown")
     public void shutdown() {
         LOGGER.info("Shutting down application");
 
-        SpringApplication.exit(applicationContext);
+        System.exit(SpringApplication.exit(applicationContext));
     }
 }

@@ -1,0 +1,18 @@
+apply plugin: 'application'
+
+buildscript {
+    repositories {
+        jcenter()
+    }
+}
+
+repositories {
+    jcenter()
+}
+
+dependencies {
+    compile("ch.qos.logback:logback-classic:1.2.3")
+    compile project(':bugsnag')
+}
+
+mainClassName = "com.bugsnag.example.logback.cli.Application"
