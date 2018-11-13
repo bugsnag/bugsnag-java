@@ -6,7 +6,7 @@ apply plugin: 'maven-publish'
 archivesBaseName = project.findProperty('artifactId')
 
 release {
-    tagTemplate = 'v${rootProject.version}'
+    tagTemplate = 'v${version}'
     versionPropertyFile = '../gradle.properties'
 }
 
