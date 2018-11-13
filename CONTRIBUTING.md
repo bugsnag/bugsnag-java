@@ -74,7 +74,7 @@ Create a Sonatype account:
 Create a [Bintray](https://bintray.com) account:
 
 1. Create an account
-1. Request access to the Bugsnag organization
+1. Request access to the [Bugsnag organization](https://bintray.com/bugsnag)
 
 ### 2. Configure the prerequisites
 
