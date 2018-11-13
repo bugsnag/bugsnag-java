@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.4.1
+
+(Skipped, duplicate of 3.4.0)
+
 ## 3.4.0 (2018-11-13)
 
 - Enhanced support for Spring applications with the new `bugsnag-spring` notifier
