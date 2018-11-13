@@ -6,7 +6,7 @@ apply plugin: 'maven-publish'
 archivesBaseName = project.findProperty('artifactId')
 
 release {
-    tagTemplate = 'v${version}'
+    tagTemplate = 'v${rootProject.version}'
 }
 
 nexusStaging {
@@ -54,7 +54,7 @@ publishing {
             from project(':' + project.name).components.java
             groupId 'com.bugsnag'
             artifactId project.findProperty('artifactId')
-            version project.version
+            version rootProject.version
         }
     }
 }
@@ -70,8 +70,8 @@ bintray {
         licenses = ['MIT']
         vcsUrl = 'https://github.com/bugsnag/bugsnag-java.git'
         version {
-            name = project.version
-            vcsTag = "v${project.version}"
+            name = rootProject.version
+            vcsTag = "v${rootProject.version}"
         }
     }
 }
