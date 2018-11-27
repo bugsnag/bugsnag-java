@@ -3,7 +3,7 @@ package com.bugsnag;
 import com.bugsnag.callbacks.Callback;
 import com.bugsnag.delivery.Delivery;
 import com.bugsnag.delivery.HttpDelivery;
-import com.bugsnag.util.DeamonThreadFactory;
+import com.bugsnag.util.DaemonThreadFactory;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,6 +13,8 @@ import java.net.Proxy;
 import java.util.Collections;
 import java.util.Date;
 import java.util.Set;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.RejectedExecutionHandler;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -24,9 +26,11 @@ public class Bugsnag {
     private static final int SESSION_TRACKING_PERIOD_MS = 60000;
     private static final int CORE_POOL_SIZE = 1;
 
+    private ExecutorService sessionFlusherService = Executors.newSingleThreadExecutor();
+
     private ScheduledThreadPoolExecutor sessionExecutorService =
             new ScheduledThreadPoolExecutor(CORE_POOL_SIZE,
-                    new DeamonThreadFactory(),
+                    new DaemonThreadFactory(),
                     new RejectedExecutionHandler() {
                 @Override
                 public void rejectedExecution(Runnable runnable, ThreadPoolExecutor executor) {
@@ -84,18 +88,14 @@ public class Bugsnag {
         sessionExecutorService.scheduleAtFixedRate(new Runnable() {
             @Override
             public void run() {
-                // Create a new thread which is not a deamon thread to actually flush the sessions
-                // This will means that the thread will not be killed
-                // half way through if the application shuts down
-                Thread nonDeamonThread = new Thread(new Runnable() {
+                // Use a different thread which is not a daemon thread
+                // to actually flush the sessions
+                sessionFlusherService.submit(new Runnable() {
                     @Override
                     public void run() {
                         sessionTracker.flushSessions(new Date());
                     }
                 });
-
-                nonDeamonThread.setDaemon(false);
-                nonDeamonThread.start();
             }
         }, SESSION_TRACKING_PERIOD_MS, SESSION_TRACKING_PERIOD_MS, TimeUnit.MILLISECONDS);
     }
