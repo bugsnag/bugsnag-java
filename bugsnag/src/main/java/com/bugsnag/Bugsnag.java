@@ -3,6 +3,7 @@ package com.bugsnag;
 import com.bugsnag.callbacks.Callback;
 import com.bugsnag.delivery.Delivery;
 import com.bugsnag.delivery.HttpDelivery;
+import com.bugsnag.util.DeamonThreadFactory;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,7 +25,9 @@ public class Bugsnag {
     private static final int CORE_POOL_SIZE = 1;
 
     private ScheduledThreadPoolExecutor sessionExecutorService =
-            new ScheduledThreadPoolExecutor(CORE_POOL_SIZE, new RejectedExecutionHandler() {
+            new ScheduledThreadPoolExecutor(CORE_POOL_SIZE,
+                    new DeamonThreadFactory(),
+                    new RejectedExecutionHandler() {
                 @Override
                 public void rejectedExecution(Runnable runnable, ThreadPoolExecutor executor) {
                     LOGGER.error("Rejected execution for sessionExecutorService");
@@ -81,7 +84,18 @@ public class Bugsnag {
         sessionExecutorService.scheduleAtFixedRate(new Runnable() {
             @Override
             public void run() {
-                sessionTracker.flushSessions(new Date());
+                // Create a new thread which is not a deamon thread to actually flush the sessions
+                // This will means that the thread will not be killed
+                // half way through if the application shuts down
+                Thread nonDeamonThread = new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        sessionTracker.flushSessions(new Date());
+                    }
+                });
+
+                nonDeamonThread.setDaemon(false);
+                nonDeamonThread.start();
             }
         }, SESSION_TRACKING_PERIOD_MS, SESSION_TRACKING_PERIOD_MS, TimeUnit.MILLISECONDS);
     }
