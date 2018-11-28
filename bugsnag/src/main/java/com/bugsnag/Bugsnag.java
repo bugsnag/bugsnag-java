@@ -472,11 +472,16 @@ public class Bugsnag {
         Session session = sessionTracker.getSession();
 
         if (session != null) {
-            if (report.getUnhandled()) {
-                session.incrementUnhandledCount();
-            } else {
-                session.incrementHandledCount();
+            try {
+                if (report.getUnhandled()) {
+                    session = session.incrementUnhandledCountAndClone();
+                } else {
+                    session = session.incrementHandledCountAndClone();
+                }
+            } catch (InterruptedException ex) {
+                // Failed to increment session counts properly
             }
+
             report.setSession(session);
         }
 
