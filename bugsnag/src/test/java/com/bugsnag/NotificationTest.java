@@ -5,6 +5,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Before;
@@ -31,6 +32,9 @@ public class NotificationTest {
         config.appVersion = "1.2.3";
         config.releaseStage = "dev";
         report = new Report(config, new RuntimeException());
+
+        // Only include properties with non-null values
+        mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
     }
 
     private JsonNode generateJson(ObjectMapper mapper,
@@ -65,6 +69,17 @@ public class NotificationTest {
         JsonNode rootNode = generateJson(mapper, config, report);
         validateErrorReport(rootNode);
         assertNull(rootNode.get("events").get("session"));
+    }
+
+    @Test
+    public void testNullSession() throws Throwable {
+        report.setSession(null);
+
+        JsonNode rootNode = generateJson(mapper, config, report);
+        validateErrorReport(rootNode);
+
+        JsonNode session = rootNode.get("events").get(0).get("session");
+        assertNull(session);
     }
 
     private void validateErrorReport(JsonNode rootNode) {

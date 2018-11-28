@@ -1,5 +1,10 @@
 # Changelog
 
+## 3.4.2 (2018-11-28)
+
+* Ensure session counts are thread safe
+  [#122](https://github.com/bugsnag/bugsnag-java/pull/122)
+
 ## 3.4.1
 
 (Skipped, duplicate of 3.4.0)

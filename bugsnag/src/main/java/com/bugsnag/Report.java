@@ -137,16 +137,16 @@ public class Report {
     void setSession(Session session) {
         if (session == null) {
             sessionMap = null;
+        } else {
+            sessionMap = new HashMap<String, Object>();
+            sessionMap.put("id", session.getId());
+            sessionMap.put("startedAt", session.getStartedAt());
+
+            Map<String, Object> handledCounts = new HashMap<String, Object>();
+            handledCounts.put("handled", session.getHandledCount());
+            handledCounts.put("unhandled", session.getUnhandledCount());
+            sessionMap.put("events", handledCounts);
         }
-
-        sessionMap = new HashMap<String, Object>();
-        sessionMap.put("id", session.getId());
-        sessionMap.put("startedAt", session.getStartedAt());
-
-        Map<String, Object> handledCounts = new HashMap<String, Object>();
-        handledCounts.put("handled", session.getHandledCount());
-        handledCounts.put("unhandled", session.getUnhandledCount());
-        sessionMap.put("events", handledCounts);
     }
 
     /**
