@@ -1,6 +1,6 @@
 # Changelog
 
-## 3.4.2 (TBD)
+## 3.4.2 (2018-11-28)
 
  * Prevent application hangs due to session flushing
 [#121](https://github.com/bugsnag/bugsnag-java/pull/121)
