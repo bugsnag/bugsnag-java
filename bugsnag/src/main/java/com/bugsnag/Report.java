@@ -23,7 +23,7 @@ public class Report {
     private String groupingHash;
     private Diagnostics diagnostics;
     private boolean shouldCancel = false;
-    private Session session;
+    private Map<String, Object> sessionMap;
     private final List<ThreadState> threadStates;
 
     /**
@@ -131,23 +131,22 @@ public class Report {
 
     @Expose
     Map<String, Object> getSession() {
-        if (session == null) {
-            return null;
-        }
-        
-        Map<String, Object> map = new HashMap<String, Object>();
-        map.put("id", session.getId());
-        map.put("startedAt", session.getStartedAt());
-
-        Map<String, Object> handledCounts = new HashMap<String, Object>();
-        handledCounts.put("handled", session.getHandledCount());
-        handledCounts.put("unhandled", session.getUnhandledCount());
-        map.put("events", handledCounts);
-        return map;
+        return sessionMap;
     }
 
     void setSession(Session session) {
-        this.session = session;
+        if (session == null) {
+            sessionMap = null;
+        } else {
+            sessionMap = new HashMap<String, Object>();
+            sessionMap.put("id", session.getId());
+            sessionMap.put("startedAt", session.getStartedAt());
+
+            Map<String, Object> handledCounts = new HashMap<String, Object>();
+            handledCounts.put("handled", session.getHandledCount());
+            handledCounts.put("unhandled", session.getUnhandledCount());
+            sessionMap.put("events", handledCounts);
+        }
     }
 
     /**

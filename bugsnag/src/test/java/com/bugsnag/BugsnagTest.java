@@ -511,6 +511,29 @@ public class BugsnagTest {
     }
 
     @Test
+    public void testMultipleHandledIncrementWithSession() {
+        bugsnag.startSession();
+        StubNotificationDelivery testDelivery = new StubNotificationDelivery();
+        bugsnag.setDelivery(testDelivery);
+
+        assertTrue(bugsnag.notify(new Throwable()));
+        assertTrue(bugsnag.notify(new Throwable()));
+        assertTrue(bugsnag.notify(new Throwable()));
+
+        for (int i = 0 ; i < testDelivery.getNotifications().size(); i++) {
+            Report report = testDelivery.getNotifications().get(i).getEvents().get(0);
+
+            Map<String, Object> session = report.getSession();
+            assertNotNull(session);
+
+            @SuppressWarnings("unchecked")
+            Map<String, Object> handledCounts = (Map<String, Object>) session.get("events");
+            assertEquals(i + 1, handledCounts.get("handled"));
+            assertEquals(0, handledCounts.get("unhandled"));
+        }
+    }
+
+    @Test
     public void testSerialization() {
         ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
 
