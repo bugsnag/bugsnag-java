@@ -3,6 +3,7 @@ package com.bugsnag;
 import com.bugsnag.callbacks.Callback;
 import com.bugsnag.delivery.Delivery;
 import com.bugsnag.delivery.HttpDelivery;
+import com.bugsnag.util.DaemonThreadFactory;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,6 +13,9 @@ import java.net.Proxy;
 import java.util.Collections;
 import java.util.Date;
 import java.util.Set;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.RejectedExecutionHandler;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -23,8 +27,17 @@ public class Bugsnag {
     private static final int SESSION_TRACKING_PERIOD_MS = 60000;
     private static final int CORE_POOL_SIZE = 1;
 
+    // Create an executor service which keeps idle threads alive for a maximum of SHUTDOWN_TIMEOUT.
+    // This should avoid blocking an application that doesn't call shutdown from exiting.
+    private ExecutorService sessionFlusherService =
+            new ThreadPoolExecutor(0, 1,
+                    SHUTDOWN_TIMEOUT_MS, TimeUnit.MILLISECONDS,
+                    new LinkedBlockingQueue<Runnable>());
+
     private ScheduledThreadPoolExecutor sessionExecutorService =
-            new ScheduledThreadPoolExecutor(CORE_POOL_SIZE, new RejectedExecutionHandler() {
+            new ScheduledThreadPoolExecutor(CORE_POOL_SIZE,
+                    new DaemonThreadFactory(),
+                    new RejectedExecutionHandler() {
                 @Override
                 public void rejectedExecution(Runnable runnable, ThreadPoolExecutor executor) {
                     LOGGER.error("Rejected execution for sessionExecutorService");
@@ -81,7 +94,14 @@ public class Bugsnag {
         sessionExecutorService.scheduleAtFixedRate(new Runnable() {
             @Override
             public void run() {
-                sessionTracker.flushSessions(new Date());
+                // Use a different thread which is not a daemon thread
+                // to actually flush the sessions
+                sessionFlusherService.submit(new Runnable() {
+                    @Override
+                    public void run() {
+                        sessionTracker.flushSessions(new Date());
+                    }
+                });
             }
         }, SESSION_TRACKING_PERIOD_MS, SESSION_TRACKING_PERIOD_MS, TimeUnit.MILLISECONDS);
     }

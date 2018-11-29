@@ -1,5 +1,10 @@
 # Changelog
 
+## 3.4.2 (2018-11-28)
+
+ * Prevent application hangs due to session flushing
+[#121](https://github.com/bugsnag/bugsnag-java/pull/121)
+
 ## 3.4.1
 
 (Skipped, duplicate of 3.4.0)
