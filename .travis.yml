@@ -8,9 +8,17 @@ cache:
   - $HOME/.gradle/caches/
   - $HOME/.gradle/wrapper/
 install: ./gradlew :bugsnag:assemble :bugsnag-spring:assemble
+addons:
+  apt:
+    packages:
+      - openjdk-6-jdk
 
 jobs:
   include:
+  - stage: test
+    jdk: openjdk6
+    script:
+      - ./gradlew check test
   - stage: test
     jdk: openjdk8
     script:
