@@ -18,7 +18,6 @@ jobs:
   - stage: test
     jdk: openjdk6
     before_install:
-    - rm "${JAVA_HOME}/lib/security/cacerts"
     - ln -s /etc/ssl/certs/java/cacerts "${JAVA_HOME}/lib/security/cacerts"
     script: # Exclude examples from JDK7 build as they are written for JDK8
       - for dir in examples/*/; do echo "-x examples:`basename $dir`:test"; done | xargs ./gradlew test
