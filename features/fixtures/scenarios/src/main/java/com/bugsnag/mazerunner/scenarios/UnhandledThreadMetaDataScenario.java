@@ -15,12 +15,11 @@ public class UnhandledThreadMetaDataScenario extends Scenario {
 
     @Override
     public void run() {
-        // Global callback metadata has lowest precedence
+        // Global callback metadata should overwrite thread meta data
         bugsnag.addCallback(new Callback() {
             @Override
             public void beforeNotify(Report report) {
-                report.addToTab("Custom", "test", "Global value");
-                report.addToTab("Custom", "foo", "Global value to be overwritten");
+                report.addToTab("Custom", "foo", "Global value");
             }
         });
 
@@ -42,9 +41,9 @@ public class UnhandledThreadMetaDataScenario extends Scenario {
         Thread t2 = new Thread(new Runnable() {
             @Override
             public void run() {
-                // Thread metadata should merge with global metadata and overwrite when duplicate key
-                Bugsnag.addThreadMetaData("Custom", "foo", "Thread value 1");
-                Bugsnag.addThreadMetaData("Custom", "bar", "Thread value 2");
+                // Thread metadata should be overwritten by global callback
+                Bugsnag.addThreadMetaData("Custom", "test", "Thread value");
+                Bugsnag.addThreadMetaData("Custom", "foo", "Thread value to be overwritten");
                 throw new RuntimeException("UnhandledThreadMetaDataScenario");
             }
         });
