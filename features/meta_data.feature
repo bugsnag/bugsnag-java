@@ -106,8 +106,8 @@ Scenario: Test unhandled thread meta data
     And the "Bugsnag-API-Key" header equals "a35a2a72bd230ac0aa0f52715bbdc6aa"
     And the payload field "events" is an array with 1 element
     And the exception "errorClass" equals "java.lang.RuntimeException"
-    And the event "metaData.Custom.test" equals "Global value"
-    And the event "metaData.Custom.foo" equals "Thread value"
+    And the event "metaData.Custom.test" equals "Thread value"
+    And the event "metaData.Custom.foo" equals "Global value"
     And the event "metaData.Custom.something" is null
 
 Scenario: Test unhandled thread meta data for Spring Boot app
@@ -117,8 +117,8 @@ Scenario: Test unhandled thread meta data for Spring Boot app
     And the "Bugsnag-API-Key" header equals "a35a2a72bd230ac0aa0f52715bbdc6aa"
     And the payload field "events" is an array with 1 element
     And the exception "errorClass" equals "java.lang.RuntimeException"
-    And the event "metaData.Custom.test" equals "Global value"
-    And the event "metaData.Custom.foo" equals "Thread value"
+    And the event "metaData.Custom.test" equals "Thread value"
+    And the event "metaData.Custom.foo" equals "Global value"
     And the event "metaData.Custom.something" is null
 
 Scenario: Test unhandled thread meta data for plain Spring app
@@ -128,8 +128,8 @@ Scenario: Test unhandled thread meta data for plain Spring app
     And the "Bugsnag-API-Key" header equals "a35a2a72bd230ac0aa0f52715bbdc6aa"
     And the payload field "events" is an array with 1 element
     And the exception "errorClass" equals "java.lang.RuntimeException"
-    And the event "metaData.Custom.test" equals "Global value"
-    And the event "metaData.Custom.foo" equals "Thread value"
+    And the event "metaData.Custom.test" equals "Thread value"
+    And the event "metaData.Custom.foo" equals "Global value"
     And the event "metaData.Custom.something" is null
 
 Scenario: Test logback appender with thread meta data
