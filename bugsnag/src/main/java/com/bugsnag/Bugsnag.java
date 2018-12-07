@@ -446,6 +446,9 @@ public class Bugsnag {
             return false;
         }
 
+        // Add thread metadata to the report
+        report.mergeMetaData(THREAD_METADATA.get());
+
         // Run all client-wide beforeNotify callbacks
         for (Callback callback : config.callbacks) {
             try {
@@ -462,9 +465,6 @@ public class Bugsnag {
                 LOGGER.warn("Callback threw an exception", ex);
             }
         }
-
-        // Add thread metadata to the report
-        report.mergeMetaData(THREAD_METADATA.get());
 
         // Run the report-specific beforeNotify callback, if given
         if (reportCallback != null) {
@@ -631,6 +631,13 @@ public class Bugsnag {
      */
     public static void clearThreadMetaData(String tabName, String key) {
         THREAD_METADATA.get().clearKey(tabName, key);
+    }
+
+    /**
+     * @return Thread meta data for the current thread
+     */
+    public static MetaData getThreadMetaData() {
+        return THREAD_METADATA.get();
     }
 
     Configuration getConfig() {
