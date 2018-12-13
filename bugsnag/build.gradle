@@ -3,6 +3,7 @@ apply plugin: 'java-library'
 apply from: '../common.gradle'
 
 repositories {
+    mavenCentral()
     jcenter()
 }
 

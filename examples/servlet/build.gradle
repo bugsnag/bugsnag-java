@@ -4,6 +4,7 @@ apply plugin: 'org.akhikhl.gretty'
 
 buildscript {
     repositories {
+        mavenCentral()
         jcenter()
     }
 
@@ -13,6 +14,7 @@ buildscript {
 }
 
 repositories {
+    mavenCentral()
     jcenter()
 }
 
