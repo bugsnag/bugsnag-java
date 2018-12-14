@@ -2,11 +2,13 @@ apply plugin: 'application'
 
 buildscript {
     repositories {
+        mavenCentral()
         jcenter()
     }
 }
 
 repositories {
+    mavenCentral()
     jcenter()
 }
 
