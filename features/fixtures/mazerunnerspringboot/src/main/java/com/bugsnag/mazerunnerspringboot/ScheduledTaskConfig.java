@@ -23,7 +23,7 @@ public class ScheduledTaskConfig {
     @ConditionalOnProperty(name = "other_scheduled_executor_service_bean", havingValue = "true")
     @Bean
     public Executor otherTaskScheduler() {
-        return Executors.newScheduledThreadPool(4);
+        return Executors.newScheduledThreadPool(2);
     }
 
     @ConditionalOnProperty(name = "custom_task_scheduler_bean", havingValue = "true")
