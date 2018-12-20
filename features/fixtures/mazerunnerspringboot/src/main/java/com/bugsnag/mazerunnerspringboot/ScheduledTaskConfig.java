@@ -33,4 +33,12 @@ public class ScheduledTaskConfig {
         scheduler.setPoolSize(4);
         return scheduler;
     }
+
+    @ConditionalOnProperty(name = "second_task_scheduler_bean", havingValue = "true")
+    @Bean(name = "taskScheduler")
+    public TaskScheduler secondTaskScheduler() {
+        ThreadPoolTaskScheduler scheduler = new ThreadPoolTaskScheduler();
+        scheduler.setPoolSize(2);
+        return scheduler;
+    }
 }

@@ -28,6 +28,14 @@ Scenario: For multiple ScheduledExecutorService beans, the one named "taskSchedu
     And the request is a valid for the error reporting API
     And the exception "message" equals "Unhandled exception from ScheduledTaskService"
 
+Scenario: For multiple ScheduledExecutorService beans, the one named "taskScheduler" is used
+    Given I set environment variable "custom_task_scheduler_bean" to "true"
+    Given I set environment variable "second_task_scheduler_bean" to "true"
+    And I run spring boot "ScheduledTaskScenario" with the defaults
+    Then I should receive a request
+    And the request is a valid for the error reporting API
+    And the exception "message" equals "Unhandled exception from ScheduledTaskService"
+
 Scenario: Scheduled tasks execute on a ScheduledExecutorService rather than a single-threaded Executor, when available
     Given I set environment variable "scheduled_executor_service_bean" to "true"
     And I run spring boot "ScheduledTaskExecutorScenario" with the defaults
