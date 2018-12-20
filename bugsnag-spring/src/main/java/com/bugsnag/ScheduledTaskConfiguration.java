@@ -44,7 +44,9 @@ class ScheduledTaskConfiguration implements SchedulingConfigurer {
         //    and wrap it in a TaskScheduler
         // 4. create our own TaskScheduler
 
-        TaskScheduler taskScheduler = resolveExistingTaskScheduler(taskRegistrar);
+        TaskScheduler registrarScheduler = taskRegistrar.getScheduler();
+        TaskScheduler taskScheduler = registrarScheduler != null
+                ? registrarScheduler : beanLocator.resolveTaskScheduler();
 
         if (taskScheduler != null) {
             configureExistingTaskScheduler(taskScheduler, bugsnagErrorHandler);
@@ -53,16 +55,6 @@ class ScheduledTaskConfiguration implements SchedulingConfigurer {
                     = beanLocator.resolveScheduledExecutorService();
             taskScheduler = createNewTaskScheduler(executorService, bugsnagErrorHandler);
             taskRegistrar.setScheduler(taskScheduler);
-        }
-    }
-
-    private TaskScheduler resolveExistingTaskScheduler(ScheduledTaskRegistrar taskRegistrar) {
-        TaskScheduler registrarScheduler = taskRegistrar.getScheduler();
-
-        if (registrarScheduler != null) {
-            return registrarScheduler;
-        } else {
-            return beanLocator.resolveTaskScheduler();
         }
     }
 
