@@ -15,8 +15,7 @@ Scenario: Report an exception from a spring boot scheduled task
     And the event "severityReason.attributes.framework" equals "Spring"
 
 Scenario: Report an exception from a plain spring scheduled task
-    Given I set environment variable "RUN_SCHEDULED_TASK" to "true"
-    And I run the plain spring app
+    When I run plain Spring "ScheduledTaskScenario" with the defaults
     Then I should receive a request
     And the request is a valid for the error reporting API
     And the request used the Spring notifier
@@ -28,5 +27,3 @@ Scenario: Report an exception from a plain spring scheduled task
     And the exception "message" equals "Unhandled exception from ScheduledTaskService"
     And the event "severityReason.type" equals "unhandledExceptionMiddleware"
     And the event "severityReason.attributes.framework" equals "Spring"
-
-
