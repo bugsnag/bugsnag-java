@@ -25,8 +25,8 @@ jobs:
       - ./gradlew check test
   - stage: test
     jdk: openjdk7
-    script: # Exclude examples from JDK7 build as they are written for JDK8
-      - for dir in examples/*/; do echo "-x examples:`basename $dir`:test"; done | xargs ./gradlew test
+    script:
+      - ./gradlew check test
     before_install: # Work around missing crypto in openjdk7
     - sudo wget "https://bouncycastle.org/download/bcprov-ext-jdk15on-158.jar" -O "${JAVA_HOME}/jre/lib/ext/bcprov-ext-jdk15on-158.jar"
     - sudo perl -pi.bak -e 's/^(security\.provider\.)([0-9]+)/$1.($2+1)/ge' /etc/java-7-openjdk/security/java.security

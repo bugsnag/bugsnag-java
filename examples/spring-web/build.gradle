@@ -1,8 +1,6 @@
-apply plugin: 'spring-boot'
-
 buildscript {
     ext {
-        springBootVersion = '1.4.1.RELEASE'
+        springBootVersion = '2.1.1.RELEASE'
     }
     repositories {
         mavenCentral()
@@ -12,6 +10,10 @@ buildscript {
         classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
     }
 }
+
+apply plugin: 'java'
+apply plugin: 'org.springframework.boot'
+apply plugin: 'io.spring.dependency-management'
 
 repositories {
     mavenCentral()
@@ -24,4 +26,3 @@ dependencies {
     compile project(":bugsnag-spring")
 }
 
-bootRepackage.enabled = false
