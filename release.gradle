@@ -49,6 +49,10 @@ modifyPom {
     }
 }
 
+task sourceJar(type: Jar) {
+    from sourceSets.main.allJava
+}
+
 publishing {
     publications {
         Publication(MavenPublication) {
@@ -56,6 +60,9 @@ publishing {
             groupId 'com.bugsnag'
             artifactId project.findProperty('artifactId')
             version rootProject.version
+            artifact sourceJar {
+                classifier "sources"
+            }
         }
     }
 }
