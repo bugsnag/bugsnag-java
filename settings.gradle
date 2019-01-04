@@ -1,7 +1,12 @@
 include ':bugsnag',
-        ':bugsnag-spring',
-        ':examples:simple',
-        ':examples:servlet',
-        ':examples:spring',
-        ':examples:spring-web',
-        ':examples:logback'
+        ':bugsnag-spring'
+
+// Exclude examples from JDK7 build as they are written for JDK8
+if(JavaVersion.current().isJava8Compatible()){
+    include ':examples:simple',
+            ':examples:servlet',
+            ':examples:spring',
+            ':examples:spring-web',
+            ':examples:logback'
+}
+

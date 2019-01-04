@@ -4,7 +4,8 @@ import com.bugsnag.Bugsnag;
 import com.bugsnag.Report;
 import com.bugsnag.Severity;
 import com.bugsnag.callbacks.Callback;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.context.ApplicationContext;
@@ -17,7 +18,7 @@ import java.util.concurrent.Future;
 @RestController
 public class ApplicationRestController {
 
-    private static final Logger LOGGER = Logger.getLogger(ApplicationRestController.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ApplicationRestController.class);
 
     // Inject the bugsnag notifier bean defined in Config.java
     @Autowired
