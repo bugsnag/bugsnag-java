@@ -162,8 +162,7 @@ Scenario: Test thread meta data in spring boot async method
     And the event "metaData.thread.key2" equals "should be included in meta data"
 
 Scenario: Test thread meta data in plain spring scheduled task
-    Given I set environment variable "RUN_SCHEDULED_TASK" to "true"
-    And I run the plain spring app
+    When I run plain Spring "ScheduledTaskScenario" with the defaults
     Then I should receive a request
     And the request is a valid for the error reporting API
     And the event "metaData.thread.key1" is null
