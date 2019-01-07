@@ -1,5 +1,10 @@
 # Changelog
 
+## 3.4.3 (2019-01-07)
+
+* Support other methods of configuring a TaskScheduler when setting ErrorHandler on scheduled tasks
+  [#126](https://github.com/bugsnag/bugsnag-java/pull/126)
+
 ## 3.4.2 (2018-11-29)
 
 * Ensure session counts are thread safe
