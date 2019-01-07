@@ -38,6 +38,11 @@ public class BugsnagSpringConfiguration {
         return callback;
     }
 
+    @Bean
+    ScheduledTaskBeanLocator scheduledTaskBeanLocator() {
+        return new ScheduledTaskBeanLocator();
+    }
+
     /**
      * If using Logback, stop any configured appender from creating Bugsnag reports for Spring log
      * messages as they effectively duplicate error reports for unhandled exceptions.
