@@ -10,13 +10,11 @@ import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
 import org.springframework.beans.factory.config.NamedBeanHolder;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.TaskScheduler;
 import org.springframework.scheduling.annotation.ScheduledAnnotationBeanPostProcessor;
 
 import java.util.concurrent.ScheduledExecutorService;
 
-@Configuration
 class ScheduledTaskBeanLocator implements ApplicationContextAware {
 
     private ApplicationContext beanFactory;
