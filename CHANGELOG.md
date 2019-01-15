@@ -1,5 +1,10 @@
 # Changelog
 
+## 3.4.4 (2019-01-15)
+
+* Remove unnecessary `@Configuration` annotation
+  [#130](https://github.com/bugsnag/bugsnag-java/pull/130)
+
 ## 3.4.3 (2019-01-07)
 
 * Support other methods of configuring a TaskScheduler when setting ErrorHandler on scheduled tasks
