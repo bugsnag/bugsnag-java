@@ -1,5 +1,10 @@
 # Changelog
 
+## 3.X.X (TBD)
+
+* Migrate non-standard device fields to metaData.device
+  [#131](https://github.com/bugsnag/bugsnag-java/pull/131)
+
 ## 3.4.3 (2019-01-07)
 
 * Support other methods of configuring a TaskScheduler when setting ErrorHandler on scheduled tasks
