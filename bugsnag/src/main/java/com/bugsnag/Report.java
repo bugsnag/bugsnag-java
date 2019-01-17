@@ -209,7 +209,9 @@ public class Report {
      * @param key   the key of app info to add
      * @param value the value of app info to add
      * @return the modified report
+     * @deprecated use {@link #addToTab(String, String, Object)} instead
      */
+    @Deprecated
     public Report setAppInfo(String key, Object value) {
         diagnostics.app.put(key, value);
         return this;
@@ -252,7 +254,9 @@ public class Report {
      * @param key   the key of device info to add
      * @param value the value of device info to add
      * @return the modified report
+     * @deprecated use {@link #addToTab(String, String, Object)} instead
      */
+    @Deprecated
     public Report setDeviceInfo(String key, Object value) {
         diagnostics.device.put(key, value);
         return this;
