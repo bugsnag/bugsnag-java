@@ -1,0 +1,28 @@
+ext {
+    springVersion = '4.3.18.RELEASE'
+    springBootVersion = '1.5.15.RELEASE'
+}
+
+apply plugin: 'java-library'
+
+apply from: '../common.gradle'
+
+repositories {
+    mavenCentral()
+    jcenter()
+}
+
+dependencies {
+    compile project(':bugsnag')
+    testCompile project(path: ':bugsnag', configuration: 'testRuntime')
+
+    compileOnly "javax.servlet:javax.servlet-api:${servletApiVersion}"
+    compileOnly "org.springframework:spring-webmvc:${springVersion}"
+    compileOnly "org.springframework.boot:spring-boot:${springBootVersion}"
+    compileOnly "ch.qos.logback:logback-core:${logbackVersion}"
+
+    testCompile "junit:junit:4.12"
+    testCompile "javax.servlet:javax.servlet-api:${servletApiVersion}"
+    testCompile "org.springframework.boot:spring-boot-starter-test:${springBootVersion}"
+    testCompile "org.springframework.boot:spring-boot-starter-web:${springBootVersion}"
+}

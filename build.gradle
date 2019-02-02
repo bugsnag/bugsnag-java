@@ -1,0 +1,26 @@
+buildscript {
+    repositories {
+        mavenCentral()
+        jcenter()
+    }
+    dependencies {
+        if (project.hasProperty('releasing')) {
+            classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.7.3'
+            classpath 'com.bmuschko:gradle-nexus-plugin:2.3.1'
+            classpath 'io.codearte.gradle.nexus:gradle-nexus-staging-plugin:0.11.0'
+            classpath 'net.researchgate:gradle-release:2.4.0'
+        }
+    }
+}
+
+// This can only be applied in root project, see https://github.com/Codearte/gradle-nexus-staging-plugin/issues/47
+if (project.hasProperty('releasing')) {
+    apply plugin: 'io.codearte.nexus-staging'
+}
+
+gradle.projectsEvaluated {
+    tasks.withType(JavaCompile) {
+        // fail build on warnings, disable options complaining about Java 6 compatibility when building with JDK 7+
+        options.compilerArgs << "-Xlint:all" << "-Werror" << "-Xlint:-options"
+    }
+}

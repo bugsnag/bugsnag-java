@@ -1,3 +1,38 @@
-target
-pom.xml.releaseBackup
-release.properties
+.gradle
+build/
+*.iml
+out/
+#
+# Common IDE files
+#
+
+# IntelliJ IDEA
+.idea
+
+# Eclipse
+.metadata
+bin/
+tmp/
+*.tmp
+*.bak
+*.swp
+*~.nib
+local.properties
+.settings/
+.loadpath
+.recommenders
+
+# Eclipse Core
+.project
+
+# External tool builders
+.externalToolBuilders/
+
+# Locally stored "Eclipse launch configurations"
+*.launch
+
+# mazerunner test jars
+features/fixtures/libs
+
+# test output files
+maze_output/

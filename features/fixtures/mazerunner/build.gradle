@@ -1,0 +1,42 @@
+buildscript {
+    ext {
+        springBootVersion = '2.1.1.RELEASE'
+    }
+    repositories {
+        mavenCentral()
+        jcenter()
+    }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+    }
+}
+
+apply plugin: 'java'
+apply plugin: 'org.springframework.boot'
+apply plugin: 'io.spring.dependency-management'
+
+group 'com.bugsnag.mazerunner'
+version '1.0-SNAPSHOT'
+
+sourceCompatibility = 1.7
+
+repositories {
+    mavenCentral()
+    flatDir {
+        dirs '../libs'
+    }
+    jcenter()
+}
+
+dependencies {
+    compile("org.springframework.boot:spring-boot-starter")
+    compile("ch.qos.logback:logback-classic:1.2.3")
+
+    compile("com.fasterxml.jackson.core:jackson-annotations:2.9.1")
+    compile("com.fasterxml.jackson.core:jackson-databind:2.9.1")
+    compile("com.bugsnag:bugsnag:9.9.9-test")
+    compile project(":scenarios")
+
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+}
+
