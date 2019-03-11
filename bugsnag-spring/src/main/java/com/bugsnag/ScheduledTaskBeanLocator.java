@@ -11,7 +11,6 @@ import org.springframework.beans.factory.config.NamedBeanHolder;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.scheduling.TaskScheduler;
-import org.springframework.scheduling.annotation.ScheduledAnnotationBeanPostProcessor;
 
 import java.util.concurrent.ScheduledExecutorService;
 
@@ -39,7 +38,8 @@ class ScheduledTaskBeanLocator implements ApplicationContextAware {
      * given bean name. If no bean can be found which satisifies either of these
      * conditions, null will be returned.
      * <p>
-     * This broadly follows the approach used in {@link ScheduledAnnotationBeanPostProcessor}.
+     * This broadly follows the approach used in
+     * {@link org.springframework.scheduling.annotation.ScheduledAnnotationBeanPostProcessor}.
      *
      * @param schedulerType the scheduler clas
      * @param <T>           the bean type

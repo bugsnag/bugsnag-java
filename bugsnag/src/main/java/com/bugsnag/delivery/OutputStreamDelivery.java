@@ -10,7 +10,7 @@ import java.io.OutputStream;
 import java.util.Map;
 
 public class OutputStreamDelivery implements Delivery {
-    private static final Logger logger = LoggerFactory.getLogger(OutputStreamDelivery.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(OutputStreamDelivery.class);
     private OutputStream outputStream;
 
     public OutputStreamDelivery(OutputStream outputStream) {
@@ -22,7 +22,7 @@ public class OutputStreamDelivery implements Delivery {
         try {
             serializer.writeToStream(outputStream, object);
         } catch (SerializationException ex) {
-            logger.warn("Error not reported to Bugsnag - exception when serializing payload", ex);
+            LOGGER.warn("Error not reported to Bugsnag - exception when serializing payload", ex);
         }
     }
 

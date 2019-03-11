@@ -45,7 +45,7 @@ public class Report {
         this.severity = handledState.getOriginalSeverity();
         diagnostics = new Diagnostics(this.config);
 
-        if (config.sendThreads) {
+        if (config.isSendThreads()) {
             Throwable exc = handledState.isUnhandled() ? throwable : null;
             Map<Thread, StackTraceElement[]> allStackTraces = Thread.getAllStackTraces();
             threadStates = ThreadState.getLiveThreads(config, currentThread, allStackTraces, exc);
@@ -106,27 +106,27 @@ public class Report {
 
     @Expose
     public String getContext() {
-        return diagnostics.context;
+        return diagnostics.getContext();
     }
 
     @Expose
     public Map<String, Object> getApp() {
-        return diagnostics.app;
+        return diagnostics.getApp();
     }
 
     @Expose
     public Map<String, Object> getDevice() {
-        return diagnostics.device;
+        return diagnostics.getDevice();
     }
 
     @Expose
     public Map<String, String> getUser() {
-        return diagnostics.user;
+        return diagnostics.getUser();
     }
 
     @Expose
     public Map<String, Object> getMetaData() {
-        return new FilteredMap(diagnostics.metaData, Arrays.asList(config.filters));
+        return new FilteredMap(diagnostics.getMetaData(), Arrays.asList(config.getFilters()));
     }
 
     @Expose
@@ -188,7 +188,7 @@ public class Report {
      * @return the modified report
      */
     public Report addToTab(String tabName, String key, Object value) {
-        diagnostics.metaData.addToTab(tabName, key, value);
+        diagnostics.getMetaData().addToTab(tabName, key, value);
         return this;
     }
 
@@ -199,7 +199,7 @@ public class Report {
      * @return The message from the exception contained in this error report.
      */
     public Report clearTab(String tabName) {
-        diagnostics.metaData.clearTab(tabName);
+        diagnostics.getMetaData().clearTab(tabName);
         return this;
     }
 
@@ -211,7 +211,7 @@ public class Report {
      * @return the modified report
      */
     public Report setAppInfo(String key, Object value) {
-        diagnostics.app.put(key, value);
+        diagnostics.getApp().put(key, value);
         return this;
     }
 
@@ -242,7 +242,7 @@ public class Report {
      * @return the modified report
      */
     public Report setContext(String context) {
-        diagnostics.context = context;
+        diagnostics.setContext(context);
         return this;
     }
 
@@ -254,7 +254,7 @@ public class Report {
      * @return the modified report
      */
     public Report setDeviceInfo(String key, Object value) {
-        diagnostics.device.put(key, value);
+        diagnostics.getDevice().put(key, value);
         return this;
     }
 
@@ -291,24 +291,24 @@ public class Report {
      * @return the modified report.
      */
     public Report setUser(String id, String email, String name) {
-        diagnostics.user.put("id", id);
-        diagnostics.user.put("email", email);
-        diagnostics.user.put("name", name);
+        diagnostics.getUser().put("id", id);
+        diagnostics.getUser().put("email", email);
+        diagnostics.getUser().put("name", name);
         return this;
     }
 
     public Report setUserId(String id) {
-        diagnostics.user.put("id", id);
+        diagnostics.getUser().put("id", id);
         return this;
     }
 
     public Report setUserEmail(String email) {
-        diagnostics.user.put("email", email);
+        diagnostics.getUser().put("email", email);
         return this;
     }
 
     public Report setUserName(String name) {
-        diagnostics.user.put("name", name);
+        diagnostics.getUser().put("name", name);
         return this;
     }
 
@@ -330,7 +330,7 @@ public class Report {
     }
 
     void mergeMetaData(MetaData metaData) {
-        diagnostics.metaData.merge(metaData);
+        diagnostics.getMetaData().merge(metaData);
     }
 
     static class SeverityReason {

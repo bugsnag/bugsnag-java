@@ -7,11 +7,11 @@ import java.util.Map;
 
 class Diagnostics {
 
-    String context;
-    Map<String, Object> app;
-    Map<String, Object> device;
-    Map<String, String> user = new HashMap<String, String>();
-    MetaData metaData = new MetaData();
+    private String context;
+    private Map<String, Object> app;
+    private Map<String, Object> device;
+    private Map<String, String> user = new HashMap<String, String>();
+    private MetaData metaData = new MetaData();
 
     Diagnostics(Configuration configuration) {
         app = getDefaultAppInfo(configuration);
@@ -29,13 +29,52 @@ class Diagnostics {
     private Map<String, Object> getDefaultAppInfo(Configuration configuration) {
         Map<String, Object> map = new HashMap<String, Object>();
 
-        if (configuration.releaseStage != null) {
-            map.put("releaseStage", configuration.releaseStage);
+        if (configuration.getReleaseStage() != null) {
+            map.put("releaseStage", configuration.getReleaseStage());
         }
-        if (configuration.appVersion != null) {
-            map.put("version", configuration.appVersion);
+        if (configuration.getAppVersion() != null) {
+            map.put("version", configuration.getAppVersion());
         }
         return map;
     }
 
+    public String getContext() {
+        return context;
+    }
+
+    public void setContext(String context) {
+        this.context = context;
+    }
+
+    public Map<String, Object> getApp() {
+        return app;
+    }
+
+    public void setApp(Map<String, Object> app) {
+        this.app = app;
+    }
+
+    public Map<String, Object> getDevice() {
+        return device;
+    }
+
+    public void setDevice(Map<String, Object> device) {
+        this.device = device;
+    }
+
+    public Map<String, String> getUser() {
+        return user;
+    }
+
+    public void setUser(Map<String, String> user) {
+        this.user = user;
+    }
+
+    public MetaData getMetaData() {
+        return metaData;
+    }
+
+    public void setMetaData(MetaData metaData) {
+        this.metaData = metaData;
+    }
 }

@@ -18,7 +18,6 @@ import org.junit.Test;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.lang.Exception;
 import java.util.Collections;
 
 public class HandledStatePayloadTest {
@@ -31,7 +30,7 @@ public class HandledStatePayloadTest {
     }
 
     @Test
-    public void testBasicSerialisation() throws Throwable {
+    public void testBasicSerialisation() throws IOException {
         Report report = reportFromHandledState(HandledState.newInstance(
                 HandledState.SeverityReasonType.REASON_UNHANDLED_EXCEPTION));
         JsonNode payload = getJsonPayloadFromReport(report);
@@ -41,7 +40,7 @@ public class HandledStatePayloadTest {
     }
 
     @Test
-    public void testHandledSerialisation() throws java.lang.Exception {
+    public void testHandledSerialisation() throws IOException {
         Report report = reportFromHandledState(HandledState.newInstance(
                 HandledState.SeverityReasonType.REASON_HANDLED_EXCEPTION));
         JsonNode payload = getJsonPayloadFromReport(report);
@@ -58,7 +57,7 @@ public class HandledStatePayloadTest {
     }
 
     @Test
-    public void testUnhandledSerialisation() throws java.lang.Exception {
+    public void testUnhandledSerialisation() throws IOException {
         Report report = reportFromHandledState(HandledState.newInstance(
                 HandledState.SeverityReasonType.REASON_UNHANDLED_EXCEPTION));
         JsonNode payload = getJsonPayloadFromReport(report);
@@ -75,7 +74,7 @@ public class HandledStatePayloadTest {
     }
 
     @Test
-    public void testUserSpecifiedSerialisation() throws java.lang.Exception {
+    public void testUserSpecifiedSerialisation() throws Throwable {
         Report report = reportFromHandledState(HandledState.newInstance(
                 HandledState.SeverityReasonType.REASON_USER_SPECIFIED, Severity.WARNING));
         JsonNode payload = getJsonPayloadFromReport(report);
@@ -92,7 +91,7 @@ public class HandledStatePayloadTest {
     }
 
     @Test
-    public void testCallbackSpecified() throws Exception {
+    public void testCallbackSpecified() throws IOException {
         Report report = reportFromHandledState(HandledState.newInstance(
                 HandledState.SeverityReasonType.REASON_USER_SPECIFIED));
         report.setSeverity(Severity.INFO);
@@ -110,7 +109,7 @@ public class HandledStatePayloadTest {
     }
 
     @Test
-    public void testUnhandledMiddlewareSerialisation() throws java.lang.Exception {
+    public void testUnhandledMiddlewareSerialisation() throws IOException {
         Report report = reportFromHandledState(HandledState.newInstance(
                 SeverityReasonType.REASON_UNHANDLED_EXCEPTION_MIDDLEWARE,
                 Collections.singletonMap("framework", "Spring")));
@@ -129,7 +128,7 @@ public class HandledStatePayloadTest {
     }
 
     @Test
-    public void testUnhandledExceptionClassSerialisation() throws java.lang.Exception {
+    public void testUnhandledExceptionClassSerialisation() throws IOException {
         Report report = reportFromHandledState(HandledState.newInstance(
                 SeverityReasonType.REASON_EXCEPTION_CLASS,
                 Collections.singletonMap("exceptionClass", "TypeMismatchException"),
@@ -151,7 +150,7 @@ public class HandledStatePayloadTest {
     }
 
     @Test
-    public void testHandledExceptionClassSerialisation() throws java.lang.Exception {
+    public void testHandledExceptionClassSerialisation() throws IOException {
         Report report = reportFromHandledState(HandledState.newInstance(
                 SeverityReasonType.REASON_EXCEPTION_CLASS,
                 Collections.singletonMap("exceptionClass", "TypeMismatchException"),

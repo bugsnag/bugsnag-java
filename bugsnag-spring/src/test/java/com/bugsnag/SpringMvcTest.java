@@ -202,6 +202,7 @@ public class SpringMvcTest {
         } finally {
             // Remove the callback via reflection so that subsequent tests do not use it
             Field callbacksField = Configuration.class.getDeclaredField("callbacks");
+            callbacksField.setAccessible(true);
             @SuppressWarnings(value = "unchecked") Collection<Callback> callbacks =
                     (Collection<Callback>) callbacksField.get(bugsnag.getConfig());
             callbacks.remove(callback);

@@ -168,5 +168,4 @@ public class FilteredMapTest {
         }
         assertEquals(4, expectedCount);
     }
-
 }

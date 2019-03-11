@@ -13,7 +13,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.io.IOException;
-import java.lang.Exception;
 import java.util.List;
 import java.util.Map;
 
@@ -66,7 +65,7 @@ public class ThreadStateTest {
      * Verifies that the required values for 'thread' are serialised as an array
      */
     @Test
-    public void testSerialisation() throws Exception {
+    public void testSerialisation() throws IOException {
         JsonNode root = serialiseThreadStateToJson(threadStates);
 
         for (JsonNode jsonNode : root) {
@@ -80,7 +79,7 @@ public class ThreadStateTest {
      * contains the errorReportingThread boolean flag
      */
     @Test
-    public void testCurrentThread() throws Exception {
+    public void testCurrentThread() throws IOException {
         JsonNode root = serialiseThreadStateToJson(threadStates);
         long currentThreadId = Thread.currentThread().getId();
         int currentThreadCount = 0;
@@ -101,7 +100,7 @@ public class ThreadStateTest {
      * and that only this value contains the errorReportingThread boolean flag
      */
     @Test
-    public void testDifferentThread() throws Exception {
+    public void testDifferentThread() throws IOException {
         Map<Thread, StackTraceElement[]> threads = Thread.getAllStackTraces();
         threads.remove(Thread.currentThread());
         Thread otherThread = threads.keySet().iterator().next();
@@ -128,7 +127,7 @@ public class ThreadStateTest {
      * {@link Thread#getAllStackTraces()}, its stacktrace will still be serialised
      */
     @Test
-    public void testMissingCurrentThread() throws Exception {
+    public void testMissingCurrentThread() throws IOException {
         Map<Thread, StackTraceElement[]> threads = Thread.getAllStackTraces();
         Thread currentThread = Thread.currentThread();
         threads.remove(currentThread);
@@ -155,7 +154,7 @@ public class ThreadStateTest {
      * for the reporting thread stacktrace
      */
     @Test
-    public void testHandledStacktrace() throws Exception {
+    public void testHandledStacktrace() throws IOException {
         Map<Thread, StackTraceElement[]> threads = Thread.getAllStackTraces();
         Thread currentThread = Thread.currentThread();
         StackTraceElement[] expectedTrace = threads.get(currentThread);
@@ -192,7 +191,7 @@ public class ThreadStateTest {
      * for the reporting thread stacktrace
      */
     @Test
-    public void testUnhandledStacktrace() throws Exception {
+    public void testUnhandledStacktrace() throws IOException {
         Map<Thread, StackTraceElement[]> threads = Thread.getAllStackTraces();
         Thread currentThread = Thread.currentThread();
         RuntimeException exc = new RuntimeException("Whoops");

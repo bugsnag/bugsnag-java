@@ -29,8 +29,8 @@ public class NotificationTest {
     @Before
     public void setUp() {
         config = new Configuration("api-key");
-        config.appVersion = "1.2.3";
-        config.releaseStage = "dev";
+        config.setAppVersion("1.2.3");
+        config.setReleaseStage("dev");
         report = new Report(config, new RuntimeException());
 
         // Only include properties with non-null values

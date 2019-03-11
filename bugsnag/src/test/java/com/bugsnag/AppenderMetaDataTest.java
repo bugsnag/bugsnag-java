@@ -36,9 +36,9 @@ public class AppenderMetaDataTest {
     @Before
     public void swapDelivery() {
         ch.qos.logback.classic.Logger rootLogger =
-                (ch.qos.logback.classic.Logger)LoggerFactory
+                (ch.qos.logback.classic.Logger) LoggerFactory
                         .getLogger(org.slf4j.Logger.ROOT_LOGGER_NAME);
-        appender = (BugsnagAppender)rootLogger.getAppender("BUGSNAG");
+        appender = (BugsnagAppender) rootLogger.getAppender("BUGSNAG");
 
         Bugsnag bugsnag = appender.getClient();
         originalDelivery = bugsnag.getDelivery();
@@ -83,7 +83,7 @@ public class AppenderMetaDataTest {
         map.put("key", "value");
         Bugsnag.addThreadMetaData("myTab", "object key", map);
 
-        Integer[] array = new Integer[] {1,2,3,4,5};
+        Integer[] array = new Integer[] {1, 2, 3, 4, 5};
         Bugsnag.addThreadMetaData("myTab", "array key", array);
 
         // Send a log message
@@ -99,7 +99,7 @@ public class AppenderMetaDataTest {
         assertEquals(1, myTab.get("int key"));
         assertEquals(1.1, myTab.get("float key"));
         assertEquals(map, myTab.get("object key"));
-        assertThat((Integer[])myTab.get("array key"), is(array));
+        assertThat((Integer[]) myTab.get("array key"), is(array));
     }
 
     @Test

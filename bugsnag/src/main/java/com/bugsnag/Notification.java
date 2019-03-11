@@ -17,7 +17,7 @@ class Notification {
     @Expose
     public String getApiKey() {
         String reportApiKey = report.getApiKey();
-        return reportApiKey != null ? reportApiKey : config.apiKey;
+        return reportApiKey != null ? reportApiKey : config.getApiKey();
     }
 
     @Expose

@@ -30,21 +30,21 @@ public class Configuration {
     private static final String HEADER_API_KEY = "Bugsnag-Api-Key";
     private static final String HEADER_BUGSNAG_SENT_AT = "Bugsnag-Sent-At";
 
-    public String apiKey;
-    public String appType;
-    public String appVersion;
-    public Delivery delivery = new AsyncHttpDelivery(SyncHttpDelivery.DEFAULT_NOTIFY_ENDPOINT);
-    public Delivery sessionDelivery =
+    private String apiKey;
+    private String appType;
+    private String appVersion;
+    private Delivery delivery = new AsyncHttpDelivery(SyncHttpDelivery.DEFAULT_NOTIFY_ENDPOINT);
+    private Delivery sessionDelivery =
             new AsyncHttpDelivery(SyncHttpDelivery.DEFAULT_SESSION_ENDPOINT);
-    public String[] filters = new String[]{"password", "secret", "Authorization", "Cookie"};
-    public String[] ignoreClasses;
-    public String[] notifyReleaseStages = null;
-    public String[] projectPackages;
-    public String releaseStage;
-    public boolean sendThreads = false;
+    private String[] filters = new String[]{"password", "secret", "Authorization", "Cookie"};
+    private String[] ignoreClasses;
+    private String[] notifyReleaseStages = null;
+    private String[] projectPackages;
+    private String releaseStage;
+    private boolean sendThreads = false;
 
-    Collection<Callback> callbacks = new ArrayList<Callback>();
-    Serializer serializer = new Serializer();
+    private Collection<Callback> callbacks = new ArrayList<Callback>();
+    private Serializer serializer = new Serializer();
     private final AtomicBoolean autoCaptureSessions = new AtomicBoolean(true);
     private final AtomicBoolean sendUncaughtExceptions = new AtomicBoolean(true);
 
@@ -174,5 +174,117 @@ public class Configuration {
         map.put(HEADER_API_KEY, apiKey);
         map.put(HEADER_BUGSNAG_SENT_AT, DateUtils.toIso8601(new Date()));
         return map;
+    }
+
+    public String getApiKey() {
+        return apiKey;
+    }
+
+    public void setApiKey(String apiKey) {
+        this.apiKey = apiKey;
+    }
+
+    public String getAppType() {
+        return appType;
+    }
+
+    public void setAppType(String appType) {
+        this.appType = appType;
+    }
+
+    public String getAppVersion() {
+        return appVersion;
+    }
+
+    public void setAppVersion(String appVersion) {
+        this.appVersion = appVersion;
+    }
+
+    public Delivery getDelivery() {
+        return delivery;
+    }
+
+    public void setDelivery(Delivery delivery) {
+        this.delivery = delivery;
+    }
+
+    public Delivery getSessionDelivery() {
+        return sessionDelivery;
+    }
+
+    public void setSessionDelivery(Delivery sessionDelivery) {
+        this.sessionDelivery = sessionDelivery;
+    }
+
+    public String[] getFilters() {
+        return filters;
+    }
+
+    public void setFilters(String[] filters) {
+        this.filters = filters;
+    }
+
+    public String[] getIgnoreClasses() {
+        return ignoreClasses;
+    }
+
+    public void setIgnoreClasses(String[] ignoreClasses) {
+        this.ignoreClasses = ignoreClasses;
+    }
+
+    public String[] getNotifyReleaseStages() {
+        return notifyReleaseStages;
+    }
+
+    public void setNotifyReleaseStages(String[] notifyReleaseStages) {
+        this.notifyReleaseStages = notifyReleaseStages;
+    }
+
+    public String[] getProjectPackages() {
+        return projectPackages;
+    }
+
+    public void setProjectPackages(String[] projectPackages) {
+        this.projectPackages = projectPackages;
+    }
+
+    public String getReleaseStage() {
+        return releaseStage;
+    }
+
+    public void setReleaseStage(String releaseStage) {
+        this.releaseStage = releaseStage;
+    }
+
+    public boolean isSendThreads() {
+        return sendThreads;
+    }
+
+    public void setSendThreads(boolean sendThreads) {
+        this.sendThreads = sendThreads;
+    }
+
+    public Collection<Callback> getCallbacks() {
+        return callbacks;
+    }
+
+    public void setCallbacks(Collection<Callback> callbacks) {
+        this.callbacks = callbacks;
+    }
+
+    public Serializer getSerializer() {
+        return serializer;
+    }
+
+    public void setSerializer(Serializer serializer) {
+        this.serializer = serializer;
+    }
+
+    public AtomicBoolean getAutoCaptureSessions() {
+        return autoCaptureSessions;
+    }
+
+    public AtomicBoolean getSendUncaughtExceptions() {
+        return sendUncaughtExceptions;
     }
 }

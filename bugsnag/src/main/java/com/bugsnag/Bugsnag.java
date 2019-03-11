@@ -14,7 +14,6 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.RejectedExecutionHandler;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
@@ -153,7 +152,7 @@ public class Bugsnag {
      * @see Delivery
      */
     public Delivery getDelivery() {
-        return config.delivery;
+        return config.getDelivery();
     }
 
     /**
@@ -163,7 +162,7 @@ public class Bugsnag {
      * @see Delivery
      */
     public Delivery getSessionDelivery() {
-        return config.sessionDelivery;
+        return config.getSessionDelivery();
     }
 
 
@@ -173,7 +172,7 @@ public class Bugsnag {
      * @param appType the app type to send, eg. spring, gradleTask
      */
     public void setAppType(String appType) {
-        config.appType = appType;
+        config.setAppType(appType);
     }
 
     /**
@@ -182,7 +181,7 @@ public class Bugsnag {
      * @param appVersion the app version to send
      */
     public void setAppVersion(String appVersion) {
-        config.appVersion = appVersion;
+        config.setAppVersion(appVersion);
     }
 
     /**
@@ -196,7 +195,7 @@ public class Bugsnag {
      * @see Delivery
      */
     public void setDelivery(Delivery delivery) {
-        config.delivery = delivery;
+        config.setDelivery(delivery);
     }
 
 
@@ -211,7 +210,7 @@ public class Bugsnag {
      * @see Delivery
      */
     public void setSessionDelivery(Delivery delivery) {
-        config.sessionDelivery = delivery;
+        config.setSessionDelivery(delivery);
     }
 
     /**
@@ -224,8 +223,8 @@ public class Bugsnag {
      */
     @Deprecated
     public void setEndpoint(String endpoint) {
-        if (config.delivery instanceof HttpDelivery) {
-            ((HttpDelivery) config.delivery).setEndpoint(endpoint);
+        if (config.getDelivery() instanceof HttpDelivery) {
+            ((HttpDelivery) config.getDelivery()).setEndpoint(endpoint);
         }
     }
 
@@ -239,7 +238,7 @@ public class Bugsnag {
      * @param filters a list of String keys to filter from metaData
      */
     public void setFilters(String... filters) {
-        config.filters = filters;
+        config.setFilters(filters);
     }
 
     /**
@@ -248,7 +247,7 @@ public class Bugsnag {
      * @param ignoreClasses a list of exception classes to ignore
      */
     public void setIgnoreClasses(String... ignoreClasses) {
-        config.ignoreClasses = ignoreClasses;
+        config.setIgnoreClasses(ignoreClasses);
     }
 
     /**
@@ -259,7 +258,7 @@ public class Bugsnag {
      * @see #setReleaseStage
      */
     public void setNotifyReleaseStages(String... notifyReleaseStages) {
-        config.notifyReleaseStages = notifyReleaseStages;
+        config.setNotifyReleaseStages(notifyReleaseStages);
     }
 
     /**
@@ -269,7 +268,7 @@ public class Bugsnag {
      * @param projectPackages a list of package names
      */
     public void setProjectPackages(String... projectPackages) {
-        config.projectPackages = projectPackages;
+        config.setProjectPackages(projectPackages);
     }
 
     /**
@@ -279,11 +278,11 @@ public class Bugsnag {
      * @param proxy the proxy to use to send reports
      */
     public void setProxy(Proxy proxy) {
-        if (config.delivery instanceof HttpDelivery) {
-            ((HttpDelivery) config.delivery).setProxy(proxy);
+        if (config.getDelivery() instanceof HttpDelivery) {
+            ((HttpDelivery) config.getDelivery()).setProxy(proxy);
         }
-        if (config.sessionDelivery instanceof HttpDelivery) {
-            ((HttpDelivery) config.sessionDelivery).setProxy(proxy);
+        if (config.getSessionDelivery() instanceof HttpDelivery) {
+            ((HttpDelivery) config.getSessionDelivery()).setProxy(proxy);
         }
     }
 
@@ -294,7 +293,7 @@ public class Bugsnag {
      * @see #setNotifyReleaseStages
      */
     public void setReleaseStage(String releaseStage) {
-        config.releaseStage = releaseStage;
+        config.setReleaseStage(releaseStage);
     }
 
     /**
@@ -307,7 +306,7 @@ public class Bugsnag {
      * @see #setNotifyReleaseStages
      */
     public void setSendThreads(boolean sendThreads) {
-        config.sendThreads = sendThreads;
+        config.setSendThreads(sendThreads);
     }
 
     /**
@@ -318,11 +317,11 @@ public class Bugsnag {
      * @see #setDelivery
      */
     public void setTimeout(int timeout) {
-        if (config.delivery instanceof HttpDelivery) {
-            ((HttpDelivery) config.delivery).setTimeout(timeout);
+        if (config.getDelivery() instanceof HttpDelivery) {
+            ((HttpDelivery) config.getDelivery()).setTimeout(timeout);
         }
-        if (config.sessionDelivery instanceof HttpDelivery) {
-            ((HttpDelivery) config.sessionDelivery).setTimeout(timeout);
+        if (config.getSessionDelivery() instanceof HttpDelivery) {
+            ((HttpDelivery) config.getSessionDelivery()).setTimeout(timeout);
         }
     }
 
@@ -442,12 +441,12 @@ public class Bugsnag {
         // Don't notify unless releaseStage is in notifyReleaseStages
         if (!config.shouldNotifyForReleaseStage()) {
             LOGGER.debug("Error not reported to Bugsnag - {} is not in 'notifyReleaseStages'",
-                config.releaseStage);
+                config.getReleaseStage());
             return false;
         }
 
         // Run all client-wide beforeNotify callbacks
-        for (Callback callback : config.callbacks) {
+        for (Callback callback : config.getCallbacks()) {
             try {
                 // Run the callback
                 callback.beforeNotify(report);
@@ -483,7 +482,7 @@ public class Bugsnag {
             }
         }
 
-        if (config.delivery == null) {
+        if (config.getDelivery() == null) {
             LOGGER.debug("Error not reported to Bugsnag - no delivery is set");
             return false;
         }
@@ -506,7 +505,7 @@ public class Bugsnag {
         // Deliver the notification
         LOGGER.debug("Reporting error to Bugsnag");
 
-        config.delivery.deliver(config.serializer, notification, config.getErrorApiHeaders());
+        config.getDelivery().deliver(config.getSerializer(), notification, config.getErrorApiHeaders());
 
         return true;
     }
@@ -557,8 +556,8 @@ public class Bugsnag {
      */
     @Deprecated
     public void setSessionEndpoint(String endpoint) {
-        if (config.sessionDelivery instanceof HttpDelivery) {
-            ((HttpDelivery) config.sessionDelivery).setEndpoint(endpoint);
+        if (config.getSessionDelivery() instanceof HttpDelivery) {
+            ((HttpDelivery) config.getSessionDelivery()).setEndpoint(endpoint);
         }
     }
 
@@ -588,8 +587,8 @@ public class Bugsnag {
      */
     public void close() {
         LOGGER.debug("Closing connection to Bugsnag");
-        if (config.delivery != null) {
-            config.delivery.close();
+        if (config.getDelivery() != null) {
+            config.getDelivery().close();
         }
         ExceptionHandler.disable(this);
     }
@@ -650,7 +649,7 @@ public class Bugsnag {
     public static Set<Bugsnag> uncaughtExceptionClients() {
         UncaughtExceptionHandler handler = Thread.getDefaultUncaughtExceptionHandler();
         if (handler instanceof ExceptionHandler) {
-            ExceptionHandler bugsnagHandler = (ExceptionHandler)handler;
+            ExceptionHandler bugsnagHandler = (ExceptionHandler) handler;
             return Collections.unmodifiableSet(bugsnagHandler.uncaughtExceptionClients());
         }
         return Collections.emptySet();

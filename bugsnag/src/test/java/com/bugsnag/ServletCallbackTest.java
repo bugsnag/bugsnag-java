@@ -13,7 +13,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.lang.StringBuffer;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Enumeration;
@@ -89,13 +88,13 @@ public class ServletCallbackTest {
         Map<String, Object> metadata = report.getMetaData();
         assertTrue(metadata.containsKey("request"));
 
-        Map<String, Object> request = (Map<String, Object>)metadata.get("request");
+        Map<String, Object> request = (Map<String, Object>) metadata.get("request");
         assertEquals("/foo/bar", request.get("url"));
         assertEquals("PATCH", request.get("method"));
         assertEquals("12.0.4.57", request.get("clientIp"));
 
         assertTrue(request.containsKey("headers"));
-        Map<String, String> headers = (Map<String, String>)request.get("headers");
+        Map<String, String> headers = (Map<String, String>) request.get("headers");
         assertEquals("application/json", headers.get("Content-Type"));
         assertEquals("54", headers.get("Content-Length"));
         assertEquals("some-data-1,some-data-2", headers.get("X-Custom-Header"));
@@ -107,7 +106,7 @@ public class ServletCallbackTest {
         assertEquals("[FILTERED]", headers.get("Cookie"));
 
         assertTrue(request.containsKey("params"));
-        Map<String, String[]> params = (Map<String, String[]>)request.get("params");
+        Map<String, String[]> params = (Map<String, String[]>) request.get("params");
         assertTrue(params.containsKey("account"));
         String[] account = params.get("account");
         assertEquals("Acme Co", account[0]);

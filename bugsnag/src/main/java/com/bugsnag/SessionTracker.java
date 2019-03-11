@@ -88,8 +88,8 @@ class SessionTracker {
                 Collection<SessionCount> requestValues
                         = new ArrayList<SessionCount>(enqueuedSessionCounts);
                 SessionPayload payload = new SessionPayload(requestValues, config);
-                Delivery delivery = config.sessionDelivery;
-                delivery.deliver(config.serializer, payload, config.getSessionApiHeaders());
+                Delivery delivery = config.getSessionDelivery();
+                delivery.deliver(config.getSerializer(), payload, config.getSessionApiHeaders());
                 enqueuedSessionCounts.removeAll(requestValues);
             } finally {
                 flushingRequest.release(1);

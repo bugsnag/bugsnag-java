@@ -64,7 +64,7 @@ public class MarkerTest {
         assertTrue(marker.contains(newMarker.getName()));
 
         Iterator<Marker> iterator = marker.iterator();
-        assertEquals(newMarker,iterator.next());
+        assertEquals(newMarker, iterator.next());
         assertFalse(iterator.hasNext());
     }
 

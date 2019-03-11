@@ -43,9 +43,9 @@ public class AppenderTest {
     public void swapDelivery() {
 
         ch.qos.logback.classic.Logger rootLogger =
-                (ch.qos.logback.classic.Logger)LoggerFactory
+                (ch.qos.logback.classic.Logger) LoggerFactory
                         .getLogger(org.slf4j.Logger.ROOT_LOGGER_NAME);
-        appender = (BugsnagAppender)rootLogger.getAppender("BUGSNAG");
+        appender = (BugsnagAppender) rootLogger.getAppender("BUGSNAG");
 
         Bugsnag bugsnag = appender.getClient();
         originalDelivery = bugsnag.getDelivery();
@@ -84,7 +84,7 @@ public class AppenderTest {
         assertEquals("test", notification.getEvents().get(0).getExceptionMessage());
         assertEquals(Severity.WARNING.getValue(), notification.getEvents().get(0).getSeverity());
         assertEquals("Test exception",
-                getMetaDataMap(notification,"Log event data").get("Message"));
+                getMetaDataMap(notification, "Log event data").get("Message"));
     }
 
     @Test
@@ -114,35 +114,35 @@ public class AppenderTest {
 
         // Get the Bugsnag instance
         Configuration config = getConfig(appender.getClient());
-        assertEquals("test", config.releaseStage);
-        assertEquals("1.0.1", config.appVersion);
-        assertEquals("gradleTask", config.appType);
+        assertEquals("test", config.getReleaseStage());
+        assertEquals("1.0.1", config.getAppVersion());
+        assertEquals("gradleTask", config.getAppType());
         assertFalse(config.shouldAutoCaptureSessions());
 
-        assertEquals(2, config.filters.length);
-        ArrayList<String> filters = new ArrayList<String>(Arrays.asList(config.filters));
+        assertEquals(2, config.getFilters().length);
+        ArrayList<String> filters = new ArrayList<String>(Arrays.asList(config.getFilters()));
         assertTrue(filters.contains("password"));
         assertTrue(filters.contains("credit_card_number"));
 
-        assertEquals(2, config.ignoreClasses.length);
+        assertEquals(2, config.getIgnoreClasses().length);
         ArrayList<String> ignoreClasses
-                = new ArrayList<String>(Arrays.asList(config.ignoreClasses));
+                = new ArrayList<String>(Arrays.asList(config.getIgnoreClasses()));
         assertTrue(ignoreClasses.contains("com.example.Custom"));
         assertTrue(ignoreClasses.contains("java.io.IOException"));
 
-        assertEquals(2, config.notifyReleaseStages.length);
+        assertEquals(2, config.getNotifyReleaseStages().length);
         ArrayList<String> notifyReleaseStages
-                = new ArrayList<String>(Arrays.asList(config.notifyReleaseStages));
+                = new ArrayList<String>(Arrays.asList(config.getNotifyReleaseStages()));
         assertTrue(notifyReleaseStages.contains("development"));
         assertTrue(notifyReleaseStages.contains("test"));
 
-        assertEquals(2, config.projectPackages.length);
+        assertEquals(2, config.getProjectPackages().length);
         ArrayList<String> projectPackages
-                = new ArrayList<String>(Arrays.asList(config.projectPackages));
+                = new ArrayList<String>(Arrays.asList(config.getProjectPackages()));
         assertTrue(projectPackages.contains("com.company.package2"));
         assertTrue(projectPackages.contains("com.company.package1"));
 
-        assertTrue(config.sendThreads);
+        assertTrue(config.isSendThreads());
     }
 
     @Test
@@ -151,15 +151,15 @@ public class AppenderTest {
         StackTraceElement[] trace = exception.getStackTrace();
 
         // Send logs with stack traces containing excluded classes
-        trace[0] = changeClassName(trace[0],"com.bugsnag.Bugsnag");
+        trace[0] = changeClassName(trace[0], "com.bugsnag.Bugsnag");
         exception.setStackTrace(trace);
         LOGGER.warn("Test exception", exception);
 
-        trace[0] = changeClassName(trace[0],"com.bugsnag.delivery.OutputStreamDelivery");
+        trace[0] = changeClassName(trace[0], "com.bugsnag.delivery.OutputStreamDelivery");
         exception.setStackTrace(trace);
         LOGGER.warn("Test exception", exception);
 
-        trace[0] = changeClassName(trace[0],"com.bugsnag.delivery.SyncHttpDelivery");
+        trace[0] = changeClassName(trace[0], "com.bugsnag.delivery.SyncHttpDelivery");
         exception.setStackTrace(trace);
         LOGGER.warn("Test exception", exception);
 
@@ -204,8 +204,8 @@ public class AppenderTest {
         // Create an exception including classes within the project packages list
         RuntimeException exception = new RuntimeException("test");
         StackTraceElement[] trace = exception.getStackTrace();
-        trace[0] = changeClassName(trace[0],"com.company.package1.Class1");
-        trace[1] = changeClassName(trace[1],"com.company.package2.Class2");
+        trace[0] = changeClassName(trace[0], "com.company.package1.Class1");
+        trace[1] = changeClassName(trace[1], "com.company.package2.Class2");
         exception.setStackTrace(trace);
 
         // Log with project packages set
