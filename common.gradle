@@ -19,6 +19,6 @@ test {
 }
 
 checkstyle {
-    toolVersion = "6.16"
+    toolVersion = "8.18"
     configFile = new File(rootDir, "config/checkstyle/checkstyle.xml")
 }

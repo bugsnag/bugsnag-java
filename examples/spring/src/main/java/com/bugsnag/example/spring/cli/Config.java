@@ -4,6 +4,7 @@ import com.bugsnag.Bugsnag;
 import com.bugsnag.BugsnagSpringConfiguration;
 import com.bugsnag.Report;
 import com.bugsnag.callbacks.Callback;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
