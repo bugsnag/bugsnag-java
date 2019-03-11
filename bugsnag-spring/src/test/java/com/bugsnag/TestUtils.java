@@ -1,7 +1,6 @@
 package com.bugsnag;
 
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyMapOf;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.timeout;
 import static org.mockito.Mockito.verify;
 
@@ -9,6 +8,9 @@ import com.bugsnag.delivery.Delivery;
 import com.bugsnag.serialization.Serializer;
 
 import org.mockito.ArgumentCaptor;
+import org.mockito.ArgumentMatchers;
+
+import java.util.Map;
 
 class TestUtils {
 
@@ -23,5 +25,13 @@ class TestUtils {
                 notificationCaptor.capture(),
                 anyMapOf(String.class, String.class));
         return notificationCaptor.getValue().getEvents().get(0);
+    }
+
+    /**
+     * {@link ArgumentMatchers#anyMapOf} is deprecated but we still need it for JDK 7 builds
+     */
+    @SuppressWarnings("deprecation")
+    static <K, V> Map<K, V> anyMapOf(Class<K> keyClazz, Class<V> valueClazz) {
+        return ArgumentMatchers.anyMapOf(keyClazz, valueClazz);
     }
 }
