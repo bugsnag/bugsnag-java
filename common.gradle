@@ -3,7 +3,9 @@ ext {
     logbackVersion = "1.2.3"
 }
 
-apply plugin: 'checkstyle'
+if (JavaVersion.current().isJava8Compatible()) {
+    apply plugin: 'checkstyle'
+}
 
 if (project.hasProperty('releasing')) {
     apply from: "../release.gradle"
@@ -18,7 +20,9 @@ test {
     }
 }
 
-checkstyle {
-    toolVersion = "8.18"
-    configFile = new File(rootDir, "config/checkstyle/checkstyle.xml")
+if (JavaVersion.current().isJava8Compatible()) {
+    checkstyle {
+        toolVersion = "8.18"
+        configFile = new File(rootDir, "config/checkstyle/checkstyle.xml")
+    }
 }
