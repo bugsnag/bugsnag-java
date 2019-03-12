@@ -21,7 +21,10 @@
         <property name="message" value="Line has trailing spaces."/>
     </module>
 
+    <module name="SuppressWarningsFilter" />
+
     <module name="TreeWalker">
+        <module name="SuppressWarningsHolder" />
         <module name="OuterTypeFilename"/>
 
         <module name="IllegalTokenText">
@@ -177,7 +180,7 @@
 
         <module name="AbbreviationAsWordInName">
             <property name="ignoreFinal" value="false"/>
-            <property name="allowedAbbreviationLength" value="1"/>
+            <property name="allowedAbbreviationLength" value="4"/>
         </module>
 
         <module name="OverloadMethodsDeclarationOrder"/>
