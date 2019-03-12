@@ -47,6 +47,7 @@ public class BugsnagMarker implements Marker {
     /**
      * @deprecated Replaced by {@link #hasReferences()}.
      */
+    @Deprecated
     @Override
     public boolean hasChildren() {
         return hasReferences();
