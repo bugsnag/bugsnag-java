@@ -32,8 +32,8 @@ public class ConfigurationTest {
     @Before
     public void setUp() {
         config = new Configuration("foo");
-        config.setDelivery(new FakeHttpDelivery());
-        config.setSessionDelivery(new FakeHttpDelivery());
+        config.delivery = new FakeHttpDelivery();
+        config.sessionDelivery = new FakeHttpDelivery();
     }
 
     @Test
@@ -44,7 +44,7 @@ public class ConfigurationTest {
     @Test
     public void testErrorApiHeaders() {
         Map<String, String> headers = config.getErrorApiHeaders();
-        assertEquals(config.getApiKey(), headers.get("Bugsnag-Api-Key"));
+        assertEquals(config.apiKey, headers.get("Bugsnag-Api-Key"));
         assertNotNull(headers.get("Bugsnag-Sent-At"));
         assertNotNull(headers.get("Bugsnag-Payload-Version"));
     }
@@ -52,7 +52,7 @@ public class ConfigurationTest {
     @Test
     public void testSessionApiHeaders() {
         Map<String, String> headers = config.getSessionApiHeaders();
-        assertEquals(config.getApiKey(), headers.get("Bugsnag-Api-Key"));
+        assertEquals(config.apiKey, headers.get("Bugsnag-Api-Key"));
         assertNotNull(headers.get("Bugsnag-Sent-At"));
         assertNotNull(headers.get("Bugsnag-Payload-Version"));
     }
@@ -63,8 +63,8 @@ public class ConfigurationTest {
         String sessions = "https://sessions.myexample.com";
         config.setEndpoints(notify, sessions);
 
-        assertEquals(notify, getDeliveryEndpoint(config.getDelivery()));
-        assertEquals(sessions, getDeliveryEndpoint(config.getSessionDelivery()));
+        assertEquals(notify, getDeliveryEndpoint(config.delivery));
+        assertEquals(sessions, getDeliveryEndpoint(config.sessionDelivery));
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -82,17 +82,17 @@ public class ConfigurationTest {
         config.setAutoCaptureSessions(true);
         config.setEndpoints("http://example.com", null);
         assertFalse(config.shouldAutoCaptureSessions());
-        assertNull(getDeliveryEndpoint(config.getSessionDelivery()));
+        assertNull(getDeliveryEndpoint(config.sessionDelivery));
 
         config.setAutoCaptureSessions(true);
         config.setEndpoints("http://example.com", "");
         assertFalse(config.shouldAutoCaptureSessions());
-        assertNull(getDeliveryEndpoint(config.getSessionDelivery()));
+        assertNull(getDeliveryEndpoint(config.sessionDelivery));
 
         config.setAutoCaptureSessions(true);
         config.setEndpoints("http://example.com", "http://sessions.example.com");
         assertTrue(config.shouldAutoCaptureSessions());
-        assertEquals("http://sessions.example.com", getDeliveryEndpoint(config.getSessionDelivery()));
+        assertEquals("http://sessions.example.com", getDeliveryEndpoint(config.sessionDelivery));
     }
 
     @Test
@@ -123,8 +123,8 @@ public class ConfigurationTest {
             public void close() {
             }
         };
-        config.setDelivery(delivery);
-        config.setSessionDelivery(delivery);
+        config.delivery = delivery;
+        config.sessionDelivery = delivery;
 
         // ensure log message
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -145,9 +145,10 @@ public class ConfigurationTest {
         return null;
     }
 
+    @SuppressWarnings("visibilitymodifier")
     static class FakeHttpDelivery implements HttpDelivery {
-        private String endpoint;
-        private Queue<Object> receivedObjects = new LinkedList<Object>();
+        String endpoint;
+        Queue<Object> receivedObjects = new LinkedList<Object>();
 
         @Override
         public void setEndpoint(String endpoint) {
@@ -169,10 +170,6 @@ public class ConfigurationTest {
 
         @Override
         public void close() {
-        }
-
-        public Queue<Object> getReceivedObjects() {
-            return receivedObjects;
         }
     }
 }

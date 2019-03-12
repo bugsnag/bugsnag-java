@@ -114,35 +114,35 @@ public class AppenderTest {
 
         // Get the Bugsnag instance
         Configuration config = getConfig(appender.getClient());
-        assertEquals("test", config.getReleaseStage());
-        assertEquals("1.0.1", config.getAppVersion());
-        assertEquals("gradleTask", config.getAppType());
+        assertEquals("test", config.releaseStage);
+        assertEquals("1.0.1", config.appVersion);
+        assertEquals("gradleTask", config.appType);
         assertFalse(config.shouldAutoCaptureSessions());
 
-        assertEquals(2, config.getFilters().length);
-        ArrayList<String> filters = new ArrayList<String>(Arrays.asList(config.getFilters()));
+        assertEquals(2, config.filters.length);
+        ArrayList<String> filters = new ArrayList<String>(Arrays.asList(config.filters));
         assertTrue(filters.contains("password"));
         assertTrue(filters.contains("credit_card_number"));
 
-        assertEquals(2, config.getIgnoreClasses().length);
+        assertEquals(2, config.ignoreClasses.length);
         ArrayList<String> ignoreClasses
-                = new ArrayList<String>(Arrays.asList(config.getIgnoreClasses()));
+                = new ArrayList<String>(Arrays.asList(config.ignoreClasses));
         assertTrue(ignoreClasses.contains("com.example.Custom"));
         assertTrue(ignoreClasses.contains("java.io.IOException"));
 
-        assertEquals(2, config.getNotifyReleaseStages().length);
+        assertEquals(2, config.notifyReleaseStages.length);
         ArrayList<String> notifyReleaseStages
-                = new ArrayList<String>(Arrays.asList(config.getNotifyReleaseStages()));
+                = new ArrayList<String>(Arrays.asList(config.notifyReleaseStages));
         assertTrue(notifyReleaseStages.contains("development"));
         assertTrue(notifyReleaseStages.contains("test"));
 
-        assertEquals(2, config.getProjectPackages().length);
+        assertEquals(2, config.projectPackages.length);
         ArrayList<String> projectPackages
-                = new ArrayList<String>(Arrays.asList(config.getProjectPackages()));
+                = new ArrayList<String>(Arrays.asList(config.projectPackages));
         assertTrue(projectPackages.contains("com.company.package2"));
         assertTrue(projectPackages.contains("com.company.package1"));
 
-        assertTrue(config.isSendThreads());
+        assertTrue(config.sendThreads);
     }
 
     @Test

@@ -45,7 +45,7 @@ public class Report {
         this.severity = handledState.getOriginalSeverity();
         diagnostics = new Diagnostics(this.config);
 
-        if (config.isSendThreads()) {
+        if (config.sendThreads) {
             Throwable exc = handledState.isUnhandled() ? throwable : null;
             Map<Thread, StackTraceElement[]> allStackTraces = Thread.getAllStackTraces();
             threadStates = ThreadState.getLiveThreads(config, currentThread, allStackTraces, exc);
@@ -126,7 +126,7 @@ public class Report {
 
     @Expose
     public Map<String, Object> getMetaData() {
-        return new FilteredMap(diagnostics.getMetaData(), Arrays.asList(config.getFilters()));
+        return new FilteredMap(diagnostics.getMetaData(), Arrays.asList(config.filters));
     }
 
     @Expose

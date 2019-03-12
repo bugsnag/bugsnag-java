@@ -74,7 +74,7 @@ public class HandledStatePayloadTest {
     }
 
     @Test
-    public void testUserSpecifiedSerialisation() throws Throwable {
+    public void testUserSpecifiedSerialisation() throws IOException {
         Report report = reportFromHandledState(HandledState.newInstance(
                 HandledState.SeverityReasonType.REASON_USER_SPECIFIED, Severity.WARNING));
         JsonNode payload = getJsonPayloadFromReport(report);
@@ -150,7 +150,7 @@ public class HandledStatePayloadTest {
     }
 
     @Test
-    public void testHandledExceptionClassSerialisation() throws IOException {
+    public void testHandledExceptionClassSerialisation() throws java.lang.Exception {
         Report report = reportFromHandledState(HandledState.newInstance(
                 SeverityReasonType.REASON_EXCEPTION_CLASS,
                 Collections.singletonMap("exceptionClass", "TypeMismatchException"),

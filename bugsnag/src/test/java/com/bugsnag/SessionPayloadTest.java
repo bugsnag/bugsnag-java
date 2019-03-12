@@ -29,8 +29,8 @@ public class SessionPayloadTest {
         sessionCount.incrementSessionsStarted();
         sessionCounts.add(sessionCount);
         Configuration configuration = new Configuration("api-key");
-        configuration.setAppVersion("1.2.3");
-        configuration.setReleaseStage("dev");
+        configuration.appVersion = "1.2.3";
+        configuration.releaseStage = "dev";
         SessionPayload payload = new SessionPayload(sessionCounts, configuration);
 
         ObjectMapper mapper = new ObjectMapper();

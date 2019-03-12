@@ -29,11 +29,11 @@ class Diagnostics {
     private Map<String, Object> getDefaultAppInfo(Configuration configuration) {
         Map<String, Object> map = new HashMap<String, Object>();
 
-        if (configuration.getReleaseStage() != null) {
-            map.put("releaseStage", configuration.getReleaseStage());
+        if (configuration.releaseStage != null) {
+            map.put("releaseStage", configuration.releaseStage);
         }
-        if (configuration.getAppVersion() != null) {
-            map.put("version", configuration.getAppVersion());
+        if (configuration.appVersion != null) {
+            map.put("version", configuration.appVersion);
         }
         return map;
     }
