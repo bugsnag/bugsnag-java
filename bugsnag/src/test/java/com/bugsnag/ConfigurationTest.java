@@ -145,7 +145,6 @@ public class ConfigurationTest {
         return null;
     }
 
-    @SuppressWarnings("visibilitymodifier")
     static class FakeHttpDelivery implements HttpDelivery {
         String endpoint;
         Queue<Object> receivedObjects = new LinkedList<Object>();

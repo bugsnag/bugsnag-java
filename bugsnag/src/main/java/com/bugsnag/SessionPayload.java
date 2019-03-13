@@ -22,12 +22,12 @@ final class SessionPayload {
 
     @Expose
     Map<String, Object> getDevice() {
-        return diagnostics.getDevice();
+        return diagnostics.device;
     }
 
     @Expose
     Map<String, Object> getApp() {
-        return diagnostics.getApp();
+        return diagnostics.app;
     }
 
     @Expose

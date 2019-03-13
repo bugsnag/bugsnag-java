@@ -320,7 +320,6 @@ public class SessionTrackerTest {
         assertEquals(1, delivery.count.get());
     }
 
-    @SuppressWarnings("visibilitymodifier")
     abstract static class CustomDelivery implements Delivery {
         boolean delivered;
         AtomicInteger count = new AtomicInteger(0);
