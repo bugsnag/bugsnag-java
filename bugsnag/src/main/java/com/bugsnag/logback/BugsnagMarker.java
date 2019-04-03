@@ -44,6 +44,10 @@ public class BugsnagMarker implements Marker {
         return references.remove(reference);
     }
 
+    /**
+     * @deprecated Replaced by {@link #hasReferences()}.
+     */
+    @Deprecated
     @Override
     public boolean hasChildren() {
         return hasReferences();

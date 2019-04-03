@@ -390,7 +390,7 @@ public class BugsnagTest {
     @Test
     public void testEndpoint() {
         bugsnag.setDelivery(new HttpDelivery() {
-            String endpoint;
+            private String endpoint;
 
             @Override
             public void setEndpoint(String endpoint) {
@@ -422,7 +422,7 @@ public class BugsnagTest {
     @Test
     public void testProxy() {
         bugsnag.setDelivery(new HttpDelivery() {
-            Proxy proxy;
+            private Proxy proxy;
 
             @Override
             public void setEndpoint(String endpoint) {
@@ -520,7 +520,7 @@ public class BugsnagTest {
         assertTrue(bugsnag.notify(new Throwable()));
         assertTrue(bugsnag.notify(new Throwable()));
 
-        for (int i = 0 ; i < testDelivery.getNotifications().size(); i++) {
+        for (int i = 0; i < testDelivery.getNotifications().size(); i++) {
             Report report = testDelivery.getNotifications().get(i).getEvents().get(0);
 
             Map<String, Object> session = report.getSession();

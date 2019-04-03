@@ -2,7 +2,6 @@ package com.bugsnag;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import org.junit.Before;

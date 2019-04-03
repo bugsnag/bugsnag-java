@@ -15,7 +15,7 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 public class AsyncHttpDelivery implements HttpDelivery {
-    private static final Logger logger = LoggerFactory.getLogger(AsyncHttpDelivery.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(AsyncHttpDelivery.class);
     private static final int SHUTDOWN_TIMEOUT = 5000;
 
     private HttpDelivery baseDelivery;
@@ -84,7 +84,7 @@ public class AsyncHttpDelivery implements HttpDelivery {
                         final Object object,
                         final Map<String, String> headers) {
         if (shuttingDown) {
-            logger.warn("Not notifying - 'sending' threads are already shutting down");
+            LOGGER.warn("Not notifying - 'sending' threads are already shutting down");
             return;
         }
 
@@ -107,11 +107,11 @@ public class AsyncHttpDelivery implements HttpDelivery {
 
         try {
             if (!executorService.awaitTermination(SHUTDOWN_TIMEOUT, TimeUnit.MILLISECONDS)) {
-                logger.warn("Shutdown of 'sending' threads took too long - forcing a shutdown");
+                LOGGER.warn("Shutdown of 'sending' threads took too long - forcing a shutdown");
                 executorService.shutdownNow();
             }
         } catch (InterruptedException ex) {
-            logger.warn("Shutdown of 'sending' threads was interrupted - forcing a shutdown");
+            LOGGER.warn("Shutdown of 'sending' threads was interrupted - forcing a shutdown");
             executorService.shutdownNow();
         }
     }

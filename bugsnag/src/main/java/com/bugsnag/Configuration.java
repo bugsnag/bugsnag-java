@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+@SuppressWarnings("visibilitymodifier")
 public class Configuration {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Bugsnag.class);

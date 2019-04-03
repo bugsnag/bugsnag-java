@@ -1,6 +1,5 @@
 package com.bugsnag;
 
-import com.bugsnag.SessionPayload;
 import com.bugsnag.delivery.HttpDelivery;
 import com.bugsnag.serialization.Serializer;
 
@@ -21,7 +20,7 @@ public class StubSessionDelivery implements HttpDelivery {
 
     @Override
     public void deliver(Serializer serializer, Object object, Map<String, String> headers) {
-        sessions.add((SessionPayload)object);
+        sessions.add((SessionPayload) object);
     }
 
     @Override

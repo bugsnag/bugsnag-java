@@ -10,14 +10,14 @@ public class DeviceCallback implements Callback {
 
     private static volatile String hostname;
     private static transient volatile boolean hostnameInitialised;
-    private static final Object lock = new Object();
+    private static final Object LOCK = new Object();
 
     /**
      * Memoises the hostname, as lookup can be expensive
      */
     public static String getHostnameValue() {
         if (!hostnameInitialised) {
-            synchronized (lock) {
+            synchronized (LOCK) {
                 if (!hostnameInitialised) {
                     hostname = lookupHostname();
                     hostnameInitialised = true;

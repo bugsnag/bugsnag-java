@@ -10,6 +10,4 @@ Demonstrates how to use Bugsnag in a Spring Boot console application.
     ../../gradlew clean bootRun
     ```
 
-3. Cause a crash by visiting [http://localhost:8080](http://localhost:8080)
-
-4. View the captured errors in [your dashboard](https://app.bugsnag.com)
+3. View the captured errors in [your dashboard](https://app.bugsnag.com)

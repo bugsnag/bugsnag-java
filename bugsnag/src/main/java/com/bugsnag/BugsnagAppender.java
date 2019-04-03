@@ -13,7 +13,6 @@ import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.classic.spi.IThrowableProxy;
 import ch.qos.logback.classic.spi.ThrowableProxy;
 import ch.qos.logback.core.UnsynchronizedAppenderBase;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Marker;
 
 import java.net.InetSocketAddress;
@@ -21,7 +20,6 @@ import java.net.Proxy;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;

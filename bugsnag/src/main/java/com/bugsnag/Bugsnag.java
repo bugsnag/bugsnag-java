@@ -14,7 +14,6 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.RejectedExecutionHandler;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
@@ -660,7 +659,7 @@ public class Bugsnag {
     public static Set<Bugsnag> uncaughtExceptionClients() {
         UncaughtExceptionHandler handler = Thread.getDefaultUncaughtExceptionHandler();
         if (handler instanceof ExceptionHandler) {
-            ExceptionHandler bugsnagHandler = (ExceptionHandler)handler;
+            ExceptionHandler bugsnagHandler = (ExceptionHandler) handler;
             return Collections.unmodifiableSet(bugsnagHandler.uncaughtExceptionClients());
         }
         return Collections.emptySet();

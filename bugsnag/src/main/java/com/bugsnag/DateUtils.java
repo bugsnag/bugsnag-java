@@ -10,7 +10,7 @@ import java.util.TimeZone;
 
 class DateUtils {
 
-    private static final ThreadLocal<Calendar> calendarThreadLocal = new ThreadLocal<Calendar>() {
+    private static final ThreadLocal<Calendar> CALENDAR_THREAD_LOCAL = new ThreadLocal<Calendar>() {
         @Override
         protected Calendar initialValue() {
             return new GregorianCalendar(TimeZone.getTimeZone("UTC"));
@@ -18,7 +18,7 @@ class DateUtils {
     };
 
     // SimpleDateFormat isn't thread safe, cache one instance per thread as needed.
-    private static final ThreadLocal<DateFormat> iso8601Holder = new ThreadLocal<DateFormat>() {
+    private static final ThreadLocal<DateFormat> ISO_8601_HOLDER = new ThreadLocal<DateFormat>() {
         @Override
         protected DateFormat initialValue() {
             TimeZone tz = TimeZone.getTimeZone("UTC");
@@ -29,7 +29,7 @@ class DateUtils {
     };
 
     static String toIso8601(Date date) {
-        return iso8601Holder.get().format(date);
+        return ISO_8601_HOLDER.get().format(date);
     }
 
     /**
@@ -39,7 +39,7 @@ class DateUtils {
      * @return the time in ms since Java epoch to the latest minute
      */
     static Date roundTimeToLatestMinute(Date date) {
-        Calendar calendar = calendarThreadLocal.get();
+        Calendar calendar = CALENDAR_THREAD_LOCAL.get();
         calendar.setTime(date);
         calendar.set(Calendar.SECOND, 0);
         calendar.set(Calendar.MILLISECOND, 0);

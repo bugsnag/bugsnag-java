@@ -1,12 +1,20 @@
 # Changelog
 
-## 3.X.X (TBD)
+## 3.4.5 (2019-04-04)
 
 * Migrate non-standard device fields to metaData.device
   [#131](https://github.com/bugsnag/bugsnag-java/pull/131)
 
 * Set thread name to aid debugging
   [#138](https://github.com/bugsnag/bugsnag-java/pull/138)
+
+* Merge internal checkstyle rules
+  [#137](https://github.com/bugsnag/bugsnag-java/pull/137)
+
+## 3.4.4 (2019-01-15)
+
+* Remove unnecessary `@Configuration` annotation
+  [#130](https://github.com/bugsnag/bugsnag-java/pull/130)
 
 ## 3.4.3 (2019-01-07)
 
