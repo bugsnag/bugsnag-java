@@ -5,6 +5,9 @@
 * Migrate non-standard device fields to metaData.device
   [#131](https://github.com/bugsnag/bugsnag-java/pull/131)
 
+* Set thread name to aid debugging
+  [#138](https://github.com/bugsnag/bugsnag-java/pull/138)
+
 ## 3.4.3 (2019-01-07)
 
 * Support other methods of configuring a TaskScheduler when setting ErrorHandler on scheduled tasks
