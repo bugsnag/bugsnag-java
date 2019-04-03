@@ -53,13 +53,19 @@ public class MarkerTest {
     public void testMarkerAddReference() {
 
         assertFalse(marker.hasReferences());
-        assertFalse(marker.hasChildren());
+
+        @SuppressWarnings("deprecation")
+        boolean hasChildrenBefore = marker.hasChildren();
+        assertFalse(hasChildrenBefore);
 
         Marker newMarker = new BugsnagMarker(callback);
         marker.add(newMarker);
 
+        @SuppressWarnings("deprecation")
+        boolean hasChildrenAfter = marker.hasChildren();
+        assertTrue(hasChildrenAfter);
+
         assertTrue(marker.hasReferences());
-        assertTrue(marker.hasChildren());
         assertTrue(marker.contains(newMarker));
         assertTrue(marker.contains(newMarker.getName()));
 
@@ -75,11 +81,17 @@ public class MarkerTest {
         marker.add(newMarker);
 
         assertTrue(marker.hasReferences());
-        assertTrue(marker.hasChildren());
+
+        @SuppressWarnings("deprecation")
+        boolean hasChildrenBefore = marker.hasChildren();
+        assertTrue(hasChildrenBefore);
 
         marker.remove(newMarker);
 
         assertFalse(marker.hasReferences());
-        assertFalse(marker.hasChildren());
+
+        @SuppressWarnings("deprecation")
+        boolean hasChildrenAfter = marker.hasChildren();
+        assertFalse(hasChildrenAfter);
     }
 }
