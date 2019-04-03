@@ -18,6 +18,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.RejectedExecutionHandler;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
@@ -27,12 +28,21 @@ public class Bugsnag {
     private static final int SESSION_TRACKING_PERIOD_MS = 60000;
     private static final int CORE_POOL_SIZE = 1;
 
+    private final ThreadFactory sessionThreadFactory = new ThreadFactory() {
+        @Override
+        public Thread newThread(Runnable runnable) {
+            Thread thread = Executors.defaultThreadFactory().newThread(runnable);
+            thread.setName("bugsnag-sessions-" + thread.getId());
+            return thread;
+        }
+    };
     // Create an executor service which keeps idle threads alive for a maximum of SHUTDOWN_TIMEOUT.
     // This should avoid blocking an application that doesn't call shutdown from exiting.
     private ExecutorService sessionFlusherService =
             new ThreadPoolExecutor(0, 1,
                     SHUTDOWN_TIMEOUT_MS, TimeUnit.MILLISECONDS,
-                    new LinkedBlockingQueue<Runnable>());
+                    new LinkedBlockingQueue<Runnable>(),
+                    sessionThreadFactory);
 
     private ScheduledThreadPoolExecutor sessionExecutorService =
             new ScheduledThreadPoolExecutor(CORE_POOL_SIZE,
