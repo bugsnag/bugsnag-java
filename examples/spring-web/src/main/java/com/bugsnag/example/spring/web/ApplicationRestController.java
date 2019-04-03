@@ -4,6 +4,7 @@ import com.bugsnag.Bugsnag;
 import com.bugsnag.Report;
 import com.bugsnag.Severity;
 import com.bugsnag.callbacks.Callback;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

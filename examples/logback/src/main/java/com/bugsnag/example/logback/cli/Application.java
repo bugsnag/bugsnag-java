@@ -1,12 +1,12 @@
 package com.bugsnag.example.logback.cli;
 
-import ch.qos.logback.core.Appender;
 import com.bugsnag.Bugsnag;
 import com.bugsnag.BugsnagAppender;
 import com.bugsnag.logback.BugsnagMarker;
+
+import ch.qos.logback.core.Appender;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.slf4j.Marker;
 
 import java.util.Date;
 
