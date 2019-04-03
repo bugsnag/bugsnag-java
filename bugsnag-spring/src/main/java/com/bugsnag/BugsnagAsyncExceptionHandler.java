@@ -3,8 +3,6 @@ package com.bugsnag;
 import com.bugsnag.HandledState.SeverityReasonType;
 
 import org.springframework.aop.interceptor.AsyncUncaughtExceptionHandler;
-import org.springframework.scheduling.annotation.AsyncConfigurer;
-import org.springframework.scheduling.annotation.AsyncConfigurerSupport;
 
 import java.lang.reflect.Method;
 import java.util.Collections;
@@ -12,8 +10,9 @@ import java.util.Collections;
 /**
  * Reports uncaught exceptions thrown from async methods to Bugsnag.
  *
- * This must be enabled in applications manually by extending {@link AsyncConfigurerSupport}
- * or implementing {@link AsyncConfigurer}.
+ * This must be enabled in applications manually by extending
+ * {@link org.springframework.scheduling.annotation.AsyncConfigurerSupport} or implementing
+ * {@link org.springframework.scheduling.annotation.AsyncConfigurer}.
  */
 public class BugsnagAsyncExceptionHandler implements AsyncUncaughtExceptionHandler {
 

@@ -43,9 +43,9 @@ public class AppenderTest {
     public void swapDelivery() {
 
         ch.qos.logback.classic.Logger rootLogger =
-                (ch.qos.logback.classic.Logger)LoggerFactory
+                (ch.qos.logback.classic.Logger) LoggerFactory
                         .getLogger(org.slf4j.Logger.ROOT_LOGGER_NAME);
-        appender = (BugsnagAppender)rootLogger.getAppender("BUGSNAG");
+        appender = (BugsnagAppender) rootLogger.getAppender("BUGSNAG");
 
         Bugsnag bugsnag = appender.getClient();
         originalDelivery = bugsnag.getDelivery();
@@ -84,7 +84,7 @@ public class AppenderTest {
         assertEquals("test", notification.getEvents().get(0).getExceptionMessage());
         assertEquals(Severity.WARNING.getValue(), notification.getEvents().get(0).getSeverity());
         assertEquals("Test exception",
-                getMetaDataMap(notification,"Log event data").get("Message"));
+                getMetaDataMap(notification, "Log event data").get("Message"));
     }
 
     @Test
@@ -151,15 +151,15 @@ public class AppenderTest {
         StackTraceElement[] trace = exception.getStackTrace();
 
         // Send logs with stack traces containing excluded classes
-        trace[0] = changeClassName(trace[0],"com.bugsnag.Bugsnag");
+        trace[0] = changeClassName(trace[0], "com.bugsnag.Bugsnag");
         exception.setStackTrace(trace);
         LOGGER.warn("Test exception", exception);
 
-        trace[0] = changeClassName(trace[0],"com.bugsnag.delivery.OutputStreamDelivery");
+        trace[0] = changeClassName(trace[0], "com.bugsnag.delivery.OutputStreamDelivery");
         exception.setStackTrace(trace);
         LOGGER.warn("Test exception", exception);
 
-        trace[0] = changeClassName(trace[0],"com.bugsnag.delivery.SyncHttpDelivery");
+        trace[0] = changeClassName(trace[0], "com.bugsnag.delivery.SyncHttpDelivery");
         exception.setStackTrace(trace);
         LOGGER.warn("Test exception", exception);
 
@@ -204,8 +204,8 @@ public class AppenderTest {
         // Create an exception including classes within the project packages list
         RuntimeException exception = new RuntimeException("test");
         StackTraceElement[] trace = exception.getStackTrace();
-        trace[0] = changeClassName(trace[0],"com.company.package1.Class1");
-        trace[1] = changeClassName(trace[1],"com.company.package2.Class2");
+        trace[0] = changeClassName(trace[0], "com.company.package1.Class1");
+        trace[1] = changeClassName(trace[1], "com.company.package2.Class2");
         exception.setStackTrace(trace);
 
         // Log with project packages set

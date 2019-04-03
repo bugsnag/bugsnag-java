@@ -20,7 +20,7 @@ public class StubNotificationDelivery implements HttpDelivery {
 
     @Override
     public void deliver(Serializer serializer, Object object, Map<String, String> headers) {
-        notifications.add((Notification)object);
+        notifications.add((Notification) object);
     }
 
     @Override

@@ -16,7 +16,7 @@ import java.net.UnknownHostException;
 import java.util.Map;
 
 public class SyncHttpDelivery implements HttpDelivery {
-    private static final Logger logger = LoggerFactory.getLogger(SyncHttpDelivery.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(SyncHttpDelivery.class);
 
     public static final String DEFAULT_NOTIFY_ENDPOINT = "https://notify.bugsnag.com";
     public static final String DEFAULT_SESSION_ENDPOINT = "https://sessions.bugsnag.com";
@@ -55,7 +55,7 @@ public class SyncHttpDelivery implements HttpDelivery {
     @Override
     public void deliver(Serializer serializer, Object object, Map<String, String> headers) {
         if (endpoint == null) {
-            logger.warn("Endpoint configured incorrectly, skipping delivery.");
+            LOGGER.warn("Endpoint configured incorrectly, skipping delivery.");
             return;
         }
 
@@ -94,18 +94,18 @@ public class SyncHttpDelivery implements HttpDelivery {
             // End the request, get the response code
             int status = connection.getResponseCode();
             if (status / 100 != 2) {
-                logger.warn(
+                LOGGER.warn(
                         "Error not reported to Bugsnag - got non-200 response code: {}", status);
             }
         } catch (MalformedURLException ex) {
-            logger.warn("Error not reported to Bugsnag - malformed URL."
+            LOGGER.warn("Error not reported to Bugsnag - malformed URL."
                     + " Have you set both endpoints correctly?", ex);
         } catch (SerializationException ex) {
-            logger.warn("Error not reported to Bugsnag - exception when serializing payload", ex);
+            LOGGER.warn("Error not reported to Bugsnag - exception when serializing payload", ex);
         } catch (UnknownHostException ex) {
-            logger.warn("Error not reported to Bugsnag - unknown host {}", endpoint);
+            LOGGER.warn("Error not reported to Bugsnag - unknown host {}", endpoint);
         } catch (IOException ex) {
-            logger.warn("Error not reported to Bugsnag - exception when making request", ex);
+            LOGGER.warn("Error not reported to Bugsnag - exception when making request", ex);
         } finally {
             if (connection != null) {
                 connection.disconnect();
