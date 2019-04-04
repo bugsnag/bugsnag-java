@@ -8,7 +8,9 @@ import org.slf4j.LoggerFactory;
 import java.net.Proxy;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
@@ -18,12 +20,21 @@ public class AsyncHttpDelivery implements HttpDelivery {
 
     private HttpDelivery baseDelivery;
 
+    private final ThreadFactory threadFactory = new ThreadFactory() {
+        @Override
+        public Thread newThread(Runnable runnable) {
+            Thread thread = Executors.defaultThreadFactory().newThread(runnable);
+            thread.setName("bugsnag-async-delivery-" + thread.getId());
+            return thread;
+        }
+    };
     // Create an exector service which keeps idle threads alive for a maximum of SHUTDOWN_TIMEOUT.
     // This should avoid blocking an application that doesn't call shutdown from exiting.
     private ExecutorService executorService =
             new ThreadPoolExecutor(0, 1,
                     SHUTDOWN_TIMEOUT, TimeUnit.MILLISECONDS,
-                    new LinkedBlockingQueue<Runnable>());
+                    new LinkedBlockingQueue<Runnable>(),
+                    threadFactory);
 
     private boolean shuttingDown = false;
 

@@ -55,12 +55,12 @@ public class DeviceCallback implements Callback {
     @Override
     public void beforeNotify(Report report) {
         report
+                .addToTab("device", "osArch", System.getProperty("os.arch"))
+                .addToTab("device", "runtimeName", System.getProperty("java.runtime.name"))
+                .addToTab("device", "runtimeVersion", System.getProperty("java.runtime.version"))
+                .addToTab("device", "locale", Locale.getDefault())
                 .setDeviceInfo("hostname", getHostnameValue())
                 .setDeviceInfo("osName", System.getProperty("os.name"))
-                .setDeviceInfo("osVersion", System.getProperty("os.version"))
-                .setDeviceInfo("osArch", System.getProperty("os.arch"))
-                .setDeviceInfo("runtimeName", System.getProperty("java.runtime.name"))
-                .setDeviceInfo("runtimeVersion", System.getProperty("java.runtime.version"))
-                .setDeviceInfo("locale", Locale.getDefault());
+                .setDeviceInfo("osVersion", System.getProperty("os.version"));
     }
 }

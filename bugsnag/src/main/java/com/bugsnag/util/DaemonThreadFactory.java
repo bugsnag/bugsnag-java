@@ -21,6 +21,7 @@ public class DaemonThreadFactory implements ThreadFactory {
     @Override
     public Thread newThread(Runnable runner) {
         Thread daemonThread = defaultThreadFactory.newThread(runner);
+        daemonThread.setName("bugsnag-daemon-" + daemonThread.getId());
 
         // Set the threads to daemon to allow the app to shutdown properly
         if (!daemonThread.isDaemon()) {
