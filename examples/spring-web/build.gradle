@@ -21,8 +21,12 @@ repositories {
 }
 
 dependencies {
-    compile("org.springframework.boot:spring-boot-starter-web")
-
-    compile project(":bugsnag-spring")
+    compile 'org.springframework.boot:spring-boot-starter-web'
+    compile 'org.springframework.boot:spring-boot-starter-log4j2'
+    compile "com.bugsnag:bugsnag-spring:3.4.5"
 }
 
+configurations.all {
+    exclude group:"ch.qos.logback", module:"logback-core"
+    exclude group: 'org.springframework.boot', module: 'spring-boot-starter-logging'
+}
