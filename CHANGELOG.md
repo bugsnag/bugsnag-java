@@ -1,5 +1,10 @@
 # Changelog
 
+## 3.X.X (TBD)
+
+* Swallow Throwables thrown when configuring bugsnag appender
+  [#140](https://github.com/bugsnag/bugsnag-java/pull/140)
+
 ## 3.4.5 (2019-04-04)
 
 * Migrate non-standard device fields to metaData.device
