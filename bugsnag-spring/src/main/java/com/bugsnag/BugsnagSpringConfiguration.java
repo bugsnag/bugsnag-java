@@ -2,6 +2,7 @@ package com.bugsnag;
 
 import com.bugsnag.callbacks.Callback;
 
+import org.springframework.beans.factory.UnsatisfiedDependencyException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -65,7 +66,8 @@ public class BugsnagSpringConfiguration {
 
             // Exclude Undertow logger when processing HTTP requests
             BugsnagAppender.addExcludedLoggerPattern("io.undertow.request");
-        } catch (Throwable ignored) {
+        } catch (NoClassDefFoundError ignored) {
+            // logback was not in classpath, ignore throwable to allow further initialisation
         }
     }
 
