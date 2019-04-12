@@ -2,7 +2,6 @@ package com.bugsnag;
 
 import com.bugsnag.callbacks.Callback;
 
-import org.springframework.beans.factory.UnsatisfiedDependencyException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
