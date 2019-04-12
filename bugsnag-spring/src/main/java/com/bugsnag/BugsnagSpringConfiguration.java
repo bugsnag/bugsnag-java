@@ -48,21 +48,26 @@ public class BugsnagSpringConfiguration {
      * messages as they effectively duplicate error reports for unhandled exceptions.
      */
     @PostConstruct
+    @SuppressWarnings("checkstyle:emptycatchblock")
     void excludeLoggers() {
-        // Exclude Tomcat logger when processing HTTP requests via a servlet.
-        // Regex specified to match the servlet variable parts of the logger name, e.g.
-        // the Spring Boot default is:
-        // [Tomcat].[localhost].[/].[dispatcherServlet]
-        // but could be something like:
-        // [Tomcat-1].[127.0.0.1].[/subdomain/].[customDispatcher]
-        BugsnagAppender.addExcludedLoggerPattern("org.apache.catalina.core.ContainerBase."
-                + "\\[Tomcat.*\\][.]\\[.*\\][.]\\[/.*\\][.]\\[.*\\]");
+        try {
+            // Exclude Tomcat logger when processing HTTP requests via a servlet.
+            // Regex specified to match the servlet variable parts of the logger name, e.g.
+            // the Spring Boot default is:
+            // [Tomcat].[localhost].[/].[dispatcherServlet]
+            // but could be something like:
+            // [Tomcat-1].[127.0.0.1].[/subdomain/].[customDispatcher]
+            BugsnagAppender.addExcludedLoggerPattern("org.apache.catalina.core.ContainerBase."
+                    + "\\[Tomcat.*\\][.]\\[.*\\][.]\\[/.*\\][.]\\[.*\\]");
 
-        // Exclude Jetty logger when processing HTTP requests via the HttpChannel
-        BugsnagAppender.addExcludedLoggerPattern("org.eclipse.jetty.server.HttpChannel");
+            // Exclude Jetty logger when processing HTTP requests via the HttpChannel
+            BugsnagAppender.addExcludedLoggerPattern("org.eclipse.jetty.server.HttpChannel");
 
-        // Exclude Undertow logger when processing HTTP requests
-        BugsnagAppender.addExcludedLoggerPattern("io.undertow.request");
+            // Exclude Undertow logger when processing HTTP requests
+            BugsnagAppender.addExcludedLoggerPattern("io.undertow.request");
+        } catch (NoClassDefFoundError ignored) {
+            // logback was not in classpath, ignore throwable to allow further initialisation
+        }
     }
 
 }
