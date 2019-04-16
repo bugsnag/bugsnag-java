@@ -1,6 +1,6 @@
 # Changelog
 
-## 3.X.X (TBD)
+## 3.4.6 (2019-04-16)
 
 * Swallow Throwables thrown when configuring bugsnag appender
   [#140](https://github.com/bugsnag/bugsnag-java/pull/140)
