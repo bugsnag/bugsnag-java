@@ -11,6 +11,7 @@ import org.springframework.context.annotation.Conditional;
 import org.springframework.context.annotation.Configuration;
 
 import javax.servlet.ServletRequestListener;
+import java.util.Map;
 
 /**
  * If spring-boot is loaded, add configuration specific to Spring Boot
@@ -26,15 +27,31 @@ class SpringBootConfiguration {
      * Add a callback to add the version of Spring Boot used by the application.
      */
     @Bean
-    Callback springBootVersionCallback() {
+    Callback springBootVersionErrorCallback() {
         Callback callback = new Callback() {
             @Override
             public void beforeNotify(Report report) {
-                report.addToTab("device", "springBootVersion", SpringBootVersion.getVersion());
+                appendSpringBootRuntimeVersion(Diagnostics.retrieveRuntimeVersionsMap(report.getDevice()));
             }
         };
         bugsnag.addCallback(callback);
         return callback;
+    }
+
+    @Bean
+    BeforeSendSession springBootVersionSessionCallback() {
+        BeforeSendSession beforeSendSession = new BeforeSendSession() {
+            @Override
+            public void beforeSendSession(SessionPayload payload) {
+                appendSpringBootRuntimeVersion(Diagnostics.retrieveRuntimeVersionsMap(payload.getDevice()));
+            }
+        };
+        bugsnag.addBeforeSendSession(beforeSendSession);
+        return beforeSendSession;
+    }
+
+    private void appendSpringBootRuntimeVersion(Map<String, Object> runtimeVersions) {
+        runtimeVersions.put("springBoot", SpringBootVersion.getVersion());
     }
 
     /**
