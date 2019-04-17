@@ -23,7 +23,15 @@ class Diagnostics {
         map.put("hostname", DeviceCallback.getHostnameValue());
         map.put("osName", System.getProperty("os.name"));
         map.put("osVersion", System.getProperty("os.version"));
+        map.put("runtimeVersions", getRuntimeVersions());
         return map;
+    }
+
+    private Map<String, String> getRuntimeVersions() {
+        Map<String, String> runtimeVersions = new HashMap<String, String>();
+        runtimeVersions.put("javaType", System.getProperty("java.runtime.name"));
+        runtimeVersions.put("javaVersion", System.getProperty("java.runtime.version"));
+        return runtimeVersions;
     }
 
     private Map<String, Object> getDefaultAppInfo(Configuration configuration) {

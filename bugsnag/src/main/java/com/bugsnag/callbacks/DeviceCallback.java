@@ -56,8 +56,6 @@ public class DeviceCallback implements Callback {
     public void beforeNotify(Report report) {
         report
                 .addToTab("device", "osArch", System.getProperty("os.arch"))
-                .addToTab("device", "runtimeName", System.getProperty("java.runtime.name"))
-                .addToTab("device", "runtimeVersion", System.getProperty("java.runtime.version"))
                 .addToTab("device", "locale", Locale.getDefault())
                 .setDeviceInfo("hostname", getHostnameValue())
                 .setDeviceInfo("osName", System.getProperty("os.name"))
