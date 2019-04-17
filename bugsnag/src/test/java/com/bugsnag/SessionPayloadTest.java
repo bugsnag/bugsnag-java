@@ -63,7 +63,7 @@ public class SessionPayloadTest {
 
         JsonNode device = rootNode.get("device");
         assertNotNull(device);
-        assertEquals(3, device.size());
+        assertEquals(4, device.size());
     }
 
 }

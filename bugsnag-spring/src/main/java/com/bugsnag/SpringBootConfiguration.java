@@ -10,8 +10,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Conditional;
 import org.springframework.context.annotation.Configuration;
 
-import javax.servlet.ServletRequestListener;
 import java.util.Map;
+import javax.servlet.ServletRequestListener;
 
 /**
  * If spring-boot is loaded, add configuration specific to Spring Boot

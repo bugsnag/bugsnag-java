@@ -8,8 +8,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.core.SpringVersion;
 
-import javax.annotation.PostConstruct;
 import java.util.Map;
+import javax.annotation.PostConstruct;
 
 /**
  * Configuration to integrate Bugsnag with Spring.
