@@ -45,4 +45,17 @@ class Diagnostics {
         }
         return map;
     }
+
+    @SuppressWarnings("unchecked")
+    static Map<String, Object> retrieveRuntimeVersionsMap(Map<String, Object> device) {
+        Object obj = device.get("runtimeVersions");
+
+        if (obj instanceof Map) {
+            return (Map<String, Object>) obj;
+        } else { // fallback to creating a new map if payload was mutated
+            Map<String, Object> map = new HashMap<String, Object>();
+            device.put("runtimeVersions", map);
+            return map;
+        }
+    }
 }
