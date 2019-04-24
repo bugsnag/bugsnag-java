@@ -31,7 +31,7 @@ class SpringBootConfiguration {
         Callback callback = new Callback() {
             @Override
             public void beforeNotify(Report report) {
-                appendSpringBootRuntimeVersion(Diagnostics.retrieveRuntimeVersionsMap(report.getDevice()));
+                addSpringRuntimeVersion(report.getDevice());
             }
         };
         bugsnag.addCallback(callback);
@@ -43,15 +43,15 @@ class SpringBootConfiguration {
         BeforeSendSession beforeSendSession = new BeforeSendSession() {
             @Override
             public void beforeSendSession(SessionPayload payload) {
-                appendSpringBootRuntimeVersion(Diagnostics.retrieveRuntimeVersionsMap(payload.getDevice()));
+                addSpringRuntimeVersion(payload.getDevice());
             }
         };
         bugsnag.addBeforeSendSession(beforeSendSession);
         return beforeSendSession;
     }
 
-    private void appendSpringBootRuntimeVersion(Map<String, Object> runtimeVersions) {
-        runtimeVersions.put("springBoot", SpringBootVersion.getVersion());
+    private void addSpringRuntimeVersion(Map<String, Object> device) {
+        Diagnostics.addDeviceRuntimeVersion(device, "springBoot", SpringBootVersion.getVersion());
     }
 
     /**

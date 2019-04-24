@@ -32,7 +32,7 @@ public class BugsnagSpringConfiguration {
         Callback callback = new Callback() {
             @Override
             public void beforeNotify(Report report) {
-                appendSpringRuntimeVersion(Diagnostics.retrieveRuntimeVersionsMap(report.getDevice()));
+                addSpringRuntimeVersion(report.getDevice());
             }
         };
         bugsnag.addCallback(callback);
@@ -44,15 +44,15 @@ public class BugsnagSpringConfiguration {
         BeforeSendSession beforeSendSession = new BeforeSendSession() {
             @Override
             public void beforeSendSession(SessionPayload payload) {
-                appendSpringRuntimeVersion(Diagnostics.retrieveRuntimeVersionsMap(payload.getDevice()));
+                addSpringRuntimeVersion(payload.getDevice());
             }
         };
         bugsnag.addBeforeSendSession(beforeSendSession);
         return beforeSendSession;
     }
 
-    private void appendSpringRuntimeVersion(Map<String, Object> runtimeVersions) {
-        runtimeVersions.put("springFramework", SpringVersion.getVersion());
+    private void addSpringRuntimeVersion(Map<String, Object> device) {
+        Diagnostics.addDeviceRuntimeVersion(device, "springFramework", SpringVersion.getVersion());
     }
 
     @Bean
