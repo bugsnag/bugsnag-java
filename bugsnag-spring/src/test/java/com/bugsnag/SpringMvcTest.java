@@ -157,16 +157,18 @@ public class SpringMvcTest {
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void springVersionSetCorrectly() {
         callRuntimeExceptionEndpoint();
 
         Report report = verifyAndGetReport(delivery);
 
         // Check that the Spring version is set as expected
-        @SuppressWarnings(value = "unchecked") Map<String, Object> deviceMetadata =
-                (Map<String, Object>) report.getMetaData().get("device");
-        assertEquals(SpringVersion.getVersion(), deviceMetadata.get("springVersion"));
-        assertEquals(SpringBootVersion.getVersion(), deviceMetadata.get("springBootVersion"));
+        Map<String, Object> deviceMetadata = report.getDevice();
+        Map<String, Object> runtimeVersions =
+                (Map<String, Object>) deviceMetadata.get("runtimeVersions");
+        assertEquals(SpringVersion.getVersion(), runtimeVersions.get("springFramework"));
+        assertEquals(SpringBootVersion.getVersion(), runtimeVersions.get("springBoot"));
     }
 
     @Test

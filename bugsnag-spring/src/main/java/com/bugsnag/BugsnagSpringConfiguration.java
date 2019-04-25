@@ -8,6 +8,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.core.SpringVersion;
 
+import java.util.Map;
 import javax.annotation.PostConstruct;
 
 /**
@@ -27,15 +28,31 @@ public class BugsnagSpringConfiguration {
      * Add a callback to add the version of Spring used by the application
      */
     @Bean
-    Callback springVersionCallback() {
+    Callback springVersionErrorCallback() {
         Callback callback = new Callback() {
             @Override
             public void beforeNotify(Report report) {
-                report.addToTab("device", "springVersion", SpringVersion.getVersion());
+                addSpringRuntimeVersion(report.getDevice());
             }
         };
         bugsnag.addCallback(callback);
         return callback;
+    }
+
+    @Bean
+    BeforeSendSession springVersionSessionCallback() {
+        BeforeSendSession beforeSendSession = new BeforeSendSession() {
+            @Override
+            public void beforeSendSession(SessionPayload payload) {
+                addSpringRuntimeVersion(payload.getDevice());
+            }
+        };
+        bugsnag.addBeforeSendSession(beforeSendSession);
+        return beforeSendSession;
+    }
+
+    private void addSpringRuntimeVersion(Map<String, Object> device) {
+        Diagnostics.addDeviceRuntimeVersion(device, "springFramework", SpringVersion.getVersion());
     }
 
     @Bean

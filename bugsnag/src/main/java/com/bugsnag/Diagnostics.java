@@ -23,7 +23,15 @@ class Diagnostics {
         map.put("hostname", DeviceCallback.getHostnameValue());
         map.put("osName", System.getProperty("os.name"));
         map.put("osVersion", System.getProperty("os.version"));
+        map.put("runtimeVersions", getRuntimeVersions());
         return map;
+    }
+
+    private Map<String, String> getRuntimeVersions() {
+        Map<String, String> runtimeVersions = new HashMap<String, String>();
+        runtimeVersions.put("javaType", System.getProperty("java.runtime.name"));
+        runtimeVersions.put("javaVersion", System.getProperty("java.runtime.version"));
+        return runtimeVersions;
     }
 
     private Map<String, Object> getDefaultAppInfo(Configuration configuration) {
@@ -36,5 +44,19 @@ class Diagnostics {
             map.put("version", configuration.appVersion);
         }
         return map;
+    }
+
+    @SuppressWarnings("unchecked")
+    static void addDeviceRuntimeVersion(Map<String, Object> device, String key, Object value) {
+        Object obj = device.get("runtimeVersions");
+        Map<String, Object> runtimeVersions;
+
+        if (obj instanceof Map) {
+            runtimeVersions = (Map<String, Object>) obj;
+        } else { // fallback to creating a new map if payload was mutated
+            runtimeVersions = new HashMap<String, Object>();
+            device.put("runtimeVersions", runtimeVersions);
+        }
+        runtimeVersions.put(key, value);
     }
 }

@@ -665,4 +665,8 @@ public class Bugsnag {
         }
         return Collections.emptySet();
     }
+
+    void addBeforeSendSession(BeforeSendSession beforeSendSession) {
+        sessionTracker.addBeforeSendSession(beforeSendSession);
+    }
 }
