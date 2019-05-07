@@ -1,5 +1,10 @@
 # Changelog
 
+## 3.5.0 (2019-05-07)
+
+* Migrate version information to device.runtimeVersions
+  [#141](https://github.com/bugsnag/bugsnag-java/pull/141)
+
 ## 3.4.6 (2019-04-16)
 
 * Swallow Throwables thrown when configuring bugsnag appender

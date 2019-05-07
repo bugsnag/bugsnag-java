@@ -21,6 +21,7 @@ class SessionTracker {
 
     private final Semaphore flushingRequest = new Semaphore(1);
     private final AtomicBoolean shuttingDown = new AtomicBoolean();
+    private final Collection<BeforeSendSession> sessionCallbacks = new ConcurrentLinkedQueue<BeforeSendSession>();
 
     SessionTracker(Configuration configuration) {
         this.config = configuration;
@@ -88,6 +89,11 @@ class SessionTracker {
                 Collection<SessionCount> requestValues
                         = new ArrayList<SessionCount>(enqueuedSessionCounts);
                 SessionPayload payload = new SessionPayload(requestValues, config);
+
+                for (BeforeSendSession callback : sessionCallbacks) {
+                    callback.beforeSendSession(payload);
+                }
+
                 Delivery delivery = config.sessionDelivery;
                 delivery.deliver(config.serializer, payload, config.getSessionApiHeaders());
                 enqueuedSessionCounts.removeAll(requestValues);
@@ -101,5 +107,9 @@ class SessionTracker {
         if (shuttingDown.compareAndSet(false, true)) {
             sendSessions(new Date(Long.MAX_VALUE)); // flush all remaining sessions
         }
+    }
+
+    void addBeforeSendSession(BeforeSendSession beforeSendSession) {
+        sessionCallbacks.add(beforeSendSession);
     }
 }
