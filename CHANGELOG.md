@@ -1,6 +1,6 @@
 # Changelog
 
-## 3.X.X (TBD)
+## 3.5.0 (2019-05-07)
 
 * Migrate version information to device.runtimeVersions
   [#141](https://github.com/bugsnag/bugsnag-java/pull/141)
