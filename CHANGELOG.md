@@ -1,5 +1,10 @@
 # Changelog
 
+## TBD
+
+* Remove use of daemon threads, fixing potential resource leak
+  [#143](https://github.com/bugsnag/bugsnag-java/pull/143)
+
 ## 3.5.0 (2019-05-07)
 
 * Migrate version information to device.runtimeVersions

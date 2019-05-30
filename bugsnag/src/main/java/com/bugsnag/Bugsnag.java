@@ -3,11 +3,11 @@ package com.bugsnag;
 import com.bugsnag.callbacks.Callback;
 import com.bugsnag.delivery.Delivery;
 import com.bugsnag.delivery.HttpDelivery;
-import com.bugsnag.util.DaemonThreadFactory;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.Closeable;
 import java.lang.Thread.UncaughtExceptionHandler;
 import java.net.Proxy;
 import java.util.Collections;
@@ -22,7 +22,7 @@ import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
-public class Bugsnag {
+public class Bugsnag implements Closeable {
     private static final Logger LOGGER = LoggerFactory.getLogger(Bugsnag.class);
     private static final int SHUTDOWN_TIMEOUT_MS = 5000;
     private static final int SESSION_TRACKING_PERIOD_MS = 60000;
@@ -46,7 +46,7 @@ public class Bugsnag {
 
     private ScheduledThreadPoolExecutor sessionExecutorService =
             new ScheduledThreadPoolExecutor(CORE_POOL_SIZE,
-                    new DaemonThreadFactory(),
+                    Executors.defaultThreadFactory(),
                     new RejectedExecutionHandler() {
                 @Override
                 public void rejectedExecution(Runnable runnable, ThreadPoolExecutor executor) {
@@ -120,20 +120,7 @@ public class Bugsnag {
         Runtime.getRuntime().addShutdownHook(new Thread() {
             @Override
             public void run() {
-                sessionTracker.shutdown();
-                sessionExecutorService.shutdown();
-                try {
-                    if (!sessionExecutorService
-                            .awaitTermination(SHUTDOWN_TIMEOUT_MS, TimeUnit.MILLISECONDS)) {
-                        LOGGER.warn("Shutdown of 'session tracking' threads"
-                                + " took too long - forcing a shutdown");
-                        sessionExecutorService.shutdownNow();
-                    }
-                } catch (InterruptedException ex) {
-                    LOGGER.warn("Shutdown of 'session tracking' thread "
-                            + "was interrupted - forcing a shutdown");
-                    sessionExecutorService.shutdownNow();
-                }
+                close();
             }
         });
     }
@@ -596,12 +583,20 @@ public class Bugsnag {
     /**
      * Close the connection to Bugsnag and unlink the exception handler.
      */
+    @Override
     public void close() {
         LOGGER.debug("Closing connection to Bugsnag");
+        ExceptionHandler.disable(this);
+
+        // runs periodic checks, should shut down immediately as don't need to send any sessions
+        sessionExecutorService.shutdownNow();
+
+        // flush remaining sessions
+        sessionTracker.shutdown();
+
         if (config.delivery != null) {
             config.delivery.close();
         }
-        ExceptionHandler.disable(this);
     }
 
     // Thread metadata
