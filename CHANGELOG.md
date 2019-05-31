@@ -1,6 +1,6 @@
 # Changelog
 
-## TBD
+## 3.5.1 (2019-05-31)
 
 * Remove use of daemon threads, fixing potential resource leak
   [#143](https://github.com/bugsnag/bugsnag-java/pull/143)
