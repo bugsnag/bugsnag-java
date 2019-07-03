@@ -346,6 +346,19 @@ public class AppenderTest {
         assertArrayEquals(expected, appender.split("one,two,three").toArray());
     }
 
+    @Test
+    public void testCreateFromExistingClient() {
+        Bugsnag client = new Bugsnag("testApiKey");
+        BugsnagAppender appender = new BugsnagAppender(client);
+        // Make sure configuration changes are not passed through to the provided client.
+        appender.setApiKey("newApiKey");
+        // Make sure a new client is not created when starting the appender.
+        appender.start();
+
+        assertEquals(client, appender.getClient());
+        assertEquals("testApiKey", appender.getClient().getConfig().apiKey);
+    }
+
     private StackTraceElement changeClassName(StackTraceElement element, String className) {
         return new StackTraceElement(className,
                 element.getFileName(),
