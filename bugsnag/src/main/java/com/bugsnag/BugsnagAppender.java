@@ -80,9 +80,26 @@ public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
     /** Bugsnag client. */
     private Bugsnag bugsnag = null;
 
+    /** Creates an appender from an existing Bugsnag client. */
+    public BugsnagAppender(Bugsnag bugsnag) {
+        super();
+        this.bugsnag = bugsnag;
+    }
+
+    /**
+     * Default constructor used by Logback to create a Bugsnag appender that will create it's own
+     * client when required.
+     */
+    @SuppressWarnings("unused")
+    public BugsnagAppender() {
+        this(null);
+    }
+
     @Override
     public void start() {
-        this.bugsnag = createBugsnag();
+        if (bugsnag == null) {
+            this.bugsnag = createBugsnag();
+        }
         super.start();
     }
 
