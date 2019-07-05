@@ -1,5 +1,10 @@
 # Changelog
 
+## TBD
+
+* Allow a BugsnagAppender to be created from an existing client
+  [#147](https://github.com/bugsnag/bugsnag-java/pull/147)
+
 ## 3.5.1 (2019-05-31)
 
 * Remove use of daemon threads, fixing potential resource leak
