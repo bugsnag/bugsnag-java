@@ -1,6 +1,6 @@
 # Changelog
 
-## TBD
+## 3.6.0 (2019-07-08)
 
 * Allow a BugsnagAppender to be created from an existing client
   [#147](https://github.com/bugsnag/bugsnag-java/pull/147)
