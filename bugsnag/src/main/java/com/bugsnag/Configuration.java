@@ -13,13 +13,13 @@ import com.bugsnag.serialization.Serializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 @SuppressWarnings("visibilitymodifier")
@@ -44,7 +44,7 @@ public class Configuration {
     public String releaseStage;
     public boolean sendThreads = false;
 
-    Collection<Callback> callbacks = new ArrayList<Callback>();
+    Collection<Callback> callbacks = new ConcurrentLinkedQueue<Callback>();
     Serializer serializer = new Serializer();
     private final AtomicBoolean autoCaptureSessions = new AtomicBoolean(true);
     private final AtomicBoolean sendUncaughtExceptions = new AtomicBoolean(true);
@@ -81,7 +81,9 @@ public class Configuration {
     }
 
     void addCallback(Callback callback) {
-        callbacks.add(callback);
+        if (!callbacks.contains(callback)) {
+            callbacks.add(callback);
+        }
     }
 
     boolean inProject(String className) {
