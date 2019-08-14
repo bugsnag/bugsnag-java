@@ -1,5 +1,10 @@
 # Changelog
 
+## TBD
+
+* Prevent potential ConcurrentModificationException when adding callback
+  [#149](https://github.com/bugsnag/bugsnag-java/pull/149)
+
 ## 3.6.0 (2019-07-08)
 
 * Allow a BugsnagAppender to be created from an existing client
