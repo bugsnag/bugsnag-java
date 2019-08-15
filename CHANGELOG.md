@@ -1,6 +1,6 @@
 # Changelog
 
-## TBD
+## 3.6.1 (2019-15-08)
 
 * Prevent potential ConcurrentModificationException when adding callback
   [#149](https://github.com/bugsnag/bugsnag-java/pull/149)
