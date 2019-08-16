@@ -1,5 +1,8 @@
-apply plugin: 'java-library'
+plugins {
+    id "com.github.hierynomus.license" version "0.15.0"
+}
 
+apply plugin: 'java-library'
 apply from: '../common.gradle'
 
 repositories {
@@ -31,4 +34,13 @@ task testJar(type: Jar) {
 
 artifacts {
     testRuntime testJar
+}
+
+// license checking
+license {
+    header rootProject.file('LICENSE')
+    ignoreFailures true
+}
+downloadLicenses {
+  dependencyConfiguration "compile"
 }
