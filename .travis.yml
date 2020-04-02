@@ -15,7 +15,7 @@ jobs:
   - stage: test
     jdk: openjdk11
     script:
-      - ./gradlew check test
+      - gradle wrapper --gradle-version=5.1.1 check test
   - stage: test
     jdk: openjdk10
     script:
