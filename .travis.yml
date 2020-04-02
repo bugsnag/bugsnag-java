@@ -13,6 +13,14 @@ install: ./gradlew :bugsnag:assemble :bugsnag-spring:assemble
 jobs:
   include:
   - stage: test
+    jdk: openjdk11
+    script:
+      - ./gradlew check test
+  - stage: test
+    jdk: openjdk10
+    script:
+      - ./gradlew check test
+  - stage: test
     jdk: openjdk8
     script:
       - ./gradlew check test
