@@ -17,10 +17,6 @@ jobs:
     script:
       - ./gradlew check test
   - stage: test
-    jdk: openjdk10
-    script:
-      - ./gradlew check test
-  - stage: test
     jdk: openjdk8
     script:
       - ./gradlew check test
