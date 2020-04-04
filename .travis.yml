@@ -8,7 +8,7 @@ cache:
   directories:
   - $HOME/.gradle/caches/
   - $HOME/.gradle/wrapper/
-install: gradle wrapper --gradle-version=5.1.1 :bugsnag:assemble :bugsnag-spring:assemble
+install: ./gradlew :bugsnag:assemble :bugsnag-spring:assemble
 
 jobs:
   include:
