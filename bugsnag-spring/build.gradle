@@ -20,6 +20,7 @@ dependencies {
     compileOnly "org.springframework:spring-webmvc:${springVersion}"
     compileOnly "org.springframework.boot:spring-boot:${springBootVersion}"
     compileOnly "ch.qos.logback:logback-core:${logbackVersion}"
+    compileOnly 'javax.annotation:javax.annotation-api:1.3.1'
 
     testCompile "junit:junit:4.12"
     testCompile "javax.servlet:javax.servlet-api:${servletApiVersion}"
