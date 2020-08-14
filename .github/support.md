@@ -7,9 +7,13 @@ When contacting support, please include as much information as necessary, includ
 
 - example code snippet
 - steps to reproduce
-- notifier version
-- environment / OS 
 - expected/actual behaviour 
+
+* Bugsnag version:
+* Java version:
+* Spring framework version (if any):
+* Maven version (if any):
+* Gradle version (if any):
 
 ## Bug or Feature Requests
 If you would like to raise a bug or feature request please do so by creating a [New Issue](https://github.com/bugsnag/bugsnag-java/issues/new/choose) and selecting bug or feature.
