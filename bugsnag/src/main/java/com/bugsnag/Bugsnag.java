@@ -3,6 +3,7 @@ package com.bugsnag;
 import com.bugsnag.callbacks.Callback;
 import com.bugsnag.delivery.Delivery;
 import com.bugsnag.delivery.HttpDelivery;
+import com.bugsnag.util.DaemonThreadFactory;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,7 +47,7 @@ public class Bugsnag implements Closeable {
 
     private ScheduledThreadPoolExecutor sessionExecutorService =
             new ScheduledThreadPoolExecutor(CORE_POOL_SIZE,
-                    Executors.defaultThreadFactory(),
+                    new DaemonThreadFactory(),
                     new RejectedExecutionHandler() {
                 @Override
                 public void rejectedExecution(Runnable runnable, ThreadPoolExecutor executor) {
