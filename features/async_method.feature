@@ -31,7 +31,7 @@ Scenario: Notify an exception from a spring boot async method
 
 Scenario: Report an exception from a plain spring async method
     Given I run the plain spring app
-    When I navigate to the route "/mazerunnerplainspring/run-async-task" on port "1235"
+    When I navigate to the route "/run-async-task" on port "1235"
     Then I should receive a request
     And the request is a valid for the error reporting API
     And the request used the Spring notifier

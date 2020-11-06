@@ -40,7 +40,7 @@ end
 When("I run plain Spring {string} with the defaults") do |eventType|
   steps %Q{
     And I run the plain spring app
-    And I navigate to the route "/mazerunnerplainspring/run-scenario/#{eventType}" on port "1235"
+    And I navigate to the route "/run-scenario/#{eventType}" on port "1235"
   }
 end
 

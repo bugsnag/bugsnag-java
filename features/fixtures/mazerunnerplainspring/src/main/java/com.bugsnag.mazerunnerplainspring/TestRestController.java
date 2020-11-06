@@ -27,6 +27,11 @@ public class TestRestController {
     @Autowired
     private AsyncMethodService asyncMethodService;
 
+    @RequestMapping("/")
+    public String ping() {
+        return "Plain Spring Fixture app ready for connections";
+    }
+
     @RequestMapping("/send-unhandled-exception")
     public void sendUnhandledException() {
         throw new RuntimeException("Unhandled exception from TestRestController");
