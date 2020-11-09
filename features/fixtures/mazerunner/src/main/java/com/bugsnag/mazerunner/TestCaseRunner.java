@@ -6,8 +6,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.boot.CommandLineRunner;
-import org.springframework.boot.ExitCodeGenerator;
-import org.springframework.boot.SpringApplication;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
@@ -41,15 +39,6 @@ public class TestCaseRunner implements CommandLineRunner, ApplicationContextAwar
         } else {
             LOGGER.error("No test case found for " + System.getenv("EVENT_TYPE"));
         }
-
-        // Exit the application
-        LOGGER.info("Exiting spring");
-        System.exit(SpringApplication.exit(ctx, (ExitCodeGenerator) new ExitCodeGenerator() {
-            @Override
-            public int getExitCode() {
-                return 0;
-            }
-        }));
     }
 
     private void setupBugsnag() {
