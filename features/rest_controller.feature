@@ -18,7 +18,7 @@ Scenario: Report an exception from a spring boot rest controller
 
 Scenario: Report an exception from a plain spring rest controller
     Given I run the plain spring app
-    When I navigate to the route "/mazerunnerplainspring/send-unhandled-exception" on port "1235"
+    When I navigate to the route "/send-unhandled-exception" on port "1235"
     Then I should receive a request
     And the request is a valid for the error reporting API
     And the request used the Spring notifier
@@ -26,7 +26,7 @@ Scenario: Report an exception from a plain spring rest controller
     And the payload field "events" is an array with 1 element
     And the event "unhandled" is true
     And the event "severity" equals "error"
-    And the event "context" equals "GET /mazerunnerplainspring/send-unhandled-exception"
+    And the event "context" equals "GET /send-unhandled-exception"
     And the exception "errorClass" equals "java.lang.RuntimeException"
     And the exception "message" equals "Unhandled exception from TestRestController"
     And the event "metaData.request.url" ends with "/send-unhandled-exception"
