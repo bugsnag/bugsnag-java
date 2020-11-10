@@ -5,7 +5,7 @@ import com.bugsnag.serialization.Expose;
 class Notifier {
 
     private static final String NOTIFIER_NAME = "Bugsnag Java";
-    private static final String NOTIFIER_VERSION = "3.6.1";
+    private static final String NOTIFIER_VERSION = "3.6.2";
     private static final String NOTIFIER_URL = "https://github.com/bugsnag/bugsnag-java";
 
     private String notifierName = NOTIFIER_NAME;

@@ -1,6 +1,11 @@
 # Changelog
 
-## 3.6.1 (2019-15-08)
+## 3.6.2 (2020-11-10)
+
+* Fix JVM hang when System.exit or bugsnag.close is not called
+  [#157](https://github.com/bugsnag/bugsnag-java/pull/157)
+
+## 3.6.1 (2019-08-15)
 
 * Prevent potential ConcurrentModificationException when adding callback
   [#149](https://github.com/bugsnag/bugsnag-java/pull/149)

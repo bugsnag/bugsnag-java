@@ -16,10 +16,21 @@ Thanks!
 
 ## Testing
 
-Runs tests and checkstyle.
+### Unit tests and checkstyle
 
 ```
 ./gradlew check
+```
+
+### End-to-end tests
+
+These tests are implemented with our notifier testing tool [Maze runner](https://github.com/bugsnag/maze-runner).
+
+End to end tests are written in cucumber-style `.feature` files, and need Ruby-backed "steps" in order to know what to run. The tests are located in the top level [`features`](/features/) directory.
+
+```
+bundle install
+bundle exec bugsnag-maze-runner
 ```
 
 ## Installing/testing against a local maven repository
