@@ -39,4 +39,4 @@ All contributors are welcome! For information on how to build, test, and release
 
 ## License
 
-The Bugsnag Java library is free software released under the MIT License. See [LICENSE.txt](https://github.com/bugsnag/bugsnag-java/blob/master/LICENSE.txt) for details.
+The Bugsnag Java library is free software released under the MIT License. See [LICENSE](https://github.com/bugsnag/bugsnag-java/blob/master/LICENSE) for details.
