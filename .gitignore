@@ -36,3 +36,4 @@ features/fixtures/libs
 
 # test output files
 maze_output/
+decisions.yml
