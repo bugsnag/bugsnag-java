@@ -9,7 +9,7 @@ WORKDIR /scan
 COPY gradle gradle
 COPY bugsnag bugsnag
 COPY bugsnag-spring bugsnag-spring
-COPY build.gradle common.gradle gradle.properties gradlew gradlew.bat LICENSE release.gradle settings.gradle .
+COPY build.gradle common.gradle gradle.properties gradlew gradlew.bat LICENSE release.gradle settings.gradle ./
 
 RUN ./gradlew
 
