@@ -4,7 +4,6 @@ buildscript {
     }
     repositories {
         mavenCentral()
-        jcenter()
     }
     dependencies {
         classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
@@ -17,7 +16,6 @@ apply plugin: 'io.spring.dependency-management'
 
 repositories {
     mavenCentral()
-    jcenter()
 }
 
 dependencies {

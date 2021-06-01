@@ -7,7 +7,6 @@ apply from: '../common.gradle'
 
 repositories {
     mavenCentral()
-    jcenter()
 }
 
 dependencies {
