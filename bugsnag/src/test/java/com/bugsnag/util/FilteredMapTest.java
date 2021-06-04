@@ -17,6 +17,7 @@ public class FilteredMapTest {
 
     private static final String KEY_UNFILTERED = "unfiltered";
     private static final String KEY_FILTERED = "auth";
+    private static final String KEY_FILTERED_UPPERCASE = "myAuth";
     private static final String KEY_NESTED = "nested";
     private static final String KEY_UNMODIFIABLE = "unmodifiable";
     private static final String VAL_UNFILTERED = "Foo";
@@ -34,6 +35,7 @@ public class FilteredMapTest {
         HashMap<String, Object> map = new HashMap<String, Object>();
         map.put(KEY_UNFILTERED, VAL_UNFILTERED);
         map.put(KEY_FILTERED, VAL_FILTERED);
+        map.put(KEY_FILTERED_UPPERCASE, VAL_FILTERED);
 
         HashMap<String, Object> nestedMap = new HashMap<String, Object>();
         nestedMap.put(KEY_UNFILTERED, VAL_UNFILTERED);
@@ -47,7 +49,7 @@ public class FilteredMapTest {
 
     @Test
     public void testSize() {
-        assertEquals(4, filteredMap.size());
+        assertEquals(5, filteredMap.size());
     }
 
     @Test
@@ -60,7 +62,7 @@ public class FilteredMapTest {
 
     @Test
     public void testClear() {
-        assertEquals(4, filteredMap.size());
+        assertEquals(5, filteredMap.size());
         filteredMap.clear();
         assertTrue(filteredMap.isEmpty());
     }
@@ -94,6 +96,7 @@ public class FilteredMapTest {
     @Test
     public void testGet() {
         assertEquals(PLACEHOLDER_FILTERED, filteredMap.get(KEY_FILTERED));
+        assertEquals(PLACEHOLDER_FILTERED, filteredMap.get(KEY_FILTERED_UPPERCASE));
         assertEquals(VAL_UNFILTERED, filteredMap.get(KEY_UNFILTERED));
 
         Object actual = filteredMap.get(KEY_NESTED);
@@ -108,7 +111,7 @@ public class FilteredMapTest {
     @Test
     public void testKeySet() {
         Set<String> keySet = filteredMap.keySet();
-        assertEquals(4, keySet.size());
+        assertEquals(5, keySet.size());
         assertTrue(keySet.contains(KEY_FILTERED));
         assertTrue(keySet.contains(KEY_UNFILTERED));
         assertTrue(keySet.contains(KEY_NESTED));
@@ -117,7 +120,7 @@ public class FilteredMapTest {
     @Test
     public void testValues() {
         Collection<Object> values = filteredMap.values();
-        assertEquals(4, values.size());
+        assertEquals(5, values.size());
         assertTrue(values.contains(VAL_UNFILTERED));
         assertTrue(values.contains(PLACEHOLDER_FILTERED));
 
@@ -139,7 +142,7 @@ public class FilteredMapTest {
     @Test
     public void testEntrySet() {
         Set<Map.Entry<String, Object>> entries = filteredMap.entrySet();
-        assertEquals(4, entries.size());
+        assertEquals(5, entries.size());
 
         int expectedCount = 0;
 

@@ -113,7 +113,7 @@ public class FilteredMap implements Map<String, Object> {
         }
 
         for (String filter : keyFilters) {
-            if (key.contains(filter)) {
+            if (key.toLowerCase().contains(filter.toLowerCase())) {
                 return true;
             }
         }
