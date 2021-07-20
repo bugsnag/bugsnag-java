@@ -1,10 +1,12 @@
 package com.bugsnag;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Conditional;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.HandlerExceptionResolver;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
 
+import java.util.List;
 import javax.annotation.PostConstruct;
 
 /**
@@ -12,19 +14,10 @@ import javax.annotation.PostConstruct;
  */
 @Configuration
 @Conditional(SpringWebMvcLoadedCondition.class)
-class MvcConfiguration {
+class MvcConfiguration extends WebMvcConfigurationSupport {
 
     @Autowired
     private Bugsnag bugsnag;
-
-    /**
-     * Register an exception resolver to send unhandled reports to Bugsnag
-     * for uncaught exceptions thrown from request handlers.
-     */
-    @Bean
-    BugsnagMvcExceptionHandler bugsnagHandlerExceptionResolver() {
-        return new BugsnagMvcExceptionHandler(bugsnag);
-    }
 
     /**
      * Add a callback to assign specified severities for some Spring exceptions.
@@ -32,5 +25,24 @@ class MvcConfiguration {
     @PostConstruct
     void addExceptionClassCallback() {
         bugsnag.addCallback(new ExceptionClassCallback());
+    }
+
+    /**
+     * Normally, the exceptionResolvers contain the following resolvers in this order:
+     * - {@link org.springframework.web.servlet.mvc.method.annotation.ExceptionHandlerExceptionResolver}
+     * - {@link org.springframework.web.servlet.mvc.annotation.ResponseStatusExceptionResolver}
+     * - {@link org.springframework.web.servlet.mvc.support.DefaultHandlerExceptionResolver}
+     * <p>
+     * The first two handlers handle exceptions in an application-specific manner.
+     * (either by @{@link org.springframework.web.bind.annotation.ExceptionHandler}
+     * or @{@link org.springframework.web.bind.annotation.ResponseStatus})
+     * <p>
+     * Therefore, exceptions that are handled by these handlers should not be handled by Bugsnag.
+     * Only unhandled exceptions shall be sent to Bugsnag.
+     */
+    @Override
+    protected void extendHandlerExceptionResolvers(List<HandlerExceptionResolver> exceptionResolvers) {
+        final int position = exceptionResolvers.isEmpty() ? 0 : exceptionResolvers.size() - 1;
+        exceptionResolvers.add(position, new BugsnagMvcExceptionHandler(bugsnag));
     }
 }
