@@ -172,6 +172,20 @@ public class SpringMvcTest {
     }
 
     @Test
+    public void noBugsnagNotifyOnResponseStatusException() {
+        callResponseStatusExceptionEndpoint();
+
+        verifyNoReport();
+    }
+
+    @Test
+    public void noBugsnagNotifyOnExceptionHandledByExceptionHandlerException() {
+        callResponseStatusExceptionEndpoint();
+
+        verifyNoReport();
+    }
+
+    @Test
     public void unhandledTypeMismatchExceptionSeverityInfo() {
         callUnhandledTypeMismatchExceptionEndpoint();
 
@@ -240,6 +254,16 @@ public class SpringMvcTest {
     private void callUnhandledTypeMismatchExceptionEndpoint() {
         this.restTemplate.getForEntity(
                 "/throw-type-mismatch-exception", String.class);
+    }
+
+    private void callResponseStatusExceptionEndpoint() {
+        this.restTemplate.getForEntity(
+                "/throw-response-status-exception", String.class);
+    }
+
+    private void callCustomExceptionEndpoint() {
+        this.restTemplate.getForEntity(
+                "/throw-custom-exception", String.class);
     }
 
     private void callHandledTypeMismatchExceptionUserSeverityEndpoint() {

@@ -34,6 +34,22 @@ public class TestController {
     }
 
     /**
+     * Throw an exception with @ResponseStatus
+     */
+    @RequestMapping("/throw-response-status-exception")
+    public void throwResponseStatusException() {
+        throw new TestResponseStatusException();
+    }
+
+    /**
+     * Throw an exception that is handled by @ExceptionHandler
+     */
+    @RequestMapping("/throw-custom-exception")
+    public void throwCustomException() {
+        throw new TestCustomException();
+    }
+
+    /**
      * Report a handled exception where the severity reason is exceptionClass
      */
     @RequestMapping("/handled-type-mismatch-exception")
