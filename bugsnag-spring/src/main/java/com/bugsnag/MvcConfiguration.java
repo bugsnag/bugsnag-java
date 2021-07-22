@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Conditional;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.HandlerExceptionResolver;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
 import java.util.List;
 import javax.annotation.PostConstruct;
@@ -14,7 +14,7 @@ import javax.annotation.PostConstruct;
  */
 @Configuration
 @Conditional(SpringWebMvcLoadedCondition.class)
-class MvcConfiguration extends WebMvcConfigurationSupport {
+class MvcConfiguration extends WebMvcConfigurerAdapter {
 
     @Autowired
     private Bugsnag bugsnag;
@@ -41,7 +41,7 @@ class MvcConfiguration extends WebMvcConfigurationSupport {
      * Only unhandled exceptions shall be sent to Bugsnag.
      */
     @Override
-    protected void extendHandlerExceptionResolvers(List<HandlerExceptionResolver> exceptionResolvers) {
+    public void extendHandlerExceptionResolvers(List<HandlerExceptionResolver> exceptionResolvers) {
         final int position = exceptionResolvers.isEmpty() ? 0 : exceptionResolvers.size() - 1;
         exceptionResolvers.add(position, new BugsnagMvcExceptionHandler(bugsnag));
     }
