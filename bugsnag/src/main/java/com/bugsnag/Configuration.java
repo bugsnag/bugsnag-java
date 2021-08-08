@@ -3,6 +3,7 @@ package com.bugsnag;
 import com.bugsnag.callbacks.AppCallback;
 import com.bugsnag.callbacks.Callback;
 import com.bugsnag.callbacks.DeviceCallback;
+import com.bugsnag.callbacks.JaxrsCallback;
 import com.bugsnag.callbacks.ServletCallback;
 import com.bugsnag.delivery.AsyncHttpDelivery;
 import com.bugsnag.delivery.Delivery;
@@ -42,6 +43,7 @@ public class Configuration {
     public String[] notifyReleaseStages = null;
     public String[] projectPackages;
     public String releaseStage;
+    public String requestCallback;
     public boolean sendThreads = false;
 
     Collection<Callback> callbacks = new ConcurrentLinkedQueue<Callback>();
@@ -57,8 +59,10 @@ public class Configuration {
         addCallback(new DeviceCallback());
         DeviceCallback.initializeCache();
 
-        if (ServletCallback.isAvailable()) {
+        if ("servlet".equals(requestCallback) && ServletCallback.isAvailable()) {
             addCallback(new ServletCallback());
+        } else if ("jaxrs".equals(requestCallback) && JaxrsCallback.isAvailable()) {
+            addCallback(new JaxrsCallback());
         }
     }
 
