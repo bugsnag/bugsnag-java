@@ -1,8 +1,14 @@
 package com.bugsnag;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
 import com.bugsnag.callbacks.JaxrsCallback;
 import com.bugsnag.callbacks.ServletCallback;
 import com.bugsnag.filters.BugsnagContainerRequestFilter;
+
 import org.jboss.resteasy.core.Headers;
 import org.jboss.resteasy.core.interception.jaxrs.PreMatchContainerRequestContext;
 import org.jboss.resteasy.specimpl.ResteasyHttpHeaders;
@@ -12,18 +18,13 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import javax.ws.rs.core.MultivaluedMap;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import javax.ws.rs.core.MultivaluedMap;
 
 public class JaxrsCallbackTest {
 
