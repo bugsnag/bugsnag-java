@@ -39,6 +39,7 @@ public class ConfigurationTest {
     @Test
     public void testDefaults() {
         assertTrue(config.shouldAutoCaptureSessions());
+        assertEquals("servlet", config.requestCallback);
     }
 
     @Test

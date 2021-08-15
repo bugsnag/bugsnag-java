@@ -43,7 +43,7 @@ public class Configuration {
     public String[] notifyReleaseStages = null;
     public String[] projectPackages;
     public String releaseStage;
-    public String requestCallback;
+    public String requestCallback = "servlet";
     public boolean sendThreads = false;
 
     Collection<Callback> callbacks = new ConcurrentLinkedQueue<Callback>();
