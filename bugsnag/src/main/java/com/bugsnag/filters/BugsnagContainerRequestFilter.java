@@ -1,16 +1,18 @@
 package com.bugsnag.filters;
 
+import static javax.ws.rs.Priorities.AUTHENTICATION;
+
 import com.bugsnag.Bugsnag;
+
 import org.jboss.resteasy.core.interception.jaxrs.PreMatchContainerRequestContext;
 import org.jboss.resteasy.spi.HttpRequest;
 
 import javax.annotation.Priority;
+
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerRequestFilter;
 import javax.ws.rs.container.PreMatching;
 import javax.ws.rs.ext.Provider;
-
-import static javax.ws.rs.Priorities.AUTHENTICATION;
 
 @Provider
 @PreMatching

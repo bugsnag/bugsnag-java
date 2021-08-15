@@ -207,7 +207,8 @@ public class Bugsnag implements Closeable {
     }
 
     /**
-     * Set which request callback to use. Accepted values are "servlet" for Java Servlet API and "jaxrs" for Jakarta RESTful Web Services
+     * Set which request callback to use.
+     * Accepted values are "servlet" for Java Servlet API and "jaxrs" for Jakarta RESTful Web Services
      *
      * @param requestCallback either "servlet" or "jaxrs"
      */

@@ -2,9 +2,14 @@ package com.bugsnag.callbacks;
 
 import com.bugsnag.Report;
 import com.bugsnag.filters.BugsnagContainerRequestFilter;
+
 import org.jboss.resteasy.spi.HttpRequest;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public class JaxrsCallback implements Callback {
     private static final String HEADER_X_FORWARDED_FOR = "X-FORWARDED-FOR";
