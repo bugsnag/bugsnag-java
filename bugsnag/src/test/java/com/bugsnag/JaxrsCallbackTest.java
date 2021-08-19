@@ -2,12 +2,15 @@ package com.bugsnag;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assume.assumeTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import com.bugsnag.callbacks.JaxrsCallback;
 import com.bugsnag.callbacks.ServletCallback;
 import com.bugsnag.filters.BugsnagContainerRequestFilter;
+import com.fasterxml.jackson.core.Version;
+import com.fasterxml.jackson.core.util.VersionUtil;
 
 import org.jboss.resteasy.core.Headers;
 import org.jboss.resteasy.core.interception.jaxrs.PreMatchContainerRequestContext;
@@ -16,6 +19,7 @@ import org.jboss.resteasy.specimpl.ResteasyUriInfo;
 import org.jboss.resteasy.spi.HttpRequest;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.net.URI;
@@ -29,6 +33,13 @@ import javax.ws.rs.core.MultivaluedMap;
 public class JaxrsCallbackTest {
 
     private Bugsnag bugsnag;
+
+    @BeforeClass
+    public static void checkJavaRuntimeVersion() {
+        Version runtimeVersion = VersionUtil.parseVersion(System.getProperty("java.runtime.version"), null, null);
+        Version minimalVersion = new Version(1, 8, 0, null);
+        assumeTrue(runtimeVersion.compareTo(minimalVersion) >= 0);
+    }
 
     /**
      * Generate a new request instance which will be read by the servlet
