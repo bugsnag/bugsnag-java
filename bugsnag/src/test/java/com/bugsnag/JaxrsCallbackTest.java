@@ -34,6 +34,9 @@ public class JaxrsCallbackTest {
 
     private Bugsnag bugsnag;
 
+    /**
+     * Only run class if java runtime version is 1.8 or later
+     */
     @BeforeClass
     public static void checkJavaRuntimeVersion() {
         Version runtimeVersion = VersionUtil.parseVersion(System.getProperty("java.runtime.version"), null, null);
