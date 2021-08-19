@@ -9,6 +9,7 @@ import static org.mockito.Mockito.when;
 import com.bugsnag.callbacks.JaxrsCallback;
 import com.bugsnag.callbacks.ServletCallback;
 import com.bugsnag.filters.BugsnagContainerRequestFilter;
+
 import com.fasterxml.jackson.core.Version;
 import com.fasterxml.jackson.core.util.VersionUtil;
 
