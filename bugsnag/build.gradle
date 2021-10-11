@@ -10,7 +10,7 @@ repositories {
 }
 
 dependencies {
-    compile "com.fasterxml.jackson.core:jackson-databind:2.9.1"
+    compile "com.fasterxml.jackson.core:jackson-databind:2.12.5"
     compile "org.slf4j:slf4j-api:1.7.25"
     compileOnly "javax.servlet:javax.servlet-api:${servletApiVersion}"
     compileOnly("ch.qos.logback:logback-classic:${logbackVersion}") {
