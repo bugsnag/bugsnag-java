@@ -1,5 +1,10 @@
 # Changelog
 
+## 3.6.3 (2021-10-12)
+
+* Bump Jackson from 2.9.1 for critical vulnerability fixes
+  [#170](https://github.com/bugsnag/bugsnag-java/pull/170)
+
 ## 3.6.2 (2020-11-10)
 
 * Fix JVM hang when System.exit or bugsnag.close is not called
