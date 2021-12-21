@@ -4,3 +4,19 @@ steps:
     plugins:
       - docker-compose#v3.7.0:
           run: license-audit
+
+  - label: ':docker: Assemble project'
+    key: 'java-jvm-build'
+    timeout_in_minutes: 30
+    plugins:
+      - docker-compose#v3.7.0:
+          run: java-common
+    command: './gradlew :bugsnag:assemble :bugsnag-spring:assemble'
+
+  - label: ':docker: Run JVM tests'
+    key: 'java-jvm-tests'
+    timeout_in_minutes: 30
+    plugins:
+      - docker-compose#v3.7.0:
+          run: java-common
+    command: './gradlew check test'
