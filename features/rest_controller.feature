@@ -2,11 +2,9 @@ Feature: Reporting Unhandled exceptions in a rest controller
 
 Scenario: Report an exception from a spring boot rest controller
     When I run spring boot "RestControllerScenario" with the defaults
-    Then I should receive a request
-    And the request is a valid for the error reporting API
-    And the request used the Spring notifier
-    And the "Bugsnag-API-Key" header equals "a35a2a72bd230ac0aa0f52715bbdc6aa"
-    And the payload field "events" is an array with 1 element
+    And I wait to receive an error
+    And the error is valid for the error reporting API version "4" for the "Bugsnag Spring" notifier
+    And the error payload field "events" is an array with 1 elements
     And the event "unhandled" is true
     And the event "severity" equals "error"
     And the event "context" equals "GET /send-unhandled-exception"
@@ -19,11 +17,9 @@ Scenario: Report an exception from a spring boot rest controller
 Scenario: Report an exception from a plain spring rest controller
     Given I run the plain spring app
     When I navigate to the route "/send-unhandled-exception" on port "8080"
-    Then I should receive a request
-    And the request is a valid for the error reporting API
-    And the request used the Spring notifier
-    And the "Bugsnag-API-Key" header equals "a35a2a72bd230ac0aa0f52715bbdc6aa"
-    And the payload field "events" is an array with 1 element
+    And I wait to receive an error
+    And the error is valid for the error reporting API version "4" for the "Bugsnag Spring" notifier
+    And the error payload field "events" is an array with 1 elements
     And the event "unhandled" is true
     And the event "severity" equals "error"
     And the event "context" equals "GET /send-unhandled-exception"
