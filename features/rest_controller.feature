@@ -18,7 +18,7 @@ Scenario: Report an exception from a spring boot rest controller
 
 Scenario: Report an exception from a plain spring rest controller
     Given I run the plain spring app
-    When I navigate to the route "/send-unhandled-exception" on port "1235"
+    When I navigate to the route "/send-unhandled-exception" on port "8080"
     Then I should receive a request
     And the request is a valid for the error reporting API
     And the request used the Spring notifier

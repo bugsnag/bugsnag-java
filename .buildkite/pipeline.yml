@@ -20,3 +20,11 @@ steps:
       - docker-compose#v3.7.0:
           run: java-common
     command: './gradlew check test'
+
+  - label: ':docker: Run mazerunner tests'
+    key: 'java-mazerunner-tests'
+    timeout_in_minutes: 60
+    plugins:
+      - docker-compose#v3.7.0:
+          run: java-mazerunner
+    command: 'bundle exec bugsnag-maze-runner --verbose'

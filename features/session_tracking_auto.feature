@@ -14,7 +14,7 @@ Scenario: Report automatic session from a spring boot app
 Scenario: Report automatic session from a plain spring app
     Given I set environment variable "AUTO_CAPTURE_SESSIONS" to "true"
     And I run the plain spring app
-    When I navigate to the route "/add-session" on port "1235"
+    When I navigate to the route "/add-session" on port "8080"
     Then I should receive a request
     And the request is a valid for the session tracking API
     And the "Bugsnag-API-Key" header equals "a35a2a72bd230ac0aa0f52715bbdc6aa"
