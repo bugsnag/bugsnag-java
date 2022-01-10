@@ -26,5 +26,6 @@ steps:
     timeout_in_minutes: 60
     plugins:
       - docker-compose#v3.7.0:
+          pull: java-mazerunner
           run: java-mazerunner
     command: 'bundle exec bugsnag-maze-runner --verbose'
