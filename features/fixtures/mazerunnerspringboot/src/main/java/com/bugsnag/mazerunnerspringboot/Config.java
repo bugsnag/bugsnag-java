@@ -14,13 +14,13 @@ public class Config {
     @Value("${BUGSNAG_API_KEY}")
     private String bugsnagApiKey;
 
-    @Value("${MOCK_API_PATH}")
+    @Value("${MAZERUNNER_BASE_URL}")
     private String bugsnagEndpoint;
 
     @Bean
     public Bugsnag bugsnag() {
         Bugsnag bugsnag = new Bugsnag(bugsnagApiKey);
-        bugsnag.setEndpoints(bugsnagEndpoint, bugsnagEndpoint);
+        bugsnag.setEndpoints(bugsnagEndpoint + "notify", bugsnagEndpoint + "sessions");
         bugsnag.setReleaseStage("production");
         bugsnag.setAppVersion("1.0.0");
         return bugsnag;

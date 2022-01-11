@@ -21,10 +21,10 @@ public class AutoSessionScenario extends Scenario {
         try {
             RestTemplate restTemplate = new RestTemplate();
             String result = restTemplate.getForObject(uri, String.class);
-
+            LOGGER.info("Completed auto session request: " + result);
             Thread.sleep(2000);
         } catch (Exception ex) {
-            // ignore
+            LOGGER.error("Failed to complete request", ex);
         }
 
         flushAllSessions();

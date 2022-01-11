@@ -16,7 +16,7 @@ import java.util.Map;
 
 public abstract class Scenario {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(Scenario.class);
+    protected static final Logger LOGGER = LoggerFactory.getLogger(Scenario.class);
 
     protected Bugsnag bugsnag;
 

@@ -1,14 +1,7 @@
-# Configure app environment
-
-require 'os'
-
-# Install latest versions of the notifiers and build fixtures
-run_required_commands([
-  ["mkdir", "-p", "features/fixtures/libs"],
-  ["./gradlew", "bugsnag:assemble", "-Pversion=9.9.9-test"],
-  ["cp", "bugsnag/build/libs/bugsnag-9.9.9-test.jar",
-   "features/fixtures/libs/bugsnag-9.9.9-test.jar"],
-  ["./gradlew", "bugsnag-spring:assemble", "-Pversion=9.9.9-test"],
-  ["cp", "bugsnag-spring/build/libs/bugsnag-spring-9.9.9-test.jar",
-   "features/fixtures/libs/bugsnag-spring-9.9.9-test.jar"]
-])
+BeforeAll do
+  $api_key = "a35a2a72bd230ac0aa0f52715bbdc6aa"
+  Maze.config.enforce_bugsnag_integrity = false
+  Maze.config.receive_no_requests_wait = 10
+  Maze.config.receive_requests_wait = 60
+  Maze::Runner.run_script("features/scripts/assemble-fixtures.sh", blocking: true)
+end
