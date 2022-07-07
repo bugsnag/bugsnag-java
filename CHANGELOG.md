@@ -8,6 +8,9 @@
 * Support log messages that use `{}` formatting
   [#178]{https://github.com/bugsnag/bugsnag-java/pull/178}
 
+* Fix potential hang when resolving DNS hostname
+  [#179]{https://github.com/bugsnag/bugsnag-java/pull/179}
+
 ## 3.6.2 (2020-11-10)
 
 * Fix JVM hang when System.exit or bugsnag.close is not called
