@@ -53,7 +53,9 @@ public class DeviceCallback implements Callback {
                 return InetAddress.getLocalHost().getHostName();
             }
         });
-        future.run();
+        Thread resolverThread = new Thread(future, "Hostname Resolver");
+        resolverThread.setDaemon(true);
+        resolverThread.start();
 
         try {
             return future.get(HOSTNAME_LOOKUP_TIMEOUT, TimeUnit.MILLISECONDS);
