@@ -45,18 +45,15 @@ public class DeviceCallback implements Callback {
             return hostname;
         }
 
-        // Resort to dns hostname lookup.
-        // Look up the hostname in a daemon thread, with a timeout of HOSTNAME_LOOKUP_TIMEOUT.
-        // This is to prevent applications hanging waiting for the dns lookup to resolve
+        // Resort to dns hostname lookup with a timeout of HOSTNAME_LOOKUP_TIMEOUT,
+        // as this can potentially take a very long time to resolve
         FutureTask<String> future = new FutureTask<String>(new Callable<String>() {
             @Override
             public String call() throws UnknownHostException {
                 return InetAddress.getLocalHost().getHostName();
             }
         });
-        Thread resolverThread = new Thread(future, "Hostname Resolver");
-        resolverThread.setDaemon(true);
-        resolverThread.start();
+        future.run();
 
         try {
             return future.get(HOSTNAME_LOOKUP_TIMEOUT, TimeUnit.MILLISECONDS);
@@ -70,8 +67,18 @@ public class DeviceCallback implements Callback {
         return null;
     }
 
+    /**
+     * Cache the hostname on a background thread to avoid blocking on initialization
+     */
     public static void initializeCache() {
-        getHostnameValue();
+        Thread hostnameLookup = new Thread("Hostname Lookup") {
+            @Override
+            public void run() {
+                getHostnameValue();
+            }
+        };
+        hostnameLookup.setDaemon(true);
+        hostnameLookup.start();
     }
 
     @Override
