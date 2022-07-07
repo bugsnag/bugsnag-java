@@ -1,23 +1,20 @@
 package com.bugsnag.callbacks;
 
 import com.bugsnag.Report;
-import com.bugsnag.util.DaemonThreadFactory;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Locale;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
+import java.util.concurrent.FutureTask;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 public class DeviceCallback implements Callback {
 
     private static volatile String hostname;
-    private static transient volatile boolean hostnameInitialised;
+    private static volatile boolean hostnameInitialised;
     private static final Object LOCK = new Object();
     private static final int HOSTNAME_LOOKUP_TIMEOUT = 10000;
 
@@ -51,13 +48,15 @@ public class DeviceCallback implements Callback {
         // Resort to dns hostname lookup.
         // Look up the hostname in a daemon thread, with a timeout of HOSTNAME_LOOKUP_TIMEOUT.
         // This is to prevent applications hanging waiting for the dns lookup to resolve
-        ExecutorService lookupService = Executors.newSingleThreadExecutor(new DaemonThreadFactory());
-        Future<String> future = lookupService.submit(new Callable<String>() {
+        FutureTask<String> future = new FutureTask<String>(new Callable<String>() {
             @Override
             public String call() throws UnknownHostException {
                 return InetAddress.getLocalHost().getHostName();
             }
         });
+        Thread resolverThread = new Thread(future, "Hostname Resolver");
+        resolverThread.setDaemon(true);
+        resolverThread.start();
 
         try {
             return future.get(HOSTNAME_LOOKUP_TIMEOUT, TimeUnit.MILLISECONDS);
