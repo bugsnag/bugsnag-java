@@ -20,7 +20,7 @@ dependencies {
     compileOnly "org.springframework.boot:spring-boot:${springBootVersion}"
     compileOnly "ch.qos.logback:logback-core:${logbackVersion}"
 
-    testCompile "junit:junit:4.12"
+    testCompile "junit:junit:4.13.2"
     testCompile "javax.servlet:javax.servlet-api:${servletApiVersion}"
     testCompile "org.springframework.boot:spring-boot-starter-test:${springBootVersion}"
     testCompile "org.springframework.boot:spring-boot-starter-web:${springBootVersion}"
