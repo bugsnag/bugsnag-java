@@ -4,12 +4,13 @@
 
 * Bump Jackson from 2.9.1 for critical vulnerability fixes
   [#170](https://github.com/bugsnag/bugsnag-java/pull/170)
+  [#180](https://github.com/bugsnag/bugsnag-java/pull/180)
 
 * Support log messages that use `{}` formatting
-  [#178]{https://github.com/bugsnag/bugsnag-java/pull/178}
+  [#178](https://github.com/bugsnag/bugsnag-java/pull/178)
 
 * Fix potential hang when resolving DNS hostname
-  [#179]{https://github.com/bugsnag/bugsnag-java/pull/179}
+  [#179](https://github.com/bugsnag/bugsnag-java/pull/179)
 
 ## 3.6.2 (2020-11-10)
 
