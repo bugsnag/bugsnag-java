@@ -1,0 +1,13 @@
+FROM openjdk:8
+WORKDIR /app
+
+# Force download of gradle zip early to avoid repeating
+# if Docker cache is invalidated by branch changes.
+COPY gradlew gradle.properties /app/
+COPY gradle/ /app/gradle/
+ENV GRADLE_OPTS="-Dorg.gradle.daemon=false"
+COPY settings.gradle /app/
+RUN ./gradlew
+
+# Copy repo into docker
+COPY . /app

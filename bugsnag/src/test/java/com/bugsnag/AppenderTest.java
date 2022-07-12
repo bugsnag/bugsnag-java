@@ -30,6 +30,9 @@ import java.util.Map;
 public class AppenderTest {
 
     private static final Logger LOGGER = Logger.getLogger(AppenderTest.class);
+
+    private static final org.slf4j.Logger SLF_LOGGER = LoggerFactory.getLogger(AppenderTest.class);
+
     private StubNotificationDelivery delivery;
     private StubSessionDelivery sessionDelivery;
     private Delivery originalDelivery;
@@ -84,6 +87,28 @@ public class AppenderTest {
         assertEquals("test", notification.getEvents().get(0).getExceptionMessage());
         assertEquals(Severity.WARNING.getValue(), notification.getEvents().get(0).getSeverity());
         assertEquals("Test exception",
+                getMetaDataMap(notification, "Log event data").get("Message"));
+    }
+
+    @Test
+    public void testFormattedMessage() {
+        int value = 1234;
+
+        // Send a test log
+        SLF_LOGGER.warn("Test exception, errorCode: {}", value, new RuntimeException("test"));
+
+        String message = "no exception";
+        // Send a log with no exception
+        SLF_LOGGER.warn("Test log with {}", message);
+
+        // Check that one report was sent to Bugsnag
+        assertEquals(1, delivery.getNotifications().size());
+
+        // Check the correct event was created
+        Notification notification = delivery.getNotifications().get(0);
+        assertEquals("test", notification.getEvents().get(0).getExceptionMessage());
+        assertEquals(Severity.WARNING.getValue(), notification.getEvents().get(0).getSeverity());
+        assertEquals("Test exception, errorCode: " + value,
                 getMetaDataMap(notification, "Log event data").get("Message"));
     }
 

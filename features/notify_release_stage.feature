@@ -14,20 +14,20 @@ Scenario: Exception not reported when outside release stage in plain Spring app
 
 Scenario: Exception reported when inside release stage
     When I run "InsideReleaseStageScenario" with the defaults
-    Then I should receive a request
-    And the request is a valid for the error reporting API
+    And I wait to receive an error
+    And the error is valid for the error reporting API version "4" for the "Bugsnag Java" notifier
     And the exception "message" equals "InsideReleaseStageScenario"
 
 Scenario: Exception reported when inside release stage in Spring Boot app
     When I run spring boot "InsideReleaseStageScenario" with the defaults
-    Then I should receive a request
-    And the request is a valid for the error reporting API
+    And I wait to receive an error
+    And the error is valid for the error reporting API version "4" for the "Bugsnag Spring" notifier
     And the exception "message" equals "InsideReleaseStageScenario"
 
 Scenario: Exception reported when inside release stage in plain Spring app
     When I run plain Spring "InsideReleaseStageScenario" with the defaults
-    Then I should receive a request
-    And the request is a valid for the error reporting API
+    And I wait to receive an error
+    And the error is valid for the error reporting API version "4" for the "Bugsnag Spring" notifier
     And the exception "message" equals "InsideReleaseStageScenario"
 
 Scenario: Exception not reported when release stage null in plain Java app
@@ -36,15 +36,15 @@ Scenario: Exception not reported when release stage null in plain Java app
 
 Scenario: Exception reported when release stages null in plain Java app
     When I run "NullNotifyReleaseStageScenario" with the defaults
-    Then I should receive a request
-    And the request is a valid for the error reporting API
+    And I wait to receive an error
+    And the error is valid for the error reporting API version "4" for the "Bugsnag Java" notifier
     And the exception "errorClass" equals "java.lang.RuntimeException"
     And the exception "message" equals "NullNotifyReleaseStageScenario"
 
 Scenario: Exception reported when inside Notify release stage array in plain Java app
     When I run "ArrayNotifyReleaseStageScenario" with the defaults
-    Then I should receive a request
-    And the request is a valid for the error reporting API
+    And I wait to receive an error
+    And the error is valid for the error reporting API version "4" for the "Bugsnag Java" notifier
     And the exception "errorClass" equals "java.lang.RuntimeException"
     And the exception "message" equals "ArrayNotifyReleaseStageScenario"
 

@@ -1,0 +1,20 @@
+FROM tomcat:9.0.56-jdk8
+WORKDIR /app
+
+RUN apt-get update && DEBIAN_FRONTEND=noninteractive \
+    apt-get install -y -q docker-compose bundler libcurl4-openssl-dev
+
+# Force download of gradle zip early to avoid repeating
+# if Docker cache is invalidated by branch changes.
+COPY gradlew gradle.properties /app/
+COPY gradle/ /app/gradle/
+ENV GRADLE_OPTS="-Dorg.gradle.daemon=false"
+COPY settings.gradle /app/
+RUN ./gradlew
+
+# Copy repo into docker
+COPY . /app
+
+# Setup mazerunner
+RUN gem install bundler:1.16.5
+RUN bundle install

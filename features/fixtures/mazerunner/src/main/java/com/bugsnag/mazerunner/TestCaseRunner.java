@@ -32,12 +32,13 @@ public class TestCaseRunner implements CommandLineRunner, ApplicationContextAwar
 
         // Create and run the test case
         LOGGER.info("Creating test case");
-        Scenario scenario = testCaseForName(System.getenv("EVENT_TYPE"));
+        String type = System.getenv("EVENT_TYPE");
+        Scenario scenario = testCaseForName(type);
         if (scenario != null) {
-            LOGGER.info("running test case");
+            LOGGER.info("running test case " + type);
             scenario.run();
         } else {
-            LOGGER.error("No test case found for " + System.getenv("EVENT_TYPE"));
+            LOGGER.error("No test case found for " + type);
         }
     }
 
@@ -48,16 +49,16 @@ public class TestCaseRunner implements CommandLineRunner, ApplicationContextAwar
             LOGGER.info("got " + apiKey + " from env vars");
         }
 
-        String path = "http://localhost:9339";
-        if (System.getenv("MOCK_API_PATH") != null) {
-            path = System.getenv("MOCK_API_PATH");
+        String path = "http://localhost:9339/";
+        if (System.getenv("MAZERUNNER_BASE_URL") != null) {
+            path = System.getenv("MAZERUNNER_BASE_URL");
             LOGGER.info("got " + path + " from env vars");
         }
 
         LOGGER.info("using " + path + " to send Bugsnags");
 
         bugsnag = new Bugsnag(apiKey, true);
-        bugsnag.setEndpoints(path, path);
+        bugsnag.setEndpoints(path + "notify", path + "sessions");
     }
 
     private Scenario testCaseForName(String eventType) {

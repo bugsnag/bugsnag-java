@@ -1,5 +1,16 @@
 # Changelog
 
+## 3.6.4 (2022-07-12)
+
+* Support log messages that use `{}` formatting
+  [#178](https://github.com/bugsnag/bugsnag-java/pull/178)
+
+* Fix potential hang when resolving DNS hostname
+  [#179](https://github.com/bugsnag/bugsnag-java/pull/179)
+
+* Bump Jackson from 2.12.5 and JUnit from 4.12 for critical vulnerability fixes
+  [#180](https://github.com/bugsnag/bugsnag-java/pull/180)
+
 ## 3.6.3 (2021-10-12)
 
 * Bump Jackson from 2.9.1 for critical vulnerability fixes
