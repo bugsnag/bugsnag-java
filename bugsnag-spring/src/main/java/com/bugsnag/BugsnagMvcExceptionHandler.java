@@ -20,7 +20,6 @@ import jakarta.servlet.http.HttpServletResponse;
  * resolvers.
  */
 @Order(Ordered.HIGHEST_PRECEDENCE)
-abstract
 class BugsnagMvcExceptionHandler implements HandlerExceptionResolver {
 
     private final Bugsnag bugsnag;

@@ -22,7 +22,9 @@ class MvcConfiguration {
      * for uncaught exceptions thrown from request handlers.
      */
     @Bean
-    BugsnagMvcExceptionHandler bugsnagHandlerExceptionResolver() { return new BugsnagMvcExceptionHandler(bugsnag); }
+    BugsnagMvcExceptionHandler bugsnagHandlerExceptionResolver() {
+        return new BugsnagMvcExceptionHandler(bugsnag);
+    }
 
     /**
      * Add a callback to assign specified severities for some Spring exceptions.
