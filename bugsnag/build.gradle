@@ -12,14 +12,14 @@ repositories {
 dependencies {
     compile "com.fasterxml.jackson.core:jackson-databind:2.13.3"
     compile "org.slf4j:slf4j-api:1.7.25"
-    compileOnly "javax.servlet:javax.servlet-api:${servletApiVersion}"
+    compileOnly "javax.servlet:javax.servlet-api:${javaxServletApiVersion}"
     compileOnly("ch.qos.logback:logback-classic:${logbackVersion}") {
         exclude group: "org.slf4j"
     }
 
     testCompile "junit:junit:4.13.2"
     testCompile "org.slf4j:log4j-over-slf4j:1.7.25"
-    testCompile "javax.servlet:javax.servlet-api:${servletApiVersion}"
+    testCompile "javax.servlet:javax.servlet-api:${javaxServletApiVersion}"
     testCompile "org.mockito:mockito-core:2.10.0"
     testCompile("ch.qos.logback:logback-classic:${logbackVersion}") {
         exclude group: "org.slf4j"

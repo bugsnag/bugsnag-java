@@ -5,7 +5,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Conditional;
 import org.springframework.context.annotation.Configuration;
 
-import javax.annotation.PostConstruct;
+import jakarta.annotation.PostConstruct;
 
 /**
  * If spring-webmvc is loaded, add configuration for reporting unhandled exceptions.
@@ -22,9 +22,7 @@ class MvcConfiguration {
      * for uncaught exceptions thrown from request handlers.
      */
     @Bean
-    BugsnagMvcExceptionHandler bugsnagHandlerExceptionResolver() {
-        return new BugsnagMvcExceptionHandler(bugsnag);
-    }
+    BugsnagMvcExceptionHandler bugsnagHandlerExceptionResolver() { return new BugsnagMvcExceptionHandler(bugsnag); }
 
     /**
      * Add a callback to assign specified severities for some Spring exceptions.

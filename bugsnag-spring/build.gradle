@@ -15,13 +15,15 @@ dependencies {
     compile project(':bugsnag')
     testCompile project(path: ':bugsnag', configuration: 'testRuntime')
 
-    compileOnly "javax.servlet:javax.servlet-api:${servletApiVersion}"
+    compileOnly "jakarta.servlet:jakarta.servlet-api:${jakartaServletApiVersion}"
+    compileOnly "jakarta.annotation:jakarta.annotation-api:${jakartaAnnotationApiVersion}"
     compileOnly "org.springframework:spring-webmvc:${springVersion}"
     compileOnly "org.springframework.boot:spring-boot:${springBootVersion}"
     compileOnly "ch.qos.logback:logback-core:${logbackVersion}"
 
     testCompile "junit:junit:4.13.2"
-    testCompile "javax.servlet:javax.servlet-api:${servletApiVersion}"
+    testCompile "jakarta.servlet:jakarta.servlet-api:${jakartaServletApiVersion}"
+    testCompile "jakarta.annotation:jakarta.annotation-api:${jakartaAnnotationApiVersion}"
     testCompile "org.springframework.boot:spring-boot-starter-test:${springBootVersion}"
     testCompile "org.springframework.boot:spring-boot-starter-web:${springBootVersion}"
 }

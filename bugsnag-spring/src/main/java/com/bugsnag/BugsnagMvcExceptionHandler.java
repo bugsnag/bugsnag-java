@@ -9,8 +9,8 @@ import org.springframework.web.servlet.ModelAndView;
 
 import java.util.Collections;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 /**
  * Reports uncaught exceptions thrown from handler mapping or execution to Bugsnag
@@ -20,6 +20,7 @@ import javax.servlet.http.HttpServletResponse;
  * resolvers.
  */
 @Order(Ordered.HIGHEST_PRECEDENCE)
+abstract
 class BugsnagMvcExceptionHandler implements HandlerExceptionResolver {
 
     private final Bugsnag bugsnag;
