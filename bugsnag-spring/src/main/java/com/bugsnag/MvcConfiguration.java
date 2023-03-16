@@ -1,18 +1,17 @@
 package com.bugsnag;
 
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Conditional;
 import org.springframework.context.annotation.Configuration;
-
-import javax.annotation.PostConstruct;
 
 /**
  * If spring-webmvc is loaded, add configuration for reporting unhandled exceptions.
  */
 @Configuration
 @Conditional(SpringWebMvcLoadedCondition.class)
-class MvcConfiguration {
+class MvcConfiguration implements InitializingBean {
 
     @Autowired
     private Bugsnag bugsnag;
@@ -29,8 +28,8 @@ class MvcConfiguration {
     /**
      * Add a callback to assign specified severities for some Spring exceptions.
      */
-    @PostConstruct
-    void addExceptionClassCallback() {
+    @Override
+    public void afterPropertiesSet() throws java.lang.Exception {
         bugsnag.addCallback(new ExceptionClassCallback());
     }
 }

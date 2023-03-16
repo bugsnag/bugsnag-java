@@ -27,11 +27,7 @@ class TestUtils {
         return notificationCaptor.getValue().getEvents().get(0);
     }
 
-    /**
-     * {@link ArgumentMatchers#anyMapOf} is deprecated but we still need it for JDK 7 builds
-     */
-    @SuppressWarnings("deprecation")
     static <K, V> Map<K, V> anyMapOf(Class<K> keyClazz, Class<V> valueClazz) {
-        return ArgumentMatchers.anyMapOf(keyClazz, valueClazz);
+        return ArgumentMatchers.anyMap();
     }
 }

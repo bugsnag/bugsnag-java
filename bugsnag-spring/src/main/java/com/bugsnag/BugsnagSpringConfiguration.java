@@ -2,6 +2,7 @@ package com.bugsnag;
 
 import com.bugsnag.callbacks.Callback;
 
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -9,7 +10,6 @@ import org.springframework.context.annotation.Import;
 import org.springframework.core.SpringVersion;
 
 import java.util.Map;
-import javax.annotation.PostConstruct;
 
 /**
  * Configuration to integrate Bugsnag with Spring.
@@ -19,7 +19,7 @@ import javax.annotation.PostConstruct;
         SpringBootConfiguration.class,
         MvcConfiguration.class,
         ScheduledTaskConfiguration.class})
-public class BugsnagSpringConfiguration {
+public class BugsnagSpringConfiguration implements InitializingBean {
 
     @Autowired
     private Bugsnag bugsnag;
@@ -64,9 +64,8 @@ public class BugsnagSpringConfiguration {
      * If using Logback, stop any configured appender from creating Bugsnag reports for Spring log
      * messages as they effectively duplicate error reports for unhandled exceptions.
      */
-    @PostConstruct
-    @SuppressWarnings("checkstyle:emptycatchblock")
-    void excludeLoggers() {
+    @Override
+    public void afterPropertiesSet() throws java.lang.Exception {
         try {
             // Exclude Tomcat logger when processing HTTP requests via a servlet.
             // Regex specified to match the servlet variable parts of the logger name, e.g.
@@ -86,5 +85,4 @@ public class BugsnagSpringConfiguration {
             // logback was not in classpath, ignore throwable to allow further initialisation
         }
     }
-
 }
