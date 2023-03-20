@@ -1,9 +1,10 @@
-package com.bugsnag.servlet;
+package com.bugsnag.servlet.jakarta;
+
+import jakarta.servlet.ServletContainerInitializer;
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.ServletException;
 
 import java.util.Set;
-import javax.servlet.ServletContainerInitializer;
-import javax.servlet.ServletContext;
-import javax.servlet.ServletException;
 
 public class BugsnagServletContainerInitializer implements ServletContainerInitializer {
     @Override

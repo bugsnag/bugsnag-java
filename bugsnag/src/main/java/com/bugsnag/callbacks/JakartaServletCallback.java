@@ -1,14 +1,15 @@
 package com.bugsnag.callbacks;
 
 import com.bugsnag.Report;
-import com.bugsnag.servlet.BugsnagServletRequestListener;
+import com.bugsnag.servlet.jakarta.BugsnagServletRequestListener;
+
+import jakarta.servlet.http.HttpServletRequest;
 
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
-import javax.servlet.http.HttpServletRequest;
 
-public class ServletCallback implements Callback {
+public class JakartaServletCallback implements Callback {
     private static final String HEADER_X_FORWARDED_FOR = "X-FORWARDED-FOR";
 
     /**
@@ -16,8 +17,8 @@ public class ServletCallback implements Callback {
      */
     public static boolean isAvailable() {
         try {
-            Class.forName("javax.servlet.ServletRequestListener", false,
-                    ServletCallback.class.getClassLoader());
+            Class.forName("jakarta.servlet.ServletRequestListener", false,
+                    JakartaServletCallback.class.getClassLoader());
             return true;
         } catch (ClassNotFoundException ex) {
             return false;

@@ -1,8 +1,9 @@
 package com.bugsnag;
 
 import com.bugsnag.callbacks.Callback;
-import com.bugsnag.servlet.BugsnagServletRequestListener;
+import com.bugsnag.servlet.javax.BugsnagServletRequestListener;
 
+import com.bugsnag.servlet.javax.BugsnagServletContainerInitializer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringBootVersion;
 import org.springframework.boot.web.servlet.ServletListenerRegistrationBean;
@@ -55,7 +56,7 @@ class SpringBootConfiguration {
     }
 
     /**
-     * The {@link com.bugsnag.servlet.BugsnagServletContainerInitializer} does not work for Spring Boot, need to
+     * The {@link BugsnagServletContainerInitializer} does not work for Spring Boot, need to
      * register the {@link BugsnagServletRequestListener} using a Spring Boot
      * {@link ServletListenerRegistrationBean} instead. This adds session tracking and
      * automatic servlet request metadata collection.

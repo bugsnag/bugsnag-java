@@ -5,9 +5,12 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import com.bugsnag.callbacks.ServletCallback;
+import com.bugsnag.callbacks.JakartaServletCallback;
+import com.bugsnag.servlet.jakarta.BugsnagServletRequestListener;
 
-import com.bugsnag.servlet.BugsnagServletRequestListener;
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.ServletRequestEvent;
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.junit.After;
 import org.junit.Before;
@@ -18,11 +21,8 @@ import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
-import javax.servlet.ServletContext;
-import javax.servlet.ServletRequestEvent;
-import javax.servlet.http.HttpServletRequest;
 
-public class ServletCallbackTest {
+public class JakartaServletCallbackTest {
 
     private Bugsnag bugsnag;
 
@@ -82,7 +82,7 @@ public class ServletCallbackTest {
     @Test
     public void testRequestMetadataAdded() {
         Report report = generateReport(new java.lang.Exception("Spline reticulation failed"));
-        ServletCallback callback = new ServletCallback();
+        JakartaServletCallback callback = new JakartaServletCallback();
         callback.beforeNotify(report);
 
         Map<String, Object> metadata = report.getMetaData();
@@ -119,7 +119,7 @@ public class ServletCallbackTest {
     @Test
     public void testRequestContextSet() {
         Report report = generateReport(new java.lang.Exception("Spline reticulation failed"));
-        ServletCallback callback = new ServletCallback();
+        JakartaServletCallback callback = new JakartaServletCallback();
         callback.beforeNotify(report);
 
         assertEquals("PATCH /foo/bar", report.getContext());
@@ -129,7 +129,7 @@ public class ServletCallbackTest {
     public void testExistingContextNotOverridden() {
         Report report = generateReport(new java.lang.Exception("Spline reticulation failed"));
         report.setContext("Honey nut corn flakes");
-        ServletCallback callback = new ServletCallback();
+        JakartaServletCallback callback = new JakartaServletCallback();
         callback.beforeNotify(report);
 
         assertEquals("Honey nut corn flakes", report.getContext());
