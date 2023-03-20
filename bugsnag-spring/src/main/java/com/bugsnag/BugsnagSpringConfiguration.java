@@ -65,7 +65,7 @@ public class BugsnagSpringConfiguration implements InitializingBean {
      * messages as they effectively duplicate error reports for unhandled exceptions.
      */
     @Override
-    public void afterPropertiesSet() throws java.lang.Exception {
+    public void afterPropertiesSet() {
         try {
             // Exclude Tomcat logger when processing HTTP requests via a servlet.
             // Regex specified to match the servlet variable parts of the logger name, e.g.

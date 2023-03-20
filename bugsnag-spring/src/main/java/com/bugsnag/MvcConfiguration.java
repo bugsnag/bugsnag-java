@@ -29,7 +29,7 @@ class MvcConfiguration implements InitializingBean {
      * Add a callback to assign specified severities for some Spring exceptions.
      */
     @Override
-    public void afterPropertiesSet() throws java.lang.Exception {
+    public void afterPropertiesSet() {
         bugsnag.addCallback(new ExceptionClassCallback());
     }
 }
