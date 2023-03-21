@@ -1,4 +1,4 @@
-# Bugsnag Servlet Example
+# Bugsnag Javax Servlet Example
 
 Demonstrates how to use Bugsnag in a Servlet-based Java application.
 

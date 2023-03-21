@@ -2,7 +2,8 @@ include ':bugsnag',
         ':bugsnag-spring'
 
 include ':examples:simple',
-        ':examples:servlet',
+        ':examples:servlet-jakarta',
+        ':examples:servlet-javax',
         ':examples:spring',
         ':examples:spring-web',
         ':examples:logback'
