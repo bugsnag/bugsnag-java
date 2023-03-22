@@ -27,18 +27,18 @@ repositories {
 }
 
 dependencies {
-    compile 'org.springframework.boot:spring-boot-starter'
-    compile 'org.springframework.boot:spring-boot-starter-web'
-    compile 'ch.qos.logback:logback-classic:1.2.3'
+    implementation 'org.springframework.boot:spring-boot-starter'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'ch.qos.logback:logback-classic:1.2.3'
 
-    compile 'com.fasterxml.jackson.core:jackson-annotations:2.9.1'
-    compile 'com.fasterxml.jackson.core:jackson-databind:2.9.1'
-    compile 'com.bugsnag:bugsnag:9.9.9-test'
-    compile 'com.bugsnag:bugsnag-spring:9.9.9-test'
-    compile project(":scenarios")
+    implementation 'com.fasterxml.jackson.core:jackson-annotations:2.9.1'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.9.1'
+    implementation 'com.bugsnag:bugsnag:9.9.9-test'
+    implementation 'com.bugsnag:bugsnag-spring:9.9.9-test'
+    implementation project(":scenarios")
 
     // required for JDK 9 and above
-    compile('javax.xml.bind:jaxb-api:2.3.0')
+    implementation('javax.xml.bind:jaxb-api:2.3.0')
 
-    testCompile group: 'junit', name: 'junit', version: '4.13.2'
+    testImplementation group: 'junit', name: 'junit', version: '4.13.2'
 }
