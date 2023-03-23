@@ -4,12 +4,10 @@ import com.bugsnag.Bugsnag;
 import com.bugsnag.Severity;
 
 import jakarta.servlet.ServletException;
-import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-@WebServlet(urlPatterns = {"/"}, name = "ExampleServlet", displayName = "ExampleServlet", asyncSupported = true)
 public class ExampleServlet extends HttpServlet {
 
     private static final long serialVersionUID = 1432171052111530587L;
