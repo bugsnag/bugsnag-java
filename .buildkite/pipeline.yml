@@ -21,19 +21,36 @@ steps:
           run: java-common
     command: './gradlew check test'
 
-  - label: ':docker: Mazerunner tests batch 1'
+  - label: ':docker: Mazerunner java8 tests batch 1'
     key: 'java-mazerunner-tests-1'
     timeout_in_minutes: 30
     plugins:
       - docker-compose#v3.7.0:
-          run: java-mazerunner
+          run: java8-mazerunner
     command: 'bundle exec maze-runner --exclude=features/[^a-m].*.feature'
 
-  - label: ':docker: Mazerunner tests batch 2'
+  - label: ':docker: Mazerunner java8 tests batch 2'
     key: 'java-mazerunner-tests-2'
     timeout_in_minutes: 30
     plugins:
       - docker-compose#v3.7.0:
-          pull: java-mazerunner
-          run: java-mazerunner
+          pull: java8-mazerunner
+          run: java8-mazerunner
+    command: 'bundle exec maze-runner --exclude=features/[^n-z].*.feature'
+
+  - label: ':docker: Mazerunner java17 tests batch 1'
+    key: 'java-mazerunner-tests-3'
+    timeout_in_minutes: 30
+    plugins:
+      - docker-compose#v3.7.0:
+          run: java17-mazerunner
+    command: 'bundle exec maze-runner --exclude=features/[^a-m].*.feature'
+
+  - label: ':docker: Mazerunner java17 tests batch 2'
+    key: 'java-mazerunner-tests-4'
+    timeout_in_minutes: 30
+    plugins:
+      - docker-compose#v3.7.0:
+          pull: java17-mazerunner
+          run: java17-mazerunner
     command: 'bundle exec maze-runner --exclude=features/[^n-z].*.feature'

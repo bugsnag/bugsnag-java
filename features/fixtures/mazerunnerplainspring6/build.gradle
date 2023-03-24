@@ -1,0 +1,28 @@
+plugins {
+    id "war"
+}
+
+group 'com.bugsnag.mazerunnerplainspring6'
+
+repositories {
+    mavenCentral()
+    flatDir {
+        dirs '../libs'
+    }
+}
+
+dependencies {
+    implementation("org.springframework:spring-webmvc:6.0.0")
+    implementation("jakarta.servlet:jakarta.servlet-api:5.0.0")
+    implementation("ch.qos.logback:logback-classic:1.2.3")
+
+    implementation("com.fasterxml.jackson.core:jackson-annotations:2.9.1")
+    implementation("com.fasterxml.jackson.core:jackson-databind:2.9.1")
+    implementation("com.bugsnag:bugsnag:9.9.9-test")
+    implementation("com.bugsnag:bugsnag-spring:9.9.9-test")
+    implementation project(":scenarios")
+}
+
+war {
+    archiveName = 'mazerunnerplainspring6.war'
+}

@@ -11,4 +11,4 @@ services:
   java-mazerunner:
     build:
       context: .
-      dockerfile: dockerfiles/Dockerfile.java-mazerunner
+      dockerfile: dockerfiles/Dockerfile.java8-mazerunner

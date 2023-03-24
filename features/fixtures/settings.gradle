@@ -2,3 +2,8 @@ include ':mazerunner',
         ':mazerunnerplainspring',
         ':mazerunnerspringboot',
         ':scenarios'
+
+if (JavaVersion.current() >= JavaVersion.VERSION_17) {
+    include ':mazerunnerspringboot3',
+            ':mazerunnerplainspring6'
+}
