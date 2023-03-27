@@ -1,8 +1,9 @@
 package com.bugsnag;
 
 import com.bugsnag.callbacks.Callback;
-import com.bugsnag.servlet.javax.BugsnagServletRequestListener;
+import com.bugsnag.servlet.jakarta.BugsnagServletRequestListener;
 
+import jakarta.servlet.ServletRequestListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringBootVersion;
 import org.springframework.boot.web.servlet.ServletListenerRegistrationBean;
@@ -11,14 +12,13 @@ import org.springframework.context.annotation.Conditional;
 import org.springframework.context.annotation.Configuration;
 
 import java.util.Map;
-import javax.servlet.ServletRequestListener;
 
 /**
  * If spring-boot is loaded, add configuration specific to Spring Boot
  */
 @Configuration
-@Conditional(SpringBootLoadedCondition.class)
-class SpringBootConfiguration {
+@Conditional(SpringBootV3LoadedCondition.class)
+class SpringBootV3Configuration {
 
     @Autowired
     private Bugsnag bugsnag;
@@ -61,7 +61,7 @@ class SpringBootConfiguration {
      * automatic servlet request metadata collection.
      */
     @Bean
-    @Conditional(SpringWebMvcLoadedCondition.class)
+    @Conditional(SpringWebJakartaMvcLoadedCondition.class)
     ServletListenerRegistrationBean<ServletRequestListener> listenerRegistrationBean() {
         ServletListenerRegistrationBean<ServletRequestListener> srb =
                 new ServletListenerRegistrationBean<ServletRequestListener>();

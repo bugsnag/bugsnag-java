@@ -8,7 +8,6 @@ import org.springframework.web.servlet.HandlerExceptionResolver;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.Collections;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -20,11 +19,11 @@ import javax.servlet.http.HttpServletResponse;
  * resolvers.
  */
 @Order(Ordered.HIGHEST_PRECEDENCE)
-class BugsnagMvcExceptionHandler implements HandlerExceptionResolver {
+class BugsnagJavaxMvcExceptionHandler implements HandlerExceptionResolver {
 
     private final Bugsnag bugsnag;
 
-    BugsnagMvcExceptionHandler(final Bugsnag bugsnag) {
+    BugsnagJavaxMvcExceptionHandler(final Bugsnag bugsnag) {
         this.bugsnag = bugsnag;
     }
 

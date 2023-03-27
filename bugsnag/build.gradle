@@ -14,18 +14,18 @@ repositories {
 
 dependencies {
     api "com.fasterxml.jackson.core:jackson-databind:2.13.3"
-    api "org.slf4j:slf4j-api:1.7.25"
+    api "org.slf4j:slf4j-api:${slf4jApiVersion}"
     compileOnly "javax.servlet:javax.servlet-api:${javaxServletApiVersion}"
     compileOnly "jakarta.servlet:jakarta.servlet-api:${jakartaServletApiVersion}"
     compileOnly("ch.qos.logback:logback-classic:${logbackVersion}") {
         exclude group: "org.slf4j"
     }
 
-    testImplementation "junit:junit:4.13.2"
-    testImplementation "org.slf4j:log4j-over-slf4j:1.7.25"
+    testImplementation "junit:junit:${junitVersion}"
+    testImplementation "org.slf4j:log4j-over-slf4j:${slf4jApiVersion}"
     testImplementation "javax.servlet:javax.servlet-api:${javaxServletApiVersion}"
     testImplementation "jakarta.servlet:jakarta.servlet-api:${jakartaServletApiVersion}"
-    testImplementation "org.mockito:mockito-core:5.0.0"
+    testImplementation "org.mockito:mockito-core:${mockitoVersion}"
     testImplementation("ch.qos.logback:logback-classic:${logbackVersion}") {
         exclude group: "org.slf4j"
     }

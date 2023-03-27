@@ -1,28 +1,34 @@
 ext {
-    springVersion = '6.0.0'
-    springBootVersion = '3.0.0'
+    springVersion = '5.3.20'
+    springBootVersion = '2.5.14'
 }
 
+apply plugin: 'java'
 apply plugin: 'java-library'
 
-apply from: '../common.gradle'
+apply from: '../../common.gradle'
+
+compileJava {
+    sourceCompatibility = '1.8'
+    targetCompatibility = '1.8'
+}
 
 repositories {
     mavenCentral()
 }
 
 dependencies {
-    api project(':bugsnag-spring:javax')
+    api project(':bugsnag')
     testImplementation project(':bugsnag').sourceSets.test.output
 
-    compileOnly "jakarta.servlet:jakarta.servlet-api:${jakartaServletApiVersion}"
+    compileOnly "javax.servlet:javax.servlet-api:${javaxServletApiVersion}"
     compileOnly "org.springframework:spring-webmvc:${springVersion}"
     compileOnly "org.springframework.boot:spring-boot:${springBootVersion}"
     compileOnly "ch.qos.logback:logback-core:${logbackVersion}"
     compileOnly "org.slf4j:slf4j-api:${slf4jApiVersion}"
 
     testImplementation "junit:junit:${junitVersion}"
-    testImplementation "jakarta.servlet:jakarta.servlet-api:${jakartaServletApiVersion}"
+    testImplementation "javax.servlet:javax.servlet-api:${javaxServletApiVersion}"
     testImplementation "org.springframework.boot:spring-boot-starter-test:${springBootVersion}"
     testImplementation "org.springframework.boot:spring-boot-starter-web:${springBootVersion}"
     testImplementation "org.mockito:mockito-core:${mockitoVersion}"

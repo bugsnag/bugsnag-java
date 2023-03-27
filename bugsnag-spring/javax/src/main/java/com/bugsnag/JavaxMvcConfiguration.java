@@ -10,8 +10,8 @@ import org.springframework.context.annotation.Configuration;
  * If spring-webmvc is loaded, add configuration for reporting unhandled exceptions.
  */
 @Configuration
-@Conditional(SpringWebMvcLoadedCondition.class)
-class MvcConfiguration implements InitializingBean {
+@Conditional(SpringWebJavaxMvcLoadedCondition.class)
+class JavaxMvcConfiguration implements InitializingBean {
 
     @Autowired
     private Bugsnag bugsnag;
@@ -21,8 +21,8 @@ class MvcConfiguration implements InitializingBean {
      * for uncaught exceptions thrown from request handlers.
      */
     @Bean
-    BugsnagMvcExceptionHandler bugsnagHandlerExceptionResolver() {
-        return new BugsnagMvcExceptionHandler(bugsnag);
+    BugsnagJavaxMvcExceptionHandler bugsnagHandlerExceptionResolver() {
+        return new BugsnagJavaxMvcExceptionHandler(bugsnag);
     }
 
     /**

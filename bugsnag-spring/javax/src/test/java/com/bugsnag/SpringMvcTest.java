@@ -13,10 +13,8 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 import com.bugsnag.HandledState.SeverityReasonType;
-
 import com.bugsnag.callbacks.Callback;
 import com.bugsnag.delivery.Delivery;
-
 import com.bugsnag.serialization.Serializer;
 import com.bugsnag.testapp.springboot.TestSpringBootApplication;
 
@@ -28,7 +26,7 @@ import org.springframework.boot.SpringBootVersion;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.boot.test.web.server.LocalServerPort;
+import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.core.SpringVersion;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -42,7 +40,7 @@ import java.util.Map;
 
 /**
  * Test that a Spring Boot application configured with the
- * {@link com.bugsnag.BugsnagSpringConfiguration} performs as expected.
+ * {@link SpringTestConfiguration} performs as expected.
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest(

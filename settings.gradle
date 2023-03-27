@@ -1,5 +1,6 @@
 include ':bugsnag',
-        ':bugsnag-spring'
+        ':bugsnag-spring',
+        ':bugsnag-spring:javax'
 
 include ':examples:simple',
         ':examples:servlet-javax',
@@ -11,3 +12,6 @@ include ':examples:simple',
 if (JavaVersion.current().isJava11Compatible()) {
     include ':examples:servlet-jakarta'
 }
+include 'bugsnag-spring:javax'
+findProject(':bugsnag-spring:javax')?.name = 'javax'
+
