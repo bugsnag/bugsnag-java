@@ -28,8 +28,6 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter'
     implementation 'org.springframework.boot:spring-boot-starter-web'
 
-    implementation 'com.fasterxml.jackson.core:jackson-annotations:2.9.1'
-    implementation 'com.fasterxml.jackson.core:jackson-databind:2.9.1'
     implementation 'com.bugsnag:bugsnag:9.9.9-test'
     implementation 'com.bugsnag:bugsnag-spring:9.9.9-test'
     implementation project(":scenarios")
