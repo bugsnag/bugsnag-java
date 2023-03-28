@@ -12,8 +12,8 @@ repositories {
 }
 
 dependencies {
-    api project(':bugsnag-spring:javax')
-    testImplementation project(':bugsnag').sourceSets.test.output
+    compileOnly project(':bugsnag-spring:javax')
+    api project(':bugsnag')
 
     compileOnly "jakarta.servlet:jakarta.servlet-api:${jakartaServletApiVersion}"
     compileOnly "org.springframework:spring-webmvc:${springVersion}"
@@ -21,9 +21,23 @@ dependencies {
     compileOnly "ch.qos.logback:logback-core:${logbackVersion}"
     compileOnly "org.slf4j:slf4j-api:${slf4jApiVersion}"
 
+    testImplementation project(':bugsnag').sourceSets.test.output
+    testImplementation project(':bugsnag-spring:javax')
+    testImplementation project(':bugsnag')
     testImplementation "junit:junit:${junitVersion}"
     testImplementation "jakarta.servlet:jakarta.servlet-api:${jakartaServletApiVersion}"
     testImplementation "org.springframework.boot:spring-boot-starter-test:${springBootVersion}"
     testImplementation "org.springframework.boot:spring-boot-starter-web:${springBootVersion}"
     testImplementation "org.mockito:mockito-core:${mockitoVersion}"
+}
+
+evaluationDependsOnChildren()
+
+tasks['jar'].mustRunAfter(project(':bugsnag-spring:javax').tasks['jar'])
+
+jar {
+    from project.sourceSets.main.allSource
+    from project(':bugsnag-spring:javax').configurations.archives.artifacts.files.collect { file ->
+        zipTree(file)
+    }
 }

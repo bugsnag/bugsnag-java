@@ -21,5 +21,7 @@ repositories {
 dependencies {
     implementation "org.springframework.boot:spring-boot-starter"
 
+    implementation project(":bugsnag")
     implementation project(":bugsnag-spring")
+    implementation project(":bugsnag-spring:javax")
 }
