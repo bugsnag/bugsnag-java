@@ -1,4 +1,5 @@
 source 'https://rubygems.org'
 
-gem 'bugsnag-maze-runner', git: 'https://github.com/bugsnag/maze-runner', tag: 'v7.10.2'
+gem 'bugsnag-maze-runner', git: 'https://github.com/bugsnag/maze-runner', branch: 'tms/uri-open'
+
 gem 'os'
