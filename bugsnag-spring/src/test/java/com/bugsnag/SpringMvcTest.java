@@ -42,7 +42,7 @@ import java.util.Map;
 
 /**
  * Test that a Spring Boot application configured with the
- * {@link com.bugsnag.BugsnagSpringConfiguration} performs as expected.
+ * {@link BugsnagSpringJakartaConfiguration} performs as expected.
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest(

@@ -23,7 +23,7 @@ import java.util.Collections;
 
 /**
  * Test that a Spring Boot application configured with the
- * {@link SpringTestConfiguration} performs as expected.
+ * {@link BugsnagSpringConfiguration} performs as expected.
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = TestSpringBootApplication.class)

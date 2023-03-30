@@ -29,7 +29,7 @@ import java.util.concurrent.ExecutionException;
 
 /**
  * Test that a Spring Boot application configured with the
- * {@link BugsnagSpringConfiguration} performs as expected.
+ * {@link BugsnagSpringJakartaConfiguration} performs as expected.
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = TestSpringBootApplication.class)

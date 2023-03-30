@@ -2,7 +2,7 @@ package com.bugsnag.testapp.springboot;
 
 import com.bugsnag.Bugsnag;
 import com.bugsnag.BugsnagAsyncExceptionHandler;
-import com.bugsnag.SpringTestConfiguration;
+import com.bugsnag.BugsnagSpringConfiguration;
 
 import org.springframework.aop.interceptor.AsyncUncaughtExceptionHandler;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +20,7 @@ import org.springframework.util.ErrorHandler;
  * that will be used for real Spring bugsnag integration.
  */
 @Configuration
-@Import(SpringTestConfiguration.class)
+@Import(BugsnagSpringConfiguration.class)
 public class TestConfiguration extends AsyncConfigurerSupport implements SchedulingConfigurer {
 
     @Autowired(required = false)

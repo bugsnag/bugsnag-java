@@ -11,16 +11,9 @@ import org.springframework.core.SpringVersion;
 
 import java.util.Map;
 
-/**
- * Configuration to test Bugsnag with Spring v5.
- */
 @Configuration
-@Import({
-        SpringBootV2Configuration.class,
-        JavaxMvcConfiguration.class,
-        ScheduledTaskConfiguration.class})
-public class SpringTestConfiguration implements InitializingBean {
-
+@Import(BugsnagImportSelector.class)
+public class BugsnagSpringConfiguration implements InitializingBean {
     @Autowired
     private Bugsnag bugsnag;
 
@@ -60,6 +53,10 @@ public class SpringTestConfiguration implements InitializingBean {
         return new ScheduledTaskBeanLocator();
     }
 
+    /**
+     * If using Logback, stop any configured appender from creating Bugsnag reports for Spring log
+     * messages as they effectively duplicate error reports for unhandled exceptions.
+     */
     @Override
     public void afterPropertiesSet() {
         try {
