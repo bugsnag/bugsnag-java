@@ -1,4 +1,4 @@
-FROM tomcat:9.0.56-jdk17-temurin
+FROM tomcat:10.1-jdk17
 WORKDIR /app
 
 RUN apt-get update && DEBIAN_FRONTEND=noninteractive \
