@@ -11,9 +11,13 @@ import org.springframework.core.SpringVersion;
 
 import java.util.Map;
 
+/**
+ * Configuration to integrate Bugsnag with Spring.
+ */
 @Configuration
 @Import(BugsnagImportSelector.class)
 public class BugsnagSpringConfiguration implements InitializingBean {
+
     @Autowired
     private Bugsnag bugsnag;
 

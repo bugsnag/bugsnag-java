@@ -12,7 +12,6 @@ class SpringBootLoadedCondition implements Condition {
     @Override
     public boolean matches(ConditionContext context,
                            AnnotatedTypeMetadata metadata) {
-
         return context.getClassLoader() != null
                 && context.getClassLoader().getResource("org/springframework/boot") != null;
     }
