@@ -22,7 +22,7 @@ class SpringBootJakartaConfiguration extends SpringBootConfiguration {
      * automatic servlet request metadata collection.
      */
     @Bean
-    @Conditional(SpringWebJakartaMvcLoadedCondition.class)
+    @Conditional(SpringWebMvcLoadedCondition.class)
     ServletListenerRegistrationBean<ServletRequestListener> listenerRegistrationBean() {
         ServletListenerRegistrationBean<ServletRequestListener> srb =
                 new ServletListenerRegistrationBean<ServletRequestListener>();

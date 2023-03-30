@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Configuration;
  * If spring-webmvc is loaded, add configuration for reporting unhandled exceptions.
  */
 @Configuration
-@Conditional(SpringWebJavaxMvcLoadedCondition.class)
+@Conditional(SpringWebMvcLoadedCondition.class)
 class JavaxMvcConfiguration implements InitializingBean {
 
     @Autowired

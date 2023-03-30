@@ -23,7 +23,7 @@ class SpringBootJavaxConfiguration extends SpringBootConfiguration {
     * automatic servlet request metadata collection.
     */
     @Bean
-    @Conditional(SpringWebJavaxMvcLoadedCondition.class)
+    @Conditional(SpringWebMvcLoadedCondition.class)
     ServletListenerRegistrationBean<ServletRequestListener> listenerRegistrationBean() {
         ServletListenerRegistrationBean<ServletRequestListener> srb =
                 new ServletListenerRegistrationBean<ServletRequestListener>();
