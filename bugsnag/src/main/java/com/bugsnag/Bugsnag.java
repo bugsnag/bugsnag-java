@@ -155,6 +155,15 @@ public class Bugsnag implements Closeable {
     }
 
     /**
+     * Get the request callback.
+     *
+     * @return the used request callback.
+     */
+    public String getRequestCallback() {
+        return config.requestCallback;
+    }
+
+    /**
      * Get the delivery to use to send sessions.
      *
      * @return the delivery to use to send sessions.
@@ -197,6 +206,15 @@ public class Bugsnag implements Closeable {
         config.delivery = delivery;
     }
 
+    /**
+     * Set which request callback to use.
+     * Accepted values are "servlet" for Java Servlet API and "jaxrs" for Jakarta RESTful Web Services
+     *
+     * @param requestCallback either "servlet" or "jaxrs"
+     */
+    public void setRequestCallback(String requestCallback) {
+        config.requestCallback = requestCallback;
+    }
 
     /**
      * Set the method of delivery for Bugsnag sessions. By default we'll

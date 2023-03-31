@@ -12,6 +12,8 @@ repositories {
 dependencies {
     compile "com.fasterxml.jackson.core:jackson-databind:2.13.3"
     compile "org.slf4j:slf4j-api:1.7.25"
+    compileOnly "org.jboss.resteasy:resteasy-core:${resteasyVersion}"
+    compileOnly "org.jboss.resteasy:resteasy-core-spi:${resteasyVersion}"
     compileOnly "javax.servlet:javax.servlet-api:${servletApiVersion}"
     compileOnly("ch.qos.logback:logback-classic:${logbackVersion}") {
         exclude group: "org.slf4j"
@@ -24,6 +26,8 @@ dependencies {
     testCompile("ch.qos.logback:logback-classic:${logbackVersion}") {
         exclude group: "org.slf4j"
     }
+    testCompile "org.jboss.resteasy:resteasy-core:${resteasyVersion}"
+    testCompile "org.jboss.resteasy:resteasy-core-spi:${resteasyVersion}"
 }
 
 task testJar(type: Jar) {
