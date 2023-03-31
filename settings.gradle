@@ -12,6 +12,3 @@ include ':examples:simple',
 if (JavaVersion.current().isJava11Compatible()) {
     include ':examples:servlet-jakarta'
 }
-include 'bugsnag-spring:javax'
-findProject(':bugsnag-spring:javax')?.name = 'javax'
-
