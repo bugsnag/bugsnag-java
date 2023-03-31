@@ -16,7 +16,7 @@ public class BugsnagConfig {
     @Value("${BUGSNAG_API_KEY}")
     private String bugsnagApiKey;
 
-    @Value("${MOCK_API_PATH}")
+    @Value("${MAZERUNNER_BASE_URL}")
     private String bugsnagEndpoint;
 
     @Value("${AUTO_CAPTURE_SESSIONS:false}")
@@ -25,7 +25,7 @@ public class BugsnagConfig {
     @Bean
     public Bugsnag bugsnag() {
         Bugsnag bugsnag = new Bugsnag(bugsnagApiKey);
-        bugsnag.setEndpoints(bugsnagEndpoint, bugsnagEndpoint);
+        bugsnag.setEndpoints(bugsnagEndpoint + "notify", bugsnagEndpoint + "sessions");
         bugsnag.setAutoCaptureSessions(autoCaptureSessions);
         bugsnag.setReleaseStage("production");
         bugsnag.setAppVersion("1.0.0");

@@ -44,6 +44,7 @@ public class TestRestController {
 
         // Flush sessions now, otherwise need to wait for sessions to be automatically flushed
         flushAllSessions();
+        LOGGER.info("Flushed all sessions");
     }
 
     @RequestMapping("/run-async-task")

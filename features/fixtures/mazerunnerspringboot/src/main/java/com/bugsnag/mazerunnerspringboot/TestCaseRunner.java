@@ -34,12 +34,13 @@ public class TestCaseRunner implements CommandLineRunner, ApplicationContextAwar
     public void run(String... args) {
         // Create and run the test case
         LOGGER.info("Creating test case");
-        Scenario scenario = testCaseForName(System.getenv("EVENT_TYPE"));
+        String type = System.getenv("EVENT_TYPE");
+        Scenario scenario = testCaseForName(type);
         if (scenario != null) {
-            LOGGER.info("running test case");
+            LOGGER.info("running test case " + type);
             scenario.run();
         } else {
-            LOGGER.error("No test case found for " + System.getenv("EVENT_TYPE"));
+            LOGGER.error("No test case found for " + type);
         }
 
         // Exit the application

@@ -3,13 +3,13 @@
 	<include resource="org/springframework/boot/logging/logback/base.xml" />
 
 	<appender name="BUGSNAG" class="com.bugsnag.BugsnagAppender">
-		<apiKey>__BUGSNAG_API_KEY__</apiKey>
+		<apiKey>a35a2a72bd230ac0aa0f52715bbdc6aa</apiKey>
         <releaseStage>production</releaseStage>
         <appVersion>1.0.0</appVersion>
 
 		<projectPackage>com.bugsnag.mazerunner</projectPackage>
 
-		<endpoint>__BUGSNAG_MOCK_PATH__</endpoint>
+		<endpoint>http://localhost:9339/notify</endpoint>
 	</appender>
 
 	<root level="INFO">

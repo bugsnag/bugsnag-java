@@ -10,7 +10,7 @@ repositories {
 }
 
 dependencies {
-    compile "com.fasterxml.jackson.core:jackson-databind:2.9.1"
+    compile "com.fasterxml.jackson.core:jackson-databind:2.13.3"
     compile "org.slf4j:slf4j-api:1.7.25"
     compileOnly "org.jboss.resteasy:resteasy-core:${resteasyVersion}"
     compileOnly "org.jboss.resteasy:resteasy-core-spi:${resteasyVersion}"
@@ -19,7 +19,7 @@ dependencies {
         exclude group: "org.slf4j"
     }
 
-    testCompile "junit:junit:4.12"
+    testCompile "junit:junit:4.13.2"
     testCompile "org.slf4j:log4j-over-slf4j:1.7.25"
     testCompile "javax.servlet:javax.servlet-api:${servletApiVersion}"
     testCompile "org.mockito:mockito-core:2.10.0"

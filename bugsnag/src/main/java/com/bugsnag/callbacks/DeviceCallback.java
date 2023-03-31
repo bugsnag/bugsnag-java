@@ -5,12 +5,18 @@ import com.bugsnag.Report;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Locale;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.FutureTask;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 public class DeviceCallback implements Callback {
 
     private static volatile String hostname;
-    private static transient volatile boolean hostnameInitialised;
+    private static volatile boolean hostnameInitialised;
     private static final Object LOCK = new Object();
+    private static final int HOSTNAME_LOOKUP_TIMEOUT = 10000;
 
     /**
      * Memoises the hostname, as lookup can be expensive
@@ -39,17 +45,42 @@ public class DeviceCallback implements Callback {
             return hostname;
         }
 
-        // Resort to dns hostname lookup
+        // Resort to dns hostname lookup with a timeout of HOSTNAME_LOOKUP_TIMEOUT,
+        // as this can potentially take a very long time to resolve
+        FutureTask<String> future = new FutureTask<String>(new Callable<String>() {
+            @Override
+            public String call() throws UnknownHostException {
+                return InetAddress.getLocalHost().getHostName();
+            }
+        });
+        Thread resolverThread = new Thread(future, "Hostname Resolver");
+        resolverThread.setDaemon(true);
+        resolverThread.start();
+
         try {
-            return InetAddress.getLocalHost().getHostName();
-        } catch (UnknownHostException ex) {
+            return future.get(HOSTNAME_LOOKUP_TIMEOUT, TimeUnit.MILLISECONDS);
+        } catch (ExecutionException ex) {
+            // Give up
+        } catch (InterruptedException ex) {
+            // Give up
+        } catch (TimeoutException ex) {
             // Give up
         }
         return null;
     }
 
+    /**
+     * Cache the hostname on a background thread to avoid blocking on initialization
+     */
     public static void initializeCache() {
-        getHostnameValue();
+        Thread hostnameLookup = new Thread("Hostname Lookup") {
+            @Override
+            public void run() {
+                getHostnameValue();
+            }
+        };
+        hostnameLookup.setDaemon(true);
+        hostnameLookup.start();
     }
 
     @Override
