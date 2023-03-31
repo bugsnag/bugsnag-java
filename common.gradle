@@ -1,5 +1,6 @@
 ext {
-    servletApiVersion = "3.1.0"
+    javaxServletApiVersion = "3.1.0"
+    jakartaServletApiVersion = "5.0.0"
     logbackVersion = "1.2.3"
 }
 

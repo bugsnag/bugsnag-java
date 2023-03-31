@@ -1,11 +1,11 @@
-package com.bugsnag.servlet;
+package com.bugsnag.servlet.jakarta;
 
 import com.bugsnag.Bugsnag;
 
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletRequestEvent;
-import javax.servlet.ServletRequestListener;
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.ServletRequestEvent;
+import jakarta.servlet.ServletRequestListener;
+import jakarta.servlet.http.HttpServletRequest;
 
 public class BugsnagServletRequestListener implements ServletRequestListener {
 
