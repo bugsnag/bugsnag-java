@@ -11,7 +11,7 @@ import org.springframework.context.annotation.Configuration;
  */
 @Configuration
 @Conditional(SpringWebMvcLoadedCondition.class)
-class MvcConfiguration implements InitializingBean {
+class JakartaMvcConfiguration implements InitializingBean {
 
     @Autowired
     private Bugsnag bugsnag;
@@ -21,8 +21,8 @@ class MvcConfiguration implements InitializingBean {
      * for uncaught exceptions thrown from request handlers.
      */
     @Bean
-    BugsnagMvcExceptionHandler bugsnagHandlerExceptionResolver() {
-        return new BugsnagMvcExceptionHandler(bugsnag);
+    BugsnagJakartaMvcExceptionHandler bugsnagHandlerExceptionResolver() {
+        return new BugsnagJakartaMvcExceptionHandler(bugsnag);
     }
 
     /**

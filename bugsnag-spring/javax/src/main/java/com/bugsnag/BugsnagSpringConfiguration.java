@@ -15,10 +15,7 @@ import java.util.Map;
  * Configuration to integrate Bugsnag with Spring.
  */
 @Configuration
-@Import({
-        SpringBootConfiguration.class,
-        MvcConfiguration.class,
-        ScheduledTaskConfiguration.class})
+@Import(BugsnagImportSelector.class)
 public class BugsnagSpringConfiguration implements InitializingBean {
 
     @Autowired
