@@ -33,7 +33,7 @@ dependencies {
 
 evaluationDependsOnChildren()
 
-tasks['jar'].mustRunAfter(project(':bugsnag-spring:javax').tasks['jar'])
+tasks['jar'].dependsOn(project(':bugsnag-spring:javax').tasks['jar'])
 
 jar {
     from project.sourceSets.main.allSource
