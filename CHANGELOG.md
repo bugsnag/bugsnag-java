@@ -1,5 +1,10 @@
 # Changelog
 
+## TBD
+
+* Bump Jackson from 2.13.3 for critical vulnerability fixes
+  [#184](https://github.com/bugsnag/bugsnag-java/pull/184)
+
 ## 3.6.4 (2022-07-12)
 
 * Support log messages that use `{}` formatting
