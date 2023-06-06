@@ -1,6 +1,6 @@
 # Changelog
 
-## TBD
+## 3.6.5 (2023-06-07)
 
 * Support Spring 6 / Spring Boot 3
   [#191](https://github.com/bugsnag/bugsnag-java/pull/191)
