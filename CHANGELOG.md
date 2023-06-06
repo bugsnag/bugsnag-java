@@ -2,6 +2,9 @@
 
 ## TBD
 
+* Support Spring 6 / Spring Boot 3
+  [#191](https://github.com/bugsnag/bugsnag-java/pull/191)
+
 * Bump Jackson from 2.13.3 for critical vulnerability fixes
   [#184](https://github.com/bugsnag/bugsnag-java/pull/184)
 
