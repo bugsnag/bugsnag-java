@@ -1,18 +1,19 @@
 ext {
-    servletApiVersion = "3.1.0"
+    javaxServletApiVersion = "3.1.0"
+    jakartaServletApiVersion = "5.0.0"
     logbackVersion = "1.2.3"
+    slf4jApiVersion = "1.7.25"
+    junitVersion = "4.13.2"
+    mockitoVersion = "5.0.0"
 }
 
 if (JavaVersion.current().isJava8Compatible()) {
     apply plugin: 'checkstyle'
 }
 
-if (project.hasProperty('releasing')) {
+if (project.hasProperty('releasing') && project.depth <= 1) {
     apply from: "../release.gradle"
 }
-
-sourceCompatibility = 1.6
-targetCompatibility = 1.6
 
 test {
     testLogging {

@@ -3,7 +3,8 @@ package com.bugsnag;
 import com.bugsnag.callbacks.AppCallback;
 import com.bugsnag.callbacks.Callback;
 import com.bugsnag.callbacks.DeviceCallback;
-import com.bugsnag.callbacks.ServletCallback;
+import com.bugsnag.callbacks.JakartaServletCallback;
+import com.bugsnag.callbacks.JavaxServletCallback;
 import com.bugsnag.delivery.AsyncHttpDelivery;
 import com.bugsnag.delivery.Delivery;
 import com.bugsnag.delivery.HttpDelivery;
@@ -57,8 +58,12 @@ public class Configuration {
         addCallback(new DeviceCallback());
         DeviceCallback.initializeCache();
 
-        if (ServletCallback.isAvailable()) {
-            addCallback(new ServletCallback());
+        if (JavaxServletCallback.isAvailable()) {
+            addCallback(new JavaxServletCallback());
+        }
+
+        if (JakartaServletCallback.isAvailable()) {
+            addCallback(new JakartaServletCallback());
         }
     }
 

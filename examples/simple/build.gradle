@@ -5,8 +5,8 @@ repositories {
 }
 
 dependencies {
-    runtime 'org.slf4j:slf4j-simple:1.+'
-    compile project(':bugsnag')
+    runtimeOnly 'org.slf4j:slf4j-simple:1.+'
+    implementation project(':bugsnag')
 }
 
 mainClassName = "com.bugsnag.example.simple.ExampleApp"

@@ -1,0 +1,29 @@
+apply plugin: 'java'
+apply plugin: 'war'
+apply plugin: 'org.gretty'
+
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath 'org.gretty:gretty:4.0.3'
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    runtimeOnly 'org.slf4j:slf4j-simple:1.7.25'
+    implementation "jakarta.servlet:jakarta.servlet-api:5.0.0"
+    implementation project(':bugsnag')
+}
+
+gretty {
+    httpPort = 8083
+    contextPath = '/'
+    jvmArgs = ['-Dorg.slf4j.simpleLogger.defaultLogLevel=DEBUG']
+}

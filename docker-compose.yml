@@ -8,7 +8,11 @@ services:
     build:
       context: .
       dockerfile: dockerfiles/Dockerfile.java-common
-  java-mazerunner:
+  java8-mazerunner:
     build:
       context: .
-      dockerfile: dockerfiles/Dockerfile.java-mazerunner
+      dockerfile: dockerfiles/Dockerfile.java8-mazerunner
+  java17-mazerunner:
+    build:
+      context: .
+      dockerfile: dockerfiles/Dockerfile.java17-mazerunner

@@ -1,4 +1,4 @@
-FROM openjdk:8
+FROM openjdk:17-jdk-slim
 WORKDIR /app
 
 # Force download of gradle zip early to avoid repeating
