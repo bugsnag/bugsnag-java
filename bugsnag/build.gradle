@@ -1,38 +1,34 @@
 plugins {
-    id "com.github.hierynomus.license" version "0.15.0"
+    id "com.github.hierynomus.license" version "0.16.1"
 }
 
 apply plugin: 'java-library'
 apply from: '../common.gradle'
+
+sourceCompatibility = 1.7
+targetCompatibility = 1.7
 
 repositories {
     mavenCentral()
 }
 
 dependencies {
-    compile "com.fasterxml.jackson.core:jackson-databind:2.13.3"
-    compile "org.slf4j:slf4j-api:1.7.25"
-    compileOnly "javax.servlet:javax.servlet-api:${servletApiVersion}"
+    api "com.fasterxml.jackson.core:jackson-databind:2.14.1"
+    api "org.slf4j:slf4j-api:${slf4jApiVersion}"
+    compileOnly "javax.servlet:javax.servlet-api:${javaxServletApiVersion}"
+    compileOnly "jakarta.servlet:jakarta.servlet-api:${jakartaServletApiVersion}"
     compileOnly("ch.qos.logback:logback-classic:${logbackVersion}") {
         exclude group: "org.slf4j"
     }
 
-    testCompile "junit:junit:4.13.2"
-    testCompile "org.slf4j:log4j-over-slf4j:1.7.25"
-    testCompile "javax.servlet:javax.servlet-api:${servletApiVersion}"
-    testCompile "org.mockito:mockito-core:2.10.0"
-    testCompile("ch.qos.logback:logback-classic:${logbackVersion}") {
+    testImplementation "junit:junit:${junitVersion}"
+    testImplementation "org.slf4j:log4j-over-slf4j:${slf4jApiVersion}"
+    testImplementation "javax.servlet:javax.servlet-api:${javaxServletApiVersion}"
+    testImplementation "jakarta.servlet:jakarta.servlet-api:${jakartaServletApiVersion}"
+    testImplementation "org.mockito:mockito-core:${mockitoVersion}"
+    testImplementation("ch.qos.logback:logback-classic:${logbackVersion}") {
         exclude group: "org.slf4j"
     }
-}
-
-task testJar(type: Jar) {
-    classifier = 'test'
-    from sourceSets.test.output
-}
-
-artifacts {
-    testRuntime testJar
 }
 
 // license checking

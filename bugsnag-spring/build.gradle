@@ -1,6 +1,6 @@
 ext {
-    springVersion = '4.3.18.RELEASE'
-    springBootVersion = '1.5.15.RELEASE'
+    springVersion = '6.0.0'
+    springBootVersion = '3.0.0'
 }
 
 apply plugin: 'java-library'
@@ -12,16 +12,32 @@ repositories {
 }
 
 dependencies {
-    compile project(':bugsnag')
-    testCompile project(path: ':bugsnag', configuration: 'testRuntime')
+    compileOnly project(':bugsnag-spring:javax')
+    api project(':bugsnag')
 
-    compileOnly "javax.servlet:javax.servlet-api:${servletApiVersion}"
+    compileOnly "jakarta.servlet:jakarta.servlet-api:${jakartaServletApiVersion}"
     compileOnly "org.springframework:spring-webmvc:${springVersion}"
     compileOnly "org.springframework.boot:spring-boot:${springBootVersion}"
     compileOnly "ch.qos.logback:logback-core:${logbackVersion}"
+    compileOnly "org.slf4j:slf4j-api:${slf4jApiVersion}"
 
-    testCompile "junit:junit:4.13.2"
-    testCompile "javax.servlet:javax.servlet-api:${servletApiVersion}"
-    testCompile "org.springframework.boot:spring-boot-starter-test:${springBootVersion}"
-    testCompile "org.springframework.boot:spring-boot-starter-web:${springBootVersion}"
+    testImplementation project(':bugsnag').sourceSets.test.output
+    testImplementation project(':bugsnag-spring:javax')
+    testImplementation project(':bugsnag')
+    testImplementation "junit:junit:${junitVersion}"
+    testImplementation "jakarta.servlet:jakarta.servlet-api:${jakartaServletApiVersion}"
+    testImplementation "org.springframework.boot:spring-boot-starter-test:${springBootVersion}"
+    testImplementation "org.springframework.boot:spring-boot-starter-web:${springBootVersion}"
+    testImplementation "org.mockito:mockito-core:${mockitoVersion}"
+}
+
+evaluationDependsOnChildren()
+
+tasks['jar'].dependsOn(project(':bugsnag-spring:javax').tasks['jar'])
+
+jar {
+    from project.sourceSets.main.allSource
+    from project(':bugsnag-spring:javax').configurations.archives.artifacts.files.collect { file ->
+        zipTree(file)
+    }
 }

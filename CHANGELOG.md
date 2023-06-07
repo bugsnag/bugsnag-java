@@ -1,5 +1,13 @@
 # Changelog
 
+## 3.7.0 (2023-06-07)
+
+* Support Spring 6 / Spring Boot 3
+  [#191](https://github.com/bugsnag/bugsnag-java/pull/191)
+
+* Bump Jackson from 2.13.3 for critical vulnerability fixes
+  [#184](https://github.com/bugsnag/bugsnag-java/pull/184)
+
 ## 3.6.4 (2022-07-12)
 
 * Support log messages that use `{}` formatting

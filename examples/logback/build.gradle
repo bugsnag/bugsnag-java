@@ -11,8 +11,8 @@ repositories {
 }
 
 dependencies {
-    compile("ch.qos.logback:logback-classic:1.2.3")
-    compile project(':bugsnag')
+    implementation "ch.qos.logback:logback-classic:1.2.3"
+    implementation project(':bugsnag')
 }
 
 mainClassName = "com.bugsnag.example.logback.cli.Application"

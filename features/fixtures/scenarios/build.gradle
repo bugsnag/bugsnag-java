@@ -12,7 +12,7 @@ repositories {
 }
 
 dependencies {
-    compile("ch.qos.logback:logback-classic:1.2.3")
-    compile("com.bugsnag:bugsnag:9.9.9-test")
+    implementation("ch.qos.logback:logback-classic:1.2.3")
+    implementation("com.bugsnag:bugsnag:9.9.9-test")
 }
 

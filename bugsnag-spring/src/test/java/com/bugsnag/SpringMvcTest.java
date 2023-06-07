@@ -25,10 +25,10 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringBootVersion;
-import org.springframework.boot.context.embedded.LocalServerPort;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.core.SpringVersion;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -42,7 +42,7 @@ import java.util.Map;
 
 /**
  * Test that a Spring Boot application configured with the
- * {@link com.bugsnag.BugsnagSpringConfiguration} performs as expected.
+ * {@link BugsnagSpringConfiguration} performs as expected.
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest(
