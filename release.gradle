@@ -1,4 +1,5 @@
 apply plugin: 'maven-publish'
+apply plugin: 'signing'
 
 archivesBaseName = project.findProperty('artifactId')
 
@@ -64,5 +65,9 @@ publishing {
                 }
             }
         }
+    }
+
+    signing {
+        sign publishing.publications
     }
 }
