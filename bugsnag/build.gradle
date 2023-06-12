@@ -39,3 +39,7 @@ license {
 downloadLicenses {
   dependencyConfiguration "compile"
 }
+
+java {
+    withJavadocJar()
+}
