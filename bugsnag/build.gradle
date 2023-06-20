@@ -5,8 +5,15 @@ plugins {
 apply plugin: 'java-library'
 apply from: '../common.gradle'
 
-sourceCompatibility = 1.7
-targetCompatibility = 1.7
+compileJava {
+    sourceCompatibility = '1.7'
+    targetCompatibility = '1.7'
+}
+
+compileTestJava {
+    sourceCompatibility = '1.7'
+    targetCompatibility = '1.7'
+}
 
 repositories {
     mavenCentral()
@@ -36,8 +43,9 @@ license {
     header rootProject.file('LICENSE')
     ignoreFailures true
 }
+
 downloadLicenses {
-  dependencyConfiguration "compile"
+    dependencyConfiguration "compile"
 }
 
 java {
