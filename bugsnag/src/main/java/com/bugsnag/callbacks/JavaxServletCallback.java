@@ -1,7 +1,7 @@
 package com.bugsnag.callbacks;
 
 import com.bugsnag.Report;
-import com.bugsnag.servlet.javax.BugsnagServletRequestListener;
+import com.bugsnag.servlet.BugsnagServletRequestListener;
 
 import java.util.Enumeration;
 import java.util.HashMap;
