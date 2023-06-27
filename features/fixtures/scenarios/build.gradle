@@ -6,8 +6,8 @@ sourceCompatibility = 1.7
 
 repositories {
     mavenCentral()
-    flatDir {
-        dirs '../libs'
+    maven {
+        url file('../libs').toURI()
     }
 }
 

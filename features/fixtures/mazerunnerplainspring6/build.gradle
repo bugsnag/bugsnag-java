@@ -6,8 +6,8 @@ group 'com.bugsnag.mazerunnerplainspring'
 
 repositories {
     mavenCentral()
-    flatDir {
-        dirs '../libs'
+    maven {
+        url file('../libs').toURI()
     }
 }
 

@@ -11,7 +11,8 @@ steps:
     plugins:
       - docker-compose#v3.7.0:
           run: java-common
-    command: './gradlew :bugsnag:assemble :bugsnag-spring:assemble'
+    artifact_paths: maven-repository.zip
+    command: 'scripts/build-test-repository.sh'
 
   - label: ':docker: Run JVM tests'
     key: 'java-jvm-tests'
@@ -23,11 +24,16 @@ steps:
 
   - label: ':docker: Mazerunner java8 tests batch 1'
     key: 'java-mazerunner-tests-1'
+    depends_on: 'java-jvm-build'
     timeout_in_minutes: 30
     plugins:
       - docker-compose#v3.7.0:
           run: java8-mazerunner
-    command: 'bundle exec maze-runner --exclude=features/[^a-m].*.feature'
+      - artifacts#v1.9.0:
+          download: "maven-repository.zip"
+    command:
+      - 'features/scripts/assemble-fixtures.sh'
+      - 'bundle exec maze-runner --exclude=features/[^a-m].*.feature'
 
   - label: ':docker: Mazerunner java8 tests batch 2'
     key: 'java-mazerunner-tests-2'
