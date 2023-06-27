@@ -41,3 +41,12 @@ jar {
         zipTree(file)
     }
 }
+
+java {
+    withJavadocJar()
+}
+
+javadoc {
+    source += project(':bugsnag-spring:javax').sourceSets.main.allSource
+    classpath += project(':bugsnag-spring:javax').sourceSets.main.compileClasspath
+}
