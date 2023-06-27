@@ -1,5 +1,12 @@
 # Changelog
 
+## TBD
+
+* Restore `BugsnagServletContainerInitializer` and `BugsnagServletRequestListener` to the `com.bugsnag.servlet` package.
+  These classes are deprecated in favour of the new `com.bugsnag.servlet.javax.` package, but are also compatible (`c.b.s.BugsnagServletRequestListener extends c.b.s.javax.BugsnagServletRequestListener`). This
+  fixes [issue #195](https://github.com/bugsnag/bugsnag-java/issues/195).
+  [#199](https://github.com/bugsnag/bugsnag-java/pull/199)
+
 ## 3.7.0 (2023-06-12)
 
 * Support Spring 6 / Spring Boot 3
