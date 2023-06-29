@@ -29,6 +29,11 @@ configurations {
 sourceSets {
     common {
         java
+        // common.compileClasspath includes the compileJavax classpath in order to give the common classes access
+        // to Spring without confusing the dependencies, including it here ensures that any use of javax.* packages
+        // in src/common will result in test failures (although not compile failures)
+        // we need the javax.* packages included here so that the compiler can type-check all the way up the hierarchy
+        // for things like "ServletRequestBindingException extends ServletException"
         compileClasspath += configurations.compileCommon + configurations.compileJavax
     }
     javax {
