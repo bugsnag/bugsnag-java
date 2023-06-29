@@ -11,7 +11,7 @@ steps:
     plugins:
       - docker-compose#v3.7.0:
           run: java-common
-    command: './gradlew :bugsnag:assemble :bugsnag-spring:javax:assemble :bugsnag-spring:assemble'
+    command: './gradlew :bugsnag:assemble :bugsnag-spring:assemble'
 
   - label: ':docker: Run JVM tests'
     key: 'java-jvm-tests'

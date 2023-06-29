@@ -1,6 +1,5 @@
 package com.bugsnag;
 
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.timeout;
 import static org.mockito.Mockito.verify;
 
@@ -21,7 +20,7 @@ class TestUtils {
         ArgumentCaptor<Notification> notificationCaptor =
                 ArgumentCaptor.forClass(Notification.class);
         verify(delivery, timeout(100).times(1)).deliver(
-                any(Serializer.class),
+                ArgumentMatchers.any(Serializer.class),
                 notificationCaptor.capture(),
                 anyMapOf(String.class, String.class));
         return notificationCaptor.getValue().getEvents().get(0);

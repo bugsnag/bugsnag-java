@@ -1,52 +1,191 @@
 ext {
-    springVersion = '6.0.0'
-    springBootVersion = '3.0.0'
+    jakartaSpringVersion = '6.0.0'
+    jakartaSpringBootVersion = '3.0.0'
+
+    javaxSpringVersion = '5.3.20'
+    javaxSpringBootVersion = '2.5.14'
 }
 
 apply plugin: 'java-library'
-
-apply from: '../common.gradle'
 
 repositories {
     mavenCentral()
 }
 
-dependencies {
-    compileOnly project(':bugsnag-spring:javax')
-    api project(':bugsnag')
-
-    compileOnly "jakarta.servlet:jakarta.servlet-api:${jakartaServletApiVersion}"
-    compileOnly "org.springframework:spring-webmvc:${springVersion}"
-    compileOnly "org.springframework.boot:spring-boot:${springBootVersion}"
-    compileOnly "ch.qos.logback:logback-core:${logbackVersion}"
-    compileOnly "org.slf4j:slf4j-api:${slf4jApiVersion}"
-
-    testImplementation project(':bugsnag').sourceSets.test.output
-    testImplementation project(':bugsnag-spring:javax')
-    testImplementation project(':bugsnag')
-    testImplementation "junit:junit:${junitVersion}"
-    testImplementation "jakarta.servlet:jakarta.servlet-api:${jakartaServletApiVersion}"
-    testImplementation "org.springframework.boot:spring-boot-starter-test:${springBootVersion}"
-    testImplementation "org.springframework.boot:spring-boot-starter-web:${springBootVersion}"
-    testImplementation "org.mockito:mockito-core:${mockitoVersion}"
-}
-
-evaluationDependsOnChildren()
-
-tasks['jar'].dependsOn(project(':bugsnag-spring:javax').tasks['jar'])
-
-jar {
-    from project.sourceSets.main.allSource
-    from project(':bugsnag-spring:javax').configurations.archives.artifacts.files.collect { file ->
-        zipTree(file)
+java {
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(8))
     }
 }
 
-java {
-    withJavadocJar()
+// We use 3 custom configurations and matching sourceSets to avoid the standard behaviours which interfere with
+// our compilation structure
+configurations {
+    compileCommon
+    compileJavax
+    compileJakarta
 }
 
-javadoc {
-    source += project(':bugsnag-spring:javax').sourceSets.main.allSource
-    classpath += project(':bugsnag-spring:javax').sourceSets.main.compileClasspath
+sourceSets {
+    common {
+        java
+        // common.compileClasspath includes the compileJavax classpath in order to give the common classes access
+        // to Spring without confusing the dependencies, including it here ensures that any use of javax.* packages
+        // in src/common will result in test failures (although not compile failures)
+        // we need the javax.* packages included here so that the compiler can type-check all the way up the hierarchy
+        // for things like "ServletRequestBindingException extends ServletException"
+        compileClasspath += configurations.compileCommon + configurations.compileJavax
+    }
+    javax {
+        java
+        compileClasspath += configurations.compileJavax + common.output + configurations.compileCommon
+    }
+    jakarta {
+        java
+        compileClasspath += configurations.compileJakarta + common.output + configurations.compileCommon
+    }
+}
+
+// test sourceSets
+sourceSets {
+    commonTest {
+        java
+    }
+    javaxTest {
+        java
+        compileClasspath += javax.output + javax.compileClasspath + commonTest.output + commonTest.runtimeClasspath + common.output
+        runtimeClasspath = compileClasspath
+    }
+    jakartaTest {
+        java
+        compileClasspath += jakarta.output + jakarta.compileClasspath + commonTest.output + commonTest.runtimeClasspath + common.output
+        runtimeClasspath = compileClasspath
+    }
+}
+
+tasks.register('sourceJar', Jar).configure {
+    from(
+            sourceSets.common.allJava,
+            sourceSets.javax.allJava,
+            sourceSets.jakarta.allJava
+    )
+}
+
+// do not move this higher - sourceJar must be registered before we apply common.gradle
+apply from: '../common.gradle'
+
+compileJava.dependsOn(compileCommonJava, compileJavaxJava, compileJakartaJava)
+
+// Separated Javax / Jakarta tests -------------------------------------------------------------------------------------
+
+compileJakartaJava {
+    // set the compiler for the `jakarta` sourceSet to Java17
+    javaCompiler.set(
+            javaToolchains.compilerFor {
+                languageVersion = JavaLanguageVersion.of(17)
+            }
+    )
+}
+
+compileJakartaTestJava {
+    // set the compiler for the `jakartaTest` sourceSet to Java17
+    javaCompiler.set(
+            javaToolchains.compilerFor {
+                languageVersion = JavaLanguageVersion.of(17)
+            }
+    )
+}
+
+testClasses.dependsOn(javaxTestClasses, jakartaTestClasses)
+
+tasks.register('testJakarta', Test) {
+    testClassesDirs = sourceSets.jakartaTest.output.classesDirs
+    classpath = sourceSets.jakartaTest.output.classesDirs + sourceSets.jakartaTest.runtimeClasspath
+    javaLauncher.set(
+            javaToolchains.launcherFor {
+                languageVersion = JavaLanguageVersion.of(17)
+            }
+    )
+
+    dependsOn(jakartaTestClasses)
+}
+
+tasks.register('testJavax', Test) {
+    testClassesDirs = sourceSets.javaxTest.output.classesDirs
+    classpath = sourceSets.javaxTest.output.classesDirs + sourceSets.javaxTest.runtimeClasspath
+    javaLauncher.set(
+            javaToolchains.launcherFor {
+                languageVersion = JavaLanguageVersion.of(8)
+            }
+    )
+
+    dependsOn(javaxTestClasses)
+}
+
+test.dependsOn(testJakarta, testJavax)
+
+dependencies {
+    compileCommon project(':bugsnag')
+
+    compileCommon "ch.qos.logback:logback-core:${logbackVersion}"
+    compileCommon "org.slf4j:slf4j-api:${slf4jApiVersion}"
+
+    compileJavax "javax.servlet:javax.servlet-api:${javaxServletApiVersion}"
+    compileJavax "org.springframework:spring-webmvc:${javaxSpringVersion}"
+    compileJavax "org.springframework.boot:spring-boot:${javaxSpringBootVersion}"
+
+    compileJakarta "jakarta.servlet:jakarta.servlet-api:${jakartaServletApiVersion}"
+    compileJakarta "org.springframework:spring-webmvc:${jakartaSpringVersion}"
+    compileJakarta "org.springframework.boot:spring-boot:${jakartaSpringBootVersion}"
+
+    commonTestImplementation project(':bugsnag').sourceSets.test.output
+    commonTestImplementation project(':bugsnag')
+
+    commonTestImplementation "junit:junit:${junitVersion}"
+
+    commonTestCompileOnly "org.mockito:mockito-core:2.10.0"
+
+    jakartaTestImplementation "org.mockito:mockito-core:${mockitoVersion}"
+    jakartaTestImplementation "jakarta.servlet:jakarta.servlet-api:${jakartaServletApiVersion}"
+    jakartaTestImplementation "org.springframework.boot:spring-boot-starter-test:${jakartaSpringBootVersion}"
+    jakartaTestImplementation "org.springframework.boot:spring-boot-starter-web:${jakartaSpringBootVersion}"
+
+    javaxTestImplementation "org.mockito:mockito-core:2.10.0"
+    javaxTestImplementation "javax.servlet:javax.servlet-api:${javaxServletApiVersion}"
+    javaxTestImplementation "org.springframework.boot:spring-boot-starter-test:${javaxSpringBootVersion}"
+    javaxTestImplementation "org.springframework.boot:spring-boot-starter-web:${javaxSpringBootVersion}"
+}
+
+// here is where we merge all of the class outputs into the default classes directory doing this as its own step avoids
+// circular dependencies between the sourceSets and their output directories (if they all use 'main.output.classesDirs'
+// then jakarta+javax both depend on it as well)
+tasks.register('mergeClasses', Copy) {
+    from sourceSets.common.output.classesDirs
+    from sourceSets.jakarta.output.classesDirs
+    from sourceSets.javax.output.classesDirs
+
+    into sourceSets.main.output.classesDirs.asPath
+}
+
+classes.dependsOn('mergeClasses')
+
+if (project.hasProperty('releasing')) {
+    publishing {
+        publications {
+            Publication(MavenPublication) {
+                // this is vital: we use the version details from the "javax" side of the project
+                // this ensures that Gradle considers that as the baseline set of required versions
+                // allowing old projects that still use Java8 and the javax.servlet packages to use
+                // bugsnag-java without any secondary artifacts
+                versionMapping {
+                    usage('java-api') {
+                        fromResolutionOf('compileCommon')
+                    }
+                    usage('java-runtime') {
+                        fromResolutionOf('compileCommon')
+                    }
+                }
+            }
+        }
+    }
 }

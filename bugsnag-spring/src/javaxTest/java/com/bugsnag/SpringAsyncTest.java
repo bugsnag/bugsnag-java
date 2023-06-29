@@ -1,6 +1,5 @@
 package com.bugsnag;
 
-import static com.bugsnag.TestUtils.verifyAndGetReport;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
@@ -12,6 +11,7 @@ import com.bugsnag.delivery.Delivery;
 import com.bugsnag.testapp.springboot.AsyncService;
 import com.bugsnag.testapp.springboot.TestSpringBootApplication;
 
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -50,14 +50,14 @@ public class SpringAsyncTest {
     public void bugsnagNotifyWhenAsyncVoidReturnTypeException() {
         asyncService.throwExceptionVoid();
 
-        Report report = verifyAndGetReport(delivery);
+        Report report = TestUtils.verifyAndGetReport(delivery);
 
         // Assert that the exception was detected correctly
         assertEquals("Async void test", report.getExceptionMessage());
         assertEquals("java.lang.RuntimeException", report.getExceptionName());
 
         // Assert that the severity, severity reason and unhandled values are correct
-        assertEquals(Severity.ERROR.getValue(), report.getSeverity());
+        Assert.assertEquals(Severity.ERROR.getValue(), report.getSeverity());
         assertEquals(
                 SeverityReasonType.REASON_UNHANDLED_EXCEPTION_MIDDLEWARE.toString(),
                 report.getSeverityReason().getType());
@@ -71,7 +71,7 @@ public class SpringAsyncTest {
     public void bugsnagNotifyWhenAsyncFutureReturnTypeException() {
         asyncService.throwExceptionFuture();
 
-        Report report = verifyAndGetReport(delivery);
+        Report report = TestUtils.verifyAndGetReport(delivery);
 
         // Assert that the exception was detected correctly
         assertEquals("Async future test", report.getExceptionMessage());

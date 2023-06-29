@@ -7,6 +7,9 @@
   fixes [issue #195](https://github.com/bugsnag/bugsnag-java/issues/195).
   [#199](https://github.com/bugsnag/bugsnag-java/pull/199)
 
+* Corrected JVM version requirements for Gradle projects (fixing [issue 196](https://github.com/bugsnag/bugsnag-java/issues/196))
+  [#197](https://github.com/bugsnag/bugsnag-java/pull/197)
+
 ## 3.7.0 (2023-06-12)
 
 * Support Spring 6 / Spring Boot 3
