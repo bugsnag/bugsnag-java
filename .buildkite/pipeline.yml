@@ -50,17 +50,26 @@ steps:
 
   - label: ':docker: Mazerunner java17 tests batch 1'
     key: 'java-mazerunner-tests-3'
+    depends_on: 'java-jvm-build'
     timeout_in_minutes: 30
     plugins:
       - docker-compose#v3.7.0:
           run: java17-mazerunner
-    command: 'bundle exec maze-runner --exclude=features/[^a-m].*.feature'
+      - artifacts#v1.9.0:
+          download: "maven-repository.zip"
+    command:
+      - 'features/scripts/assemble-fixtures.sh'
+      - 'bundle exec maze-runner --exclude=features/[^a-m].*.feature'
 
   - label: ':docker: Mazerunner java17 tests batch 2'
     key: 'java-mazerunner-tests-4'
+    depends_on: 'java-jvm-build'
     timeout_in_minutes: 30
     plugins:
       - docker-compose#v3.7.0:
-          pull: java17-mazerunner
           run: java17-mazerunner
-    command: 'bundle exec maze-runner --exclude=features/[^n-z].*.feature'
+      - artifacts#v1.9.0:
+          download: "maven-repository.zip"
+    command:
+      - 'features/scripts/assemble-fixtures.sh'
+      - 'bundle exec maze-runner --exclude=features/[^n-z].*.feature'
