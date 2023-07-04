@@ -2,7 +2,7 @@ FROM tomcat:10-jdk17-openjdk-slim
 WORKDIR /app
 
 RUN apt-get update && DEBIAN_FRONTEND=noninteractive \
-    apt-get install -y -q docker-compose bundler libcurl4-openssl-dev
+    apt-get install -y -q docker-compose bundler libcurl4-openssl-dev unzip
 
 # Force download of gradle zip early to avoid repeating
 # if Docker cache is invalidated by branch changes.

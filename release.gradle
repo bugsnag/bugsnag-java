@@ -21,6 +21,11 @@ publishing {
                 password = project.hasProperty("NEXUS_PASSWORD") ? "$NEXUS_PASSWORD" : System.getenv("NEXUS_PASSWORD")
             }
         }
+
+        maven {
+            name 'test'
+            url rootProject.file('build/repository').toURI().toString()
+        }
     }
     
     publications {
