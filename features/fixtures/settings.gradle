@@ -3,11 +3,7 @@ include ':mazerunner',
         ':mazerunnerspringboot',
         ':scenarios'
 
-try {
-    if (JavaVersion.current() >= JavaVersion.VERSION_17) {
-        include ':mazerunnerspringboot3',
-                ':mazerunnerplainspring6'
-    }
-} catch (ignored) {
-    // ignore any errors, they are almost always Gradle / JVM version issues
+if (JavaVersion.current() >= JavaVersion.VERSION_17) {
+    include ':mazerunnerspringboot3',
+            ':mazerunnerplainspring6'
 }

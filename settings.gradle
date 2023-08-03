@@ -1,5 +1,6 @@
 include ':bugsnag',
-        ':bugsnag-spring'
+        ':bugsnag-spring',
+        ':bugsnag-spring:javax'
 
 include ':examples:simple',
         ':examples:servlet-javax',
