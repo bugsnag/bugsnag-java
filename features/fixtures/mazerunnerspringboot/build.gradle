@@ -17,12 +17,12 @@ apply plugin: 'io.spring.dependency-management'
 group 'com.bugsnag.mazerunnerspringboot'
 version '1.0-SNAPSHOT'
 
-sourceCompatibility = 1.7
+sourceCompatibility = '1.8'
 
 repositories {
     mavenCentral()
-    flatDir {
-        dirs '../libs'
+    maven {
+        url file('../libs').toURI()
     }
 }
 

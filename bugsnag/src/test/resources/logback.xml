@@ -6,7 +6,6 @@
         <appVersion>1.0.1</appVersion>
 
         <appType>gradleTask</appType>
-        <autoCaptureSessions>false</autoCaptureSessions>
 
         <filteredProperty>password</filteredProperty>
         <filteredProperty>credit_card_number</filteredProperty>

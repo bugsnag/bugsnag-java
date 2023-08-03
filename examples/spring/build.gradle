@@ -15,6 +15,7 @@ apply plugin: 'org.springframework.boot'
 apply plugin: 'io.spring.dependency-management'
 
 repositories {
+    mavenLocal()
     mavenCentral()
 }
 
@@ -23,5 +24,4 @@ dependencies {
 
     implementation project(":bugsnag")
     implementation project(":bugsnag-spring")
-    implementation project(":bugsnag-spring:javax")
 }

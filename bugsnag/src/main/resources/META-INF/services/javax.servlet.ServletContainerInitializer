@@ -1,1 +1,1 @@
-com.bugsnag.servlet.javax.BugsnagServletContainerInitializer
+com.bugsnag.servlet.BugsnagServletContainerInitializer

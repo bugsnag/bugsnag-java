@@ -18,6 +18,7 @@ import com.bugsnag.delivery.Delivery;
 import com.bugsnag.serialization.Serializer;
 import com.bugsnag.testapp.springboot.TestSpringBootApplication;
 
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -88,7 +89,7 @@ public class SpringMvcTest {
         assertEquals("java.lang.RuntimeException", report.getExceptionName());
 
         // Assert that the severity, severity reason and unhandled values are correct
-        assertEquals(Severity.ERROR.getValue(), report.getSeverity());
+        Assert.assertEquals(Severity.ERROR.getValue(), report.getSeverity());
         assertEquals(
                 SeverityReasonType.REASON_UNHANDLED_EXCEPTION_MIDDLEWARE.toString(),
                 report.getSeverityReason().getType());
