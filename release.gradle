@@ -11,6 +11,7 @@ publishing {
 
     repositories {
         maven {
+            name = "Sonatype"
             if (rootProject.version.contains("SNAPSHOT")) {
                 url "https://oss.sonatype.org/content/repositories/snapshots/"
             } else {
