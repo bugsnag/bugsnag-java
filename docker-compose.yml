@@ -8,14 +8,10 @@ services:
     build:
       context: .
       dockerfile: dockerfiles/Dockerfile.java-common
-    volumes:
-      - .:/app
   java8-mazerunner:
     build:
       context: .
       dockerfile: dockerfiles/Dockerfile.java8-mazerunner
-    volumes:
-      - .:/app
   java17-mazerunner:
     build:
       context: .

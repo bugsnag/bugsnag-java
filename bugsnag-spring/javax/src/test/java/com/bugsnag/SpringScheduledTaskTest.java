@@ -1,5 +1,6 @@
 package com.bugsnag;
 
+import static com.bugsnag.TestUtils.verifyAndGetReport;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
@@ -12,7 +13,6 @@ import com.bugsnag.HandledState.SeverityReasonType;
 import com.bugsnag.delivery.Delivery;
 import com.bugsnag.testapp.springboot.TestSpringBootApplication;
 
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -70,14 +70,14 @@ public class SpringScheduledTaskTest {
         // Run the task now and wait for it to finish
         scheduler.submit(exampleRunnable).get();
 
-        Report report = TestUtils.verifyAndGetReport(delivery);
+        Report report = verifyAndGetReport(delivery);
 
         // Assert that the exception was detected correctly
         assertEquals("Scheduled test", report.getExceptionMessage());
         assertEquals("java.lang.RuntimeException", report.getExceptionName());
 
         // Assert that the severity, severity reason and unhandled values are correct
-        Assert.assertEquals(Severity.ERROR.getValue(), report.getSeverity());
+        assertEquals(Severity.ERROR.getValue(), report.getSeverity());
         assertEquals(
                 SeverityReasonType.REASON_UNHANDLED_EXCEPTION_MIDDLEWARE.toString(),
                 report.getSeverityReason().getType());

@@ -5,6 +5,17 @@ buildscript {
             url = uri("https://plugins.gradle.org/m2/")
         }
     }
+    dependencies {
+        if (project.hasProperty('releasing')) {
+            classpath 'io.codearte.gradle.nexus:gradle-nexus-staging-plugin:0.30.0'
+            classpath 'net.researchgate:gradle-release:3.0.2'
+        }
+    }
+}
+
+// This can only be applied in root project, see https://github.com/Codearte/gradle-nexus-staging-plugin/issues/47
+if (project.hasProperty('releasing')) {
+    apply plugin: 'io.codearte.nexus-staging'
 }
 
 gradle.projectsEvaluated {

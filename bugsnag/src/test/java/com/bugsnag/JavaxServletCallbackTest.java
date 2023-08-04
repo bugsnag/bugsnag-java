@@ -7,7 +7,7 @@ import static org.mockito.Mockito.when;
 
 import com.bugsnag.callbacks.JavaxServletCallback;
 
-import com.bugsnag.servlet.BugsnagServletRequestListener;
+import com.bugsnag.servlet.javax.BugsnagServletRequestListener;
 
 import org.junit.After;
 import org.junit.Before;

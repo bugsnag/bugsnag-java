@@ -8,12 +8,6 @@ apply plugin: 'java-library'
 
 apply from: '../../common.gradle'
 
-java {
-    toolchain {
-        languageVersion = JavaLanguageVersion.of(8)
-    }
-}
-
 compileJava {
     sourceCompatibility = '1.8'
     targetCompatibility = '1.8'
