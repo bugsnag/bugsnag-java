@@ -118,14 +118,16 @@ To start a release:
     - [ ] Update the version number and date in the changelog
     - [ ] Inspect the updated CHANGELOG, and version files to ensure they are correct
 - Commit the changes with the release tag as the commit message (e.g. v4.0.0)
-- make a PR from your release branch to `master` entitled `Release vX.Y.Z`
+- Create a release build and upload to the sonatype staging repository:
+    - `./gradlew -Preleasing=true clean publishAllPublicationsToSonatypeRepository`
+    - Verify that the artefacts are uploaded to sonatype - ensure that JARs, POMs and JAVADOCs are present for each module.
+    - Test the Sonatype artefacts in the example app by adding the newly created 'combugsnag-XXXX' repository to the build.gradle: maven {url "https://oss.sonatype.org/service/local/repositories/combugsnag-XXXX/content/"}
+- Once you are happy, make a PR from your release branch to `master` entitled `Release vX.Y.Z`
 - Get the release PR reviewed – all code changes should have been reviewed already, this should be a review of the integration of all changes to be shipped and the changelog
 - Once merged:
     - Pull the latest changes (checking out `master` if necessary)
     - Create a release build and upload to sonatype:
         - `./gradlew -Preleasing=true clean publishAllPublicationsToSonatypeRepository`
-        - Verify that the artefacts are uploaded to sonatype.
-        - Test the Sonatype artefacts in the example app by adding the newly created 'combugsnag-XXXX' repository to the build.gradle: maven {url "https://oss.sonatype.org/service/local/repositories/combugsnag-XXXX/content/"}
     - Release to GitHub:
         - [ ] Create *and tag* the release from `master` on [GitHub Releases](https://github.com/bugsnag/bugsnag-android/releases), attaching the changelog entry and build artifacts
     - Checkout `master` and pull the latest changes
