@@ -18,6 +18,10 @@
 * Bump Jackson from 2.13.3 for critical vulnerability fixes
   [#184](https://github.com/bugsnag/bugsnag-java/pull/184)
 
+### Known Issues
+
+* v3.7.0 of `bugsnag-spring` declares the wrong jdk version as a dependency, meaning it is incompatible with Java < 17. If you are using earlier versions use v3.6.4.
+
 ## 3.6.4 (2022-07-12)
 
 * Support log messages that use `{}` formatting
