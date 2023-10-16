@@ -157,6 +157,13 @@ dependencies {
     javaxTestImplementation "org.springframework.boot:spring-boot-starter-web:${javaxSpringBootVersion}"
 }
 
+dependencies {
+    // ensure that the published .pom file includes a dependency on com.bugsnag:bugsnag
+    // this 'api' dependency has no impact on the compilation of this projects source,
+    // so we keep it in it's own dependencies block
+    api project(':bugsnag')
+}
+
 // here is where we merge all of the class outputs into the default classes directory doing this as its own step avoids
 // circular dependencies between the sourceSets and their output directories (if they all use 'main.output.classesDirs'
 // then jakarta+javax both depend on it as well)
