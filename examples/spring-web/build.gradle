@@ -23,5 +23,6 @@ dependencies {
 
     implementation project(":bugsnag")
     implementation project(":bugsnag-spring")
+    implementation project(":bugsnag-spring:javax")
 }
 

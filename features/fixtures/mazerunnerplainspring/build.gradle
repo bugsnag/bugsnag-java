@@ -4,12 +4,12 @@ plugins {
 
 group 'com.bugsnag.mazerunnerplainspring'
 
-sourceCompatibility = '1.8'
+sourceCompatibility = 1.7
 
 repositories {
     mavenCentral()
-    maven {
-        url file('../libs').toURI()
+    flatDir {
+        dirs '../libs'
     }
 }
 
