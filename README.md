@@ -1,6 +1,6 @@
 # Bugsnag exception reporter for Java
 [![Documentation](https://img.shields.io/badge/docs-latest-blue.svg)](https://docs.bugsnag.com/platforms/java)
-[![Build status](https://travis-ci.org/bugsnag/bugsnag-java.svg?branch=master)](https://travis-ci.org/bugsnag/bugsnag-java)
+[![Build status](https://badge.buildkite.com/de087a23152718c7d33b0ae7f566a940a92fb9d92becdb61a3.svg?branch=main)](https://buildkite.com/bugsnag/bugsnag-java)
 
 The Bugsnag exception reporter for Java automatically detects and reports errors and exceptions in your Java code. Learn more about [reporting Java exceptions](https://www.bugsnag.com/platforms/java/) with Bugsnag.
 
