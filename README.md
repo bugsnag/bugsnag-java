@@ -35,7 +35,7 @@ The Bugsnag exception reporter for Java automatically detects and reports errors
 ## Contributing
 
 All contributors are welcome! For information on how to build, test, and release
-`bugsnag-java`, see our [contributing guide](https://github.com/bugsnag/bugsnag-java/blob/master/CONTRIBUTING.md).
+`bugsnag-java`, see our [contributing guide](https://github.com/bugsnag/bugsnag-java/blob/main/CONTRIBUTING.md).
 
 ## License
 
