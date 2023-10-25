@@ -2,12 +2,12 @@ apply plugin: 'java'
 
 group 'com.bugsnag.mazerunner'
 
-sourceCompatibility = 1.7
+sourceCompatibility = '1.8'
 
 repositories {
     mavenCentral()
-    flatDir {
-        dirs '../libs'
+    maven {
+        url file('../libs').toURI()
     }
 }
 

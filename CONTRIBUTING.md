@@ -82,11 +82,6 @@ Create a Sonatype account:
 1. Ask an existing contributor (likely Simon) to confirm in the ticket
 1. Wait for Sonatype them to confirm the approval
 
-Create a [Bintray](https://bintray.com) account:
-
-1. Create an account
-1. Request access to the [Bugsnag organization](https://bintray.com/bugsnag)
-
 ### 2. Configure the prerequisites
 
 1. Create your [PGP Signatures](http://central.sonatype.org/pages/working-with-pgp-signatures.html)
@@ -99,10 +94,6 @@ Create a [Bintray](https://bintray.com) account:
 
    nexusUsername=your-sonatype-username
    nexusPassword=your-sonatype-password
-
-   # Your credentials for https://bintray.com
-   bintray_user=your-bintray-username
-   bintray_api_key=your-bintray-api-key
    ```
 
 ### 3. Making a release
@@ -111,30 +102,45 @@ Create a [Bintray](https://bintray.com) account:
 - [ ] Does the build pass on the CI server?
 - [ ] Are all Docs PRs ready to go?
 - [ ] Has all new functionality been manually tested on a release build?
-  - [ ] Ensure the example app sends an unhandled error
-  - [ ] Ensure the example app sends a handled error
+    - [ ] Ensure the example app sends an unhandled error
+    - [ ] Ensure the example app sends a handled error
 - [ ] Have the installation instructions been updated on the [dashboard](https://github.com/bugsnag/bugsnag-website/tree/master/app/views/dashboard/projects/install) as well as the [docs site](https://github.com/bugsnag/docs.bugsnag.com)?
 - [ ] Do the installation instructions work for a manual integration?
 
 #### Making the release
-1. Merge any remaining PRs to master, ensuring the commit message matches the release tag (e.g. v4.0.0)
-1. Update the CHANGELOG.md file with any changes
-1. Update the version number by running `make VERSION=[number] bump`
-1. Commit the changes
-1. Create a release build:
-   * `./gradlew -Preleasing=true clean release`
-     - enter the release version (e.g. `1.2.0`)
-     - accept the default development version
-1. Create a release in GitHub, attaching the changelog entry and build artifacts
-1. Upload the archives to Sonatype Nexus and Bintray:
-   * `./gradlew -Preleasing=true uploadArchives bintrayUpload`
-1. "Promote" the build on Maven Central:
-   * `./gradlew -Preleasing=true closeAndReleaseRepository`
-1. Update the documentation (integration guide, quick start):
-   * Update the version numbers of the dependencies listed in the manual
-     integration guide.
-   * For a major version change, update the version numbers in the integration
-     instructions on docs.bugsnag.com and the quick start guides on the website.
+To start a release:
+
+- decide on a version number
+- create a new release branch from `next` with the version number in the branch name
+  `git checkout -b release/vX.Y.Z`
+- Pull the release branch and update it locally:
+    - [ ] Update the version number with `make VERSION=[number] bump`
+    - [ ] Update the version number and date in the changelog
+    - [ ] Inspect the updated CHANGELOG, and version files to ensure they are correct
+- Commit the changes with the release tag as the commit message (e.g. v4.0.0)
+- Create a release build and upload to the sonatype staging repository:
+    - `./gradlew -Preleasing=true clean publishAllPublicationsToSonatypeRepository`
+    - Verify that the artefacts are uploaded to sonatype - ensure that JARs, POMs and JAVADOCs are present for each module.
+    - Test the Sonatype artefacts in the example app by adding the newly created 'combugsnag-XXXX' repository to the build.gradle: maven {url "https://oss.sonatype.org/service/local/repositories/combugsnag-XXXX/content/"}
+- Once you are happy, make a PR from your release branch to `master` entitled `Release vX.Y.Z`
+- Get the release PR reviewed – all code changes should have been reviewed already, this should be a review of the integration of all changes to be shipped and the changelog
+- Once merged:
+    - Pull the latest changes (checking out `master` if necessary)
+    - Create a release build and upload to sonatype:
+        - `./gradlew -Preleasing=true clean publishAllPublicationsToSonatypeRepository`
+    - Release to GitHub:
+        - [ ] Create *and tag* the release from `master` on [GitHub Releases](https://github.com/bugsnag/bugsnag-android/releases), attaching the changelog entry and build artifacts
+    - Checkout `master` and pull the latest changes
+    - "Promote" the release build on Maven Central:
+        - Go to the [sonatype open source dashboard](https://oss.sonatype.org/index.html#stagingRepositories)
+        - Click the search box at the top right, and type “com.bugsnag”
+        - Select the com.bugsnag staging repository
+        - Ensure that JARs, POMs and JAVADOCs are present for each module
+        - Click the “close” button in the toolbar, no message
+        - Click the “refresh” button
+        - Select the com.bugsnag closed repository
+        - Click the “release” button in the toolbar
+    - Merge outstanding docs PRs related to this release
 
 #### Post-release Checklist
 - [ ] Have all Docs PRs been merged?

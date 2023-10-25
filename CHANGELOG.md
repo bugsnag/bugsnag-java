@@ -1,12 +1,26 @@
 # Changelog
 
-## 3.7.0 (2023-06-07)
+## 3.7.1 (2023-10-25)
+
+* Restore `BugsnagServletContainerInitializer` and `BugsnagServletRequestListener` to the `com.bugsnag.servlet` package.
+  These classes are deprecated in favour of the new `com.bugsnag.servlet.javax.` package, but are also compatible (`c.b.s.BugsnagServletRequestListener extends c.b.s.javax.BugsnagServletRequestListener`). This
+  fixes [issue #195](https://github.com/bugsnag/bugsnag-java/issues/195).
+  [#199](https://github.com/bugsnag/bugsnag-java/pull/199)
+
+* Corrected JVM version requirements for Gradle projects (fixing [issue 196](https://github.com/bugsnag/bugsnag-java/issues/196))
+  [#197](https://github.com/bugsnag/bugsnag-java/pull/197)
+
+## 3.7.0 (2023-06-12)
 
 * Support Spring 6 / Spring Boot 3
   [#191](https://github.com/bugsnag/bugsnag-java/pull/191)
 
 * Bump Jackson from 2.13.3 for critical vulnerability fixes
   [#184](https://github.com/bugsnag/bugsnag-java/pull/184)
+
+### Known Issues
+
+* v3.7.0 of `bugsnag-spring` declares the wrong jdk version as a dependency, meaning it is incompatible with Java < 17. If you are using earlier versions use v3.6.4.
 
 ## 3.6.4 (2022-07-12)
 
