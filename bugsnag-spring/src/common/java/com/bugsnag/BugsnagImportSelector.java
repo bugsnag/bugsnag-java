@@ -44,8 +44,7 @@ public class BugsnagImportSelector implements ImportSelector {
 
         if (firstDot == -1) {
             majorVersion = version;
-        }
-        else{
+        } else {
             majorVersion = version.substring(0, firstDot);
         }
 
