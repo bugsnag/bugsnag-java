@@ -40,11 +40,15 @@ public class BugsnagImportSelector implements ImportSelector {
             return 0;
         }
         int firstDot = version.indexOf(".");
+        String majorVersion;
+
         if (firstDot == -1) {
-            return 0;
+            majorVersion = version;
+        }
+        else{
+            majorVersion = version.substring(0, firstDot);
         }
 
-        String majorVersion = version.substring(0, firstDot);
         try {
             return Integer.parseInt(majorVersion);
         } catch (NumberFormatException nfe) {
