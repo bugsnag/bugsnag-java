@@ -1,5 +1,12 @@
 # Changelog
 
+## TBD 
+
+* Update `BugsnagImportSelector` to allow major versions that do not have a minor version.
+  fixes [issue #211](https://github.com/bugsnag/bugsnag-java/issues/211).
+  [#]()
+
+
 ## 3.7.1 (2023-10-25)
 
 * Restore `BugsnagServletContainerInitializer` and `BugsnagServletRequestListener` to the `com.bugsnag.servlet` package.
