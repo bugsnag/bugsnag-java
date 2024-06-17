@@ -43,7 +43,7 @@ public class Report {
         this.exception = new Exception(config, throwable);
         this.handledState = handledState;
         this.severity = handledState.getOriginalSeverity();
-        if(this.severity == null) {
+        if (this.severity == null) {
             this.severity = Severity.ERROR;
         }
         diagnostics = new Diagnostics(this.config);
@@ -284,7 +284,7 @@ public class Report {
      * @return the modified report
      */
     public Report setSeverity(Severity severity) {
-        if(severity == null)
+        if (severity == null)
         {
             throw new IllegalArgumentException("Severity should not be set to a null value.");
         }
