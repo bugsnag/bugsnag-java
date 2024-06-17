@@ -284,8 +284,7 @@ public class Report {
      * @return the modified report
      */
     public Report setSeverity(Severity severity) {
-        if (severity == null)
-        {
+        if (severity == null) {
             throw new IllegalArgumentException("Severity should not be set to a null value.");
         }
         this.severity = severity;
