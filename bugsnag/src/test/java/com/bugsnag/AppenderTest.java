@@ -144,10 +144,10 @@ public class AppenderTest {
         assertEquals("gradleTask", config.appType);
         assertFalse(config.shouldAutoCaptureSessions());
 
-        assertEquals(2, config.filters.length);
-        ArrayList<String> filters = new ArrayList<String>(Arrays.asList(config.filters));
-        assertTrue(filters.contains("password"));
-        assertTrue(filters.contains("credit_card_number"));
+        assertEquals(2, config.redactedKeys.length);
+        ArrayList<String> redactedKeys = new ArrayList<String>(Arrays.asList(config.redactedKeys));
+        assertTrue(redactedKeys.contains("password"));
+        assertTrue(redactedKeys.contains("credit_card_number"));
 
         assertEquals(2, config.ignoreClasses.length);
         ArrayList<String> ignoreClasses
@@ -274,15 +274,15 @@ public class AppenderTest {
     }
 
     @Test
-    public void testFilters() {
+    public void testRedactedKeys() {
 
-        // Add some meta data which should be filtered by key name
+        // Add some meta data which should be redacted by key name
         Bugsnag.addThreadMetaData("myTab", "password", "password value");
         Bugsnag.addThreadMetaData("myTab", "credit_card_number", "card number");
-        Bugsnag.addThreadMetaData("myTab", "mysecret", "not filtered");
+        Bugsnag.addThreadMetaData("myTab", "mysecret", "not redacted");
 
         // Send a log message
-        LOGGER.warn("Exception with filtered meta data", new RuntimeException("test"));
+        LOGGER.warn("Exception with redacted meta data", new RuntimeException("test"));
 
         // Check that a report was sent to Bugsnag
         assertEquals(1, delivery.getNotifications().size());
@@ -291,9 +291,9 @@ public class AppenderTest {
         assertTrue(notification.getEvents().get(0).getMetaData().containsKey("myTab"));
         Map<String, Object> myTab = getMetaDataMap(notification, "myTab");
 
-        assertEquals("[FILTERED]", myTab.get("password"));
-        assertEquals("[FILTERED]", myTab.get("credit_card_number"));
-        assertEquals("not filtered", myTab.get("mysecret"));
+        assertEquals("[REDACTED]", myTab.get("password"));
+        assertEquals("[REDACTED]", myTab.get("credit_card_number"));
+        assertEquals("not redacted", myTab.get("mysecret"));
     }
 
     @Test
@@ -316,7 +316,7 @@ public class AppenderTest {
         });
 
         // Send a log message
-        LOGGER.warn("Exception with filtered meta data", new RuntimeException("test"));
+        LOGGER.warn("Exception with redacted meta data", new RuntimeException("test"));
 
         // Check that a report was sent to Bugsnag
         assertEquals(1, delivery.getNotifications().size());
