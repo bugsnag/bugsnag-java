@@ -2,7 +2,7 @@ package com.bugsnag;
 
 import com.bugsnag.serialization.Expose;
 
-import com.bugsnag.util.FilteredMap;
+import com.bugsnag.util.RedactedMap;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -126,7 +126,7 @@ public class Report {
 
     @Expose
     public Map<String, Object> getMetaData() {
-        return new FilteredMap(diagnostics.metaData, Arrays.asList(config.filters));
+        return new RedactedMap(diagnostics.metaData, Arrays.asList(config.redactedKeys));
     }
 
     @Expose
