@@ -5,11 +5,11 @@ import com.bugsnag.Report;
 import com.bugsnag.callbacks.Callback;
 
 /**
- * Sends a handled exception to Bugsnag, which contains metadata that should be filtered
+ * Sends a handled exception to Bugsnag, which contains metadata that should be redacted
  */
-public class AutoFilterScenario extends Scenario {
+public class AutoRedactedScenario extends Scenario {
 
-    public AutoFilterScenario(Bugsnag bugsnag) {
+    public AutoRedactedScenario(Bugsnag bugsnag) {
         super(bugsnag);
     }
 
