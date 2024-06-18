@@ -49,7 +49,7 @@ public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
     private String endpoint;
 
     /** Property names that should be redacted out before sending to Bugsnag servers. */
-    private Set<String> redactedProperties = new HashSet<String>();
+    private Set<String> redactedKeys = new HashSet<String>();
 
     /** Exception classes to be ignored. */
     private Set<String> ignoredClasses = new HashSet<String>();
@@ -254,8 +254,8 @@ public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
             bugsnag.setTimeout(timeout);
         }
 
-        if (redactedProperties.size() > 0) {
-            bugsnag.setRedactedKeys(redactedProperties.toArray(new String[0]));
+        if (redactedKeys.size() > 0) {
+            bugsnag.setRedactedKeys(redactedKeys.toArray(new String[0]));
         }
 
         bugsnag.setIgnoreClasses(ignoredClasses.toArray(new String[0]));
@@ -376,22 +376,22 @@ public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
     /**
      * @see Bugsnag#setRedactedKeys(String...)
      */
-    public void setRedactedProperty(String redactedKey) {
-        this.redactedProperties.add(redactedKey);
+    public void setRedactedKey(String redactedKey) {
+        this.redactedKeys.add(redactedKey);
 
         if (bugsnag != null) {
-            bugsnag.setRedactedKeys(this.redactedProperties.toArray(new String[0]));
+            bugsnag.setRedactedKeys(this.redactedKeys.toArray(new String[0]));
         }
     }
 
     /**
      * @see Bugsnag#setRedactedKeys(String...)
      */
-    public void setRedactedProperties(String redactedKeys) {
-        this.redactedProperties.addAll(split(redactedKeys));
+    public void setRedactedKeys(String redactedKeys) {
+        this.redactedKeys.addAll(split(redactedKeys));
 
         if (bugsnag != null) {
-            bugsnag.setRedactedKeys(this.redactedProperties.toArray(new String[0]));
+            bugsnag.setRedactedKeys(this.redactedKeys.toArray(new String[0]));
         }
     }
 
