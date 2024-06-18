@@ -6,7 +6,7 @@
   fixes [issue #211](https://github.com/bugsnag/bugsnag-java/issues/211).
   [#213](https://github.com/bugsnag/bugsnag-java/pull/213)
 
-* Add null check to setting severity. Sets Null severity to Severyity.ERROR by default. [#214](https://github.com/bugsnag/bugsnag-java/pull/214)
+* Add a null check for `Severity` to the notify override method. [#214](https://github.com/bugsnag/bugsnag-java/pull/214)
 
 
 ## 3.7.1 (2023-10-25)
