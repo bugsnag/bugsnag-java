@@ -49,7 +49,7 @@ public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
     private String endpoint;
 
     /** Property names that should be redacted out before sending to Bugsnag servers. */
-    private Set<String> redactedKeys = new HashSet<String>();
+    private Set<String> redactedKeyProperties = new HashSet<String>();
 
     /** Exception classes to be ignored. */
     private Set<String> ignoredClasses = new HashSet<String>();
@@ -254,8 +254,8 @@ public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
             bugsnag.setTimeout(timeout);
         }
 
-        if (redactedKeys.size() > 0) {
-            bugsnag.setRedactedKeys(redactedKeys.toArray(new String[0]));
+        if (redactedKeyProperties.size() > 0) {
+            bugsnag.setRedactedKeys(redactedKeyProperties.toArray(new String[0]));
         }
 
         bugsnag.setIgnoreClasses(ignoredClasses.toArray(new String[0]));
@@ -376,22 +376,22 @@ public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
     /**
      * @see Bugsnag#setRedactedKeys(String...)
      */
-    public void setRedactedKey(String redactedKey) {
-        this.redactedKeys.add(redactedKey);
+    public void setRedactedKeyProperty(String redactedKey) {
+        this.redactedKeyProperties.add(redactedKey);
 
         if (bugsnag != null) {
-            bugsnag.setRedactedKeys(this.redactedKeys.toArray(new String[0]));
+            bugsnag.setRedactedKeys(this.redactedKeyProperties.toArray(new String[0]));
         }
     }
 
     /**
      * @see Bugsnag#setRedactedKeys(String...)
      */
-    public void setRedactedKeys(String redactedKeys) {
-        this.redactedKeys.addAll(split(redactedKeys));
+    public void setRedactedKeyProperties(String redactedKeys) {
+        this.redactedKeyProperties.addAll(split(redactedKeys));
 
         if (bugsnag != null) {
-            bugsnag.setRedactedKeys(this.redactedKeys.toArray(new String[0]));
+            bugsnag.setRedactedKeys(this.redactedKeyProperties.toArray(new String[0]));
         }
     }
 
