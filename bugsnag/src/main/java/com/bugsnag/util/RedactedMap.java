@@ -112,8 +112,8 @@ public class RedactedMap implements Map<String, Object> {
             return false;
         }
 
-        for (String Redacted : keyRedacts) {
-            if (key.contains(Redacted)) {
+        for (String redacted : keyRedacts) {
+            if (key.contains(redacted)) {
                 return true;
             }
         }

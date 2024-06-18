@@ -254,7 +254,7 @@ public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
             bugsnag.setTimeout(timeout);
         }
 
-        if (redactedProperties.size() > 0) { 
+        if (redactedProperties.size() > 0) {
             bugsnag.setRedactedKeys(redactedProperties.toArray(new String[0]));
         }
 
