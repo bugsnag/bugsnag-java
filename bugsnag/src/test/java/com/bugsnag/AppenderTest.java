@@ -280,6 +280,7 @@ public class AppenderTest {
         Bugsnag.addThreadMetaData("myTab", "password", "password value");
         Bugsnag.addThreadMetaData("myTab", "credit_card_number", "card number");
         Bugsnag.addThreadMetaData("myTab", "mysecret", "not redacted");
+        Bugsnag.addThreadMetaData("myTab", "PaSsWoRd", "password value case insensitive");
 
         // Send a log message
         LOGGER.warn("Exception with redacted meta data", new RuntimeException("test"));
@@ -294,6 +295,7 @@ public class AppenderTest {
         assertEquals("[REDACTED]", myTab.get("password"));
         assertEquals("[REDACTED]", myTab.get("credit_card_number"));
         assertEquals("not redacted", myTab.get("mysecret"));
+        assertEquals("[REDACTED]", myTab.get("PaSsWoRd"));
     }
 
     @Test

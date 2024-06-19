@@ -25,7 +25,7 @@ public class RedactedMap implements Map<String, Object> {
      */
     public RedactedMap(Map<String, Object> map, Collection<String> keyRedacts) {
         for (String redacted : keyRedacts) {
-            this.keyRedacts.add(Pattern.compile(redacted));
+            this.keyRedacts.add(Pattern.compile(redacted, Pattern.CASE_INSENSITIVE));
         }
         this.redactedCopy = createCopy(map);
     }

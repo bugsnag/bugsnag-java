@@ -210,9 +210,9 @@ public class BugsnagTest {
                         (Map<String, Object>) requestTab.get("headers");
 
                 assertEquals("[REDACTED]", headersMap.get("Authorization"));
-                assertEquals("User:Password", headersMap.get("authorization"));
+                assertEquals("[REDACTED]", headersMap.get("authorization"));
                 assertEquals("[REDACTED]", headersMap.get("Cookie"));
-                assertEquals("123456ABCDEF", headersMap.get("cookie"));
+                assertEquals("[REDACTED]", headersMap.get("cookie"));
             }
 
             @Override
