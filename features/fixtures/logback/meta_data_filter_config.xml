@@ -8,6 +8,7 @@
         <appVersion>1.0.0</appVersion>
 
 		<redactedKeyProperty>foo</redactedKeyProperty>
+		<filteredProperty>foo</filteredProperty>
 
 		<endpoint>http://localhost:9339/notify</endpoint>
 	</appender>

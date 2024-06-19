@@ -149,6 +149,11 @@ public class AppenderTest {
         assertTrue(redactedKeys.contains("password"));
         assertTrue(redactedKeys.contains("credit_card_number"));
 
+        assertEquals(2, config.filters.length);
+        ArrayList<String> filters = new ArrayList<String>(Arrays.asList(config.filters));
+        assertTrue(filters.contains("password"));
+        assertTrue(filters.contains("credit_card_number"));
+
         assertEquals(2, config.ignoreClasses.length);
         ArrayList<String> ignoreClasses
                 = new ArrayList<String>(Arrays.asList(config.ignoreClasses));
@@ -274,6 +279,29 @@ public class AppenderTest {
     }
 
     @Test
+    public void testFilters() {
+
+        // Add some meta data which should be filtered by key name
+        Bugsnag.addThreadMetaData("myTab", "password", "password value");
+        Bugsnag.addThreadMetaData("myTab", "credit_card_number", "card number");
+        Bugsnag.addThreadMetaData("myTab", "mysecret", "not filtered");
+
+        // Send a log message
+        LOGGER.warn("Exception with filtered meta data", new RuntimeException("test"));
+
+        // Check that a report was sent to Bugsnag
+        assertEquals(1, delivery.getNotifications().size());
+
+        Notification notification = delivery.getNotifications().get(0);
+        assertTrue(notification.getEvents().get(0).getMetaData().containsKey("myTab"));
+        Map<String, Object> myTab = getMetaDataMap(notification, "myTab");
+
+        assertEquals("[FILTERED]", myTab.get("password"));
+        assertEquals("[FILTERED]", myTab.get("credit_card_number"));
+        assertEquals("not redacted", myTab.get("mysecret"));
+    }
+
+    @Test
     public void testRedactedKeys() {
 
         // Add some meta data which should be redacted by key name
@@ -318,7 +346,7 @@ public class AppenderTest {
         });
 
         // Send a log message
-        LOGGER.warn("Exception with redacted meta data", new RuntimeException("test"));
+        LOGGER.warn("Exception with filtered meta data", new RuntimeException("test"));
 
         // Check that a report was sent to Bugsnag
         assertEquals(1, delivery.getNotifications().size());
