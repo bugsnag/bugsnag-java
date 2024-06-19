@@ -6,6 +6,8 @@
   fixes [issue #211](https://github.com/bugsnag/bugsnag-java/issues/211).
   [#]()
 
+* Depricated `Filters` and replaced with `redactedKeys` as per notifier spec. Redacted keys are now set using `bugsnag.redactedKeys` in the configuration. Case insensitive and supports regex pattern matching. [#215](https://github.com/bugsnag/bugsnag-java/pull/215)
+
 
 ## 3.7.1 (2023-10-25)
 
