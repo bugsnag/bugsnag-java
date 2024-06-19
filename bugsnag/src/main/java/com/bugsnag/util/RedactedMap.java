@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 /**
  * Decorates a map by replacing values of Redacted keys.
@@ -14,10 +15,18 @@ public class RedactedMap implements Map<String, Object> {
     private static final String REDACTED_PLACEHOLDER = "[REDACTED]";
 
     private final Map<String, Object> redactedCopy;
-    private final Collection<String> keyRedacts = new ArrayList<String>();
+    private final Collection<Pattern> keyRedacts = new ArrayList<>();
 
+    /**
+     * Creates a new RedactedMap.
+     *
+     * @param map        the map to decorate
+     * @param keyRedacts a collection of strings where each string is a regex pattern for keys to be redacted
+     */
     public RedactedMap(Map<String, Object> map, Collection<String> keyRedacts) {
-        this.keyRedacts.addAll(keyRedacts);
+        for (String redacted : keyRedacts) {
+            this.keyRedacts.add(Pattern.compile(redacted));
+        }
         this.redactedCopy = createCopy(map);
     }
 
@@ -102,7 +111,7 @@ public class RedactedMap implements Map<String, Object> {
     @SuppressWarnings("unchecked")
     private Object transformEntry(Object key, Object value) {
         if (value instanceof Map) {
-            return new RedactedMap((Map<String, Object>) value, keyRedacts);
+            return new RedactedMap((Map<String, Object>) value, convertPatternsToStrings(keyRedacts));
         }
         return shouldRedactKey((String) key) ? REDACTED_PLACEHOLDER : value;
     }
@@ -112,11 +121,25 @@ public class RedactedMap implements Map<String, Object> {
             return false;
         }
 
-        for (String redacted : keyRedacts) {
-            if (key.contains(redacted)) {
+        for (Pattern redactedPattern : keyRedacts) {
+            if (redactedPattern.matcher(key).find()) {
                 return true;
             }
         }
         return false;
+    }
+
+    /**
+     * Converts a collection of patterns to a collection of strings.
+     *
+     * @param patterns the patterns to convert
+     * @return a collection of strings
+     */
+    private Collection<String> convertPatternsToStrings(Collection<Pattern> patterns) {
+        Collection<String> strings = new ArrayList<>();
+        for (Pattern pattern : patterns) {
+            strings.add(pattern.pattern());
+        }
+        return strings;
     }
 }
