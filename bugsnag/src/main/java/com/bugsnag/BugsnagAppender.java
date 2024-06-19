@@ -48,6 +48,9 @@ public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
     /** Bugsnag error server endpoint. */
     private String endpoint;
 
+    /** Property names that should be filtered out before sending to Bugsnag servers. */
+    private Set<String> filteredProperties = new HashSet<String>();
+
     /** Property names that should be redacted out before sending to Bugsnag servers. */
     private Set<String> redactedKeyProperties = new HashSet<String>();
 
@@ -254,6 +257,10 @@ public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
             bugsnag.setTimeout(timeout);
         }
 
+        if (filteredProperties.size() > 0) {
+            bugsnag.setFilters(filteredProperties.toArray(new String[0]));
+        }
+
         if (redactedKeyProperties.size() > 0) {
             bugsnag.setRedactedKeys(redactedKeyProperties.toArray(new String[0]));
         }
@@ -370,6 +377,28 @@ public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
 
         if (bugsnag != null) {
             bugsnag.setEndpoints(endpoint, null);
+        }
+    }
+
+    /**
+     * @see Bugsnag#setFilters(String...)
+     */
+    public void setFilteredProperty(String filter) {
+        this.filteredProperties.add(filter);
+
+        if (bugsnag != null) {
+            bugsnag.setFilters(this.filteredProperties.toArray(new String[0]));
+        }
+    }
+
+    /**
+     * @see Bugsnag#setFilters(String...)
+     */
+    public void setFilteredProperties(String filters) {
+        this.filteredProperties.addAll(split(filters));
+
+        if (bugsnag != null) {
+            bugsnag.setFilters(this.filteredProperties.toArray(new String[0]));
         }
     }
 
