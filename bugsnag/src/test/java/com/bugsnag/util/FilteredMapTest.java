@@ -42,7 +42,7 @@ public class FilteredMapTest {
 
         map.put(KEY_UNMODIFIABLE, Collections.unmodifiableMap(nestedMap));
 
-        this.filteredMap = new RedactedMap(map, Collections.singleton(KEY_FILTERED));
+        this.filteredMap = new FilteredMap(map, Collections.singleton(KEY_FILTERED));
     }
 
     @Test
@@ -54,7 +54,7 @@ public class FilteredMapTest {
     public void testIsEmpty() {
         assertFalse(filteredMap.isEmpty());
         Map<String, Object> map = Collections.emptyMap();
-        RedactedMap emptyMap = new RedactedMap(map, Collections.<String>emptyList());
+        FilteredMap emptyMap = new FilteredMap(map, Collections.<String>emptyList());
         assertTrue(emptyMap.isEmpty());
     }
 
@@ -81,7 +81,7 @@ public class FilteredMapTest {
 
         HashMap<String, Object> emptyMap = new HashMap<String, Object>();
         Set<String> filters = Collections.singleton(KEY_FILTERED);
-        Map<String, Object> removeMap = new RedactedMap(emptyMap, filters);
+        Map<String, Object> removeMap = new FilteredMap(emptyMap, filters);
         removeMap.putAll(map);
 
         assertEquals(2, removeMap.size());
@@ -97,7 +97,7 @@ public class FilteredMapTest {
         assertEquals(VAL_UNFILTERED, filteredMap.get(KEY_UNFILTERED));
 
         Object actual = filteredMap.get(KEY_NESTED);
-        assertTrue(actual instanceof RedactedMap);
+        assertTrue(actual instanceof FilteredMap);
 
         @SuppressWarnings("unchecked")
         Map<String, Object> nestedMap = (Map<String, Object>) actual;
@@ -125,7 +125,7 @@ public class FilteredMapTest {
         values.remove(VAL_UNFILTERED);
 
         Object nestedObj = values.toArray(new Object[1])[0];
-        assertTrue(nestedObj instanceof RedactedMap);
+        assertTrue(nestedObj instanceof FilteredMap);
 
         @SuppressWarnings("unchecked")
         Map<String, Object> nestedMap = (Map<String, Object>) nestedObj;
@@ -157,7 +157,7 @@ public class FilteredMapTest {
             } else if (key.equals(KEY_NESTED)) {
                 expectedCount++;
                 Object value = entry.getValue();
-                assertTrue(value instanceof RedactedMap);
+                assertTrue(value instanceof FilteredMap);
             } else if (key.equals(KEY_UNMODIFIABLE)) {
                 expectedCount++;
 

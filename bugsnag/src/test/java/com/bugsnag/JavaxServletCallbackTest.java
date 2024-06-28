@@ -80,12 +80,50 @@ public class JavaxServletCallbackTest {
 
     @SuppressWarnings("unchecked")
     @Test
-    public void testRequestMetadataAdded() {
+    public void testRequestMetadataAddedFiltered() {
         Report report = generateReport(new java.lang.Exception("Spline reticulation failed"));
         JavaxServletCallback callback = new JavaxServletCallback();
         callback.beforeNotify(report);
 
-        Map<String, Object> metadata = report.getMetaData();
+        Map<String, Object> metadata = report.getFilteredMetaData();
+        assertTrue(metadata.containsKey("request"));
+
+        Map<String, Object> request = (Map<String, Object>) metadata.get("request");
+        assertEquals("/foo/bar", request.get("url"));
+        assertEquals("PATCH", request.get("method"));
+        assertEquals("12.0.4.57", request.get("clientIp"));
+
+        assertTrue(request.containsKey("headers"));
+        Map<String, String> headers = (Map<String, String>) request.get("headers");
+        assertEquals("application/json", headers.get("Content-Type"));
+        assertEquals("54", headers.get("Content-Length"));
+        assertEquals("some-data-1,some-data-2", headers.get("X-Custom-Header"));
+
+        // Make sure that actual Authorization header value is not in the report
+        assertEquals("[FILTERED]", headers.get("Authorization"));
+
+        // Make sure that actual cookies are not in the report
+        assertEquals("[FILTERED]", headers.get("Cookie"));
+
+        assertTrue(request.containsKey("params"));
+        Map<String, String[]> params = (Map<String, String[]>) request.get("params");
+        assertTrue(params.containsKey("account"));
+        String[] account = params.get("account");
+        assertEquals("Acme Co", account[0]);
+
+        assertTrue(params.containsKey("name"));
+        String[] name = params.get("name");
+        assertEquals("Bill", name[0]);
+    }
+
+    @SuppressWarnings("unchecked")
+    @Test
+    public void testRequestMetadataAddedRedacted() {
+        Report report = generateReport(new java.lang.Exception("Spline reticulation failed"));
+        JavaxServletCallback callback = new JavaxServletCallback();
+        callback.beforeNotify(report);
+
+        Map<String, Object> metadata = report.getRedactedMetaData();
         assertTrue(metadata.containsKey("request"));
 
         Map<String, Object> request = (Map<String, Object>) metadata.get("request");

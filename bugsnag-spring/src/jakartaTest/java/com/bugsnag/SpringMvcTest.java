@@ -126,7 +126,7 @@ public class SpringMvcTest {
     }
 
     @Test
-    public void requestMetadataSetCorrectly() {
+    public void requestMetadataSetCorrectlyFiltered() {
         callRuntimeExceptionEndpoint();
 
         Report report = verifyAndGetReport(delivery);
@@ -136,7 +136,38 @@ public class SpringMvcTest {
 
         // Check that the request metadata is set as expected
         @SuppressWarnings(value = "unchecked") Map<String, Object> requestMetadata =
-                (Map<String, Object>) report.getMetaData().get("request");
+                (Map<String, Object>) report.getFilteredMetaData().get("request");
+        assertEquals("http://localhost:" + randomServerPort + "/throw-runtime-exception",
+                requestMetadata.get("url"));
+        assertEquals("GET", requestMetadata.get("method"));
+        assertEquals("127.0.0.1", requestMetadata.get("clientIp"));
+
+        // Assert that the request params are as expected
+        @SuppressWarnings(value = "unchecked") Map<String, String[]> params =
+                (Map<String, String[]>) requestMetadata.get("params");
+        assertEquals("paramVal1", params.get("param1")[0]);
+        assertEquals("paramVal2", params.get("param2")[0]);
+
+        // Assert that the request headers are as expected, including headers with
+        // multiple values represented as a comma-separated string.
+        @SuppressWarnings(value = "unchecked") Map<String, String> headers =
+                (Map<String, String>) requestMetadata.get("headers");
+        assertEquals("header1Val1,header1Val2", headers.get("header1"));
+        assertEquals("header2Val1", headers.get("header2"));
+    }
+
+    @Test
+    public void requestMetadataSetCorrectlyRedacted() {
+        callRuntimeExceptionEndpoint();
+
+        Report report = verifyAndGetReport(delivery);
+
+        // Check that the context is set to the HTTP method and URI of the endpoint
+        assertEquals("GET /throw-runtime-exception", report.getContext());
+
+        // Check that the request metadata is set as expected
+        @SuppressWarnings(value = "unchecked") Map<String, Object> requestMetadata =
+                (Map<String, Object>) report.getRedactedMetaData().get("request");
         assertEquals("http://localhost:" + randomServerPort + "/throw-runtime-exception",
                 requestMetadata.get("url"));
         assertEquals("GET", requestMetadata.get("method"));

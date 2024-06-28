@@ -87,7 +87,7 @@ public class AppenderTest {
         assertEquals("test", notification.getEvents().get(0).getExceptionMessage());
         assertEquals(Severity.WARNING.getValue(), notification.getEvents().get(0).getSeverity());
         assertEquals("Test exception",
-                getMetaDataMap(notification, "Log event data").get("Message"));
+                getFilteredMetaDataMap(notification, "Log event data").get("Message"));
     }
 
     @Test
@@ -109,7 +109,7 @@ public class AppenderTest {
         assertEquals("test", notification.getEvents().get(0).getExceptionMessage());
         assertEquals(Severity.WARNING.getValue(), notification.getEvents().get(0).getSeverity());
         assertEquals("Test exception, errorCode: " + value,
-                getMetaDataMap(notification, "Log event data").get("Message"));
+                getFilteredMetaDataMap(notification, "Log event data").get("Message"));
     }
 
     @Test
@@ -135,7 +135,43 @@ public class AppenderTest {
     }
 
     @Test
-    public void testBugsnagConfig() {
+    public void testBugsnagConfigFiltered() {
+
+        // Get the Bugsnag instance
+        Configuration config = getConfig(appender.getClient());
+        assertEquals("test", config.releaseStage);
+        assertEquals("1.0.1", config.appVersion);
+        assertEquals("gradleTask", config.appType);
+        assertFalse(config.shouldAutoCaptureSessions());
+
+        assertEquals(2, config.filters.length);
+        ArrayList<String> filters = new ArrayList<String>(Arrays.asList(config.filters));
+        assertTrue(filters.contains("password"));
+        assertTrue(filters.contains("credit_card_number"));
+
+        assertEquals(2, config.ignoreClasses.length);
+        ArrayList<String> ignoreClasses
+                = new ArrayList<String>(Arrays.asList(config.ignoreClasses));
+        assertTrue(ignoreClasses.contains("com.example.Custom"));
+        assertTrue(ignoreClasses.contains("java.io.IOException"));
+
+        assertEquals(2, config.notifyReleaseStages.length);
+        ArrayList<String> notifyReleaseStages
+                = new ArrayList<String>(Arrays.asList(config.notifyReleaseStages));
+        assertTrue(notifyReleaseStages.contains("development"));
+        assertTrue(notifyReleaseStages.contains("test"));
+
+        assertEquals(2, config.projectPackages.length);
+        ArrayList<String> projectPackages
+                = new ArrayList<String>(Arrays.asList(config.projectPackages));
+        assertTrue(projectPackages.contains("com.company.package2"));
+        assertTrue(projectPackages.contains("com.company.package1"));
+
+        assertTrue(config.sendThreads);
+    }
+
+    @Test
+    public void testBugsnagConfigRedacted() {
 
         // Get the Bugsnag instance
         Configuration config = getConfig(appender.getClient());
@@ -148,11 +184,6 @@ public class AppenderTest {
         ArrayList<String> redactedKeys = new ArrayList<String>(Arrays.asList(config.redactedKeys));
         assertTrue(redactedKeys.contains("password"));
         assertTrue(redactedKeys.contains("credit_card_number"));
-
-        assertEquals(2, config.filters.length);
-        ArrayList<String> filters = new ArrayList<String>(Arrays.asList(config.filters));
-        assertTrue(filters.contains("password"));
-        assertTrue(filters.contains("credit_card_number"));
 
         assertEquals(2, config.ignoreClasses.length);
         ArrayList<String> ignoreClasses
@@ -293,12 +324,12 @@ public class AppenderTest {
         assertEquals(1, delivery.getNotifications().size());
 
         Notification notification = delivery.getNotifications().get(0);
-        assertTrue(notification.getEvents().get(0).getMetaData().containsKey("myTab"));
-        Map<String, Object> myTab = getMetaDataMap(notification, "myTab");
+        assertTrue(notification.getEvents().get(0).getFilteredMetaData().containsKey("myTab"));
+        Map<String, Object> myTab = getFilteredMetaDataMap(notification, "myTab");
 
         assertEquals("[FILTERED]", myTab.get("password"));
         assertEquals("[FILTERED]", myTab.get("credit_card_number"));
-        assertEquals("not redacted", myTab.get("mysecret"));
+        assertEquals("not filtered", myTab.get("mysecret"));
     }
 
     @Test
@@ -317,8 +348,8 @@ public class AppenderTest {
         assertEquals(1, delivery.getNotifications().size());
 
         Notification notification = delivery.getNotifications().get(0);
-        assertTrue(notification.getEvents().get(0).getMetaData().containsKey("myTab"));
-        Map<String, Object> myTab = getMetaDataMap(notification, "myTab");
+        assertTrue(notification.getEvents().get(0).getRedactedMetaData().containsKey("myTab"));
+        Map<String, Object> myTab = getRedactedMetaDataMap(notification, "myTab");
 
         assertEquals("[REDACTED]", myTab.get("password"));
         assertEquals("[REDACTED]", myTab.get("credit_card_number"));
@@ -449,7 +480,19 @@ public class AppenderTest {
      * @return The hash map
      */
     @SuppressWarnings (value = "unchecked")
-    private Map<String, Object> getMetaDataMap(Notification notification, String key) {
-        return ((Map<String, Object>) notification.getEvents().get(0).getMetaData().get(key));
+    private Map<String, Object> getFilteredMetaDataMap(Notification notification, String key) {
+        return ((Map<String, Object>) notification.getEvents().get(0).getFilteredMetaData().get(key));
+    }
+
+        /**
+     * Gets a hashmap key from the meta data in a notification
+     *
+     * @param notification The notification
+     * @param key The key to get
+     * @return The hash map
+     */
+    @SuppressWarnings (value = "unchecked")
+    private Map<String, Object> getRedactedMetaDataMap(Notification notification, String key) {
+        return ((Map<String, Object>) notification.getEvents().get(0).getRedactedMetaData().get(key));
     }
 }
