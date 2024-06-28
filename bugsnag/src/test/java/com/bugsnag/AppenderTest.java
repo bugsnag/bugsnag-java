@@ -489,7 +489,7 @@ public class AppenderTest {
         return ((Map<String, Object>) notification.getEvents().get(0).getFilteredMetaData().get(key));
     }
 
-        /**
+    /**
      * Gets a hashmap key from the meta data in a notification
      *
      * @param notification The notification

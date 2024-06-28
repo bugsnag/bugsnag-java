@@ -231,7 +231,7 @@ public class ThreadMetaDataTestRedacted {
         assertFalse(report.getRedactedMetaData().containsKey("outerthread"));
     }
 
-        /**
+    /**
      * Gets a hashmap key from the meta data in a notification
      *
      * @param notification The notification
