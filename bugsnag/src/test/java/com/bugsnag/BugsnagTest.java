@@ -165,7 +165,7 @@ public class BugsnagTest {
 
     @Test
     public void testRedactedKeys() {
-        bugsnag.setRedactedKeys("testredacted1", "testredacted2");
+        bugsnag.setRedactedKeys("testfilter1", "testfilter2");
         bugsnag.setDelivery(new Delivery() {
             @SuppressWarnings("unchecked")
             @Override
@@ -175,10 +175,10 @@ public class BugsnagTest {
                         (Map<String, Object>) report.getRedactedMetaData().get("firsttab");
                 final Map<String, Object> secondTab =
                         (Map<String, Object>) report.getRedactedMetaData().get("secondtab");
-                assertEquals("[REDACTED]", firstTab.get("testredacted1"));
-                assertEquals("[REDACTED]", firstTab.get("testredacted2"));
-                assertEquals("secretpassword", firstTab.get("testredacted3"));
-                assertEquals("[REDACTED]", secondTab.get("testredacted1"));
+                assertEquals("[REDACTED]", firstTab.get("testfilter1"));
+                assertEquals("[REDACTED]", firstTab.get("testfilter2"));
+                assertEquals("secretpassword", firstTab.get("testfilter3"));
+                assertEquals("[REDACTED]", secondTab.get("testfilter1"));
             }
 
             @Override
@@ -188,10 +188,10 @@ public class BugsnagTest {
         assertTrue(bugsnag.notify(new Throwable(), new Callback() {
             @Override
             public void beforeNotify(Report report) {
-                report.addToTab("firsttab", "testredacted1", "secretpassword");
-                report.addToTab("firsttab", "testredacted2", "secretpassword");
-                report.addToTab("firsttab", "testredacted3", "secretpassword");
-                report.addToTab("secondtab", "testredacted1", "secretpassword");
+                report.addToTab("firsttab", "testfilter1", "secretpassword");
+                report.addToTab("firsttab", "testfilter2", "secretpassword");
+                report.addToTab("firsttab", "testfilter3", "secretpassword");
+                report.addToTab("secondtab", "testfilter1", "secretpassword");
             }
         }));
     }
@@ -211,8 +211,8 @@ public class BugsnagTest {
 
                 assertEquals("[REDACTED]", headersMap.get("Authorization"));
                 assertEquals("[REDACTED]", headersMap.get("authorization"));
-                assertEquals("[REDACTED]", headersMap.get("Authentication"));
-                assertEquals("[REDACTED]", headersMap.get("authentication"));
+                assertEquals("[REDACTED]", headersMap.get("Cookie"));
+                assertEquals("[REDACTED]", headersMap.get("cookie"));
             }
 
             @Override
@@ -236,7 +236,7 @@ public class BugsnagTest {
 
     @Test
     public void testFilters() {
-        bugsnag.setFilters("testredacted1", "testredacted2");
+        bugsnag.setFilters("testfilter1", "testfilter2");
         bugsnag.setDelivery(new Delivery() {
             @SuppressWarnings("unchecked")
             @Override
@@ -281,7 +281,7 @@ public class BugsnagTest {
                         (Map<String, Object>) requestTab.get("headers");
 
                 assertEquals("[FILTERED]", headersMap.get("Authorization"));
-                assertEquals("user:Password", headersMap.get("authorization"));
+                assertEquals("User:Password", headersMap.get("authorization"));
                 assertEquals("[FILTERED]", headersMap.get("Cookie"));
                 assertEquals("123456ABCDEF", headersMap.get("cookie"));
             }

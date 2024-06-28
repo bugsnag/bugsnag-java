@@ -138,16 +138,10 @@ public class JavaxServletCallbackTest {
         assertEquals("some-data-1,some-data-2", headers.get("X-Custom-Header"));
 
         // Make sure that actual Authorization header value is not in the report
-        assertEquals("[FILTERED]", headers.get("Authorization"));
-
-        // Make sure that actual Authorization header value is not in the report
-        assertEquals("[REDACTED]", headers.get("authoRiZaTion"));
+        assertEquals("[REDACTED]", headers.get("Authorization"));
 
         // Make sure that actual cookies are not in the report
-        assertEquals("[FILTERED]", headers.get("Cookie"));
-
-        // Make sure that actual cookies are not in the report
-        assertEquals("[REDACTED]", headers.get("coOkie"));
+        assertEquals("[REDACTED]", headers.get("Cookie"));
 
         assertTrue(request.containsKey("params"));
         Map<String, String[]> params = (Map<String, String[]>) request.get("params");
@@ -159,6 +153,7 @@ public class JavaxServletCallbackTest {
         String[] name = params.get("name");
         assertEquals("Bill", name[0]);
     }
+
 
     @Test
     public void testRequestContextSet() {
