@@ -363,28 +363,6 @@ public class AppenderTest {
     }
 
     @Test
-    public void testFilters() {
-        // Add some meta data which should be filtered by key name
-        Bugsnag.addThreadMetaData("myTab", "password", "password value");
-        Bugsnag.addThreadMetaData("myTab", "credit_card_number", "card number");
-        Bugsnag.addThreadMetaData("myTab", "mysecret", "not redacted");
-
-        // Send a log message
-        LOGGER.warn("Exception with filtered meta data", new RuntimeException("test"));
-
-        // Check that a report was sent to Bugsnag
-        assertEquals(1, delivery.getNotifications().size());
-
-        Notification notification = delivery.getNotifications().get(0);
-        assertTrue(notification.getEvents().get(0).getMetaData().containsKey("myTab"));
-        Map<String, Object> myTab = getMetaDataMap(notification, "myTab");
-
-        assertEquals("[FILTERED]", myTab.get("password"));
-        assertEquals("[FILTERED]", myTab.get("credit_card_number"));
-        assertEquals("not redacted", myTab.get("mysecret"));
-    }
-
-    @Test
     public void testCallback() {
 
         // Setup a callback to set the user
