@@ -389,8 +389,7 @@ public class Bugsnag implements Closeable {
             return false;
         }
         if (severity == null) {
-            LOGGER.warn("Tried to notify with a null Severity");
-            return false;
+            return notify(throwable, callback);
         }
 
         HandledState handledState = HandledState.newInstance(
