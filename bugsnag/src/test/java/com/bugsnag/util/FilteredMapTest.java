@@ -39,9 +39,7 @@ public class FilteredMapTest {
         nestedMap.put(KEY_UNFILTERED, VAL_UNFILTERED);
         nestedMap.put(KEY_FILTERED, VAL_FILTERED);
         map.put(KEY_NESTED, nestedMap);
-
         map.put(KEY_UNMODIFIABLE, Collections.unmodifiableMap(nestedMap));
-
         this.filteredMap = new FilteredMap(map, Collections.singleton(KEY_FILTERED));
     }
 

@@ -383,7 +383,8 @@ public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
     /**
      * @see Bugsnag#setFilters(String...)
      */
-    public void setFilterProperty(String filter) {
+
+    public void setFilteredProperty(String filter) {
         this.filteredProperties.add(filter);
 
         if (bugsnag != null) {
@@ -392,9 +393,9 @@ public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
     }
 
     /**
-     * @see Bugsnag#setRedactedKeys(String...)
+     * @see Bugsnag#setFilters(String...)
      */
-    public void setFiltersProperties(String filters) {
+    public void setFilteredProperties(String filters) {
         this.filteredProperties.addAll(split(filters));
 
         if (bugsnag != null) {

@@ -13,6 +13,9 @@
         <filteredProperty>password</filteredProperty>
         <filteredProperty>credit_card_number</filteredProperty>
 
+        <filteredProperty>password</filteredProperty>
+        <filteredProperty>credit_card_number</filteredProperty>
+
         <ignoredClass>java.io.IOException</ignoredClass>
         <ignoredClass>com.example.Custom</ignoredClass>
 

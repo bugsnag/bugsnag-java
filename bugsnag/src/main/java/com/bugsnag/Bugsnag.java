@@ -235,7 +235,7 @@ public class Bugsnag implements Closeable {
      * Any keys in metaData which contain these strings will be marked as
      * [FILTERED] when send to Bugsnag.
      *
-     * @param filters a list of String keys to filter from metaData
+     * @param filters a list of String keys to redact from metaData
      */
     public void setFilters(String... filters) {
         config.filters = filters;
