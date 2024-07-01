@@ -5,7 +5,7 @@ import com.bugsnag.Report;
 import com.bugsnag.callbacks.Callback;
 
 /**
- * Sends a handled exception to Bugsnag, which contains metadata that should be filtered
+ * Sends a handled exception to Bugsnag, which contains metadata that should be redacted
  */
 public class AutoRedactedKeysScenario extends Scenario {
 
@@ -15,6 +15,7 @@ public class AutoRedactedKeysScenario extends Scenario {
 
     @Override
     public void run() {
+        bugsnag.setFilters(null);
         bugsnag.notify(generateException(), new Callback() {
             @Override
             public void beforeNotify(Report report) {

@@ -5,7 +5,7 @@ import com.bugsnag.Report;
 import com.bugsnag.callbacks.Callback;
 
 /**
- * Sends a handled exception to Bugsnag, which contains metadata that should be filtered
+ * Sends a handled exception to Bugsnag, which contains metadata that should be redacted
  */
 public class ManualRedactedKeysScenario extends Scenario {
 
