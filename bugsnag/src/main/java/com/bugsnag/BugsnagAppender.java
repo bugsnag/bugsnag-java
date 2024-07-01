@@ -51,6 +51,9 @@ public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
     /** Property names that should be filtered out before sending to Bugsnag servers. */
     private Set<String> filteredProperties = new HashSet<String>();
 
+    /** Property names that should be filtered out before sending to Bugsnag servers. */
+    private Set<String> redactedKeyProperties = new HashSet<String>();
+
     /** Exception classes to be ignored. */
     private Set<String> ignoredClasses = new HashSet<String>();
 
@@ -258,6 +261,10 @@ public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
             bugsnag.setFilters(filteredProperties.toArray(new String[0]));
         }
 
+        if (redactedKeyProperties.size() > 0) {
+            bugsnag.setRedactedKeys(redactedKeyProperties.toArray(new String[0]));
+        }
+
         bugsnag.setIgnoreClasses(ignoredClasses.toArray(new String[0]));
 
         if (notifyReleaseStages.size() > 0) {
@@ -392,6 +399,28 @@ public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
 
         if (bugsnag != null) {
             bugsnag.setFilters(this.filteredProperties.toArray(new String[0]));
+        }
+    }
+
+    /**
+     * @see Bugsnag#setRedactedKeys(String...)
+     */
+    public void setRedactedKeysProperty(String redactedKey) {
+        this.redactedKeyProperties.add(redactedKey);
+
+        if (bugsnag != null) {
+            bugsnag.setRedactedKeys(this.redactedKeyProperties.toArray(new String[0]));
+        }
+    }
+
+    /**
+     * @see Bugsnag#setRedactedKeys(String...)
+     */
+    public void setRedactedKeysProperties(String redactedKeys) {
+        this.redactedKeyProperties.addAll(split(redactedKeys));
+
+        if (bugsnag != null) {
+            bugsnag.setRedactedKeys(this.redactedKeyProperties.toArray(new String[0]));
         }
     }
 

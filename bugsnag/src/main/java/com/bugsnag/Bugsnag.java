@@ -241,6 +241,19 @@ public class Bugsnag implements Closeable {
     }
 
     /**
+     * Set which keys should be filtered when sending metaData to Bugsnag.
+     * Use this when you want to ensure sensitive information, such as passwords
+     * or credit card information is stripped from metaData you send to Bugsnag.
+     * Any keys in metaData which contain these strings will be marked as
+     * [FILTERED] when send to Bugsnag.
+     *
+     * @param filters a list of String keys to filter from metaData
+     */
+    public void setRedactedKeys(String... redactedKeys) {
+        config.redactedKeys = redactedKeys;
+    }
+
+    /**
      * Set which exception classes should be ignored (not sent) by Bugsnag.
      *
      * @param ignoreClasses a list of exception classes to ignore

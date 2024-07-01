@@ -3,6 +3,7 @@ package com.bugsnag;
 import com.bugsnag.serialization.Expose;
 
 import com.bugsnag.util.FilteredMap;
+import com.bugsnag.util.RedactedKeysMap;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -128,6 +129,12 @@ public class Report {
     public Map<String, Object> getMetaData() {
         return new FilteredMap(diagnostics.metaData, Arrays.asList(config.filters));
     }
+
+    @Expose
+    public Map<String, Object> getRedactedMetaData() {
+        return new RedactedKeysMap(diagnostics.metaData, Arrays.asList(config.redactedKeys));
+    }
+
 
     @Expose
     Map<String, Object> getSession() {

@@ -235,6 +235,77 @@ public class BugsnagTest {
     }
 
     @Test
+    public void testRedactedKeys() {
+        bugsnag.setRedactedKeys("testfilter1", "testfilter2");
+        bugsnag.setDelivery(new Delivery() {
+            @SuppressWarnings("unchecked")
+            @Override
+            public void deliver(Serializer serializer, Object object, Map<String, String> headers) {
+                Report report = ((Notification) object).getEvents().get(0);
+                Map<String, Object> firstTab =
+                        (Map<String, Object>) report.getRedactedMetaData().get("firsttab");
+                final Map<String, Object> secondTab =
+                        (Map<String, Object>) report.getRedactedMetaData().get("secondtab");
+                assertEquals("[REDACTED]", firstTab.get("testfilter1"));
+                assertEquals("[REDACTED]", firstTab.get("testfilter2"));
+                assertEquals("secretpassword", firstTab.get("testfilter3"));
+                assertEquals("[REDACTED]", secondTab.get("testfilter1"));
+            }
+
+            @Override
+            public void close() {
+            }
+        });
+        assertTrue(bugsnag.notify(new Throwable(), new Callback() {
+            @Override
+            public void beforeNotify(Report report) {
+                report.addToTab("firsttab", "testfilter1", "secretpassword");
+                report.addToTab("firsttab", "testfilter2", "secretpassword");
+                report.addToTab("firsttab", "testfilter3", "secretpassword");
+                report.addToTab("secondtab", "testfilter1", "secretpassword");
+            }
+        }));
+    }
+
+    @Test
+    public void testRedactedHeaders() {
+        bugsnag.setDelivery(new Delivery() {
+            @SuppressWarnings("unchecked")
+            @Override
+            public void deliver(Serializer serializer, Object object, Map<String, String> headers) {
+                Report report = ((Notification) object).getEvents().get(0);
+                Map<String, Object> requestTab =
+                        (Map<String, Object>) report.getRedactedMetaData().get("request");
+
+                Map<String, Object> headersMap =
+                        (Map<String, Object>) requestTab.get("headers");
+
+                assertEquals("[REDACTED]", headersMap.get("Authorization"));
+                assertEquals("[REDACTED]", headersMap.get("authorization"));
+                assertEquals("[REDACTED]", headersMap.get("Cookie"));
+                assertEquals("[REDACTED]", headersMap.get("cookie"));
+            }
+
+            @Override
+            public void close() {
+            }
+        });
+
+        assertTrue(bugsnag.notify(new Throwable(), new Callback() {
+            @Override
+            public void beforeNotify(Report report) {
+                Map<String, String> headers = new HashMap<String, String>();
+                headers.put("Authorization", "User:Password");
+                headers.put("authorization", "User:Password");
+                headers.put("Cookie", "123456ABCDEF");
+                headers.put("cookie", "123456ABCDEF");
+
+                report.addToTab("request", "headers", headers);
+            }
+        }));
+    }
+
+    @Test
     public void testUser() {
         bugsnag.setDelivery(new Delivery() {
             @Override
