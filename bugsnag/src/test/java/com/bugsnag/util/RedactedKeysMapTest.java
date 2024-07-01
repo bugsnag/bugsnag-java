@@ -23,7 +23,7 @@ public class RedactedKeysMapTest {
     private static final String VAL_REDACTED = "Bar";
     private static final String PLACEHOLDER_REDACTED = "[REDACTED]";
 
-    private Map<String, Object> RedactedKeysMap;
+    private Map<String, Object> redactedKeysMap;
 
     /**
      * Creates a map with filtered, unfiltered, and nested values
@@ -42,17 +42,17 @@ public class RedactedKeysMapTest {
 
         map.put(KEY_UNMODIFIABLE, Collections.unmodifiableMap(nestedMap));
 
-        this.RedactedKeysMap = new RedactedKeysMap(map, Collections.singleton(KEY_REDACTED));
+        this.redactedKeysMap = new RedactedKeysMap(map, Collections.singleton(KEY_REDACTED));
     }
 
     @Test
     public void testSize() {
-        assertEquals(4, RedactedKeysMap.size());
+        assertEquals(4, redactedKeysMap.size());
     }
 
     @Test
     public void testIsEmpty() {
-        assertFalse(RedactedKeysMap.isEmpty());
+        assertFalse(redactedKeysMap.isEmpty());
         Map<String, Object> map = Collections.emptyMap();
         FilteredMap emptyMap = new FilteredMap(map, Collections.<String>emptyList());
         assertTrue(emptyMap.isEmpty());
@@ -60,17 +60,17 @@ public class RedactedKeysMapTest {
 
     @Test
     public void testClear() {
-        assertEquals(4, RedactedKeysMap.size());
-        RedactedKeysMap.clear();
-        assertTrue(RedactedKeysMap.isEmpty());
+        assertEquals(4, redactedKeysMap.size());
+        redactedKeysMap.clear();
+        assertTrue(redactedKeysMap.isEmpty());
     }
 
     @Test
     public void testContainsKey() {
-        assertTrue(RedactedKeysMap.containsKey(KEY_REDACTED));
-        assertTrue(RedactedKeysMap.containsKey(KEY_UNREDACTED));
-        assertTrue(RedactedKeysMap.containsKey(KEY_NESTED));
-        assertFalse(RedactedKeysMap.containsKey("fake"));
+        assertTrue(redactedKeysMap.containsKey(KEY_REDACTED));
+        assertTrue(redactedKeysMap.containsKey(KEY_UNREDACTED));
+        assertTrue(redactedKeysMap.containsKey(KEY_NESTED));
+        assertFalse(redactedKeysMap.containsKey("fake"));
     }
 
     @Test
@@ -93,10 +93,10 @@ public class RedactedKeysMapTest {
 
     @Test
     public void testGet() {
-        assertEquals(PLACEHOLDER_REDACTED, RedactedKeysMap.get(KEY_REDACTED));
-        assertEquals(VAL_UNREDACTED, RedactedKeysMap.get(KEY_UNREDACTED));
+        assertEquals(PLACEHOLDER_REDACTED, redactedKeysMap.get(KEY_REDACTED));
+        assertEquals(VAL_UNREDACTED, redactedKeysMap.get(KEY_UNREDACTED));
 
-        Object actual = RedactedKeysMap.get(KEY_NESTED);
+        Object actual = redactedKeysMap.get(KEY_NESTED);
         assertTrue(actual instanceof RedactedKeysMap);
 
         @SuppressWarnings("unchecked")
@@ -107,7 +107,7 @@ public class RedactedKeysMapTest {
 
     @Test
     public void testKeySet() {
-        Set<String> keySet = RedactedKeysMap.keySet();
+        Set<String> keySet = redactedKeysMap.keySet();
         assertEquals(4, keySet.size());
         assertTrue(keySet.contains(KEY_REDACTED));
         assertTrue(keySet.contains(KEY_UNREDACTED));
@@ -116,7 +116,7 @@ public class RedactedKeysMapTest {
 
     @Test
     public void testValues() {
-        Collection<Object> values = RedactedKeysMap.values();
+        Collection<Object> values = redactedKeysMap.values();
         assertEquals(4, values.size());
         assertTrue(values.contains(VAL_UNREDACTED));
         assertTrue(values.contains(PLACEHOLDER_REDACTED));
@@ -138,7 +138,7 @@ public class RedactedKeysMapTest {
 
     @Test
     public void testEntrySet() {
-        Set<Map.Entry<String, Object>> entries = RedactedKeysMap.entrySet();
+        Set<Map.Entry<String, Object>> entries = redactedKeysMap.entrySet();
         assertEquals(4, entries.size());
 
         int expectedCount = 0;
