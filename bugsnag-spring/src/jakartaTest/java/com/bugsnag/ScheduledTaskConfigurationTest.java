@@ -13,6 +13,9 @@ import org.junit.runner.RunWith;
 
 import org.mockito.Mock;
 
+import org.springframework.aop.framework.AopProxyUtils;
+import org.springframework.aop.framework.ProxyFactoryBean;
+import org.springframework.aop.support.AopUtils;
 import org.springframework.beans.factory.NoUniqueBeanDefinitionException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -112,6 +115,42 @@ public class ScheduledTaskConfigurationTest {
         assertTrue(scheduler instanceof ConcurrentTaskScheduler);
         assertEquals(expected, accessField(scheduler, "scheduledExecutor"));
     }
+
+    @Test
+    public void testSchedulerIsProxy(){
+
+        ThreadPoolTaskScheduler scheduler = new ThreadPoolTaskScheduler();
+        ProxyFactoryBean proxyFactoryBean = new ProxyFactoryBean();
+        proxyFactoryBean.setTarget(scheduler);
+        proxyFactoryBean.setProxyTargetClass(true);
+        TaskScheduler proxyScheduler = (TaskScheduler) proxyFactoryBean.getObject();
+
+        when(context.getBean(TaskScheduler.class)).thenReturn(proxyScheduler);
+
+        configuration.configureTasks(registrar);
+
+        TaskScheduler resultScheduler = registrar.getScheduler();
+        assertTrue("Expected scheduler to be a proxy", AopUtils.isAopProxy(resultScheduler));
+    }
+
+    @Test
+    public void testSchedulerUnwrapped() {
+        ThreadPoolTaskScheduler scheduler = new ThreadPoolTaskScheduler();
+        ProxyFactoryBean proxyFactoryBean = new ProxyFactoryBean();
+        proxyFactoryBean.setTarget(scheduler);
+        proxyFactoryBean.setProxyTargetClass(true);
+        TaskScheduler proxyScheduler = (TaskScheduler) proxyFactoryBean.getObject();
+
+        when(context.getBean(TaskScheduler.class)).thenReturn(proxyScheduler);
+
+        configuration.configureTasks(registrar);
+
+        TaskScheduler resultScheduler = registrar.getScheduler();
+        Class<?> targetClass = AopProxyUtils.ultimateTargetClass(resultScheduler);
+        assertEquals("Expected scheduler to be unwrapped", scheduler.getClass(), targetClass);
+    }
+
+
 
     private Object accessField(Object object, String fieldName)
             throws NoSuchFieldException, IllegalAccessException {
