@@ -136,7 +136,6 @@ dependencies {
     compileJavax "org.springframework.boot:spring-boot:${javaxSpringBootVersion}"
     compileJavax "org.springframework:spring-aop:${javaxSpringVersion}"
 
-
     compileJakarta "jakarta.servlet:jakarta.servlet-api:${jakartaServletApiVersion}"
     compileJakarta "org.springframework:spring-webmvc:${jakartaSpringVersion}"
     compileJakarta "org.springframework.boot:spring-boot:${jakartaSpringBootVersion}"
@@ -153,11 +152,13 @@ dependencies {
     jakartaTestImplementation "jakarta.servlet:jakarta.servlet-api:${jakartaServletApiVersion}"
     jakartaTestImplementation "org.springframework.boot:spring-boot-starter-test:${jakartaSpringBootVersion}"
     jakartaTestImplementation "org.springframework.boot:spring-boot-starter-web:${jakartaSpringBootVersion}"
+    jakartaTestImplementation "org.springframework:spring-aop:${jakartaSpringVersion}"
 
     javaxTestImplementation "org.mockito:mockito-core:2.10.0"
     javaxTestImplementation "javax.servlet:javax.servlet-api:${javaxServletApiVersion}"
     javaxTestImplementation "org.springframework.boot:spring-boot-starter-test:${javaxSpringBootVersion}"
     javaxTestImplementation "org.springframework.boot:spring-boot-starter-web:${javaxSpringBootVersion}"
+    javaxTestImplementation "org.springframework:spring-aop:${javaxSpringVersion}"
 }
 
 dependencies {

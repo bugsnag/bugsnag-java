@@ -2,6 +2,8 @@ package com.bugsnag;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.aop.framework.AopProxyUtils;
+import org.springframework.aop.support.AopUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.TaskScheduler;
@@ -9,9 +11,8 @@ import org.springframework.scheduling.annotation.SchedulingConfigurer;
 import org.springframework.scheduling.concurrent.ConcurrentTaskScheduler;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.scheduling.config.ScheduledTaskRegistrar;
+
 import org.springframework.util.ErrorHandler;
-import org.springframework.aop.framework.AopProxyUtils;
-import org.springframework.aop.framework.AopUtils;
 
 import java.lang.reflect.Field;
 import java.util.concurrent.ScheduledExecutorService;
@@ -52,10 +53,10 @@ class ScheduledTaskConfiguration implements SchedulingConfigurer {
 
         if (taskScheduler != null) {
             //check if taskSchedular is a proxy
-            if(AopProxyUtils.isAopProxy(taskScheduler)) {
+            if (AopUtils.isAopProxy(taskScheduler)) {
                 //if it's a proxy then get the target class and cast as necessary
                 Class<?> targetClass = AopProxyUtils.ultimateTargetClass(taskScheduler);
-                if(TaskScheduler.class.isAssignableFrom(targetClass)) {
+                if (TaskScheduler.class.isAssignableFrom(targetClass)) {
                     taskScheduler = (TaskScheduler) AopProxyUtils.getSingletonTarget(taskScheduler);
                 }
             }
