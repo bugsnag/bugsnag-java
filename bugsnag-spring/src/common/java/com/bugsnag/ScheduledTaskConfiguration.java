@@ -53,7 +53,7 @@ class ScheduledTaskConfiguration implements SchedulingConfigurer {
         if (taskScheduler != null) {
             //check if taskSchedular is a proxy
             if(AopProxyUtils.isAopProxy(taskScheduler)) {
-                //if it's a proxy then get the target class and cast is necessary
+                //if it's a proxy then get the target class and cast as necessary
                 Class<?> targetClass = AopProxyUtils.ultimateTargetClass(taskScheduler);
                 if(TaskScheduler.class.isAssignableFrom(targetClass)) {
                     taskScheduler = (TaskScheduler) AopProxyUtils.getSingletonTarget(taskScheduler);
