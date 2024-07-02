@@ -10,6 +10,8 @@ import org.springframework.scheduling.concurrent.ConcurrentTaskScheduler;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.scheduling.config.ScheduledTaskRegistrar;
 import org.springframework.util.ErrorHandler;
+import org.springframework.aop.framework.AopProxyUtils;
+import org.springframework.aop.framework.AopUtils;
 
 import java.lang.reflect.Field;
 import java.util.concurrent.ScheduledExecutorService;
@@ -49,10 +51,17 @@ class ScheduledTaskConfiguration implements SchedulingConfigurer {
                 ? registrarScheduler : beanLocator.resolveTaskScheduler();
 
         if (taskScheduler != null) {
+            //check if taskSchedular is a proxy
+            if(AopProxyUtils.isAopProxy(taskScheduler)) {
+                //if it's a proxy then get the target class and cast is necessary
+                Class<?> targetClass = AopProxyUtils.ultimateTargetClass(taskScheduler);
+                if(TaskScheduler.class.isAssignableFrom(targetClass)) {
+                    taskScheduler = (TaskScheduler) AopProxyUtils.getSingletonTarget(taskScheduler);
+                }
+            }
             configureExistingTaskScheduler(taskScheduler, bugsnagErrorHandler);
         } else {
-            ScheduledExecutorService executorService
-                    = beanLocator.resolveScheduledExecutorService();
+            ScheduledExecutorService executorService = beanLocator.resolveScheduledExecutorService();
             taskScheduler = createNewTaskScheduler(executorService, bugsnagErrorHandler);
             taskRegistrar.setScheduler(taskScheduler);
         }

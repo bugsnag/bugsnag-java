@@ -134,10 +134,13 @@ dependencies {
     compileJavax "javax.servlet:javax.servlet-api:${javaxServletApiVersion}"
     compileJavax "org.springframework:spring-webmvc:${javaxSpringVersion}"
     compileJavax "org.springframework.boot:spring-boot:${javaxSpringBootVersion}"
+    compileJavax "org.springframework:spring-aop:${javaxSpringVersion}"
+
 
     compileJakarta "jakarta.servlet:jakarta.servlet-api:${jakartaServletApiVersion}"
     compileJakarta "org.springframework:spring-webmvc:${jakartaSpringVersion}"
     compileJakarta "org.springframework.boot:spring-boot:${jakartaSpringBootVersion}"
+    compileJakarta "org.springframework:spring-aop:${jakartaSpringVersion}"
 
     commonTestImplementation project(':bugsnag').sourceSets.test.output
     commonTestImplementation project(':bugsnag')
