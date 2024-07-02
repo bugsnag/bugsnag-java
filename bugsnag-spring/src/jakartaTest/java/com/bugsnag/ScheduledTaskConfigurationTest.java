@@ -117,8 +117,7 @@ public class ScheduledTaskConfigurationTest {
     }
 
     @Test
-    public void testSchedulerIsProxy(){
-
+    public void testSchedulerIsProxy() {
         ThreadPoolTaskScheduler scheduler = new ThreadPoolTaskScheduler();
         ProxyFactoryBean proxyFactoryBean = new ProxyFactoryBean();
         proxyFactoryBean.setTarget(scheduler);
