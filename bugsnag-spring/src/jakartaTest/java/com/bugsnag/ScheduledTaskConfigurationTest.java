@@ -3,6 +3,7 @@ package com.bugsnag;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.mockito.Mockito.when;
 
 import com.bugsnag.testapp.springboot.TestSpringBootApplication;
@@ -120,10 +121,17 @@ public class ScheduledTaskConfigurationTest {
         when(context.getBean(TaskScheduler.class)).thenReturn(scheduler);
         TaskScheduler proxyScheduler = createProxy(scheduler);
         registrar.setScheduler(proxyScheduler);
-        assertEquals(scheduler, registrar.getScheduler());
-        configuration.configureTasks(registrar);
         Object errorHandler = accessField(scheduler, "errorHandler");
-        assertTrue(errorHandler instanceof BugsnagScheduledTaskExceptionHandler);
+        assertFalse(
+                errorHandler instanceof BugsnagScheduledTaskExceptionHandler,
+                "errorHandler should not be BugsnagScheduledTaskExceptionHandler"
+        );
+        configuration.configureTasks(registrar);
+        errorHandler = accessField(scheduler, "errorHandler");
+        assertTrue(
+                "errorHandler should be BugsnagScheduledTaskExceptionHandler",
+                errorHandler instanceof BugsnagScheduledTaskExceptionHandler
+        );
     }
 
     private TaskScheduler createProxy(TaskScheduler target) {
