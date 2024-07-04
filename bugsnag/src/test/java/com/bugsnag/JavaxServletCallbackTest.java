@@ -99,11 +99,15 @@ public class JavaxServletCallbackTest {
         assertEquals("54", headers.get("Content-Length"));
         assertEquals("some-data-1,some-data-2", headers.get("X-Custom-Header"));
 
+        headers.put("ipAddress", "User:Password");
+        headers.put("logLevel", "123456ABCDEF");
+        headers.put("ipaddress", "User:Password");
+        headers.put("loglevel", "123456ABCDEF");
         // Make sure that actual Authorization header value is not in the report
-        assertEquals("[FILTERED]", headers.get("Authorization"));
+        assertEquals("[FILTERED]", headers.get("ipAddress"));
 
         // Make sure that actual cookies are not in the report
-        assertEquals("[FILTERED]", headers.get("Cookie"));
+        assertEquals("[FILTERED]", headers.get("logLevel"));
 
         assertTrue(request.containsKey("params"));
         Map<String, String[]> params = (Map<String, String[]>) request.get("params");

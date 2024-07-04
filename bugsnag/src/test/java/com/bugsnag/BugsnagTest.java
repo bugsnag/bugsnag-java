@@ -209,10 +209,10 @@ public class BugsnagTest {
                 Map<String, Object> headersMap =
                         (Map<String, Object>) requestTab.get("headers");
 
-                assertEquals("[FILTERED]", headersMap.get("Authorization"));
-                assertEquals("User:Password", headersMap.get("authorization"));
-                assertEquals("[FILTERED]", headersMap.get("Cookie"));
-                assertEquals("123456ABCDEF", headersMap.get("cookie"));
+                assertEquals("[FILTERED]", headersMap.get("ipAddress"));
+                assertEquals("User:Password", headersMap.get("ipaddress"));
+                assertEquals("[FILTERED]", headersMap.get("logLevel"));
+                assertEquals("123456ABCDEF", headersMap.get("LogLevel"));
             }
 
             @Override
@@ -224,10 +224,11 @@ public class BugsnagTest {
             @Override
             public void beforeNotify(Report report) {
                 Map<String, String> headers = new HashMap<String, String>();
-                headers.put("Authorization", "User:Password");
-                headers.put("authorization", "User:Password");
-                headers.put("Cookie", "123456ABCDEF");
-                headers.put("cookie", "123456ABCDEF");
+
+                headers.put("ipAddress", "User:Password");
+                headers.put("logLevel", "123456ABCDEF");
+                headers.put("ipaddress", "User:Password");
+                headers.put("LogLevel", "123456ABCDEF");
 
                 report.addToTab("request", "headers", headers);
             }

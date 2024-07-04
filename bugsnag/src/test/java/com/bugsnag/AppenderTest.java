@@ -146,8 +146,13 @@ public class AppenderTest {
 
         assertEquals(2, config.filters.length);
         ArrayList<String> filters = new ArrayList<String>(Arrays.asList(config.filters));
-        assertTrue(filters.contains("password"));
-        assertTrue(filters.contains("credit_card_number"));
+        assertTrue(filters.contains("ipAddress"));
+        assertTrue(filters.contains("logLevel"));
+
+        assertEquals(2, config.redactedKeys.length);
+        ArrayList<String> redactedKeys = new ArrayList<String>(Arrays.asList(config.redactedKeys));
+        assertTrue(redactedKeys.contains("password"));
+        assertTrue(redactedKeys.contains("credit_card_number"));
 
         assertEquals(2, config.ignoreClasses.length);
         ArrayList<String> ignoreClasses
@@ -277,8 +282,8 @@ public class AppenderTest {
     public void testFilters() {
 
         // Add some meta data which should be filtered by key name
-        Bugsnag.addThreadMetaData("myTab", "password", "password value");
-        Bugsnag.addThreadMetaData("myTab", "credit_card_number", "card number");
+        Bugsnag.addThreadMetaData("myTab", "ipAddress", "ipAddress value");
+        Bugsnag.addThreadMetaData("myTab", "logLevel", "log level value");
         Bugsnag.addThreadMetaData("myTab", "mysecret", "not filtered");
 
         // Send a log message
@@ -291,8 +296,8 @@ public class AppenderTest {
         assertTrue(notification.getEvents().get(0).getMetaData().containsKey("myTab"));
         Map<String, Object> myTab = getMetaDataMap(notification, "myTab");
 
-        assertEquals("[FILTERED]", myTab.get("password"));
-        assertEquals("[FILTERED]", myTab.get("credit_card_number"));
+        assertEquals("[FILTERED]", myTab.get("ipAddress"));
+        assertEquals("[FILTERED]", myTab.get("logLevel"));
         assertEquals("not filtered", myTab.get("mysecret"));
     }
 

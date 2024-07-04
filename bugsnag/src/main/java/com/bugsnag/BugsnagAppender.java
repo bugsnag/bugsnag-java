@@ -51,7 +51,7 @@ public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
     /** Property names that should be filtered out before sending to Bugsnag servers. */
     private Set<String> filteredProperties = new HashSet<String>();
 
-    /** Property names that should be filtered out before sending to Bugsnag servers. */
+    /** Property names that should be redacted out before sending to Bugsnag servers. */
     private Set<String> redactedKeyProperties = new HashSet<String>();
 
     /** Exception classes to be ignored. */

@@ -18,8 +18,8 @@ public class AutoFilterScenario extends Scenario {
         bugsnag.notify(generateException(), new Callback() {
             @Override
             public void beforeNotify(Report report) {
-                report.addToTab("user", "password", "hunter2");
-                report.addToTab("custom", "password", "hunter2");
+                report.addToTab("user", "ipAddress", "hunter2");
+                report.addToTab("custom", "ipAddress", "hunter2");
                 report.addToTab("custom", "foo", "hunter2");
             }
         });

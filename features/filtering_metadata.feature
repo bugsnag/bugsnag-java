@@ -6,8 +6,8 @@ Scenario: Using the default metadata filter
     And the error is valid for the error reporting API version "4" for the "Bugsnag Java" notifier
     And the exception "message" equals "AutoFilterScenario"
     And the event "metaData.custom.foo" equals "hunter2"
-    And the event "metaData.custom.password" equals "[FILTERED]"
-    And the event "metaData.user.password" equals "[FILTERED]"
+    And the event "metaData.custom.ipAddress" equals "[FILTERED]"
+    And the event "metaData.user.ipAddress" equals "[FILTERED]"
 
 Scenario: Adding a custom metadata filter
     When I run "ManualFilterScenario" with the defaults
@@ -41,8 +41,8 @@ Scenario: Using the default metadata filter in Spring Boot app
     And the error is valid for the error reporting API version "4" for the "Bugsnag Spring" notifier
     And the exception "message" equals "AutoFilterScenario"
     And the event "metaData.custom.foo" equals "hunter2"
-    And the event "metaData.custom.password" equals "[FILTERED]"
-    And the event "metaData.user.password" equals "[FILTERED]"
+    And the event "metaData.custom.ipAddress" equals "[FILTERED]"
+    And the event "metaData.user.ipAddress" equals "[FILTERED]"
 
 Scenario: Using the default metadata filter in Spring app
     When I run plain Spring "AutoFilterScenario" with the defaults
@@ -50,5 +50,5 @@ Scenario: Using the default metadata filter in Spring app
     And the error is valid for the error reporting API version "4" for the "Bugsnag Spring" notifier
     And the exception "message" equals "AutoFilterScenario"
     And the event "metaData.custom.foo" equals "hunter2"
-    And the event "metaData.custom.password" equals "[FILTERED]"
-    And the event "metaData.user.password" equals "[FILTERED]"
+    And the event "metaData.custom.ipAddress" equals "[FILTERED]"
+    And the event "metaData.user.ipAddress" equals "[FILTERED]"
