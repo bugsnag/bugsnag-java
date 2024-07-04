@@ -2,12 +2,19 @@
 
 ## TBD 
 
+### Enhancements
+
+* Added `redactedKeys` configuration option. This allows you to specify case insensitive keys that should be redacted from the metadata sent to Bugsnag. [#217](https://github.com/bugsnag/bugsnag-java/pull/217)
+
+* Depricating `filters` configuration option. [#217](https://github.com/bugsnag/bugsnag-java/pull/217)
+
+### Bug Fixes
+
 * Update `BugsnagImportSelector` to allow major versions that do not have a minor version.
   fixes [issue #211](https://github.com/bugsnag/bugsnag-java/issues/211).
   [#213](https://github.com/bugsnag/bugsnag-java/pull/213)
 
 * Add a null check for `Severity` to the notify override method. [#214](https://github.com/bugsnag/bugsnag-java/pull/214)
-
 
 ## 3.7.1 (2023-10-25)
 
