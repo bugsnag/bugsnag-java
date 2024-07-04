@@ -7,15 +7,13 @@ import static org.mockito.Mockito.when;
 
 import com.bugsnag.testapp.springboot.TestSpringBootApplication;
 
+import org.aopalliance.intercept.MethodInterceptor;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import org.mockito.Mock;
-
-import org.springframework.aop.framework.AopProxyUtils;
-import org.springframework.aop.framework.ProxyFactoryBean;
-import org.springframework.aop.support.AopUtils;
+import org.springframework.aop.framework.ProxyFactory;
 import org.springframework.beans.factory.NoUniqueBeanDefinitionException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -117,39 +115,22 @@ public class ScheduledTaskConfigurationTest {
     }
 
     @Test
-    public void testSchedulerIsProxy() {
+    public void configureTasks_withProxyWrappedRegistrar() throws NoSuchFieldException, IllegalAccessException {
         ThreadPoolTaskScheduler scheduler = new ThreadPoolTaskScheduler();
-        ProxyFactoryBean proxyFactoryBean = new ProxyFactoryBean();
-        proxyFactoryBean.setTarget(scheduler);
-        proxyFactoryBean.setProxyTargetClass(true);
-        TaskScheduler proxyScheduler = (TaskScheduler) proxyFactoryBean.getObject();
-
-        when(context.getBean(TaskScheduler.class)).thenReturn(proxyScheduler);
-
+        when(context.getBean(TaskScheduler.class)).thenReturn(scheduler);
+        TaskScheduler proxyScheduler = createProxy(scheduler);
+        registrar.setScheduler(proxyScheduler);
+        assertEquals(scheduler, registrar.getScheduler());
         configuration.configureTasks(registrar);
-
-        TaskScheduler resultScheduler = registrar.getScheduler();
-        assertTrue("Expected scheduler to be a proxy", AopUtils.isAopProxy(resultScheduler));
+        Object errorHandler = accessField(scheduler, "errorHandler");
+        assertTrue(errorHandler instanceof BugsnagScheduledTaskExceptionHandler);
     }
 
-    @Test
-    public void testSchedulerUnwrapped() {
-        ThreadPoolTaskScheduler scheduler = new ThreadPoolTaskScheduler();
-        ProxyFactoryBean proxyFactoryBean = new ProxyFactoryBean();
-        proxyFactoryBean.setTarget(scheduler);
-        proxyFactoryBean.setProxyTargetClass(true);
-        TaskScheduler proxyScheduler = (TaskScheduler) proxyFactoryBean.getObject();
-
-        when(context.getBean(TaskScheduler.class)).thenReturn(proxyScheduler);
-
-        configuration.configureTasks(registrar);
-
-        TaskScheduler resultScheduler = registrar.getScheduler();
-        Class<?> targetClass = AopProxyUtils.ultimateTargetClass(resultScheduler);
-        assertEquals("Expected scheduler to be unwrapped", scheduler.getClass(), targetClass);
+    private TaskScheduler createProxy(TaskScheduler target) {
+        ProxyFactory factory = new ProxyFactory(target);
+        factory.addAdvice((MethodInterceptor) invocation -> invocation.proceed());
+        return (TaskScheduler) factory.getProxy();
     }
-
-
 
     private Object accessField(Object object, String fieldName)
             throws NoSuchFieldException, IllegalAccessException {
