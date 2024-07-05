@@ -15,7 +15,6 @@ public class AutoRedactedKeysScenario extends Scenario {
 
     @Override
     public void run() {
-        bugsnag.setFilters("thisisatest");
         bugsnag.notify(generateException(), new Callback() {
             @Override
             public void beforeNotify(Report report) {

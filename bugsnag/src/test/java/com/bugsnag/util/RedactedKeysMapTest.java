@@ -26,7 +26,7 @@ public class RedactedKeysMapTest {
     private Map<String, Object> redactedKeysMap;
 
     /**
-     * Creates a map with filtered, unfiltered, and nested values
+     * Creates a map with redacted, unredacted, and nested values
      * @throws Exception an exception
      */
     @Before
@@ -54,7 +54,7 @@ public class RedactedKeysMapTest {
     public void testIsEmpty() {
         assertFalse(redactedKeysMap.isEmpty());
         Map<String, Object> map = Collections.emptyMap();
-        FilteredMap emptyMap = new FilteredMap(map, Collections.<String>emptyList());
+        RedactedKeysMap emptyMap = new RedactedKeysMap(map, Collections.<String>emptyList());
         assertTrue(emptyMap.isEmpty());
     }
 
