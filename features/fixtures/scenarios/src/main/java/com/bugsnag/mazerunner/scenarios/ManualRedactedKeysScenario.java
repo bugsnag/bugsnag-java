@@ -21,8 +21,8 @@ public class ManualRedactedKeysScenario extends Scenario {
         bugsnag.notify(generateException(), new Callback() {
             @Override
             public void beforeNotify(Report report) {
-                report.addToTab("user", "foo", "hunter2");
-                report.addToTab("custom", "abcd", "hunter2");
+                report.addToTab("custom", "foo", "hunter2");
+                report.addToTab("user", "abcd", "hunter2");
                 report.addToTab("custom", "bar", "hunter2");
             }
         });
