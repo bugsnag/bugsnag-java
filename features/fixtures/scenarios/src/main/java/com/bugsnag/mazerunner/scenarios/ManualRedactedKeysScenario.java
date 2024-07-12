@@ -16,7 +16,7 @@ public class ManualRedactedKeysScenario extends Scenario {
     @Override
     public void run() {
 
-        bugsnag.setRedactedKeys("foo");
+        bugsnag.setFilters("foo");
 
         bugsnag.notify(generateException(), new Callback() {
             @Override
