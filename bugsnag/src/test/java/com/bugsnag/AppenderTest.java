@@ -144,11 +144,6 @@ public class AppenderTest {
         assertEquals("gradleTask", config.appType);
         assertFalse(config.shouldAutoCaptureSessions());
 
-        assertEquals(2, config.filters.length);
-        ArrayList<String> filters = new ArrayList<String>(Arrays.asList(config.filters));
-        assertTrue(filters.contains("ipAddress"));
-        assertTrue(filters.contains("logLevel"));
-
         assertEquals(2, config.redactedKeys.length);
         ArrayList<String> redactedKeys = new ArrayList<String>(Arrays.asList(config.redactedKeys));
         assertTrue(redactedKeys.contains("password"));
@@ -281,29 +276,6 @@ public class AppenderTest {
     @Test
     public void testFilters() {
 
-        // Add some meta data which should be filtered by key name
-        Bugsnag.addThreadMetaData("myTab", "ipAddress", "ipAddress value");
-        Bugsnag.addThreadMetaData("myTab", "logLevel", "log level value");
-        Bugsnag.addThreadMetaData("myTab", "mysecret", "not filtered");
-
-        // Send a log message
-        LOGGER.warn("Exception with filtered meta data", new RuntimeException("test"));
-
-        // Check that a report was sent to Bugsnag
-        assertEquals(1, delivery.getNotifications().size());
-
-        Notification notification = delivery.getNotifications().get(0);
-        assertTrue(notification.getEvents().get(0).getMetaData().containsKey("myTab"));
-        Map<String, Object> myTab = getMetaDataMap(notification, "myTab");
-
-        assertEquals("[FILTERED]", myTab.get("ipAddress"));
-        assertEquals("[FILTERED]", myTab.get("logLevel"));
-        assertEquals("not filtered", myTab.get("mysecret"));
-    }
-
-    @Test
-    public void testRedactedKeys() {
-
         // Add some meta data which should be redacted by key name
         Bugsnag.addThreadMetaData("myTab", "password", "password value");
         Bugsnag.addThreadMetaData("myTab", "credit_card_number", "card number");
@@ -316,8 +288,8 @@ public class AppenderTest {
         assertEquals(1, delivery.getNotifications().size());
 
         Notification notification = delivery.getNotifications().get(0);
-        assertTrue(notification.getEvents().get(0).getRedactedMetaData().containsKey("myTab"));
-        Map<String, Object> myTab = getRedactedMetaDataMap(notification, "myTab");
+        assertTrue(notification.getEvents().get(0).getMetaData().containsKey("myTab"));
+        Map<String, Object> myTab = getMetaDataMap(notification, "myTab");
 
         assertEquals("[REDACTED]", myTab.get("password"));
         assertEquals("[REDACTED]", myTab.get("credit_card_number"));
@@ -344,7 +316,7 @@ public class AppenderTest {
         });
 
         // Send a log message
-        LOGGER.warn("Exception with filtered meta data", new RuntimeException("test"));
+        LOGGER.warn("Exception with redacted meta data", new RuntimeException("test"));
 
         // Check that a report was sent to Bugsnag
         assertEquals(1, delivery.getNotifications().size());
@@ -449,17 +421,5 @@ public class AppenderTest {
     @SuppressWarnings (value = "unchecked")
     private Map<String, Object> getMetaDataMap(Notification notification, String key) {
         return ((Map<String, Object>) notification.getEvents().get(0).getMetaData().get(key));
-    }
-
-    /**
-     * Gets a hashmap key from the meta data in a notification
-     *
-     * @param notification The notification
-     * @param key The key to get
-     * @return The hash map
-     */
-    @SuppressWarnings (value = "unchecked")
-    private Map<String, Object> getRedactedMetaDataMap(Notification notification, String key) {
-        return ((Map<String, Object>) notification.getEvents().get(0).getRedactedMetaData().get(key));
     }
 }

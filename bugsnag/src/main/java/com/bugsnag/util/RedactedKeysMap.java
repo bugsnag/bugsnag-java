@@ -14,37 +14,34 @@ public class RedactedKeysMap implements Map<String, Object> {
 
     private static final String REDACTED_PLACEHOLDER = "[REDACTED]";
 
-    private final Map<String, Object> redactedCopy;
-    private final Collection<Pattern> keyRedacts = new ArrayList<>();
+    private final Map<String, Object> redactedKeyCopy;
+    private final Collection<Pattern> keyRedactedPatterns = new ArrayList<>();
 
     /**
-     * Constructs a new RedactedKeysMap with the specified map and key.
-     * RedactedKeys can be plain strings or regex patterns. The key matching is case-insensitive.
+     * Constructs a new RedactedKeysMap by copying the provided map and applying
+     * redaction rules to the specified keys.
      *
-     * @param map        the original map to be decorated with redacted values
-     * @param keyRedacts a collection of strings representing keys to be redacted.
-     *                   Plain strings and regex patterns are supported.
+     * @param map the original map to be wrapped and redacted
+     * @param keyRedacted a collection of keys (or regex patterns) whose values should be redacted
      */
-    public RedactedKeysMap(Map<String, Object> map, Collection<String> keyRedacts) {
-        for (String key : keyRedacts) {
-            if (isRegexPattern(key)) {
-                this.keyRedacts.add(Pattern.compile(key, Pattern.CASE_INSENSITIVE));
-            } else {
-                this.keyRedacts.add(Pattern.compile(Pattern.quote(key), Pattern.CASE_INSENSITIVE));
-            }
+    public RedactedKeysMap(Map<String, Object> map, Collection<String> keyRedacted) {
+        for (String key : keyRedacted) {
+            this.keyRedactedPatterns.add(Pattern.compile(key, Pattern.CASE_INSENSITIVE));
         }
-        this.redactedCopy = createCopy(map);
+        this.redactedKeyCopy = createCopy(map);
     }
 
-    private boolean isRegexPattern(String key) {
-        return key.matches(".*[.\\*\\+\\?\\^\\$\\[\\]\\(\\)\\{\\}\\|\\\\].*");
-    }
-
+    /**
+     * Creates a copy of the given map, applying redaction rules to the specified keys.
+     *
+     * @param map the original map to be copied and redacted
+     * @return a new map with the same entries as the original, but with redacted values where applicable
+     */
     private Map<String, Object> createCopy(Map<? extends String, ?> map) {
         Map<String, Object> copy = new HashMap<>();
-        for (Map.Entry<? extends String, ?> entry : map.entrySet()) {
+        for (Entry<? extends String, ?> entry : map.entrySet()) {
             if (entry.getValue() == null) {
-                copy.put(entry.getKey(), null);
+                copy.put(entry.getKey(), entry.getValue());
             } else {
                 Object transformedValue = transformEntry(entry.getKey(), entry.getValue());
                 copy.put(entry.getKey(), transformedValue);
@@ -55,95 +52,95 @@ public class RedactedKeysMap implements Map<String, Object> {
 
     @Override
     public int size() {
-        return redactedCopy.size();
+        return redactedKeyCopy.size();
     }
 
     @Override
     public boolean isEmpty() {
-        return redactedCopy.isEmpty();
+        return redactedKeyCopy.isEmpty();
     }
 
     @Override
     public boolean containsKey(Object key) {
-        return redactedCopy.containsKey(key);
+        return redactedKeyCopy.containsKey(key);
     }
 
     @Override
     public boolean containsValue(Object value) {
-        return redactedCopy.containsValue(value);
+        return redactedKeyCopy.containsValue(value);
     }
 
     @Override
     public Object get(Object key) {
-        return redactedCopy.get(key);
+        return redactedKeyCopy.get(key);
     }
 
     @Override
     public Object put(String key, Object value) {
         if (value == null) {
-            return redactedCopy.put(key, null);
+            return redactedKeyCopy.put(key, null);
         }
         Object transformedValue = transformEntry(key, value);
-        return redactedCopy.put(key, transformedValue);
+        return redactedKeyCopy.put(key, transformedValue);
     }
 
     @Override
     public Object remove(Object key) {
-        return redactedCopy.remove(key);
+        return redactedKeyCopy.remove(key);
     }
 
     @Override
     public void putAll(Map<? extends String, ?> mapValues) {
         Map<String, Object> copy = createCopy(mapValues);
-        redactedCopy.putAll(copy);
+        redactedKeyCopy.putAll(copy);
     }
 
     @Override
     public void clear() {
-        redactedCopy.clear();
+        redactedKeyCopy.clear();
     }
 
     @Override
     public Set<String> keySet() {
-        return redactedCopy.keySet();
+        return redactedKeyCopy.keySet();
     }
 
     @Override
     public Collection<Object> values() {
-        return redactedCopy.values();
+        return redactedKeyCopy.values();
     }
 
     @Override
-    public Set<Map.Entry<String, Object>> entrySet() {
-        return redactedCopy.entrySet();
+    public Set<Entry<String, Object>> entrySet() {
+        return redactedKeyCopy.entrySet();
     }
 
     @SuppressWarnings("unchecked")
-    private Object transformEntry(String key, Object value) {
+    private Object transformEntry(Object key, Object value) {
         if (value instanceof Map) {
-            return new RedactedKeysMap((Map<String, Object>) value, extractRedactedPatterns());
+            return new RedactedKeysMap((Map<String, Object>) value, convertPatternsToStrings());
         }
-        return shouldRedactKey(key) ? REDACTED_PLACEHOLDER : value;
-    }
-
-    private Collection<String> extractRedactedPatterns() {
-        Collection<String> patterns = new ArrayList<>();
-        for (Pattern pattern : keyRedacts) {
-            patterns.add(pattern.pattern());
-        }
-        return patterns;
+        return shouldRedactKey((String) key) ? REDACTED_PLACEHOLDER : value;
     }
 
     private boolean shouldRedactKey(String key) {
-        if (keyRedacts == null || key == null) {
+        if (keyRedactedPatterns == null || key == null) {
             return false;
         }
 
-        for (Pattern redactPattern : keyRedacts) {
-            if (redactPattern.matcher(key).find()) {
+        for (Pattern pattern : keyRedactedPatterns) {
+            if (pattern.matcher(key).find()) {
                 return true;
             }
         }
         return false;
+    }
+
+    private Collection<String> convertPatternsToStrings() {
+        Collection<String> patterns = new ArrayList<>();
+        for (Pattern pattern : keyRedactedPatterns) {
+            patterns.add(pattern.pattern());
+        }
+        return patterns;
     }
 }

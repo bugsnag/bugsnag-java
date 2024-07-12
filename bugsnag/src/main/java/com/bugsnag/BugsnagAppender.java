@@ -48,9 +48,6 @@ public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
     /** Bugsnag error server endpoint. */
     private String endpoint;
 
-    /** Property names that should be filtered out before sending to Bugsnag servers. */
-    private Set<String> filteredProperties = new HashSet<String>();
-
     /** Property names that should be redacted out before sending to Bugsnag servers. */
     private Set<String> redactedKeyProperties = new HashSet<String>();
 
@@ -257,12 +254,8 @@ public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
             bugsnag.setTimeout(timeout);
         }
 
-        if (filteredProperties.size() > 0) {
-            bugsnag.setFilters(filteredProperties.toArray(new String[0]));
-        }
-
         if (redactedKeyProperties.size() > 0) {
-            bugsnag.setRedactedKeys(redactedKeyProperties.toArray(new String[0]));
+            bugsnag.setFilters(redactedKeyProperties.toArray(new String[0]));
         }
 
         bugsnag.setIgnoreClasses(ignoredClasses.toArray(new String[0]));
@@ -381,35 +374,13 @@ public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
     }
 
     /**
-     * @see Bugsnag#setFilters(String...)
-     */
-    public void setFilteredProperty(String filter) {
-        this.filteredProperties.add(filter);
-
-        if (bugsnag != null) {
-            bugsnag.setFilters(this.filteredProperties.toArray(new String[0]));
-        }
-    }
-
-    /**
-     * @see Bugsnag#setFilters(String...)
-     */
-    public void setFilteredProperties(String filters) {
-        this.filteredProperties.addAll(split(filters));
-
-        if (bugsnag != null) {
-            bugsnag.setFilters(this.filteredProperties.toArray(new String[0]));
-        }
-    }
-
-    /**
      * @see Bugsnag#setRedactedKeys(String...)
      */
     public void setRedactedKeysProperty(String redactedKey) {
         this.redactedKeyProperties.add(redactedKey);
 
         if (bugsnag != null) {
-            bugsnag.setRedactedKeys(this.redactedKeyProperties.toArray(new String[0]));
+            bugsnag.setFilters(this.redactedKeyProperties.toArray(new String[0]));
         }
     }
 
@@ -420,7 +391,7 @@ public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
         this.redactedKeyProperties.addAll(split(redactedKeys));
 
         if (bugsnag != null) {
-            bugsnag.setRedactedKeys(this.redactedKeyProperties.toArray(new String[0]));
+            bugsnag.setFilters(this.redactedKeyProperties.toArray(new String[0]));
         }
     }
 

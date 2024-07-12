@@ -7,9 +7,6 @@
 
         <appType>gradleTask</appType>
 
-        <filteredProperty>ipAddress</filteredProperty>
-        <filteredProperty>logLevel</filteredProperty>
-
         <redactedKeysProperty>password</redactedKeysProperty>
         <redactedKeysProperty>credit_card_number</redactedKeysProperty>
 
