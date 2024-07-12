@@ -15,7 +15,7 @@ Scenario: Adding a custom metadata redactedKeys
     And the error is valid for the error reporting API version "4" for the "Bugsnag Java" notifier
     And the exception "message" equals "ManualRedactedKeysScenario"
     And the event "metaData.custom.foo" equals "[REDACTED]"
-    And the event "metaData.user.foo" equals "[REDACTED]"
+    And the event "metaData.user.abcd" equals "[REDACTED]"
     And the event "metaData.custom.bar" equals "hunter2"
 
 Scenario: Adding a thread metadata redactedKeys using logback

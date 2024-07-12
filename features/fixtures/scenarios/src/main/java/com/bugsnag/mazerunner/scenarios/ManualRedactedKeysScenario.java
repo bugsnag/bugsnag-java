@@ -16,13 +16,13 @@ public class ManualRedactedKeysScenario extends Scenario {
     @Override
     public void run() {
 
-        bugsnag.setFilters("foo");
+        bugsnag.setFilters("foo", "[a-zA-Z]{4}");
 
         bugsnag.notify(generateException(), new Callback() {
             @Override
             public void beforeNotify(Report report) {
                 report.addToTab("user", "foo", "hunter2");
-                report.addToTab("custom", "foo", "hunter2");
+                report.addToTab("custom", "abcd", "hunter2");
                 report.addToTab("custom", "bar", "hunter2");
             }
         });
