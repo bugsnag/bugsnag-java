@@ -233,7 +233,7 @@ public class Bugsnag implements Closeable {
      * or credit card information is stripped from metaData you send to Bugsnag.
      * Any keys in metaData which contain these strings will be marked as
      * [REDACTED] when send to Bugsnag.
-     * @deprecated to be removed in 4.0.0, use {@link Configuration#setRedactedKeys(String...)} instead
+     * @deprecated to be removed and replaced with setRedactedKeys
      *
      * @param redactedKeys a list of String keys to redact from metaData
      */

@@ -374,7 +374,7 @@ public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
     }
 
     /**
-     * @see Bugsnag#setRedactedKeys(String...)
+     * @see Bugsnag#setFilters(String...)
      */
     public void setRedactedKeysProperty(String redactedKey) {
         this.redactedKeyProperties.add(redactedKey);
@@ -385,7 +385,7 @@ public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
     }
 
     /**
-     * @see Bugsnag#setRedactedKeys(String...)
+     * @see Bugsnag#setFilters(String...)
      */
     public void setRedactedKeysProperties(String redactedKeys) {
         this.redactedKeyProperties.addAll(split(redactedKeys));
