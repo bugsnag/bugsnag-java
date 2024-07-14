@@ -18,6 +18,12 @@ Scenario: Sends a handled exception which includes custom metadata added in a no
     And the error is valid for the error reporting API version "4" for the "Bugsnag Spring" notifier
     And the event "metaData.Custom.foo" equals "Hello World!"
 
+Scenario: Sends a handled exception which includes non serialiable metadata added in a notify callback
+    When I run "NonSerializableMetaDataScenario" with the defaults
+    And I wait to receive an error
+    And the error is valid for the error reporting API version "4" for the "Bugsnag Spring" notifier
+    And the event "metaData.Custom.foo" is null
+
 Scenario: Test logback appender with meta data in the config file
     When I run "LogbackScenario" with logback config "meta_data_config.xml"
     And I wait to receive an error
@@ -160,5 +166,3 @@ Scenario: Test thread meta data in spring boot scheduled task
     And the error is valid for the error reporting API version "4" for the "Bugsnag Spring" notifier
     And the event "metaData.thread.key1" is null
     And the event "metaData.thread.key2" equals "should be included in meta data"
-
-
