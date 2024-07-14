@@ -3,8 +3,6 @@ package com.bugsnag;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
-import java.util.logging.Logger;
-
 import org.junit.Test;
 
 import java.util.Map;
