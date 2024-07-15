@@ -8,6 +8,8 @@
 
 * Add a null check for `Severity` to the notify override method. [#214](https://github.com/bugsnag/bugsnag-java/pull/214)
 
+* Add handling for non serializable object passed to metadata. [#219](https://github.com/bugsnag/bugsnag-java/pull/219)
+
 
 ## 3.7.1 (2023-10-25)
 
