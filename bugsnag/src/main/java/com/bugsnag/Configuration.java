@@ -39,6 +39,7 @@ public class Configuration {
     public Delivery sessionDelivery =
             new AsyncHttpDelivery(SyncHttpDelivery.DEFAULT_SESSION_ENDPOINT);
     public String[] redactedKeys = new String[]{"password", "secret", "Authorization", "Cookie"};
+    public String[] filters = new String[]{"password", "secret", "Authorization", "Cookie"};
     public String[] ignoreClasses;
     public String[] notifyReleaseStages = null;
     public String[] projectPackages;

@@ -165,7 +165,7 @@ public class BugsnagTest {
 
     @Test
     public void testRedactedKeys() {
-        bugsnag.setFilters("testfilter1", "testfilter2");
+        bugsnag.setRedactedKeys("testfilter1", "testfilter2");
         bugsnag.setDelivery(new Delivery() {
             @SuppressWarnings("unchecked")
             @Override

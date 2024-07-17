@@ -19,7 +19,7 @@ Scenario: Adding a custom metadata redactedKeys
     And the event "metaData.custom.bar" equals "hunter2"
 
 Scenario: Adding a thread metadata redactedKeys using logback
-    When I run "LogbackThreadMetaDataScenario" with logback config "meta_data_redactedKeys_config.xml"
+    When I run "LogbackThreadMetaDataScenario" with logback config "redactedKeys_config.xml"
     And I wait to receive an error
     And the error is valid for the error reporting API version "4" for the "Bugsnag Java" notifier
     And the exception "message" equals "LogbackThreadMetaDataScenario"
@@ -27,7 +27,7 @@ Scenario: Adding a thread metadata redactedKeys using logback
     And the event "metaData.thread.bar" equals "threadvalue2"
 
 Scenario: Adding a custom metadata redactedKeys using logback
-    When I run "LogbackMetaDataScenario" with logback config "meta_data_redactedKeys_config.xml"
+    When I run "LogbackMetaDataScenario" with logback config "redactedKeys_config.xml"
     And I wait to receive an error
     And the error is valid for the error reporting API version "4" for the "Bugsnag Java" notifier
     And the exception "message" equals "LogbackMetaDataScenario"

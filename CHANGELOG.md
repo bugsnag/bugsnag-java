@@ -2,11 +2,9 @@
 
 ## TBD 
 
-### Enhancements
+### Changed
 
-* Added `redactedKeys` configuration option. This allows you to specify case insensitive keys that should be redacted from the metadata sent to Bugsnag. [#217](https://github.com/bugsnag/bugsnag-java/pull/217)
-
-* Depricating `filters` configuration option. [#217](https://github.com/bugsnag/bugsnag-java/pull/217)
+- Renamed the configuration option `filters` to `redactedKeys`. `filters` is now marked as deprecated and will be removed in the next major release. [#217](https://github.com/bugsnag/bugsnag-java/pull/217)
 
 ### Bug Fixes
 
