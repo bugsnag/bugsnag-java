@@ -135,30 +135,39 @@ dependencies {
     compileJavax "org.springframework:spring-webmvc:${javaxSpringVersion}"
     compileJavax "org.springframework.boot:spring-boot:${javaxSpringBootVersion}"
     compileJavax "org.springframework:spring-aop:${javaxSpringVersion}"
+    compileJavax "aopalliance:aopalliance:${aopAllianceVersion}"
+    compileJavax "org.springframework:spring-context:${javaxSpringVersion}"
 
     compileJakarta "jakarta.servlet:jakarta.servlet-api:${jakartaServletApiVersion}"
     compileJakarta "org.springframework:spring-webmvc:${jakartaSpringVersion}"
     compileJakarta "org.springframework.boot:spring-boot:${jakartaSpringBootVersion}"
     compileJakarta "org.springframework:spring-aop:${jakartaSpringVersion}"
+    compileJakarta "aopalliance:aopalliance:${aopAllianceVersion}"
+    compileJakarta "org.springframework:spring-context:${jakartaSpringVersion}"
+
 
     commonTestImplementation project(':bugsnag').sourceSets.test.output
     commonTestImplementation project(':bugsnag')
 
     commonTestImplementation "junit:junit:${junitVersion}"
-
+    
     commonTestCompileOnly "org.mockito:mockito-core:2.10.0"
-
+    
     jakartaTestImplementation "org.mockito:mockito-core:${mockitoVersion}"
     jakartaTestImplementation "jakarta.servlet:jakarta.servlet-api:${jakartaServletApiVersion}"
     jakartaTestImplementation "org.springframework.boot:spring-boot-starter-test:${jakartaSpringBootVersion}"
     jakartaTestImplementation "org.springframework.boot:spring-boot-starter-web:${jakartaSpringBootVersion}"
     jakartaTestImplementation "org.springframework:spring-aop:${jakartaSpringVersion}"
+    jakartaTestImplementation "org.springframework:spring-context:${jakartaSpringVersion}"
+    jakartaTestImplementation "aopalliance:aopalliance:${aopAllianceVersion}"
 
     javaxTestImplementation "org.mockito:mockito-core:2.10.0"
     javaxTestImplementation "javax.servlet:javax.servlet-api:${javaxServletApiVersion}"
     javaxTestImplementation "org.springframework.boot:spring-boot-starter-test:${javaxSpringBootVersion}"
     javaxTestImplementation "org.springframework.boot:spring-boot-starter-web:${javaxSpringBootVersion}"
     javaxTestImplementation "org.springframework:spring-aop:${javaxSpringVersion}"
+    javaxTestImplementation "org.springframework:spring-context:${javaxSpringVersion}"
+    javaxTestImplementation "aopalliance:aopalliance:${aopAllianceVersion}"
 }
 
 dependencies {

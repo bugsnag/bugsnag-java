@@ -8,13 +8,11 @@ import static org.mockito.Mockito.when;
 
 import com.bugsnag.testapp.springboot.TestSpringBootApplication;
 
-import org.aopalliance.intercept.MethodInterceptor;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import org.mockito.Mock;
-import org.springframework.aop.framework.ProxyFactory;
 import org.springframework.beans.factory.NoUniqueBeanDefinitionException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -119,7 +117,7 @@ public class ScheduledTaskConfigurationTest {
     public void configureTasks_withProxyWrappedRegistrar() throws NoSuchFieldException, IllegalAccessException {
         ThreadPoolTaskScheduler scheduler = new ThreadPoolTaskScheduler();
         when(context.getBean(TaskScheduler.class)).thenReturn(scheduler);
-        TaskScheduler proxyScheduler = createProxy(scheduler);
+        TaskScheduler proxyScheduler = TestUtils.createProxy(scheduler);
         registrar.setScheduler(proxyScheduler);
         Object errorHandler = accessField(scheduler, "errorHandler");
         assertFalse(
@@ -132,12 +130,6 @@ public class ScheduledTaskConfigurationTest {
                 "errorHandler should be BugsnagScheduledTaskExceptionHandler",
                 errorHandler instanceof BugsnagScheduledTaskExceptionHandler
         );
-    }
-
-    private TaskScheduler createProxy(TaskScheduler target) {
-        ProxyFactory factory = new ProxyFactory(target);
-        factory.addAdvice((MethodInterceptor) invocation -> invocation.proceed());
-        return (TaskScheduler) factory.getProxy();
     }
 
     private Object accessField(Object object, String fieldName)

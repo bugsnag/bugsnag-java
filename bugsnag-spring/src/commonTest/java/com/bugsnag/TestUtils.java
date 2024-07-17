@@ -6,8 +6,11 @@ import static org.mockito.Mockito.verify;
 import com.bugsnag.delivery.Delivery;
 import com.bugsnag.serialization.Serializer;
 
+import org.aopalliance.intercept.MethodInterceptor;
 import org.mockito.ArgumentCaptor;
 import org.mockito.ArgumentMatchers;
+import org.springframework.aop.framework.ProxyFactory;
+import org.springframework.scheduling.TaskScheduler;
 
 import java.util.Map;
 
@@ -28,5 +31,11 @@ class TestUtils {
 
     static <K, V> Map<K, V> anyMapOf(Class<K> keyClazz, Class<V> valueClazz) {
         return ArgumentMatchers.anyMap();
+    }
+
+    static TaskScheduler createProxy(TaskScheduler target) {
+        ProxyFactory factory = new ProxyFactory(target);
+        factory.addAdvice((MethodInterceptor) invocation -> invocation.proceed());
+        return (TaskScheduler) factory.getProxy();
     }
 }
