@@ -5,7 +5,7 @@ ext {
     slf4jApiVersion = "1.7.25"
     junitVersion = "4.13.2"
     mockitoVersion = "5.0.0"
-    aopallianceVersion = "1.0"
+    aopAllianceVersion = "1.0"
 }
 
 if (JavaVersion.current().isJava8Compatible()) {
