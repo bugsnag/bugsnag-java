@@ -375,9 +375,10 @@ public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
 
     /**
      * @see Bugsnag#setFilters(String...)
+     * @deprecated use #setRedactedKey(String) instead
      */
     @Deprecated
-    public void setFilterProperty(String filter) {
+    public void setFilteredProperty(String filter) {
         this.redactedKeys.add(filter);
 
         if (bugsnag != null) {
@@ -387,9 +388,10 @@ public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
 
     /**
      * @see Bugsnag#setFilters(String...)
+     * @deprecated use #setRedactedKeys(String) instead
      */
     @Deprecated
-    public void setFilterProperties(String filters) {
+    public void setFilteredProperties(String filters) {
         this.redactedKeys.addAll(split(filters));
 
         if (bugsnag != null) {
