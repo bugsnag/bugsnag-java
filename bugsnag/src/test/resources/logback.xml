@@ -7,7 +7,7 @@
 
         <appType>gradleTask</appType>
 
-        <redactedKeys>password</redactedKeys>
+        <redactedKey>password</redactedKey>
         <redactedKeys>credit_card_number</redactedKeys>
 
         <ignoredClass>java.io.IOException</ignoredClass>
