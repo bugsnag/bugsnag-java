@@ -19,6 +19,7 @@ import java.net.InetSocketAddress;
 import java.net.Proxy;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -48,8 +49,8 @@ public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
     /** Bugsnag error server endpoint. */
     private String endpoint;
 
-    /** Property names that should be redacted out before sending to Bugsnag servers. */
-    private Set<String> redactedKeys = new HashSet<String>();
+    /** Property names that should be redacted before sending to Bugsnag servers. */
+    private Set<Pattern> redactedKeys = new HashSet<Pattern>();
 
     /** Exception classes to be ignored. */
     private Set<String> ignoredClasses = new HashSet<String>();
@@ -255,7 +256,7 @@ public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
         }
 
         if (redactedKeys.size() > 0) {
-            bugsnag.setRedactedKeys(redactedKeys.toArray(new String[0]));
+            bugsnag.setRedactedKeys(redactedKeys.toArray(new Pattern[0]));
         }
 
         bugsnag.setIgnoreClasses(ignoredClasses.toArray(new String[0]));
@@ -379,10 +380,10 @@ public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
      */
     @Deprecated
     public void setFilteredProperty(String filter) {
-        this.redactedKeys.add(filter);
+        this.redactedKeys.add(Pattern.compile(filter));
 
         if (bugsnag != null) {
-            bugsnag.setRedactedKeys(this.redactedKeys.toArray(new String[0]));
+            bugsnag.setRedactedKeys(this.redactedKeys.toArray(new Pattern[0]));
         }
     }
 
@@ -391,33 +392,33 @@ public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
      * @deprecated use #setRedactedKeys(String) instead
      */
     @Deprecated
-    public void setFilteredProperties(String filters) {
-        this.redactedKeys.addAll(split(filters));
+    public void setFilteredProperties(Collection<String> filters) {
+        this.redactedKeys.addAll(convertStringsToPatterns(filters));
 
         if (bugsnag != null) {
-            bugsnag.setRedactedKeys(this.redactedKeys.toArray(new String[0]));
+            bugsnag.setRedactedKeys(this.redactedKeys.toArray(new Pattern[0]));
         }
     }
 
     /**
      * @see Bugsnag#setRedactedKeys(String...)
      */
-    public void setRedactedKey(String redactedKey) {
-        this.redactedKeys.add(redactedKey);
+    public void setRedactedKey(Pattern redactedKey) {
+        this.redactedKeys.add((redactedKey));
 
         if (bugsnag != null) {
-            bugsnag.setRedactedKeys(this.redactedKeys.toArray(new String[0]));
+            bugsnag.setRedactedKeys(this.redactedKeys.toArray(new Pattern[0]));
         }
     }
 
     /**
      * @see Bugsnag#setRedactedKeys(String...)
      */
-    public void setRedactedKeys(String redactedKeys) {
-        this.redactedKeys.addAll(split(redactedKeys));
+    public void setRedactedKeys(Collection<Pattern> redactedKeys) {
+        this.redactedKeys.addAll(redactedKeys);
 
         if (bugsnag != null) {
-            bugsnag.setRedactedKeys(this.redactedKeys.toArray(new String[0]));
+            bugsnag.setRedactedKeys(this.redactedKeys.toArray(new Pattern[0]));
         }
     }
 
@@ -583,6 +584,20 @@ public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
      */
     public Bugsnag getClient() {
         return bugsnag;
+    }
+
+    /**
+     * Converts a collection of strings to a collection of patterns.
+     *
+     * @param strings the collection of strings to convert
+     * @return a collection of patterns
+     */
+    private Collection<Pattern> convertStringsToPatterns(Collection<String> strings) {
+        Collection<Pattern> patterns = new HashSet<>();
+        for (String str : strings) {
+            patterns.add(Pattern.compile(str));
+        }
+        return patterns;
     }
 
     /**

@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 
 /**
@@ -144,10 +145,15 @@ public class AppenderTest {
         assertEquals("gradleTask", config.appType);
         assertFalse(config.shouldAutoCaptureSessions());
 
-        assertEquals(2, config.redactedKeys.length);
-        ArrayList<String> redactedKeys = new ArrayList<String>(Arrays.asList(config.redactedKeys));
-        assertTrue(redactedKeys.contains("password"));
-        assertTrue(redactedKeys.contains("credit_card_number"));
+        assertEquals(4, config.redactedKeys.length);
+        List<Pattern> redactedKeys = new ArrayList<Pattern>(Arrays.asList(config.redactedKeys));
+        assertTrue(containsPattern(redactedKeys, "password", Pattern.CASE_INSENSITIVE));
+        assertTrue(containsPattern(redactedKeys, "authorization", Pattern.CASE_INSENSITIVE));
+
+        assertEquals(4, config.filters.length);
+        List<String> filters = new ArrayList<String>(Arrays.asList(config.filters));
+        assertTrue(filters.contains("password"));
+        assertTrue(filters.contains("Authorization"));
 
         assertEquals(2, config.ignoreClasses.length);
         ArrayList<String> ignoreClasses
@@ -292,8 +298,8 @@ public class AppenderTest {
         Map<String, Object> myTab = getMetaDataMap(notification, "myTab");
 
         assertEquals("[REDACTED]", myTab.get("password"));
-        assertEquals("[REDACTED]", myTab.get("credit_card_number"));
-        assertEquals("not redacted", myTab.get("mysecret"));
+        assertEquals("card number", myTab.get("credit_card_number"));
+        assertEquals("[REDACTED]", myTab.get("mysecret"));
     }
 
     @Test
@@ -421,5 +427,22 @@ public class AppenderTest {
     @SuppressWarnings (value = "unchecked")
     private Map<String, Object> getMetaDataMap(Notification notification, String key) {
         return ((Map<String, Object>) notification.getEvents().get(0).getMetaData().get(key));
+    }
+
+    /**
+    * Checks if the given list of objects contains a pattern with the specified regex and flags.
+    *
+    * @param patterns the list of objects to search through
+    * @param regex the regular expression string to match
+    * @param flags the match flags, a bit mask that may include #CASE_INSENSITIVE, #LITERAL}, etc.
+    * @return {@code true} if a pattern with the specified regex and flags is found in the list, {@code false} otherwise
+    */
+    private static boolean containsPattern(List<Pattern> patterns, String regex, int flags) {
+        for (Pattern pattern : patterns) {
+            if (pattern.pattern().equals(regex) && pattern.flags() == flags) {
+                return true;
+            }
+        }
+        return false;
     }
 }

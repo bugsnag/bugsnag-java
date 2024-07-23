@@ -24,10 +24,8 @@ public class RedactedKeysMap implements Map<String, Object> {
      * @param map the original map to be wrapped and redacted
      * @param keyRedacted a collection of keys (or regex patterns) whose values should be redacted
      */
-    public RedactedKeysMap(Map<String, Object> map, Collection<String> keyRedacted) {
-        for (String key : keyRedacted) {
-            this.keyRedactedPatterns.add(Pattern.compile(key, Pattern.CASE_INSENSITIVE));
-        }
+    public RedactedKeysMap(Map<String, Object> map, Collection<Pattern> keyRedacted) {
+        this.keyRedactedPatterns.addAll(keyRedacted);
         this.redactedKeyCopy = createCopy(map);
     }
 
@@ -118,13 +116,13 @@ public class RedactedKeysMap implements Map<String, Object> {
     @SuppressWarnings("unchecked")
     private Object transformEntry(Object key, Object value) {
         if (value instanceof Map) {
-            return new RedactedKeysMap((Map<String, Object>) value, convertPatternsToStrings());
+            return new RedactedKeysMap((Map<String, Object>) value, keyRedactedPatterns);
         }
         return shouldRedactKey((String) key) ? REDACTED_PLACEHOLDER : value;
     }
 
     private boolean shouldRedactKey(String key) {
-        if (keyRedactedPatterns == null || key == null) {
+        if (key == null) {
             return false;
         }
 
@@ -134,13 +132,5 @@ public class RedactedKeysMap implements Map<String, Object> {
             }
         }
         return false;
-    }
-
-    private Collection<String> convertPatternsToStrings() {
-        Collection<String> patterns = new ArrayList<>();
-        for (Pattern pattern : keyRedactedPatterns) {
-            patterns.add(pattern.pattern());
-        }
-        return patterns;
     }
 }

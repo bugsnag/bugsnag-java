@@ -15,8 +15,8 @@ public class ManualRedactedKeysScenario extends Scenario {
 
     @Override
     public void run() {
-
-        bugsnag.setFilters("foo", "[a-zA-Z]{4}");
+        Pattern pattern = Pattern.compile("[a-zA-Z]{4}");
+        bugsnag.setRedactedKeys(Pattern.compile("foo"), pattern);
 
         bugsnag.notify(generateException(), new Callback() {
             @Override

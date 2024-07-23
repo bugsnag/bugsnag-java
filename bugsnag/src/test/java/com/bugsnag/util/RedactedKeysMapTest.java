@@ -12,6 +12,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 public class RedactedKeysMapTest {
 
@@ -31,18 +32,18 @@ public class RedactedKeysMapTest {
      */
     @Before
     public void setUp() {
-        HashMap<String, Object> map = new HashMap<String, Object>();
+        HashMap<String, Object> map = new HashMap<>();
         map.put(KEY_UNREDACTED, VAL_UNREDACTED);
         map.put(KEY_REDACTED, VAL_REDACTED);
 
-        HashMap<String, Object> nestedMap = new HashMap<String, Object>();
+        HashMap<String, Object> nestedMap = new HashMap<>();
         nestedMap.put(KEY_UNREDACTED, VAL_UNREDACTED);
         nestedMap.put(KEY_REDACTED, VAL_REDACTED);
         map.put(KEY_NESTED, nestedMap);
 
         map.put(KEY_UNMODIFIABLE, Collections.unmodifiableMap(nestedMap));
 
-        this.redactedKeysMap = new RedactedKeysMap(map, Collections.singleton(KEY_REDACTED));
+        this.redactedKeysMap = new RedactedKeysMap(map, Collections.singleton(Pattern.compile(KEY_REDACTED)));
     }
 
     @Test
@@ -54,7 +55,7 @@ public class RedactedKeysMapTest {
     public void testIsEmpty() {
         assertFalse(redactedKeysMap.isEmpty());
         Map<String, Object> map = Collections.emptyMap();
-        RedactedKeysMap emptyMap = new RedactedKeysMap(map, Collections.<String>emptyList());
+        RedactedKeysMap emptyMap = new RedactedKeysMap(map, Collections.<Pattern>emptyList());
         assertTrue(emptyMap.isEmpty());
     }
 
@@ -75,12 +76,12 @@ public class RedactedKeysMapTest {
 
     @Test
     public void testRemove() {
-        HashMap<String, Object> map = new HashMap<String, Object>();
+        HashMap<String, Object> map = new HashMap<>();
         map.put(KEY_UNREDACTED, VAL_UNREDACTED);
         map.put(KEY_REDACTED, VAL_REDACTED);
 
-        HashMap<String, Object> emptyMap = new HashMap<String, Object>();
-        Set<String> redactedKeys = Collections.singleton(KEY_REDACTED);
+        HashMap<String, Object> emptyMap = new HashMap<>();
+        Set<Pattern> redactedKeys = Collections.singleton(Pattern.compile(KEY_REDACTED));
         Map<String, Object> removeMap = new RedactedKeysMap(emptyMap, redactedKeys);
         removeMap.putAll(map);
 

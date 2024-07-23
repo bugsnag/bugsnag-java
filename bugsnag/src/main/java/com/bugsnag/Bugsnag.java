@@ -11,8 +11,10 @@ import org.slf4j.LoggerFactory;
 import java.io.Closeable;
 import java.lang.Thread.UncaughtExceptionHandler;
 import java.net.Proxy;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -22,6 +24,7 @@ import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+import java.util.regex.Pattern;
 
 public class Bugsnag implements Closeable {
     private static final Logger LOGGER = LoggerFactory.getLogger(Bugsnag.class);
@@ -240,23 +243,26 @@ public class Bugsnag implements Closeable {
     @Deprecated
     public void setFilters(String... filters) {
         config.filters = filters;
-        setRedactedKeys(filters);
+
+        List<Pattern> patterns = new ArrayList<>();
+        for (String fil : filters) {
+            patterns.add(Pattern.compile(".*" + Pattern.quote(fil) + ".*", Pattern.CASE_INSENSITIVE));
+        }
+        setRedactedKeys(patterns.toArray(new Pattern[0]));
     }
 
     /**
      * Set which keys should be redacted when sending metaData to Bugsnag.
      * Use this when you want to ensure sensitive information, such as passwords
      * or credit card information is stripped from metaData you send to Bugsnag.
-     * Any keys in metaData which contain these strings will be marked as
+     * Any keys in metaData which contain these Patterns will be marked as
      * [REDACTED] when send to Bugsnag.
      *
-     * @param redactedKeys a list of String keys to be redacted from metaData
+     * @param redactedKeys a list of regex Patterns to be redacted from metaData
      */
-    public void setRedactedKeys(String... redactedKeys) {
+    public void setRedactedKeys(Pattern... redactedKeys) {
         config.redactedKeys = redactedKeys;
     }
-
-
 
     /**
      * Set which exception classes should be ignored (not sent) by Bugsnag.
