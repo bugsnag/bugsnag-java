@@ -3,6 +3,7 @@ package com.bugsnag.mazerunner.scenarios;
 import com.bugsnag.Bugsnag;
 import com.bugsnag.Report;
 import com.bugsnag.callbacks.Callback;
+import java.util.regex.Pattern;
 
 /**
  * Sends a handled exception to Bugsnag, which contains metadata that should be redacted
