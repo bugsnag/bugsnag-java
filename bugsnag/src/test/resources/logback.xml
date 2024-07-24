@@ -10,6 +10,9 @@
         <redactedKey>password</redactedKey>
         <redactedKey>credit_card_number</redactedKey>
 
+        <filteredProperty>password</filteredProperty>
+        <filteredProperty>secret</filteredProperty>
+
         <ignoredClass>java.io.IOException</ignoredClass>
         <ignoredClass>com.example.Custom</ignoredClass>
 

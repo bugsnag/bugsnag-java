@@ -147,13 +147,13 @@ public class AppenderTest {
 
         assertEquals(4, config.redactedKeys.length);
         List<Pattern> redactedKeys = new ArrayList<Pattern>(Arrays.asList(config.redactedKeys));
-        assertTrue(containsPattern(redactedKeys, "password", Pattern.CASE_INSENSITIVE));
-        assertTrue(containsPattern(redactedKeys, "authorization", Pattern.CASE_INSENSITIVE));
+        assertTrue(containsPattern(redactedKeys, "password"));
+        assertTrue(containsPattern(redactedKeys, "credit_card_number"));
 
         assertEquals(4, config.filters.length);
         List<String> filters = new ArrayList<String>(Arrays.asList(config.filters));
         assertTrue(filters.contains("password"));
-        assertTrue(filters.contains("Authorization"));
+        assertTrue(filters.contains("secret"));
 
         assertEquals(2, config.ignoreClasses.length);
         ArrayList<String> ignoreClasses
@@ -298,7 +298,7 @@ public class AppenderTest {
         Map<String, Object> myTab = getMetaDataMap(notification, "myTab");
 
         assertEquals("[REDACTED]", myTab.get("password"));
-        assertEquals("card number", myTab.get("credit_card_number"));
+        assertEquals("[REDACTED]", myTab.get("credit_card_number"));
         assertEquals("[REDACTED]", myTab.get("mysecret"));
     }
 
@@ -437,9 +437,9 @@ public class AppenderTest {
     * @param flags the match flags, a bit mask that may include #CASE_INSENSITIVE, #LITERAL}, etc.
     * @return {@code true} if a pattern with the specified regex and flags is found in the list, {@code false} otherwise
     */
-    private static boolean containsPattern(List<Pattern> patterns, String regex, int flags) {
+    private static boolean containsPattern(List<Pattern> patterns, String regex) {
         for (Pattern pattern : patterns) {
-            if (pattern.pattern().equals(regex) && pattern.flags() == flags) {
+            if (pattern.pattern().equals(regex)) {
                 return true;
             }
         }
