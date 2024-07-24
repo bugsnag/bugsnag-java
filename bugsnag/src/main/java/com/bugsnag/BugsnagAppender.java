@@ -403,19 +403,24 @@ public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
     /**
      * @see Bugsnag#setRedactedKeys(Pattern...)
      */
-    public void setRedactedKey(Pattern redactedKey) {
-        this.redactedKeys.add((redactedKey));
+    public void setRedactedKey(String redactedKey) {
+        Pattern pattern = Pattern.compile(redactedKey);
+        this.redactedKeys.add(pattern);
 
         if (bugsnag != null) {
             bugsnag.setRedactedKeys(this.redactedKeys.toArray(new Pattern[0]));
         }
+
     }
 
     /**
      * @see Bugsnag#setRedactedKeys(Pattern...)
      */
-    public void setRedactedKeys(Collection<Pattern> redactedKeys) {
-        this.redactedKeys.addAll(redactedKeys);
+    public void setRedactedKeys(Collection<String> redactedKeys) {
+        for (String key : redactedKeys) {
+            Pattern pattern = Pattern.compile(key);
+            this.redactedKeys.add(pattern);
+        }
 
         if (bugsnag != null) {
             bugsnag.setRedactedKeys(this.redactedKeys.toArray(new Pattern[0]));
