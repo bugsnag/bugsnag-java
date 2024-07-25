@@ -261,7 +261,14 @@ public class Bugsnag implements Closeable {
      * @param redactedKeys a list of regex Patterns to be redacted from metaData
      */
     public void setRedactedKeys(Pattern... redactedKeys) {
-        config.redactedKeys = redactedKeys;
+        if (config.redactedKeys == null) {
+            config.redactedKeys = redactedKeys;
+        } else {
+            Pattern[] combined = new Pattern[config.redactedKeys.length + redactedKeys.length];
+            System.arraycopy(config.redactedKeys, 0, combined, 0, config.redactedKeys.length);
+            System.arraycopy(redactedKeys, 0, combined, config.redactedKeys.length, redactedKeys.length);
+            config.redactedKeys = redactedKeys;
+        }
     }
 
     /**
