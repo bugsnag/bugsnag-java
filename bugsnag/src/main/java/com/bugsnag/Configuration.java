@@ -9,6 +9,7 @@ import com.bugsnag.delivery.AsyncHttpDelivery;
 import com.bugsnag.delivery.Delivery;
 import com.bugsnag.delivery.HttpDelivery;
 import com.bugsnag.delivery.SyncHttpDelivery;
+import com.bugsnag.serialization.SerializationException;
 import com.bugsnag.serialization.Serializer;
 
 import org.slf4j.Logger;
@@ -182,5 +183,15 @@ public class Configuration {
         map.put(HEADER_API_KEY, apiKey);
         map.put(HEADER_BUGSNAG_SENT_AT, DateUtils.toIso8601(new Date()));
         return map;
+    }
+
+    /**
+     * Serialize a custom object to JSON.
+     *
+     * @param obj the object to serialize
+     * @return the serialized JSON string
+     */
+    public String serializeObject(Object obj) throws SerializationException{
+        return serializer.toJson(obj);
     }
 }

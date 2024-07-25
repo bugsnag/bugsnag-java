@@ -36,4 +36,19 @@ public class Serializer {
             throw new SerializationException("Exception during serialization", ex);
         }
     }
+
+    /**
+     * Convert the object to a JSON string.
+     *
+     * @param object the object to convert to JSON.
+     * @return the JSON string representation of the object.
+     * @throws SerializationException the object could not be serialized.
+     */
+    public String toJson(Object object) throws SerializationException {
+        try {
+            return mapper.writeValueAsString(object);
+        } catch (IOException ex) {
+            throw new SerializationException("Exception during serialization", ex);
+        }
+    }
 }
