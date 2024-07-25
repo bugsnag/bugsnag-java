@@ -191,7 +191,7 @@ public class Configuration {
      * @param obj the object to serialize
      * @return the serialized JSON string
      */
-    public String serializeObject(Object obj) throws SerializationException{
+    public String serializeObject(Object obj) throws SerializationException {
         return serializer.toJson(obj);
     }
 }
