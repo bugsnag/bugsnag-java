@@ -33,6 +33,7 @@ local.properties
 
 # mazerunner test jars
 features/fixtures/libs
+maze-runner.log
 
 # test output files
 maze_output/
