@@ -2,7 +2,7 @@ package com.bugsnag.mazerunner.scenarios;
 
 import com.bugsnag.Bugsnag;
 import com.bugsnag.delivery.Delivery;
-import com.bugsnag.serialization.Serializer;
+import com.bugsnag.serialization.ISerializer;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,7 +39,7 @@ public abstract class Scenario {
     protected void disableSessionDelivery() {
         bugsnag.setSessionDelivery(new Delivery() {
             @Override
-            public void deliver(Serializer serializer, Object object, Map<String, String> headers) {
+            public void deliver(ISerializer serializer, Object object, Map<String, String> headers) {
                 // Do nothing
             }
 
