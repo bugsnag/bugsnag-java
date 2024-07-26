@@ -252,13 +252,14 @@ public class Bugsnag implements Closeable {
     }
 
     /**
-     * Set which keys should be redacted when sending metaData to Bugsnag.
-     * Use this when you want to ensure sensitive information, such as passwords
-     * or credit card information is stripped from metaData you send to Bugsnag.
-     * Any keys in metaData which contain these Patterns will be marked as
-     * [REDACTED] when send to Bugsnag.
+     * Sets which values should be removed from any metadata before sending them
+     * to Bugsnag.
      *
-     * @param redactedKeys a list of regex Patterns to be redacted from metaData
+     * Use this if you want to ensure you don't transmit sensitive data such as
+     * passwords and credit card numbers. Any property whose key matches a
+     * redacted key will be filtered and replaced with [REDACTED].
+     *
+     * @param redactedKeys a list of Patterns to match the key of properties to be redacted from metadata
      */
     public void setRedactedKeys(Pattern... redactedKeys) {
         if (config.redactedKeys == null) {
