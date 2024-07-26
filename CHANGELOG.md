@@ -1,15 +1,16 @@
 # Changelog
 
-## TBD 
+## Changed
+
+* Add a null check for `Severity` to the notify override method. [#214](https://github.com/bugsnag/bugsnag-java/pull/214)
+
+* Exposed Serializer for custom serialization of metadata. [#219](https://github.com/bugsnag/bugsnag-java/pull/219)
+
+### Bug Fixes
 
 * Update `BugsnagImportSelector` to allow major versions that do not have a minor version.
   fixes [issue #211](https://github.com/bugsnag/bugsnag-java/issues/211).
   [#213](https://github.com/bugsnag/bugsnag-java/pull/213)
-
-* Add a null check for `Severity` to the notify override method. [#214](https://github.com/bugsnag/bugsnag-java/pull/214)
-
-* Add handling for non serializable object passed to metadata. [#219](https://github.com/bugsnag/bugsnag-java/pull/219)
-
 
 ## 3.7.1 (2023-10-25)
 
