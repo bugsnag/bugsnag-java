@@ -1,7 +1,7 @@
 package com.bugsnag;
 
 import com.bugsnag.delivery.HttpDelivery;
-import com.bugsnag.serialization.Serializer;
+import com.bugsnag.serialization.ISerializer;
 
 import java.net.Proxy;
 import java.util.ArrayList;
@@ -19,7 +19,7 @@ public class StubNotificationDelivery implements HttpDelivery {
     private Proxy proxy = null;
 
     @Override
-    public void deliver(Serializer serializer, Object object, Map<String, String> headers) {
+    public void deliver(ISerializer serializer, Object object, Map<String, String> headers) {
         notifications.add((Notification) object);
     }
 

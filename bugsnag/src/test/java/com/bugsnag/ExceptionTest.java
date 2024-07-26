@@ -7,7 +7,7 @@ import static org.junit.Assert.assertTrue;
 
 import com.bugsnag.callbacks.Callback;
 import com.bugsnag.delivery.Delivery;
-import com.bugsnag.serialization.Serializer;
+import com.bugsnag.serialization.ISerializer;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -52,7 +52,7 @@ public class ExceptionTest {
         Bugsnag bugsnag = new Bugsnag("apikey");
         bugsnag.setDelivery(new Delivery() {
             @Override
-            public void deliver(Serializer serializer, Object object, Map<String, String> headers) {
+            public void deliver(ISerializer serializer, Object object, Map<String, String> headers) {
 
             }
 

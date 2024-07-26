@@ -9,7 +9,7 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import com.bugsnag.delivery.Delivery;
-import com.bugsnag.serialization.Serializer;
+import com.bugsnag.serialization.ISerializer;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -151,7 +151,7 @@ public class SessionTrackerTest {
     public void zeroSessionDelivery() {
         CustomDelivery sessionDelivery = new CustomDelivery() {
             @Override
-            public void deliver(Serializer serializer, Object object, Map<String, String> headers) {
+            public void deliver(ISerializer serializer, Object object, Map<String, String> headers) {
                 super.deliver(serializer, object, headers);
                 fail("Should not be called if no sessions enqueued");
             }
@@ -165,7 +165,7 @@ public class SessionTrackerTest {
     public void noDateChangeSessionDelivery() {
         CustomDelivery sessionDelivery = new CustomDelivery() {
             @Override
-            public void deliver(Serializer serializer, Object object, Map<String, String> headers) {
+            public void deliver(ISerializer serializer, Object object, Map<String, String> headers) {
                 super.deliver(serializer, object, headers);
                 fail("Should not be called if date has not exceeded batch period");
             }
@@ -180,7 +180,7 @@ public class SessionTrackerTest {
     public void multiSessionDelivery() {
         CustomDelivery sessionDelivery = new CustomDelivery() {
             @Override
-            public void deliver(Serializer serializer, Object object, Map<String, String> headers) {
+            public void deliver(ISerializer serializer, Object object, Map<String, String> headers) {
                 super.deliver(serializer, object, headers);
                 SessionPayload payload = (SessionPayload) object;
 
@@ -214,7 +214,7 @@ public class SessionTrackerTest {
     public void sessionDeliveryDiffMin() {
         CustomDelivery sessionDelivery = new CustomDelivery() {
             @Override
-            public void deliver(Serializer serializer, Object object, Map<String, String> headers) {
+            public void deliver(ISerializer serializer, Object object, Map<String, String> headers) {
                 super.deliver(serializer, object, headers);
                 SessionPayload payload = (SessionPayload) object;
 
@@ -237,7 +237,7 @@ public class SessionTrackerTest {
     public void sessionDeliverySameMin() {
         CustomDelivery sessionDelivery = new CustomDelivery() {
             @Override
-            public void deliver(Serializer serializer, Object object, Map<String, String> headers) {
+            public void deliver(ISerializer serializer, Object object, Map<String, String> headers) {
                 super.deliver(serializer, object, headers);
                 SessionPayload payload = (SessionPayload) object;
 
@@ -260,7 +260,7 @@ public class SessionTrackerTest {
     public void sessionDeliveryMultiFlush() {
         CustomDelivery sessionDelivery = new CustomDelivery() {
             @Override
-            public void deliver(Serializer serializer, Object object, Map<String, String> headers) {
+            public void deliver(ISerializer serializer, Object object, Map<String, String> headers) {
                 super.deliver(serializer, object, headers);
                 SessionPayload payload = (SessionPayload) object;
 
@@ -326,7 +326,7 @@ public class SessionTrackerTest {
         Object recentRequest;
 
         @Override
-        public void deliver(Serializer serializer, Object object, Map<String, String> headers) {
+        public void deliver(ISerializer serializer, Object object, Map<String, String> headers) {
             this.recentRequest = object;
             delivered = true;
             count.getAndIncrement();

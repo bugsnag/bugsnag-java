@@ -9,8 +9,8 @@ import static org.junit.Assert.fail;
 
 import com.bugsnag.delivery.Delivery;
 import com.bugsnag.delivery.HttpDelivery;
+import com.bugsnag.serialization.ISerializer;
 import com.bugsnag.serialization.SerializationException;
-import com.bugsnag.serialization.Serializer;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -110,7 +110,7 @@ public class ConfigurationTest {
 
         String serializedMap = null;
         try {
-            serializedMap = config.serializeObject(map);
+            serializedMap = config.getSerializer().toJson(map);
         } catch (SerializationException exception) {
             fail("SerializationException was thrown: " + exception.getMessage());
         }
@@ -145,7 +145,7 @@ public class ConfigurationTest {
     public void testBaseDeliveryIgnoresEndpoint() {
         Delivery delivery = new Delivery() {
             @Override
-            public void deliver(Serializer serializer, Object object, Map<String, String> headers) {
+            public void deliver(ISerializer serializer, Object object, Map<String, String> headers) {
             }
 
             @Override
@@ -192,7 +192,7 @@ public class ConfigurationTest {
         }
 
         @Override
-        public void deliver(Serializer serializer, Object object, Map<String, String> headers) {
+        public void deliver(ISerializer serializer, Object object, Map<String, String> headers) {
             receivedObjects.add(object);
         }
 

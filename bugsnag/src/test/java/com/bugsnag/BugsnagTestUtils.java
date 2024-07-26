@@ -1,7 +1,7 @@
 package com.bugsnag;
 
 import com.bugsnag.delivery.Delivery;
-import com.bugsnag.serialization.Serializer;
+import com.bugsnag.serialization.ISerializer;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -14,7 +14,7 @@ class BugsnagTestUtils {
     static Delivery generateDelivery() {
         return new Delivery() {
             @Override
-            public void deliver(Serializer serializer, Object object, Map<String, String> headers) {
+            public void deliver(ISerializer serializer, Object object, Map<String, String> headers) {
 
             }
 

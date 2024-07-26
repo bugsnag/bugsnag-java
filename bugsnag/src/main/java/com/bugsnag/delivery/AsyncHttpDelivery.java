@@ -1,6 +1,6 @@
 package com.bugsnag.delivery;
 
-import com.bugsnag.serialization.Serializer;
+import com.bugsnag.serialization.ISerializer;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -80,7 +80,7 @@ public class AsyncHttpDelivery implements HttpDelivery {
     }
 
     @Override
-    public void deliver(final Serializer serializer,
+    public void deliver(final ISerializer serializer,
                         final Object object,
                         final Map<String, String> headers) {
         if (shuttingDown) {

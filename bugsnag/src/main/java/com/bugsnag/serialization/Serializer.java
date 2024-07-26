@@ -7,7 +7,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.io.OutputStream;
 
-public class Serializer {
+public class Serializer implements ISerializer {
     private ObjectMapper mapper = new ObjectMapper();
 
     /**
@@ -22,13 +22,7 @@ public class Serializer {
                 mapper.getVisibilityChecker().with(JsonAutoDetect.Visibility.NONE));
     }
 
-    /**
-     * Write the object to the stream.
-     *
-     * @param stream the stream to write the object to.
-     * @param object the object to write to the stream.
-     * @throws SerializationException the object could not be serialized.
-     */
+    @Override
     public void writeToStream(OutputStream stream, Object object) throws SerializationException {
         try {
             mapper.writeValue(stream, object);
@@ -37,13 +31,7 @@ public class Serializer {
         }
     }
 
-    /**
-     * Convert the object to a JSON string.
-     *
-     * @param object the object to convert to JSON.
-     * @return the JSON string representation of the object.
-     * @throws SerializationException the object could not be serialized.
-     */
+    @Override
     public String toJson(Object object) throws SerializationException {
         try {
             return mapper.writeValueAsString(object);

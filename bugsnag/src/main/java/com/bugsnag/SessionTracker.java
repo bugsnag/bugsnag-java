@@ -95,7 +95,7 @@ class SessionTracker {
                 }
 
                 Delivery delivery = config.sessionDelivery;
-                delivery.deliver(config.serializer, payload, config.getSessionApiHeaders());
+                delivery.deliver(config.getSerializer(), payload, config.getSessionApiHeaders());
                 enqueuedSessionCounts.removeAll(requestValues);
             } finally {
                 flushingRequest.release(1);

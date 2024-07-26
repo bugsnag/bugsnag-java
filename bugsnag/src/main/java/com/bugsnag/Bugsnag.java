@@ -507,7 +507,7 @@ public class Bugsnag implements Closeable {
         // Deliver the notification
         LOGGER.debug("Reporting error to Bugsnag");
 
-        config.delivery.deliver(config.serializer, notification, config.getErrorApiHeaders());
+        config.delivery.deliver(config.getSerializer(), notification, config.getErrorApiHeaders());
 
         return true;
     }

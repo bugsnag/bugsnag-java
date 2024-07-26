@@ -9,7 +9,7 @@ import com.bugsnag.delivery.AsyncHttpDelivery;
 import com.bugsnag.delivery.Delivery;
 import com.bugsnag.delivery.HttpDelivery;
 import com.bugsnag.delivery.SyncHttpDelivery;
-import com.bugsnag.serialization.SerializationException;
+import com.bugsnag.serialization.ISerializer;
 import com.bugsnag.serialization.Serializer;
 
 import org.slf4j.Logger;
@@ -47,12 +47,17 @@ public class Configuration {
     public boolean sendThreads = false;
 
     Collection<Callback> callbacks = new ConcurrentLinkedQueue<Callback>();
-    Serializer serializer = new Serializer();
+    private ISerializer serializer;
     private final AtomicBoolean autoCaptureSessions = new AtomicBoolean(true);
     private final AtomicBoolean sendUncaughtExceptions = new AtomicBoolean(true);
 
     Configuration(String apiKey) {
+        this(apiKey, new Serializer());
+    }
+
+    Configuration(String apiKey, ISerializer serializer) {
         this.apiKey = apiKey;
+        this.serializer = serializer;
 
         // Add built-in callbacks
         addCallback(new AppCallback(this));
@@ -186,12 +191,18 @@ public class Configuration {
     }
 
     /**
-     * Serialize a custom object to JSON.
-     *
-     * @param obj the object to serialize
-     * @return the serialized JSON string
+     * Set the serializer to use for serializing custom objects.
+     * @param serializer the serializer implementation to use
      */
-    public String serializeObject(Object obj) throws SerializationException {
-        return serializer.toJson(obj);
+    public void setSerializer(ISerializer serializer) {
+        this.serializer = serializer;
+    }
+
+    /**
+     * Get the serializer used for serializing custom objects.
+     * @return the serializer
+     */
+    public ISerializer getSerializer() {
+        return serializer;
     }
 }
