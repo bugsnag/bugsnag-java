@@ -1,7 +1,7 @@
 package com.bugsnag.delivery;
 
-import com.bugsnag.serialization.Serializer;
 import com.bugsnag.serialization.SerializationException;
+import com.bugsnag.serialization.Serializer;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

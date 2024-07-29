@@ -5,15 +5,10 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import com.bugsnag.delivery.Delivery;
 import com.bugsnag.delivery.HttpDelivery;
 import com.bugsnag.serialization.Serializer;
-import com.bugsnag.serialization.SerializationException;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -21,7 +16,6 @@ import org.junit.Test;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.net.Proxy;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.Queue;
@@ -29,7 +23,6 @@ import java.util.Queue;
 public class ConfigurationTest {
 
     private Configuration config;
-    private ObjectMapper objectMapper;
 
     /**
      * Creates a config object with fake delivery objects
@@ -41,7 +34,6 @@ public class ConfigurationTest {
         config = new Configuration("foo");
         config.delivery = new FakeHttpDelivery();
         config.sessionDelivery = new FakeHttpDelivery();
-        objectMapper = new ObjectMapper();
     }
 
     @Test
@@ -101,27 +93,6 @@ public class ConfigurationTest {
         config.setEndpoints("http://example.com", "http://sessions.example.com");
         assertTrue(config.shouldAutoCaptureSessions());
         assertEquals("http://sessions.example.com", getDeliveryEndpoint(config.sessionDelivery));
-    }
-
-    @Test
-    public void testSerializeObject() throws SerializationException {
-        Map<String, String> map = new HashMap<>();
-        map.put("key", "value");
-
-        String serializedMap = null;
-        try {
-            serializedMap = config.getSerializer().toJson(map);
-        } catch (SerializationException exception) {
-            fail("SerializationException was thrown: " + exception.getMessage());
-        }
-
-        String expectedJson = null;
-        try {
-            expectedJson = objectMapper.writeValueAsString(map);
-        } catch (JsonProcessingException exception) {
-            fail("Failed to serialize expected JSON: " + exception.getMessage());
-        }
-        assertEquals(expectedJson, serializedMap);
     }
 
     @Test

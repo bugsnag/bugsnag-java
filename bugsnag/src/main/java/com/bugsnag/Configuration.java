@@ -9,8 +9,8 @@ import com.bugsnag.delivery.AsyncHttpDelivery;
 import com.bugsnag.delivery.Delivery;
 import com.bugsnag.delivery.HttpDelivery;
 import com.bugsnag.delivery.SyncHttpDelivery;
-import com.bugsnag.serialization.Serializer;
 import com.bugsnag.serialization.DefaultSerializer;
+import com.bugsnag.serialization.Serializer;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
