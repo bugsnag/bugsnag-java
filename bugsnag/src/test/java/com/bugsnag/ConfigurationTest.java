@@ -9,7 +9,7 @@ import static org.junit.Assert.fail;
 
 import com.bugsnag.delivery.Delivery;
 import com.bugsnag.delivery.HttpDelivery;
-import com.bugsnag.serialization.ISerializer;
+import com.bugsnag.serialization.Serializer;
 import com.bugsnag.serialization.SerializationException;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -145,7 +145,7 @@ public class ConfigurationTest {
     public void testBaseDeliveryIgnoresEndpoint() {
         Delivery delivery = new Delivery() {
             @Override
-            public void deliver(ISerializer serializer, Object object, Map<String, String> headers) {
+            public void deliver(Serializer serializer, Object object, Map<String, String> headers) {
             }
 
             @Override
@@ -192,7 +192,7 @@ public class ConfigurationTest {
         }
 
         @Override
-        public void deliver(ISerializer serializer, Object object, Map<String, String> headers) {
+        public void deliver(Serializer serializer, Object object, Map<String, String> headers) {
             receivedObjects.add(object);
         }
 

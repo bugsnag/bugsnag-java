@@ -1,7 +1,7 @@
 package com.bugsnag;
 
 import com.bugsnag.delivery.HttpDelivery;
-import com.bugsnag.serialization.ISerializer;
+import com.bugsnag.serialization.Serializer;
 
 import java.net.Proxy;
 import java.util.ArrayList;
@@ -19,7 +19,7 @@ public class StubSessionDelivery implements HttpDelivery {
     private Proxy proxy = null;
 
     @Override
-    public void deliver(ISerializer serializer, Object object, Map<String, String> headers) {
+    public void deliver(Serializer serializer, Object object, Map<String, String> headers) {
         sessions.add((SessionPayload) object);
     }
 

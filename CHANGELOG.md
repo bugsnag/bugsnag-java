@@ -4,7 +4,7 @@
 
 * Add a null check for `Severity` to the notify override method. [#214](https://github.com/bugsnag/bugsnag-java/pull/214)
 
-* Exposed Serializer for custom serialization of metadata. [#219](https://github.com/bugsnag/bugsnag-java/pull/219)
+* Created Serializer interface, allowing for implementation of a custom serializer. [#219](https://github.com/bugsnag/bugsnag-java/pull/219)
 
 ### Bug Fixes
 

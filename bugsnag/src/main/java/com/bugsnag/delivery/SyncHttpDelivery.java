@@ -1,6 +1,6 @@
 package com.bugsnag.delivery;
 
-import com.bugsnag.serialization.ISerializer;
+import com.bugsnag.serialization.Serializer;
 import com.bugsnag.serialization.SerializationException;
 
 import org.slf4j.Logger;
@@ -53,7 +53,7 @@ public class SyncHttpDelivery implements HttpDelivery {
     }
 
     @Override
-    public void deliver(ISerializer serializer, Object object, Map<String, String> headers) {
+    public void deliver(Serializer serializer, Object object, Map<String, String> headers) {
         if (endpoint == null) {
             LOGGER.warn("Endpoint configured incorrectly, skipping delivery.");
             return;
