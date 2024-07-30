@@ -6,6 +6,8 @@
 
 * Created Serializer interface, allowing for implementation of a custom serializer. [#219](https://github.com/bugsnag/bugsnag-java/pull/219)
 
+* Updated ScheduleTaskConfiguration configureTask method to properly handle wrapped/proxied objects. [#218](https://github.com/bugsnag/bugsnag-java/pull/218)
+
 ### Bug Fixes
 
 * Update `BugsnagImportSelector` to allow major versions that do not have a minor version.
