@@ -47,13 +47,12 @@ public class Configuration {
     public boolean sendThreads = false;
 
     Collection<Callback> callbacks = new ConcurrentLinkedQueue<Callback>();
-    Serializer serializer;
+    Serializer serializer = new DefaultSerializer();
     private final AtomicBoolean autoCaptureSessions = new AtomicBoolean(true);
     private final AtomicBoolean sendUncaughtExceptions = new AtomicBoolean(true);
 
     Configuration(String apiKey) {
         this.apiKey = apiKey;
-        this.serializer = new DefaultSerializer();
         // Add built-in callbacks
         addCallback(new AppCallback(this));
         addCallback(new DeviceCallback());
@@ -183,13 +182,5 @@ public class Configuration {
         map.put(HEADER_API_KEY, apiKey);
         map.put(HEADER_BUGSNAG_SENT_AT, DateUtils.toIso8601(new Date()));
         return map;
-    }
-
-    /**
-     * Set the serializer to use for serializing custom objects.
-     * @param serializer the serializer implementation to use
-     */
-    public void setSerializer(Serializer serializer) {
-        this.serializer = serializer;
     }
 }
