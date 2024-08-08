@@ -145,7 +145,7 @@ public class AppenderTest {
         assertEquals("gradleTask", config.appType);
         assertFalse(config.shouldAutoCaptureSessions());
 
-        assertEquals(4, config.redactedKeys.length);
+        assertEquals(8, config.redactedKeys.length);
         List<Pattern> redactedKeys = new ArrayList<Pattern>(Arrays.asList(config.redactedKeys));
         assertTrue(containsPattern(redactedKeys, "password"));
         assertTrue(containsPattern(redactedKeys, "credit_card_number"));

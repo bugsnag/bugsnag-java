@@ -3,6 +3,7 @@ package com.bugsnag;
 import com.bugsnag.callbacks.Callback;
 import com.bugsnag.delivery.Delivery;
 import com.bugsnag.delivery.HttpDelivery;
+import com.bugsnag.util.ConcatList;
 import com.bugsnag.util.DaemonThreadFactory;
 
 import org.slf4j.Logger;
@@ -12,6 +13,7 @@ import java.io.Closeable;
 import java.lang.Thread.UncaughtExceptionHandler;
 import java.net.Proxy;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -265,10 +267,10 @@ public class Bugsnag implements Closeable {
         if (config.redactedKeys == null) {
             config.redactedKeys = redactedKeys;
         } else {
-            Pattern[] combined = new Pattern[config.redactedKeys.length + redactedKeys.length];
-            System.arraycopy(config.redactedKeys, 0, combined, 0, config.redactedKeys.length);
-            System.arraycopy(redactedKeys, 0, combined, config.redactedKeys.length, redactedKeys.length);
-            config.redactedKeys = redactedKeys;
+            List<Pattern> currentList = Arrays.asList(config.redactedKeys);
+            List<Pattern> newList = Arrays.asList(redactedKeys);
+            ConcatList<Pattern> combinedList = new ConcatList<>(currentList, newList);
+            config.redactedKeys = combinedList.toArray(new Pattern[0]);
         }
     }
 
