@@ -17,7 +17,8 @@ class JavaxMvcConfiguration implements InitializingBean {
     private Bugsnag bugsnag;
 
     /**
-     * Register an exception resolver to send unhandled reports to Bugsnag
+     * Register an exception resolver to send unhandled reports 
+     * to Bugsnag
      * for uncaught exceptions thrown from request handlers.
      */
     @Bean
