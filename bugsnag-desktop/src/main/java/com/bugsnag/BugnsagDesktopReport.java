@@ -6,9 +6,9 @@ public class BugnsagDesktopReport {
 
     private final Bugsnag bugsnag;
 
-    BugsnagDesktopReport(final Bugsnag bugsnag) {
+    BugnsagDesktopReport(final Bugsnag bugsnag) {
         this.bugsnag = bugsnag;
     }
     
-    
+
 }
