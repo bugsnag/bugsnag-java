@@ -48,7 +48,6 @@ public class Configuration {
     public Serializer serializer = new DefaultSerializer();
 
     Collection<Callback> callbacks = new ConcurrentLinkedQueue<Callback>();
-    Serializer serializer = new DefaultSerializer();
     private final AtomicBoolean autoCaptureSessions = new AtomicBoolean(true);
     private final AtomicBoolean sendUncaughtExceptions = new AtomicBoolean(true);
 
