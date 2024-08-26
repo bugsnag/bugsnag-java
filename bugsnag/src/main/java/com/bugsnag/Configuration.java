@@ -45,6 +45,7 @@ public class Configuration {
     public String[] projectPackages;
     public String releaseStage;
     public boolean sendThreads = false;
+    public Serializer serializer = new DefaultSerializer();
 
     Collection<Callback> callbacks = new ConcurrentLinkedQueue<Callback>();
     Serializer serializer = new DefaultSerializer();
