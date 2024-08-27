@@ -1,14 +1,18 @@
 # Changelog
 
-## TBD 
+## Changed
+
+* Add a null check for `Severity` to the notify override method. [#214](https://github.com/bugsnag/bugsnag-java/pull/214)
+
+* Created Serializer interface, allowing for implementation of a custom serializer. [#219](https://github.com/bugsnag/bugsnag-java/pull/219)
+
+* Updated ScheduleTaskConfiguration configureTask method to properly handle wrapped/proxied objects. [#218](https://github.com/bugsnag/bugsnag-java/pull/218)
+
+### Bug Fixes
 
 * Update `BugsnagImportSelector` to allow major versions that do not have a minor version.
   fixes [issue #211](https://github.com/bugsnag/bugsnag-java/issues/211).
   [#213](https://github.com/bugsnag/bugsnag-java/pull/213)
-
-* Add a null check for `Severity` to the notify override method. [#214](https://github.com/bugsnag/bugsnag-java/pull/214)
-
-* Updated ScheduleTaskConfiguration configureTask method to properly handle wrapped/proxied objects. [#218](https://github.com/bugsnag/bugsnag-java/pull/218)
 
 ## 3.7.1 (2023-10-25)
 
