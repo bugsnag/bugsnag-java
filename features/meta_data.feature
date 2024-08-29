@@ -160,5 +160,3 @@ Scenario: Test thread meta data in spring boot scheduled task
     And the error is valid for the error reporting API version "4" for the "Bugsnag Spring" notifier
     And the event "metaData.thread.key1" is null
     And the event "metaData.thread.key2" equals "should be included in meta data"
-
-

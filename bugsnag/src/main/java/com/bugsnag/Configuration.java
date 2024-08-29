@@ -9,6 +9,7 @@ import com.bugsnag.delivery.AsyncHttpDelivery;
 import com.bugsnag.delivery.Delivery;
 import com.bugsnag.delivery.HttpDelivery;
 import com.bugsnag.delivery.SyncHttpDelivery;
+import com.bugsnag.serialization.DefaultSerializer;
 import com.bugsnag.serialization.Serializer;
 
 import org.slf4j.Logger;
@@ -44,15 +45,14 @@ public class Configuration {
     public String[] projectPackages;
     public String releaseStage;
     public boolean sendThreads = false;
+    public Serializer serializer = new DefaultSerializer();
 
     Collection<Callback> callbacks = new ConcurrentLinkedQueue<Callback>();
-    Serializer serializer = new Serializer();
     private final AtomicBoolean autoCaptureSessions = new AtomicBoolean(true);
     private final AtomicBoolean sendUncaughtExceptions = new AtomicBoolean(true);
 
     Configuration(String apiKey) {
         this.apiKey = apiKey;
-
         // Add built-in callbacks
         addCallback(new AppCallback(this));
         addCallback(new DeviceCallback());
