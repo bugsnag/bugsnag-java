@@ -2,6 +2,7 @@
 build/
 *.iml
 out/
+Gemfile.lock
 #
 # Common IDE files
 #
