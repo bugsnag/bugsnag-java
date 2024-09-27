@@ -1,6 +1,14 @@
 # Changelog
 
-## Changed
+## TBD
+
+### Changed
+
+* Updated ScheduledTaskConfiguration `configureExistingtaskScheduler` method to support reflect based type-checking for TaskScheduler. [#224](https://github.com/bugsnag/bugsnag-java/pull/224)
+
+## 3.7.2 (2024-08-29)
+
+### Changed
 
 * Add a null check for `Severity` to the notify override method. [#214](https://github.com/bugsnag/bugsnag-java/pull/214)
 
