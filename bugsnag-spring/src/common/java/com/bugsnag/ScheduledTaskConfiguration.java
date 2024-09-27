@@ -11,11 +11,13 @@ import org.springframework.scheduling.annotation.SchedulingConfigurer;
 import org.springframework.scheduling.concurrent.ConcurrentTaskScheduler;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.scheduling.config.ScheduledTaskRegistrar;
-
 import org.springframework.util.ErrorHandler;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.function.Supplier;
 
 /**
  * Add configuration for reporting unhandled exceptions for scheduled tasks.
@@ -32,34 +34,26 @@ class ScheduledTaskConfiguration implements SchedulingConfigurer {
     private ScheduledTaskBeanLocator beanLocator;
 
     /**
-     * Add bugsnag error handling to a task scheduler
+     * Add bugsnag error handling to a task scheduler.
      */
     @Override
     public void configureTasks(ScheduledTaskRegistrar taskRegistrar) {
         BugsnagScheduledTaskExceptionHandler bugsnagErrorHandler =
                 new BugsnagScheduledTaskExceptionHandler(bugsnag);
 
-        // Decision process for finding a TaskScheduler, in order of preference:
-        //
-        // 1. use the scheduler from the task registrar
-        // 2. search for a TaskScheduler bean, by type, then by name
-        // 3. search for a ScheduledExecutorService bean by type, then by name,
-        //    and wrap it in a TaskScheduler
-        // 4. create our own TaskScheduler
-
         TaskScheduler registrarScheduler = taskRegistrar.getScheduler();
         TaskScheduler taskScheduler = registrarScheduler != null
                 ? registrarScheduler : beanLocator.resolveTaskScheduler();
 
         if (taskScheduler != null) {
-            //check if taskSchedular is a proxy
             if (AopUtils.isAopProxy(taskScheduler)) {
-                //if it's a proxy then get the target class and cast as necessary
+                // If it's a proxy, get the target class and cast as necessary
                 Class<?> targetClass = AopProxyUtils.ultimateTargetClass(taskScheduler);
                 if (TaskScheduler.class.isAssignableFrom(targetClass)) {
                     taskScheduler = (TaskScheduler) AopProxyUtils.getSingletonTarget(taskScheduler);
                 }
             }
+            // Apply the error handler to the task scheduler
             configureExistingTaskScheduler(taskScheduler, bugsnagErrorHandler);
         } else {
             ScheduledExecutorService executorService = beanLocator.resolveScheduledExecutorService();
@@ -72,7 +66,7 @@ class ScheduledTaskConfiguration implements SchedulingConfigurer {
             ScheduledExecutorService executorService,
             BugsnagScheduledTaskExceptionHandler errorHandler) {
         if (executorService != null) {
-            // create a task scheduler which delegates to the existing Executor
+            // Create a task scheduler which delegates to the existing Executor
             ConcurrentTaskScheduler scheduler = new ConcurrentTaskScheduler(executorService);
             scheduler.setErrorHandler(errorHandler);
             return scheduler;
@@ -87,33 +81,94 @@ class ScheduledTaskConfiguration implements SchedulingConfigurer {
     }
 
     /**
-     * If a task scheduler has been defined by the application, get it so that
-     * bugsnag error handling can be added.
-     * <p>
-     * Reflection is the simplest way to get and set an error handler
-     * because the error handler setter is only defined in the concrete classes,
-     * not the TaskScheduler interface.
+     * Configure the TaskScheduler with Bugsnag error handling.
+     * Handles cases where the TaskScheduler is proxied.
      *
      * @param taskScheduler the task scheduler
      */
     private void configureExistingTaskScheduler(TaskScheduler taskScheduler,
                                                 BugsnagScheduledTaskExceptionHandler errorHandler) {
         try {
-            Field errorHandlerField =
-                    taskScheduler.getClass().getDeclaredField("errorHandler");
-            errorHandlerField.setAccessible(true);
-            Object existingErrorHandler = errorHandlerField.get(taskScheduler);
-
-            // If an error handler has already been defined then make the Bugsnag handler
-            // call this afterwards
-            if (existingErrorHandler instanceof ErrorHandler) {
-                errorHandler.setExistingErrorHandler((ErrorHandler) existingErrorHandler);
+            // Log the actual class of the TaskScheduler for debugging
+            LOGGER.debug("TaskScheduler class: {}", taskScheduler.getClass().getName());
+            Class<?> schedulerClass = taskScheduler.getClass();
+            // Check if the class is one of the expected types using reflection
+            if (ThreadPoolTaskScheduler.class.isAssignableFrom(schedulerClass)
+                || ConcurrentTaskScheduler.class.isAssignableFrom(schedulerClass)) {
+                configureErrorHandlerOnConcreteScheduler(taskScheduler, errorHandler);
+            } else {
+                // Try using reflection to check if the scheduler is a TaskSchedulerRouter
+                TaskScheduler unwrappedScheduler = unwrapRouter(taskScheduler);
+                if (unwrappedScheduler != null) {
+                    configureErrorHandlerOnConcreteScheduler(unwrappedScheduler, errorHandler);
+                } else {
+                    LOGGER.warn(
+                        "TaskScheduler of type {} does not support errorHandler configuration",
+                         schedulerClass.getName());
+                }
             }
-
-            // Add the bugsnag error handler to the scheduler.
-            errorHandlerField.set(taskScheduler, errorHandler);
         } catch (Throwable ex) {
-            LOGGER.warn("Bugsnag scheduled task exception handler could not be configured");
+            LOGGER.warn(
+                "Bugsnag scheduled task exception handler could not be configured for TaskScheduler of type {}",
+                taskScheduler.getClass().getName(), ex);
         }
+    }
+
+    private TaskScheduler unwrapRouter(TaskScheduler maybeRouter) {
+        try {
+            Class<?> taskSchedulerRouterClass = Class.forName(
+                "org.springframework.scheduling.config.TaskSchedulerRouter");
+            if (taskSchedulerRouterClass.isAssignableFrom(maybeRouter.getClass())) {
+                Field defaultSchedulerField = taskSchedulerRouterClass.getDeclaredField("defaultScheduler");
+                defaultSchedulerField.setAccessible(true);
+                Supplier<TaskScheduler> defaultSchedulerSupplier =
+                    (Supplier<TaskScheduler>) defaultSchedulerField.get(maybeRouter);
+                return defaultSchedulerSupplier.get(); // Call get() on the Supplier
+            }
+        } catch (java.lang.Exception ex) {
+            LOGGER.warn("Unable to unwrap TaskSchedulerRouter", ex);
+        }
+        return null;
+    }
+
+    private List<TaskScheduler> getDelegateSchedulers(TaskScheduler taskScheduler) {
+        List<TaskScheduler> delegateSchedulers = new ArrayList<>();
+        try {
+            // Inspect the task scheduler for fields that might hold delegated schedulers
+            Field[] fields = taskScheduler.getClass().getDeclaredFields();
+            for (Field field : fields) {
+                field.setAccessible(true);
+                Object fieldValue = field.get(taskScheduler);
+                if (fieldValue instanceof List<?>) {
+                    for (Object item : (List<?>) fieldValue) {
+                        if (item instanceof TaskScheduler) {
+                            delegateSchedulers.add((TaskScheduler) item);
+                        }
+                    }
+                }
+            }
+        } catch (IllegalAccessException ex) {
+            LOGGER.warn(
+                "Unable to retrieve delegate schedulers from TaskScheduler of type {}",
+                    taskScheduler.getClass().getName(), ex);
+        }
+        return delegateSchedulers;
+    }
+
+    /**
+     * Configure the error handler for concrete TaskScheduler implementations.
+     */
+    private void configureErrorHandlerOnConcreteScheduler(TaskScheduler scheduler,
+                                                          BugsnagScheduledTaskExceptionHandler errorHandler)
+            throws NoSuchFieldException, IllegalAccessException {
+        Field errorHandlerField = scheduler.getClass().getDeclaredField("errorHandler");
+        errorHandlerField.setAccessible(true);
+        Object existingErrorHandler = errorHandlerField.get(scheduler);
+
+        if (existingErrorHandler instanceof ErrorHandler) {
+            errorHandler.setExistingErrorHandler((ErrorHandler) existingErrorHandler);
+        }
+
+        errorHandlerField.set(scheduler, errorHandler);
     }
 }
