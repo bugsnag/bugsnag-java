@@ -7,8 +7,11 @@
 
         <appType>gradleTask</appType>
 
+        <redactedKey>password</redactedKey>
+        <redactedKey>credit_card_number</redactedKey>
+
         <filteredProperty>password</filteredProperty>
-        <filteredProperty>credit_card_number</filteredProperty>
+        <filteredProperty>secret</filteredProperty>
 
         <ignoredClass>java.io.IOException</ignoredClass>
         <ignoredClass>com.example.Custom</ignoredClass>

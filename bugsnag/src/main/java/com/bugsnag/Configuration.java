@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.regex.Pattern;
 
 @SuppressWarnings("visibilitymodifier")
 public class Configuration {
@@ -39,6 +40,12 @@ public class Configuration {
     public Delivery delivery = new AsyncHttpDelivery(SyncHttpDelivery.DEFAULT_NOTIFY_ENDPOINT);
     public Delivery sessionDelivery =
             new AsyncHttpDelivery(SyncHttpDelivery.DEFAULT_SESSION_ENDPOINT);
+    public Pattern[] redactedKeys = new Pattern[] {
+        Pattern.compile("password", Pattern.CASE_INSENSITIVE),
+        Pattern.compile("secret", Pattern.CASE_INSENSITIVE),
+        Pattern.compile("authorization", Pattern.CASE_INSENSITIVE),
+        Pattern.compile("cookie", Pattern.CASE_INSENSITIVE)
+    };
     public String[] filters = new String[]{"password", "secret", "Authorization", "Cookie"};
     public String[] ignoreClasses;
     public String[] notifyReleaseStages = null;

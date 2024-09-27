@@ -10,6 +10,12 @@
 
 ### Bug Fixes
 
+### Changed
+
+- Renamed the configuration option `filters` to `redactedKeys`. `filters` is now marked as deprecated and will be removed in the next major release. [#217](https://github.com/bugsnag/bugsnag-java/pull/217)
+
+### Bug Fixes
+
 * Update `BugsnagImportSelector` to allow major versions that do not have a minor version.
   fixes [issue #211](https://github.com/bugsnag/bugsnag-java/issues/211).
   [#213](https://github.com/bugsnag/bugsnag-java/pull/213)

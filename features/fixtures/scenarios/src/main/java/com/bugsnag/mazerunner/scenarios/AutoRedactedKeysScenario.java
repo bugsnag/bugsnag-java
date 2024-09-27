@@ -7,9 +7,9 @@ import com.bugsnag.callbacks.Callback;
 /**
  * Sends a handled exception to Bugsnag, which contains metadata that should be redacted
  */
-public class AutoFilterScenario extends Scenario {
+public class AutoRedactedKeysScenario extends Scenario {
 
-    public AutoFilterScenario(Bugsnag bugsnag) {
+    public AutoRedactedKeysScenario(Bugsnag bugsnag) {
         super(bugsnag);
     }
 
