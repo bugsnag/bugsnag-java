@@ -1,21 +1,16 @@
 package com.bugsnag.example.desktop;
 
-import com.bugsnag.BugsnagDesktop;
-import com.bugsnag.Report;
-import com.bugsnag.Severity;
-import com.bugsnag.callbacks.Callback;
-
-import java.util.Date;
+import com.bugsnag.BugsnagDesktopPlugin;
+import com.bugsnag.Bugsnag;
 
 public class ExampleApp {
     public static void main(String[] args) throws InterruptedException {
         // Create a Bugsnag client
-        BugsnagDesktop bugsnag = new Bugsnag("85dc29dec3cb3f172de8b7a213934868");
+        Bugsnag bugsnag = new Bugsnag("YOUR-API-KEY");
+        BugsnagDesktopPlugin plugin = new BugsnagDesktopPlugin(bugsnag);
+        plugin.initialize();
 
-        // Set some diagnostic data which will not change during the
-        // lifecycle of the application
-        bugsnag.setReleaseStage("staging");
-        bugsnag.setAppVersion("1.0.1");
+        bugsnag.setAutoCaptureSessions(true);
 
         // Send a handled exception to Bugsnag
         try {
@@ -34,8 +29,9 @@ public class ExampleApp {
         };
 
         thread.start();
-
         // Wait for unhandled exception thread to finish before exiting
         thread.join();
+
+        bugsnag.close();
     }
 }

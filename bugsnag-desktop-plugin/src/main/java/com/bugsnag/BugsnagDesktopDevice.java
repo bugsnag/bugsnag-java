@@ -5,7 +5,7 @@ import java.util.prefs.Preferences;
 
 public class BugsnagDesktopDevice {
     private static final String DEVICE_ID_KEY = "id";
-    private static final Preferences PREFS = Preferences.userNodeForPackage(BugsnagDesktopConfiguration.class);
+    private static final Preferences PREFS = Preferences.userNodeForPackage(BugsnagDesktopDevice.class);
 
     private final String deviceId;
 

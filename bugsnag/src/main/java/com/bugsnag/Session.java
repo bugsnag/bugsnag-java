@@ -9,12 +9,14 @@ class Session {
 
     private final String id;
     private final Date startedAt;
+    private String deviceID;
     private final AtomicInteger handledCount;
     private final AtomicInteger unhandledCount;
 
     Session(String id, Date startedAt) {
         this.id = id;
         this.startedAt = new Date(startedAt.getTime());
+        this.deviceID = null;
         this.handledCount = new AtomicInteger(0);
         this.unhandledCount = new AtomicInteger(0);
     }
@@ -46,5 +48,9 @@ class Session {
     @Expose
     String getStartedAt() {
         return DateUtils.toIso8601(startedAt);
+    }
+
+    public String getDevice() {
+        return this.deviceID;
     }
 }
