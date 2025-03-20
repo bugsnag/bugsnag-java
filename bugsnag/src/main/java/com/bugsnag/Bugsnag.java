@@ -101,6 +101,26 @@ public class Bugsnag implements Closeable {
         scheduleSessionFlushes();
     }
 
+    /**
+     * Private constructor to allow customized Configuration and SessionTracker.
+     * This is for use in subclasses like BugsnagDesktop to provide a custom config and sessionTracker.
+     */
+    protected Bugsnag(String apiKey, boolean sendUncaughtExceptions, Configuration config, SessionTracker sessionTracker) {
+        if (apiKey == null) {
+            throw new NullPointerException("You must provide a Bugsnag API key");
+        }
+
+        this.config = config;
+        this.sessionTracker = sessionTracker;
+
+        this.config.setSendUncaughtExceptions(sendUncaughtExceptions);
+        if (sendUncaughtExceptions) {
+            ExceptionHandler.enable(this);
+        }
+        addSessionTrackingShutdownHook();
+        scheduleSessionFlushes();
+    }
+
     private void scheduleSessionFlushes() {
         sessionExecutorService.scheduleAtFixedRate(new Runnable() {
             @Override

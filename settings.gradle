@@ -1,11 +1,13 @@
 include ':bugsnag',
-        ':bugsnag-spring'
+        ':bugsnag-spring',
+        ':bugsnag-desktop'
 
 include ':examples:simple',
         ':examples:servlet-javax',
         ':examples:spring',
         ':examples:spring-web',
-        ':examples:logback'
+        ':examples:logback',
+        ':examples:desktop'
 
 // jakarta servlet example requires java 11 compatibility for gretty plugin
 if (JavaVersion.current().isJava11Compatible()) {
