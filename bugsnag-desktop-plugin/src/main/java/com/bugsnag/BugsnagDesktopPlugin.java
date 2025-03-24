@@ -1,32 +1,47 @@
 package com.bugsnag;
 
-public class BugsnagDesktopPlugin{
+import java.io.ObjectInputFilter.Config;
 
-    private Bugsnag bugsnag;
+public class BugsnagDesktopPlugin implements Plugin {
+
     BugsnagDesktopDevice DeviceIDManager = new BugsnagDesktopDevice();
+    private final Configuration config;
+    private boolean pluginLoaded;
 
-    public BugsnagDesktopPlugin(Bugsnag bugsnag) {
-        this.bugsnag = bugsnag;
+    public BugsnagDesktopPlugin(Configuration config) {
+        this.config = config;
     }
 
-    public void initialize()
+    @Override
+    public void load()
     {
-        bugsnag.setAutoCaptureSessions(true);
-        bugsnag.startSession();
+        pluginLoaded = true;
 
-        this.addDeviceIdToSessions();
-        this.addDeviceIdToEvents();
+        config.setAutoCaptureSessions(true);
+        addDeviceIdToSessions();
+        addDeviceIdToEvents();
+    }
+    
+    @Override
+    public void unload()
+    {
+        pluginLoaded = false;
+
     }
 
     private void addDeviceIdToSessions() { 
-        this.bugsnag.addBeforeSendSession(session -> { 
-            session.getDevice().put("id", getDeviceId());
+        this.config.addBeforeSendSession(session -> { 
+            if(pluginLoaded) {
+                session.getDevice().put("id", getDeviceId());
+            }
         });
     }
 
     private void addDeviceIdToEvents() {
-        this.bugsnag.addCallback(event -> {
-            event.getDevice().put("id", getDeviceId());
+        this.config.addCallback(event -> {
+            if(pluginLoaded) {
+                event.getDevice().put("id", getDeviceId());
+            }
         });
     }
 

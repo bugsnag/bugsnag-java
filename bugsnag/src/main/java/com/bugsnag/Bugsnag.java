@@ -101,6 +101,23 @@ public class Bugsnag implements Closeable {
         scheduleSessionFlushes();
     }
 
+    public Bugsnag(Configuration config) {
+        if (config.apiKey == null) {
+            throw new NullPointerException("You must provide a Bugsnag API key");
+        }
+
+        this.config = config;
+        this.config.loadPlugins();
+        sessionTracker = new SessionTracker(config);
+
+        // Automatically send unhandled exceptions to Bugsnag using this Bugsnag
+        this.config.setSendUncaughtExceptions(true);
+        ExceptionHandler.enable(this);
+
+        addSessionTrackingShutdownHook();
+        scheduleSessionFlushes();
+    }
+
     private void scheduleSessionFlushes() {
         sessionExecutorService.scheduleAtFixedRate(new Runnable() {
             @Override
@@ -642,8 +659,8 @@ public class Bugsnag implements Closeable {
         THREAD_METADATA.get().clearKey(tabName, key);
     }
 
-    Configuration getConfig() {
-        return config;
+    public Configuration getConfig() {
+        return this.config;
     }
 
     SessionTracker getSessionTracker() {
@@ -666,6 +683,6 @@ public class Bugsnag implements Closeable {
     }
 
     void addBeforeSendSession(BeforeSendSession beforeSendSession) {
-        sessionTracker.addBeforeSendSession(beforeSendSession);
+        config.addBeforeSendSession(beforeSendSession, this.sessionTracker);
     }
 }

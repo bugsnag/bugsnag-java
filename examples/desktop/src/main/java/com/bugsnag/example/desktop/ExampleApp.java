@@ -1,17 +1,21 @@
 package com.bugsnag.example.desktop;
 
 import com.bugsnag.BugsnagDesktopPlugin;
+import com.bugsnag.Configuration;
 import com.bugsnag.Bugsnag;
 
 public class ExampleApp {
     public static void main(String[] args) throws InterruptedException {
+        
+        // Create a Bugsnag configuration and add the plugin
+        Configuration config = new Configuration("YOUR-API-KEY");
+        config.addPlugin(new BugsnagDesktopPlugin(config));
+
         // Create a Bugsnag client
-        Bugsnag bugsnag = new Bugsnag("YOUR-API-KEY");
-        BugsnagDesktopPlugin plugin = new BugsnagDesktopPlugin(bugsnag);
-        plugin.initialize();
+        Bugsnag bugsnag = new Bugsnag(config);
 
-        bugsnag.setAutoCaptureSessions(true);
 
+        bugsnag.startSession();
         // Send a handled exception to Bugsnag
         try {
             throw new RuntimeException("Handled exception - default severity");

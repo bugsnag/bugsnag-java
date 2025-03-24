@@ -20,6 +20,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.ArrayList;
 import java.util.Map;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -50,8 +51,9 @@ public class Configuration {
     Collection<Callback> callbacks = new ConcurrentLinkedQueue<Callback>();
     private final AtomicBoolean autoCaptureSessions = new AtomicBoolean(true);
     private final AtomicBoolean sendUncaughtExceptions = new AtomicBoolean(true);
+    public final List<Plugin> plugins = new ArrayList<>();
 
-    Configuration(String apiKey) {
+    public Configuration(String apiKey) {
         this.apiKey = apiKey;
         // Add built-in callbacks
         addCallback(new AppCallback(this));
@@ -91,6 +93,10 @@ public class Configuration {
         }
     }
 
+    void addBeforeSendSession(BeforeSendSession beforeSendSession, SessionTracker sessionTracker) {
+        sessionTracker.addBeforeSendSession(beforeSendSession);
+    }
+
     boolean inProject(String className) {
         if (projectPackages != null) {
             for (String packageName : projectPackages) {
@@ -101,6 +107,44 @@ public class Configuration {
         }
 
         return false;
+    }
+
+    public void loadPlugins()
+    {
+        if(plugins != null) {
+            for(Plugin plugin : plugins) {
+                plugin.load();
+            }
+        }
+    }
+
+    public void addPlugin(Plugin plugin) {
+        if(plugin != null && plugins.contains(plugin) == false) {
+            plugins.add(plugin);
+        }
+        else { 
+            LOGGER.warn("Plugin is null, cannot add plugin");
+        }
+    }
+
+    public void removePlugin(Plugin plugin) {
+        if(plugin != null) {
+            plugin.unload();
+        }
+        else {
+            LOGGER.warn("Plugin is null, cannot remove plugin");
+        }
+    }
+
+    public void clearPlugins() {
+        for(Plugin plugin : plugins) {
+            plugin.unload();
+        }
+        plugins.clear();
+    }
+
+    public List<Plugin> getPlugins() {
+        return plugins;
     }
 
     public void setAutoCaptureSessions(boolean autoCaptureSessions) {
