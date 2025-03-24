@@ -106,9 +106,8 @@ public class Bugsnag implements Closeable {
             throw new NullPointerException("You must provide a Bugsnag API key");
         }
 
+        this.sessionTracker = new SessionTracker(config);
         this.config = config;
-        this.config.loadPlugins();
-        sessionTracker = new SessionTracker(config);
 
         // Automatically send unhandled exceptions to Bugsnag using this Bugsnag
         this.config.setSendUncaughtExceptions(true);
@@ -116,6 +115,9 @@ public class Bugsnag implements Closeable {
 
         addSessionTrackingShutdownHook();
         scheduleSessionFlushes();
+
+        //load all plugins added to the configuration
+        this.config.loadPlugins(this);
     }
 
     private void scheduleSessionFlushes() {
@@ -683,6 +685,8 @@ public class Bugsnag implements Closeable {
     }
 
     void addBeforeSendSession(BeforeSendSession beforeSendSession) {
-        config.addBeforeSendSession(beforeSendSession, this.sessionTracker);
+        sessionTracker.addBeforeSendSession(beforeSendSession);
     }
+
+
 }

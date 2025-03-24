@@ -4,20 +4,21 @@ import java.io.ObjectInputFilter.Config;
 
 public class BugsnagDesktopPlugin implements Plugin {
 
-    BugsnagDesktopDevice DeviceIDManager = new BugsnagDesktopDevice();
     private final Configuration config;
-    private boolean pluginLoaded;
+    private final BugsnagDesktopDevice DeviceIDManager = new BugsnagDesktopDevice();
+    private Bugsnag bugsnag;
+    private boolean pluginLoaded = true;
 
     public BugsnagDesktopPlugin(Configuration config) {
         this.config = config;
     }
 
     @Override
-    public void load()
+    public void load(Bugsnag bugsnag)
     {
-        pluginLoaded = true;
+        this.bugsnag = bugsnag;
 
-        config.setAutoCaptureSessions(true);
+        bugsnag.setAutoCaptureSessions(true);
         addDeviceIdToSessions();
         addDeviceIdToEvents();
     }
@@ -26,11 +27,10 @@ public class BugsnagDesktopPlugin implements Plugin {
     public void unload()
     {
         pluginLoaded = false;
-
     }
 
     private void addDeviceIdToSessions() { 
-        this.config.addBeforeSendSession(session -> { 
+        bugsnag.addBeforeSendSession(session -> { 
             if(pluginLoaded) {
                 session.getDevice().put("id", getDeviceId());
             }
@@ -38,7 +38,7 @@ public class BugsnagDesktopPlugin implements Plugin {
     }
 
     private void addDeviceIdToEvents() {
-        this.config.addCallback(event -> {
+        bugsnag.addCallback(event -> {
             if(pluginLoaded) {
                 event.getDevice().put("id", getDeviceId());
             }

@@ -93,10 +93,6 @@ public class Configuration {
         }
     }
 
-    void addBeforeSendSession(BeforeSendSession beforeSendSession, SessionTracker sessionTracker) {
-        sessionTracker.addBeforeSendSession(beforeSendSession);
-    }
-
     boolean inProject(String className) {
         if (projectPackages != null) {
             for (String packageName : projectPackages) {
@@ -109,11 +105,11 @@ public class Configuration {
         return false;
     }
 
-    public void loadPlugins()
+    public void loadPlugins(Bugsnag bugsnag)
     {
         if(plugins != null) {
             for(Plugin plugin : plugins) {
-                plugin.load();
+                plugin.load(bugsnag);
             }
         }
     }
