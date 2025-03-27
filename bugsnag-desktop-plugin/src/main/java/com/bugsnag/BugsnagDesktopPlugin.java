@@ -1,11 +1,9 @@
 package com.bugsnag;
 
-import java.io.ObjectInputFilter.Config;
-
 public class BugsnagDesktopPlugin implements Plugin {
 
     private final Configuration config;
-    private final BugsnagDesktopDevice DeviceIDManager = new BugsnagDesktopDevice();
+    private final BugsnagDesktopDevice deviceIDManager = new BugsnagDesktopDevice();
     private Bugsnag bugsnag;
     private boolean pluginLoaded = true;
 
@@ -14,24 +12,22 @@ public class BugsnagDesktopPlugin implements Plugin {
     }
 
     @Override
-    public void load(Bugsnag bugsnag)
-    {
+    public void load(Bugsnag bugsnag) {
         this.bugsnag = bugsnag;
 
         bugsnag.setAutoCaptureSessions(true);
         addDeviceIdToSessions();
         addDeviceIdToEvents();
     }
-    
+
     @Override
-    public void unload()
-    {
+    public void unload() {
         pluginLoaded = false;
     }
 
-    private void addDeviceIdToSessions() { 
-        bugsnag.addBeforeSendSession(session -> { 
-            if(pluginLoaded) {
+    private void addDeviceIdToSessions() {
+        bugsnag.addBeforeSendSession(session -> {
+            if (pluginLoaded) {
                 session.getDevice().put("id", getDeviceId());
             }
         });
@@ -39,7 +35,7 @@ public class BugsnagDesktopPlugin implements Plugin {
 
     private void addDeviceIdToEvents() {
         bugsnag.addCallback(event -> {
-            if(pluginLoaded) {
+            if (pluginLoaded) {
                 event.getDevice().put("id", getDeviceId());
             }
         });
@@ -47,7 +43,6 @@ public class BugsnagDesktopPlugin implements Plugin {
 
     private String getDeviceId() {
         // Implement logic to retrieve or generate a unique device ID
-        return DeviceIDManager.getDeviceId();
+        return deviceIDManager.getDeviceId();
     }
 }
-

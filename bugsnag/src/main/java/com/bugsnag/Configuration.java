@@ -15,12 +15,12 @@ import com.bugsnag.serialization.Serializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.ArrayList;
 import java.util.Map;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -53,6 +53,11 @@ public class Configuration {
     private final AtomicBoolean sendUncaughtExceptions = new AtomicBoolean(true);
     public final List<Plugin> plugins = new ArrayList<>();
 
+    /**
+     * Creates a new Bugsnag configuration with the given API key.
+     *
+     * @param apiKey the API key
+     */
     public Configuration(String apiKey) {
         this.apiKey = apiKey;
         // Add built-in callbacks
@@ -105,35 +110,54 @@ public class Configuration {
         return false;
     }
 
-    public void loadPlugins(Bugsnag bugsnag)
-    {
-        if(plugins != null) {
-            for(Plugin plugin : plugins) {
+    /**
+     * Loads each plugin in the configuration
+     *
+     * @param bugsnag the Bugsnag client to load the plugins into
+     */
+    public void loadPlugins(Bugsnag bugsnag) {
+        if (plugins != null) {
+            for (Plugin plugin : plugins) {
                 plugin.load(bugsnag);
             }
         }
     }
 
+    /**
+     * Adds a plugin to the configuration
+     *
+     * @param plugin the plugin to add
+     */
     public void addPlugin(Plugin plugin) {
-        if(plugin != null && plugins.contains(plugin) == false) {
-            plugins.add(plugin);
-        }
-        else { 
+        if (plugin == null) {
             LOGGER.warn("Plugin is null, cannot add plugin");
         }
+
+        if (plugins.contains(plugin)) {
+            LOGGER.warn("Plugin is already added, cannot add plugin");
+        }
+
+        plugins.add(plugin);
     }
 
+    /**
+     * Removes a plugin from the configuration
+     *
+     * @param plugin the plugin to remove
+     */
     public void removePlugin(Plugin plugin) {
-        if(plugin != null) {
+        if (plugin != null) {
             plugin.unload();
-        }
-        else {
+        } else {
             LOGGER.warn("Plugin is null, cannot remove plugin");
         }
     }
 
+    /**
+     * Removes all plugins from the configuration
+     */
     public void clearPlugins() {
-        for(Plugin plugin : plugins) {
+        for (Plugin plugin : plugins) {
             plugin.unload();
         }
         plugins.clear();

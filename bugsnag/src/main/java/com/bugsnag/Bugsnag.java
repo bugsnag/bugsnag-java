@@ -101,6 +101,10 @@ public class Bugsnag implements Closeable {
         scheduleSessionFlushes();
     }
 
+    /**
+     *
+     * @param config the configuration to use
+     */
     public Bugsnag(Configuration config) {
         if (config.apiKey == null) {
             throw new NullPointerException("You must provide a Bugsnag API key");
