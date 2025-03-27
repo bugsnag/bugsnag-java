@@ -2,6 +2,8 @@
 
 ## Changed
 
+* Add Plugin support and persistant unique device.id field via added the `BugsnagDesktopPlugin` plugin. [#226](https://github.com/bugsnag/bugsnag-java/pull/226)
+
 * Add a null check for `Severity` to the notify override method. [#214](https://github.com/bugsnag/bugsnag-java/pull/214)
 
 * Created Serializer interface, allowing for implementation of a custom serializer. [#219](https://github.com/bugsnag/bugsnag-java/pull/219)
