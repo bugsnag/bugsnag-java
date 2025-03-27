@@ -1,7 +1,6 @@
 package com.bugsnag.mazerunner.scenarios;
 
 import com.bugsnag.Configuration;
-
 import com.bugsnag.Bugsnag;
 import com.bugsnag.BugsnagDesktopPlugin;
 
