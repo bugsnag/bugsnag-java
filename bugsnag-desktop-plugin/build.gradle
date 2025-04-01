@@ -3,15 +3,14 @@ apply from: '../common.gradle'
 
 repositories { 
     mavenCentral()
+    mavenLocal()
 }
 
 java {
     withJavadocJar()
-    withSourcesJar()
-}
-
-artifacts { 
-    archives jar
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(8))
+    }
 }
 
 dependencies { 
