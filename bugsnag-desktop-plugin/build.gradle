@@ -18,7 +18,3 @@ dependencies {
     implementation project(':bugsnag')
     testImplementation "junit:junit:${junitVersion}"
 }
-
-configurations {
-    runtimeClasspath
-}
