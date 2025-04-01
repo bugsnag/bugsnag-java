@@ -21,6 +21,7 @@ public class DesktopPluginScenario extends Scenario {
 
             @Override
             public void run() {
+                bugsnag.startSession();
                 throw new RuntimeException("unhandled exception");
             }
         };
