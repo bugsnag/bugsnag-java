@@ -5,8 +5,20 @@ repositories {
     mavenCentral()
 }
 
+java {
+    withJavadocJar()
+    withSourcesJar()
+}
+
+artifacts { 
+    archives jar
+}
+
 dependencies { 
     implementation project(':bugsnag')
-
     testImplementation "junit:junit:${junitVersion}"
+}
+
+configurations {
+    runtimeClasspath
 }

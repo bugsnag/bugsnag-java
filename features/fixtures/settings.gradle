@@ -1,6 +1,7 @@
 include ':mazerunner',
         ':mazerunnerplainspring',
         ':mazerunnerspringboot',
+        ':bugsnag-desktop-plugin',
         ':scenarios'
 
 try {
