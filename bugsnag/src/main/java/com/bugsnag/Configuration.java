@@ -36,9 +36,8 @@ public class Configuration {
     public String apiKey;
     public String appType;
     public String appVersion;
-    public Delivery delivery = new AsyncHttpDelivery(SyncHttpDelivery.DEFAULT_NOTIFY_ENDPOINT);
-    public Delivery sessionDelivery =
-            new AsyncHttpDelivery(SyncHttpDelivery.DEFAULT_SESSION_ENDPOINT);
+    public Delivery delivery;
+    public Delivery sessionDelivery;
     public String[] filters = new String[]{"password", "secret", "Authorization", "Cookie"};
     public String[] ignoreClasses;
     public String[] notifyReleaseStages = null;
@@ -57,6 +56,11 @@ public class Configuration {
         addCallback(new AppCallback(this));
         addCallback(new DeviceCallback());
         DeviceCallback.initializeCache();
+
+        final String notifyEndpoint = SyncHttpDelivery.defaultNotifyFor(apiKey);
+        final String sessionsEndpoint = SyncHttpDelivery.defaultSessionFor(apiKey);
+        this.delivery = new AsyncHttpDelivery(notifyEndpoint);
+        this.sessionDelivery = new AsyncHttpDelivery(sessionsEndpoint);
 
         if (JavaxServletCallback.isAvailable()) {
             addCallback(new JavaxServletCallback());
@@ -123,17 +127,16 @@ public class Configuration {
      * Set the endpoints to send data to. By default we'll send error reports to
      * https://notify.bugsnag.com, and sessions to https://sessions.bugsnag.com, but you can
      * override this if you are using Bugsnag Enterprise to point to your own Bugsnag endpoint.
-     *
+     * <p>
      * Please note that it is recommended that you set both endpoints. If the notify endpoint is
      * missing, an exception will be thrown. If the session endpoint is missing, a warning will be
      * logged and sessions will not be sent automatically.
-     *
+     * <p>
      * Note that if you are setting a custom {@link Delivery}, this method should be called after
      * the custom implementation has been set.
      *
-     * @param notify the notify endpoint
+     * @param notify   the notify endpoint
      * @param sessions the sessions endpoint
-     *
      * @throws IllegalArgumentException if the notify endpoint is empty or null
      */
     public void setEndpoints(String notify, String sessions) throws IllegalArgumentException {

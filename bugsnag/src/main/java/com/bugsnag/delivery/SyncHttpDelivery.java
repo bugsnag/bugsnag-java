@@ -14,12 +14,16 @@ import java.net.Proxy;
 import java.net.URL;
 import java.net.UnknownHostException;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 public class SyncHttpDelivery implements HttpDelivery {
     private static final Logger LOGGER = LoggerFactory.getLogger(SyncHttpDelivery.class);
 
-    public static final String DEFAULT_NOTIFY_ENDPOINT = "https://notify.bugsnag.com";
-    public static final String DEFAULT_SESSION_ENDPOINT = "https://sessions.bugsnag.com";
+    public static final String DEFAULT_NOTIFY_ENDPOINT   = "https://notify.bugsnag.com";
+    public static final String DEFAULT_SESSION_ENDPOINT  = "https://sessions.bugsnag.com";
+    public static final String HUB_NOTIFY_ENDPOINT       = "https://notify.insighthub.smartbear.com";
+    public static final String HUB_SESSION_ENDPOINT      = "https://sessions.insighthub.smartbear.com";
+    private static final Pattern HUB_KEY = Pattern.compile("^0{5}[0-9a-fA-F]{27}$");
     protected static final int DEFAULT_TIMEOUT = 5000;
 
     protected String endpoint;
@@ -51,6 +55,18 @@ public class SyncHttpDelivery implements HttpDelivery {
     public void setTimeout(int timeout) {
         this.timeout = timeout;
     }
+
+    public static String defaultNotifyFor(String key) {
+                return (key != null && HUB_KEY.matcher(key).matches())
+                                ? HUB_NOTIFY_ENDPOINT
+                                : DEFAULT_NOTIFY_ENDPOINT;
+            }
+
+    public static String defaultSessionFor(String key) {
+                return (key != null && HUB_KEY.matcher(key).matches())
+                                ? HUB_SESSION_ENDPOINT
+                                : DEFAULT_SESSION_ENDPOINT;
+            }
 
     @Override
     public void deliver(Serializer serializer, Object object, Map<String, String> headers) {
