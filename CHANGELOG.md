@@ -1,6 +1,12 @@
 # Changelog
 
-## Changed
+## TBD
+
+* Set default endpoints based on API key [#227](https://github.com/bugsnag/bugsnag-java/pull/227)
+
+## 3.7.2 (2024-08-29)
+
+### Changed
 
 * Add a null check for `Severity` to the notify override method. [#214](https://github.com/bugsnag/bugsnag-java/pull/214)
 
