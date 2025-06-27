@@ -8,6 +8,7 @@ import static org.junit.Assert.assertTrue;
 
 import com.bugsnag.delivery.Delivery;
 import com.bugsnag.delivery.HttpDelivery;
+import com.bugsnag.delivery.SyncHttpDelivery;
 import com.bugsnag.serialization.DefaultSerializer;
 import com.bugsnag.serialization.SerializationException;
 import com.bugsnag.serialization.Serializer;
@@ -26,6 +27,8 @@ import java.util.Queue;
 
 public class ConfigurationTest {
 
+    private static final String HUB_KEY = "00000aaaaaaaaaaaaaaaaaaaaaaaaaaa";
+    private static final String CLASSIC_KEY = "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb";
     private Configuration config;
 
     /**
@@ -163,6 +166,19 @@ public class ConfigurationTest {
                 + "HttpDelivery, cannot set notify endpoint"));
         assertTrue(logMsg.contains("Delivery is not instance of "
                 + "HttpDelivery, cannot set sessions endpoint"));
+    }
+
+    @Test
+    public void testStaticEndpointHelpers() {
+        assertEquals(SyncHttpDelivery.HUB_NOTIFY_ENDPOINT,
+                SyncHttpDelivery.defaultNotifyFor(HUB_KEY));
+        assertEquals(SyncHttpDelivery.HUB_SESSION_ENDPOINT,
+                SyncHttpDelivery.defaultSessionFor(HUB_KEY));
+
+        assertEquals(SyncHttpDelivery.DEFAULT_NOTIFY_ENDPOINT,
+                SyncHttpDelivery.defaultNotifyFor(CLASSIC_KEY));
+        assertEquals(SyncHttpDelivery.DEFAULT_SESSION_ENDPOINT,
+                SyncHttpDelivery.defaultSessionFor(CLASSIC_KEY));
     }
 
     private String getDeliveryEndpoint(Delivery delivery) {
