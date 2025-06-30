@@ -2,13 +2,11 @@ package com.bugsnag;
 
 import com.bugsnag.serialization.Expose;
 
-import com.bugsnag.util.RedactedKeysMap;
-
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 public class Report {
 
@@ -126,7 +124,7 @@ public class Report {
 
     @Expose
     public Map<String, Object> getMetaData() {
-        return new RedactedKeysMap(diagnostics.metaData, Arrays.asList(config.redactedKeys));
+        return new RedactedKeysMap(diagnostics.metaData, config);
     }
 
     @Expose

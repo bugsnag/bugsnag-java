@@ -1,18 +1,12 @@
-package com.bugsnag.util;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+package com.bugsnag;
 
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.regex.Pattern;
+
+import static org.junit.Assert.*;
 
 public class RedactedKeysMapTest {
 
@@ -21,6 +15,7 @@ public class RedactedKeysMapTest {
     private static final String KEY_NESTED = "nested";
     private static final String KEY_UNMODIFIABLE = "unmodifiable";
     private static final String VAL_UNREDACTED = "Foo";
+    private static final String KEY_REDACTED2 = "credit_card";
     private static final String VAL_REDACTED = "Bar";
     private static final String PLACEHOLDER_REDACTED = "[REDACTED]";
 
@@ -28,7 +23,6 @@ public class RedactedKeysMapTest {
 
     /**
      * Creates a map with redacted, unredacted, and nested values
-     * @throws Exception an exception
      */
     @Before
     public void setUp() {
@@ -43,7 +37,7 @@ public class RedactedKeysMapTest {
 
         map.put(KEY_UNMODIFIABLE, Collections.unmodifiableMap(nestedMap));
 
-        this.redactedKeysMap = new RedactedKeysMap(map, Collections.singleton(Pattern.compile(KEY_REDACTED)));
+        this.redactedKeysMap = new RedactedKeysMap(map, new Pattern[]{Pattern.compile(KEY_REDACTED)}, null);
     }
 
     @Test
@@ -55,7 +49,7 @@ public class RedactedKeysMapTest {
     public void testIsEmpty() {
         assertFalse(redactedKeysMap.isEmpty());
         Map<String, Object> map = Collections.emptyMap();
-        RedactedKeysMap emptyMap = new RedactedKeysMap(map, Collections.<Pattern>emptyList());
+        RedactedKeysMap emptyMap = new RedactedKeysMap(map, null, null);
         assertTrue(emptyMap.isEmpty());
     }
 
@@ -81,8 +75,11 @@ public class RedactedKeysMapTest {
         map.put(KEY_REDACTED, VAL_REDACTED);
 
         HashMap<String, Object> emptyMap = new HashMap<>();
-        Set<Pattern> redactedKeys = Collections.singleton(Pattern.compile(KEY_REDACTED));
-        Map<String, Object> removeMap = new RedactedKeysMap(emptyMap, redactedKeys);
+        Map<String, Object> removeMap = new RedactedKeysMap(
+                emptyMap,
+                new Pattern[]{Pattern.compile(KEY_REDACTED)},
+                null
+        );
         removeMap.putAll(map);
 
         assertEquals(2, removeMap.size());
@@ -90,6 +87,24 @@ public class RedactedKeysMapTest {
         assertEquals(1, removeMap.size());
         removeMap.remove(KEY_UNREDACTED);
         assertEquals(0, removeMap.size());
+    }
+
+    @Test
+    public void testMixedFiltersAndRedactedKeys() {
+        Map<String, Object> map = new RedactedKeysMap(
+                Collections.<String, Object>emptyMap(),
+                new Pattern[]{Pattern.compile(KEY_REDACTED)},
+                new String[]{KEY_REDACTED2}
+        );
+
+        map.put(KEY_UNREDACTED, VAL_UNREDACTED);
+        map.put(KEY_REDACTED, VAL_REDACTED);
+        map.put(KEY_REDACTED2, VAL_REDACTED);
+
+        assertEquals(3, map.size());
+        assertEquals(PLACEHOLDER_REDACTED, map.get(KEY_REDACTED));
+        assertEquals(PLACEHOLDER_REDACTED, map.get(KEY_REDACTED2));
+        assertEquals(VAL_UNREDACTED, map.get(KEY_UNREDACTED));
     }
 
     @Test

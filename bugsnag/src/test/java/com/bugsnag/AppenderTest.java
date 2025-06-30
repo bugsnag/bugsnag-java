@@ -45,7 +45,6 @@ public class AppenderTest {
      */
     @Before
     public void swapDelivery() {
-
         ch.qos.logback.classic.Logger rootLogger =
                 (ch.qos.logback.classic.Logger) LoggerFactory
                         .getLogger(org.slf4j.Logger.ROOT_LOGGER_NAME);
@@ -137,7 +136,6 @@ public class AppenderTest {
 
     @Test
     public void testBugsnagConfig() {
-
         // Get the Bugsnag instance
         Configuration config = getConfig(appender.getClient());
         assertEquals("test", config.releaseStage);
@@ -145,7 +143,7 @@ public class AppenderTest {
         assertEquals("gradleTask", config.appType);
         assertFalse(config.shouldAutoCaptureSessions());
 
-        assertEquals(8, config.redactedKeys.length);
+        assertEquals(4, config.redactedKeys.length);
         List<Pattern> redactedKeys = new ArrayList<Pattern>(Arrays.asList(config.redactedKeys));
         assertTrue(containsPattern(redactedKeys, "password"));
         assertTrue(containsPattern(redactedKeys, "credit_card_number"));

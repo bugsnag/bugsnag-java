@@ -3,29 +3,17 @@ package com.bugsnag;
 import com.bugsnag.callbacks.Callback;
 import com.bugsnag.delivery.Delivery;
 import com.bugsnag.delivery.HttpDelivery;
-import com.bugsnag.util.ConcatList;
 import com.bugsnag.util.DaemonThreadFactory;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.Closeable;
 import java.lang.Thread.UncaughtExceptionHandler;
 import java.net.Proxy;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
-import java.util.List;
 import java.util.Set;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.RejectedExecutionHandler;
-import java.util.concurrent.ScheduledThreadPoolExecutor;
-import java.util.concurrent.ThreadFactory;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 import java.util.regex.Pattern;
 
 public class Bugsnag implements Closeable {
@@ -238,25 +226,19 @@ public class Bugsnag implements Closeable {
      * or credit card information is stripped from metaData you send to Bugsnag.
      * Any keys in metaData which contain these strings will be marked as
      * [REDACTED] when send to Bugsnag.
-     * @deprecated to be removed and replaced with setRedactedKeys
      *
      * @param filters a list of String keys to filter from metaData
+     * @deprecated to be removed and replaced with setRedactedKeys
      */
     @Deprecated
     public void setFilters(String... filters) {
         config.filters = filters;
-
-        List<Pattern> patterns = new ArrayList<>();
-        for (String fil : filters) {
-            patterns.add(Pattern.compile(".*" + Pattern.quote(fil) + ".*", Pattern.CASE_INSENSITIVE));
-        }
-        setRedactedKeys(patterns.toArray(new Pattern[0]));
     }
 
     /**
      * Sets which values should be removed from any metadata before sending them
      * to Bugsnag.
-     *
+     * <p>
      * Use this if you want to ensure you don't transmit sensitive data such as
      * passwords and credit card numbers. Any property whose key matches a
      * redacted key will be filtered and replaced with [REDACTED].
@@ -264,14 +246,7 @@ public class Bugsnag implements Closeable {
      * @param redactedKeys a list of Patterns to match the key of properties to be redacted from metadata
      */
     public void setRedactedKeys(Pattern... redactedKeys) {
-        if (config.redactedKeys == null) {
-            config.redactedKeys = redactedKeys;
-        } else {
-            List<Pattern> currentList = Arrays.asList(config.redactedKeys);
-            List<Pattern> newList = Arrays.asList(redactedKeys);
-            ConcatList<Pattern> combinedList = new ConcatList<>(currentList, newList);
-            config.redactedKeys = combinedList.toArray(new Pattern[0]);
-        }
+        config.redactedKeys = redactedKeys;
     }
 
     /**

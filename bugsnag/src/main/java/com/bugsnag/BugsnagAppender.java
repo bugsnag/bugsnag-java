@@ -255,13 +255,13 @@ public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
             bugsnag.setTimeout(timeout);
         }
 
-        if (redactedKeys.size() > 0) {
+        if (!redactedKeys.isEmpty()) {
             bugsnag.setRedactedKeys(redactedKeys.toArray(new Pattern[0]));
         }
 
         bugsnag.setIgnoreClasses(ignoredClasses.toArray(new String[0]));
 
-        if (notifyReleaseStages.size() > 0) {
+        if (!notifyReleaseStages.isEmpty()) {
             bugsnag.setNotifyReleaseStages(notifyReleaseStages.toArray(new String[0]));
         }
 

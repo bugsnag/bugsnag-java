@@ -1,6 +1,5 @@
-package com.bugsnag.util;
+package com.bugsnag;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -10,22 +9,28 @@ import java.util.regex.Pattern;
 /**
  * Decorates a map by replacing values of redacted keys.
  */
-public class RedactedKeysMap implements Map<String, Object> {
+class RedactedKeysMap implements Map<String, Object> {
 
     private static final String REDACTED_PLACEHOLDER = "[REDACTED]";
 
     private final Map<String, Object> redactedKeyCopy;
-    private final Collection<Pattern> keyRedactedPatterns = new ArrayList<>();
+    private final Pattern[] redactedKeys;
+    private final String[] filters;
 
     /**
      * Constructs a new RedactedKeysMap by copying the provided map and applying
      * redaction rules to the specified keys.
      *
-     * @param map the original map to be wrapped and redacted
-     * @param keyRedacted a collection of keys (or regex patterns) whose values should be redacted
+     * @param map           the original map to be wrapped and redacted
+     * @param configuration the configuration
      */
-    public RedactedKeysMap(Map<String, Object> map, Collection<Pattern> keyRedacted) {
-        this.keyRedactedPatterns.addAll(keyRedacted);
+    RedactedKeysMap(Map<String, Object> map, Configuration configuration) {
+        this(map, configuration.redactedKeys, configuration.filters);
+    }
+
+    RedactedKeysMap(Map<String, Object> map, Pattern[] redactedKeys, String[] filters) {
+        this.filters = filters;
+        this.redactedKeys = redactedKeys;
         this.redactedKeyCopy = createCopy(map);
     }
 
@@ -39,7 +44,7 @@ public class RedactedKeysMap implements Map<String, Object> {
         Map<String, Object> copy = new HashMap<>();
         for (Entry<? extends String, ?> entry : map.entrySet()) {
             if (entry.getValue() == null) {
-                copy.put(entry.getKey(), entry.getValue());
+                copy.put(entry.getKey(), null);
             } else {
                 Object transformedValue = transformEntry(entry.getKey(), entry.getValue());
                 copy.put(entry.getKey(), transformedValue);
@@ -116,7 +121,7 @@ public class RedactedKeysMap implements Map<String, Object> {
     @SuppressWarnings("unchecked")
     private Object transformEntry(Object key, Object value) {
         if (value instanceof Map) {
-            return new RedactedKeysMap((Map<String, Object>) value, keyRedactedPatterns);
+            return new RedactedKeysMap((Map<String, Object>) value, redactedKeys, filters);
         }
         return shouldRedactKey((String) key) ? REDACTED_PLACEHOLDER : value;
     }
@@ -126,11 +131,24 @@ public class RedactedKeysMap implements Map<String, Object> {
             return false;
         }
 
-        for (Pattern pattern : keyRedactedPatterns) {
-            if (pattern.matcher(key).find()) {
-                return true;
+        Pattern[] redactedKeys = this.redactedKeys;
+        if (redactedKeys != null) {
+            for (Pattern pattern : redactedKeys) {
+                if (pattern.matcher(key).matches()) {
+                    return true;
+                }
             }
         }
+
+        String[] filters = this.filters;
+        if (filters != null) {
+            for (String filter : filters) {
+                if (filter != null && key.contains(filter)) {
+                    return true;
+                }
+            }
+        }
+
         return false;
     }
 }

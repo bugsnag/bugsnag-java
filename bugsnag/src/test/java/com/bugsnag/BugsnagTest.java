@@ -238,7 +238,7 @@ public class BugsnagTest {
 
     @Test
     public void testFilters() {
-        bugsnag.setFilters("testfilter1", "testfilter2");
+        bugsnag.setFilters("testfilter1", null, "testfilter2", null);
         bugsnag.setDelivery(new Delivery() {
             @SuppressWarnings("unchecked")
             @Override
