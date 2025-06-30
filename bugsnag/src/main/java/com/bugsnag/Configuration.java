@@ -1,16 +1,26 @@
 package com.bugsnag;
 
-import com.bugsnag.callbacks.*;
+import com.bugsnag.callbacks.AppCallback;
+import com.bugsnag.callbacks.Callback;
+import com.bugsnag.callbacks.DeviceCallback;
+import com.bugsnag.callbacks.JakartaServletCallback;
+import com.bugsnag.callbacks.JavaxServletCallback;
 import com.bugsnag.delivery.AsyncHttpDelivery;
 import com.bugsnag.delivery.Delivery;
 import com.bugsnag.delivery.HttpDelivery;
 import com.bugsnag.delivery.SyncHttpDelivery;
 import com.bugsnag.serialization.DefaultSerializer;
 import com.bugsnag.serialization.Serializer;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.regex.Pattern;
