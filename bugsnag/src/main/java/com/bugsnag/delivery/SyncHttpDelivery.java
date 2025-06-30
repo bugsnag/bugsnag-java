@@ -17,24 +17,11 @@ import java.util.Map;
 
 public class SyncHttpDelivery implements HttpDelivery {
     private static final Logger LOGGER = LoggerFactory.getLogger(SyncHttpDelivery.class);
-
-    public static final String DEFAULT_NOTIFY_ENDPOINT = "https://notify.bugsnag.com";
-    public static final String DEFAULT_SESSION_ENDPOINT = "https://sessions.bugsnag.com";
-    public static final String HUB_NOTIFY_ENDPOINT = "https://notify.insighthub.smartbear.com";
-    public static final String HUB_SESSION_ENDPOINT = "https://sessions.insighthub.smartbear.com";
-    private static final String HUB_KEY_PREFIX = "00000";
     protected static final int DEFAULT_TIMEOUT = 5000;
 
     protected String endpoint;
     protected int timeout = DEFAULT_TIMEOUT;
     protected Proxy proxy;
-
-    /**
-     * Creates a new instance, which defaults to the https://notify.bugsnag.com endpoint
-     */
-    public SyncHttpDelivery() {
-        this(SyncHttpDelivery.DEFAULT_NOTIFY_ENDPOINT);
-    }
 
     /**
      * Creates a new instance, which uses a custom endpoint
@@ -53,32 +40,6 @@ public class SyncHttpDelivery implements HttpDelivery {
 
     public void setTimeout(int timeout) {
         this.timeout = timeout;
-    }
-
-    /**
-     * Decide which notify host to use for a given API-key.
-     *
-     * @param key 32-character Bugsnag API key
-     * @return Insight Hub notify endpoint when the key starts with “00000”,
-     *     otherwise the classic Bugsnag endpoint.
-     */
-    public static String defaultNotifyFor(String key) {
-        return (key != null && key.startsWith(HUB_KEY_PREFIX))
-                ? HUB_NOTIFY_ENDPOINT
-                : DEFAULT_NOTIFY_ENDPOINT;
-    }
-
-    /**
-     * Decide which sessions host to use for a given API-key.
-     *
-     * @param key 32-character Bugsnag API key
-     * @return Insight Hub sessions endpoint when the key starts with “00000”,
-     *     otherwise the classic Bugsnag endpoint.
-     */
-    public static String defaultSessionFor(String key) {
-        return (key != null && key.startsWith(HUB_KEY_PREFIX))
-                ? HUB_SESSION_ENDPOINT
-                : DEFAULT_SESSION_ENDPOINT;
     }
 
     @Override

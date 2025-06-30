@@ -8,7 +8,6 @@ import com.bugsnag.callbacks.JavaxServletCallback;
 import com.bugsnag.delivery.AsyncHttpDelivery;
 import com.bugsnag.delivery.Delivery;
 import com.bugsnag.delivery.HttpDelivery;
-import com.bugsnag.delivery.SyncHttpDelivery;
 import com.bugsnag.serialization.DefaultSerializer;
 import com.bugsnag.serialization.Serializer;
 
@@ -28,7 +27,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class Configuration {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Bugsnag.class);
-
     private static final String HEADER_API_PAYLOAD_VERSION = "Bugsnag-Payload-Version";
     private static final String HEADER_API_KEY = "Bugsnag-Api-Key";
     private static final String HEADER_BUGSNAG_SENT_AT = "Bugsnag-Sent-At";
@@ -37,6 +35,7 @@ public class Configuration {
     public String appType;
     public String appVersion;
     public Delivery delivery;
+    public EndpointConfiguration endpointConfiguration;
     public Delivery sessionDelivery;
     public String[] filters = new String[]{"password", "secret", "Authorization", "Cookie"};
     public String[] ignoreClasses;
@@ -57,10 +56,11 @@ public class Configuration {
         addCallback(new DeviceCallback());
         DeviceCallback.initializeCache();
 
-        final String notifyEndpoint = SyncHttpDelivery.defaultNotifyFor(apiKey);
-        final String sessionsEndpoint = SyncHttpDelivery.defaultSessionFor(apiKey);
-        this.delivery = new AsyncHttpDelivery(notifyEndpoint);
-        this.sessionDelivery = new AsyncHttpDelivery(sessionsEndpoint);
+        endpointConfiguration = new EndpointConfiguration();
+        endpointConfiguration.configureEndpoints(apiKey);
+
+        this.delivery = new AsyncHttpDelivery(endpointConfiguration.notifyEndpoint);
+        this.sessionDelivery = new AsyncHttpDelivery(endpointConfiguration.sessionEndpoint);
 
         if (JavaxServletCallback.isAvailable()) {
             addCallback(new JavaxServletCallback());
@@ -124,9 +124,7 @@ public class Configuration {
     }
 
     /**
-     * Set the endpoints to send data to. By default we'll send error reports to
-     * https://notify.bugsnag.com, and sessions to https://sessions.bugsnag.com, but you can
-     * override this if you are using Bugsnag Enterprise to point to your own Bugsnag endpoint.
+     * Set the endpoints to send data to. Use this to override the default endpoints if you are using Bugsnag Enterprise to point to your own Bugsnag endpoint.
      * <p>
      * Please note that it is recommended that you set both endpoints. If the notify endpoint is
      * missing, an exception will be thrown. If the session endpoint is missing, a warning will be

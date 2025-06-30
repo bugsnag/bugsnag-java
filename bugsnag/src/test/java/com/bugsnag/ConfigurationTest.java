@@ -170,15 +170,28 @@ public class ConfigurationTest {
 
     @Test
     public void testStaticEndpointHelpers() {
-        assertEquals(SyncHttpDelivery.HUB_NOTIFY_ENDPOINT,
-                SyncHttpDelivery.defaultNotifyFor(HUB_KEY));
-        assertEquals(SyncHttpDelivery.HUB_SESSION_ENDPOINT,
-                SyncHttpDelivery.defaultSessionFor(HUB_KEY));
 
-        assertEquals(SyncHttpDelivery.DEFAULT_NOTIFY_ENDPOINT,
-                SyncHttpDelivery.defaultNotifyFor(CLASSIC_KEY));
-        assertEquals(SyncHttpDelivery.DEFAULT_SESSION_ENDPOINT,
-                SyncHttpDelivery.defaultSessionFor(CLASSIC_KEY));
+        String DEFAULT_NOTIFY_ENDPOINT = "https://notify.bugsnag.com";
+        String DEFAULT_SESSION_ENDPOINT = "https://sessions.bugsnag.com";
+        String HUB_NOTIFY_ENDPOINT = "https://notify.insighthub.smartbear.com";
+        String HUB_SESSION_ENDPOINT = "https://sessions.insighthub.smartbear.com";
+
+        EndpointConfiguration normalConfig = new EndpointConfiguration();
+        normalConfig.configureEndpoints(CLASSIC_KEY);
+
+        assertEquals(DEFAULT_NOTIFY_ENDPOINT,
+                normalConfig.notifyEndpoint);
+        assertEquals(DEFAULT_SESSION_ENDPOINT,
+                normalConfig.sessionEndpoint);
+
+        EndpointConfiguration hubConfig = new EndpointConfiguration();
+        hubConfig.configureEndpoints(HUB_KEY);
+
+        assertEquals(HUB_NOTIFY_ENDPOINT,
+                hubConfig.notifyEndpoint);
+        assertEquals(HUB_SESSION_ENDPOINT,
+                hubConfig.sessionEndpoint);
+
     }
 
     private String getDeliveryEndpoint(Delivery delivery) {
