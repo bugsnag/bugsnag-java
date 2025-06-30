@@ -1,5 +1,11 @@
 # Changelog
 
+## TBD
+
+### Changed
+
+* Renamed the configuration option `filters` to `redactedKeys`. `filters` is now marked as deprecated and will be removed in the next major release. [#217](https://github.com/bugsnag/bugsnag-java/pull/217)
+
 ## 3.7.2 (2024-08-28)
 
 ### Changed
@@ -9,12 +15,6 @@
 * Created Serializer interface, allowing for implementation of a custom serializer. [#219](https://github.com/bugsnag/bugsnag-java/pull/219)
 
 * Updated ScheduleTaskConfiguration configureTask method to properly handle wrapped/proxied objects. [#218](https://github.com/bugsnag/bugsnag-java/pull/218)
-
-### Bug Fixes
-
-### Changed
-
-- Renamed the configuration option `filters` to `redactedKeys`. `filters` is now marked as deprecated and will be removed in the next major release. [#217](https://github.com/bugsnag/bugsnag-java/pull/217)
 
 ### Bug Fixes
 
