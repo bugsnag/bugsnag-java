@@ -9,7 +9,7 @@ import static org.junit.Assert.assertTrue;
 import com.bugsnag.HandledState.SeverityReasonType;
 import com.bugsnag.delivery.OutputStreamDelivery;
 
-import com.bugsnag.serialization.Serializer;
+import com.bugsnag.serialization.DefaultSerializer;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -178,7 +178,7 @@ public class HandledStatePayloadTest {
     private JsonNode getJsonPayloadFromReport(Report report) throws IOException {
         ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
         OutputStreamDelivery delivery = new OutputStreamDelivery(byteStream);
-        delivery.deliver(new Serializer(), report, Collections.<String, String>emptyMap());
+        delivery.deliver(new DefaultSerializer(), report, Collections.<String, String>emptyMap());
 
         String data = new String(byteStream.toByteArray());
         assertNotNull(data);

@@ -8,12 +8,16 @@ import static org.junit.Assert.assertTrue;
 
 import com.bugsnag.delivery.Delivery;
 import com.bugsnag.delivery.HttpDelivery;
+import com.bugsnag.serialization.DefaultSerializer;
+import com.bugsnag.serialization.SerializationException;
 import com.bugsnag.serialization.Serializer;
 
 import org.junit.Before;
 import org.junit.Test;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.io.PrintStream;
 import java.net.Proxy;
 import java.util.LinkedList;
@@ -110,6 +114,29 @@ public class ConfigurationTest {
         config.setAutoCaptureSessions(false);
         config.setEndpoints("http://example.com", "http://example.com");
         assertFalse(config.shouldAutoCaptureSessions());
+    }
+
+    @Test
+    public void testCustomSerializer() throws SerializationException {
+        // flag to check if writeToStream was called
+        final boolean[] methodCalled = {false};
+
+        //Anonymous class extending DefaultSerializer
+        Serializer customSerializer = new DefaultSerializer() {
+            @Override
+            public void writeToStream(OutputStream stream, Object object) throws SerializationException {
+                methodCalled[0] = true;
+                try {
+                    stream.write("foo".getBytes());
+                } catch (IOException exc) {
+                    throw new SerializationException("Exception during serialization", exc);
+                }
+            }
+        };
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        customSerializer.writeToStream(out, new Object());
+        assertTrue(methodCalled[0]);
+        assertEquals("foo", out.toString());
     }
 
     @Test
