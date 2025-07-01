@@ -56,8 +56,7 @@ public class Configuration {
         addCallback(new DeviceCallback());
         DeviceCallback.initializeCache();
 
-        endpointConfiguration = new EndpointConfiguration();
-        endpointConfiguration.configureDefaultEndpoints(apiKey);
+        endpointConfiguration = EndpointConfiguration.fromApiKey(apiKey);
 
         this.delivery = new AsyncHttpDelivery(endpointConfiguration.notifyEndpoint);
         this.sessionDelivery = new AsyncHttpDelivery(endpointConfiguration.sessionEndpoint);
