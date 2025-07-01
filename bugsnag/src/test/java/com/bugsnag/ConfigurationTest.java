@@ -167,23 +167,23 @@ public class ConfigurationTest {
     @Test
     public void testStaticEndpointHelpers() {
 
-        String DEFAULT_NOTIFY_ENDPOINT = "https://notify.bugsnag.com";
-        String DEFAULT_SESSION_ENDPOINT = "https://sessions.bugsnag.com";
-        String HUB_NOTIFY_ENDPOINT = "https://notify.insighthub.smartbear.com";
-        String HUB_SESSION_ENDPOINT = "https://sessions.insighthub.smartbear.com";
+        String defaultNotifyEndpoint = "https://notify.bugsnag.com";
+        String defaultSessionEndpoint = "https://sessions.bugsnag.com";
+        String hubNotifyEndpoint = "https://notify.insighthub.smartbear.com";
+        String hubSessionEndpoint = "https://sessions.insighthub.smartbear.com";
 
         EndpointConfiguration normalConfig = EndpointConfiguration.fromApiKey(CLASSIC_KEY);
 
-        assertEquals(DEFAULT_NOTIFY_ENDPOINT,
+        assertEquals(defaultNotifyEndpoint,
                 normalConfig.getNotifyEndpoint());
-        assertEquals(DEFAULT_SESSION_ENDPOINT,
+        assertEquals(defaultSessionEndpoint,
                 normalConfig.getSessionEndpoint());
 
         EndpointConfiguration hubConfig = EndpointConfiguration.fromApiKey(HUB_KEY);
 
-        assertEquals(HUB_NOTIFY_ENDPOINT,
+        assertEquals(hubNotifyEndpoint,
                 hubConfig.getNotifyEndpoint());
-        assertEquals(HUB_SESSION_ENDPOINT,
+        assertEquals(hubSessionEndpoint,
                 hubConfig.getSessionEndpoint());
 
     }
