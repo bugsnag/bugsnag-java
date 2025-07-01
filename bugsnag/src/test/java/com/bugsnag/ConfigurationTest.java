@@ -8,7 +8,6 @@ import static org.junit.Assert.assertTrue;
 
 import com.bugsnag.delivery.Delivery;
 import com.bugsnag.delivery.HttpDelivery;
-import com.bugsnag.delivery.SyncHttpDelivery;
 import com.bugsnag.serialization.DefaultSerializer;
 import com.bugsnag.serialization.SerializationException;
 import com.bugsnag.serialization.Serializer;
@@ -68,7 +67,7 @@ public class ConfigurationTest {
     public void testEndpoints() {
         String notify = "https://notify.myexample.com";
         String sessions = "https://sessions.myexample.com";
-        config.setEndpoints(notify, sessions);
+        config.setEndpoints(new EndpointConfiguration(notify, sessions));
 
         assertEquals(notify, getDeliveryEndpoint(config.delivery));
         assertEquals(sessions, getDeliveryEndpoint(config.sessionDelivery));
@@ -76,28 +75,26 @@ public class ConfigurationTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void testNullNotifyEndpoint() {
-        config.setEndpoints(null, "http://example.com");
+        config.setEndpoints(new EndpointConfiguration(null, "http://example.com"));
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testEmptyNotifyEndpoint() {
-        config.setEndpoints("", "http://example.com");
+        config.setEndpoints(new EndpointConfiguration("", "http://example.com"));
     }
 
     @Test
     public void testInvalidSessionEndpoint() {
         config.setAutoCaptureSessions(true);
-        config.setEndpoints("http://example.com", null);
+        EndpointConfiguration emptySession = new EndpointConfiguration("http://example.com", "");
+        config.setEndpoints(emptySession);
         assertFalse(config.shouldAutoCaptureSessions());
         assertNull(getDeliveryEndpoint(config.sessionDelivery));
 
         config.setAutoCaptureSessions(true);
-        config.setEndpoints("http://example.com", "");
-        assertFalse(config.shouldAutoCaptureSessions());
-        assertNull(getDeliveryEndpoint(config.sessionDelivery));
-
-        config.setAutoCaptureSessions(true);
-        config.setEndpoints("http://example.com", "http://sessions.example.com");
+        EndpointConfiguration validSessions = new EndpointConfiguration(
+                "http://example.com", "http://sessions.example.com");
+        config.setEndpoints(validSessions);
         assertTrue(config.shouldAutoCaptureSessions());
         assertEquals("http://sessions.example.com", getDeliveryEndpoint(config.sessionDelivery));
     }
@@ -106,7 +103,7 @@ public class ConfigurationTest {
     public void testInvalidSessionWarningLogged() {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         System.setErr(new PrintStream(baos));
-        config.setEndpoints("http://example.com", "");
+        config.setEndpoints(new EndpointConfiguration("http://example.com", ""));
         String logMsg = new String(baos.toByteArray());
         assertTrue(logMsg.contains("The session tracking endpoint "
                 + "has not been set. Session tracking is disabled"));
@@ -115,7 +112,7 @@ public class ConfigurationTest {
     @Test
     public void testAutoCaptureOverride() {
         config.setAutoCaptureSessions(false);
-        config.setEndpoints("http://example.com", "http://example.com");
+        config.setEndpoints(new EndpointConfiguration("http://example.com", "http://example.com"));
         assertFalse(config.shouldAutoCaptureSessions());
     }
 
@@ -156,10 +153,9 @@ public class ConfigurationTest {
         config.delivery = delivery;
         config.sessionDelivery = delivery;
 
-        // ensure log message
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         System.setErr(new PrintStream(baos));
-        config.setEndpoints("http://example.com", "http://sessions.example.com");
+        config.setEndpoints(new EndpointConfiguration("http://example.com", "http://sessions.example.com"));
         String logMsg = new String(baos.toByteArray());
 
         assertTrue(logMsg.contains("Delivery is not instance of "
@@ -177,7 +173,7 @@ public class ConfigurationTest {
         String HUB_SESSION_ENDPOINT = "https://sessions.insighthub.smartbear.com";
 
         EndpointConfiguration normalConfig = new EndpointConfiguration();
-        normalConfig.configureEndpoints(CLASSIC_KEY);
+        normalConfig.configureDefaultEndpoints(CLASSIC_KEY);
 
         assertEquals(DEFAULT_NOTIFY_ENDPOINT,
                 normalConfig.notifyEndpoint);
@@ -185,7 +181,7 @@ public class ConfigurationTest {
                 normalConfig.sessionEndpoint);
 
         EndpointConfiguration hubConfig = new EndpointConfiguration();
-        hubConfig.configureEndpoints(HUB_KEY);
+        hubConfig.configureDefaultEndpoints(HUB_KEY);
 
         assertEquals(HUB_NOTIFY_ENDPOINT,
                 hubConfig.notifyEndpoint);

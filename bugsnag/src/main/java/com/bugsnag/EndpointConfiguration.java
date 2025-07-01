@@ -9,13 +9,16 @@ public class EndpointConfiguration {
     String HUB_KEY_PREFIX = "00000";
     public String notifyEndpoint = "";
     public String sessionEndpoint = "";
-
-    public  void setEndpoints(String notifyEndpoint, String sessionEndpoint) {
-        this.notifyEndpoint = notifyEndpoint;
-        this.sessionEndpoint = sessionEndpoint;
+    public EndpointConfiguration() {}
+    public EndpointConfiguration(String notify, String sessions) throws IllegalArgumentException {
+        if (notify == null || sessions == null) {
+            throw new IllegalArgumentException("Endpoints cannot be null");
+        }
+        this.notifyEndpoint = notify;
+        this.sessionEndpoint = sessions;
     }
 
-    public void configureEndpoints(String apiKey) {
+    public void configureDefaultEndpoints(String apiKey) {
         if(!notifyEndpoint.isEmpty() && !sessionEndpoint.isEmpty()) {
             return;
         }

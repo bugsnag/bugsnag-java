@@ -57,7 +57,7 @@ public class Configuration {
         DeviceCallback.initializeCache();
 
         endpointConfiguration = new EndpointConfiguration();
-        endpointConfiguration.configureEndpoints(apiKey);
+        endpointConfiguration.configureDefaultEndpoints(apiKey);
 
         this.delivery = new AsyncHttpDelivery(endpointConfiguration.notifyEndpoint);
         this.sessionDelivery = new AsyncHttpDelivery(endpointConfiguration.sessionEndpoint);
@@ -124,6 +124,17 @@ public class Configuration {
     }
 
     /**
+     * @deprecated Use {@link #setEndpoints(EndpointConfiguration)} instead.
+     */
+    @Deprecated
+    public void setEndpoints(String notify, String sessions) throws IllegalArgumentException {
+        if (notify == null || notify.isEmpty() || sessions == null || sessions.isEmpty()) {
+            throw new IllegalArgumentException("endpoints cannot be empty or null.");
+        }
+        setEndpoints(new EndpointConfiguration(notify, sessions));
+    }
+
+    /**
      * Set the endpoints to send data to. Use this to override the default endpoints if you are using Bugsnag Enterprise to point to your own Bugsnag endpoint.
      * <p>
      * Please note that it is recommended that you set both endpoints. If the notify endpoint is
@@ -133,11 +144,15 @@ public class Configuration {
      * Note that if you are setting a custom {@link Delivery}, this method should be called after
      * the custom implementation has been set.
      *
-     * @param notify   the notify endpoint
-     * @param sessions the sessions endpoint
-     * @throws IllegalArgumentException if the notify endpoint is empty or null
+     * @param endpointConfiguration the endpoint configuration
+     * @throws IllegalArgumentException if the endpoint configuration is null or if the notify endpoint is empty or null
      */
-    public void setEndpoints(String notify, String sessions) throws IllegalArgumentException {
+    public void setEndpoints(EndpointConfiguration endpointConfiguration) throws IllegalArgumentException {
+        if (endpointConfiguration == null) {
+            throw new IllegalArgumentException("Endpoint configuration cannot be null.");
+        }
+        String notify = endpointConfiguration.notifyEndpoint;
+        String sessions = endpointConfiguration.sessionEndpoint;
         if (notify == null || notify.isEmpty()) {
             throw new IllegalArgumentException("Notify endpoint cannot be empty or null.");
         } else {
