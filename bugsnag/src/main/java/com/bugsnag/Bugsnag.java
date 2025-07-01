@@ -47,8 +47,8 @@ public class Bugsnag implements Closeable {
 
     private ScheduledThreadPoolExecutor sessionExecutorService =
             new ScheduledThreadPoolExecutor(CORE_POOL_SIZE,
-                    new DaemonThreadFactory(),
-                    new RejectedExecutionHandler() {
+            new DaemonThreadFactory(),
+            new RejectedExecutionHandler() {
                 @Override
                 public void rejectedExecution(Runnable runnable, ThreadPoolExecutor executor) {
                     LOGGER.error("Rejected execution for sessionExecutorService");
@@ -436,14 +436,14 @@ public class Bugsnag implements Closeable {
         // Don't notify if this error class should be ignored
         if (config.shouldIgnoreClass(report.getExceptionName())) {
             LOGGER.debug("Error not reported to Bugsnag - {} is in 'ignoreClasses'",
-                report.getExceptionName());
+                    report.getExceptionName());
             return false;
         }
 
         // Don't notify unless releaseStage is in notifyReleaseStages
         if (!config.shouldNotifyForReleaseStage()) {
             LOGGER.debug("Error not reported to Bugsnag - {} is not in 'notifyReleaseStages'",
-                config.releaseStage);
+                    config.releaseStage);
             return false;
         }
 
@@ -456,7 +456,7 @@ public class Bugsnag implements Closeable {
                 // Check if callback cancelled delivery
                 if (report.getShouldCancel()) {
                     LOGGER.debug("Error not reported to Bugsnag - "
-                        + "cancelled by a client-wide beforeNotify callback");
+                            + "cancelled by a client-wide beforeNotify callback");
                     return false;
                 }
             } catch (Throwable ex) {
@@ -476,7 +476,7 @@ public class Bugsnag implements Closeable {
                 // Check if callback cancelled delivery
                 if (report.getShouldCancel()) {
                     LOGGER.debug(
-                        "Error not reported to Bugsnag - cancelled by a report-specific callback");
+                            "Error not reported to Bugsnag - cancelled by a report-specific callback");
                     return false;
                 }
             } catch (Throwable ex) {
@@ -514,11 +514,11 @@ public class Bugsnag implements Closeable {
 
     /**
      * Manually starts tracking a new session.
-     *
+     * <p>
      * Note: sessions are currently tracked on a per-thread basis. Therefore, if this method were
      * called from Thread A then Thread B, two sessions would be considered 'active'. Any custom
      * strategy used to track sessions should take this into account.
-     *
+     * <p>
      * Automatic session tracking can be enabled via
      * {@link Bugsnag#setAutoCaptureSessions(boolean)}, which will automatically create a new
      * session for each request
@@ -542,6 +542,7 @@ public class Bugsnag implements Closeable {
     /**
      * Retrieves whether or not Bugsnag should automatically capture
      * and report User sessions for each request.
+     *
      * @return whether sessions should be auto captured
      */
     public boolean shouldAutoCaptureSessions() {
@@ -568,11 +569,12 @@ public class Bugsnag implements Closeable {
      */
     @Deprecated
     public void setEndpoints(String notify, String sessions) throws IllegalArgumentException {
-        setEndpoints(new EndpointConfiguration( notify, sessions));
+        setEndpoints(new EndpointConfiguration(notify, sessions));
     }
 
     /**
-     * Set the endpoints to send data to. Use this to override the default endpoints if you are using Bugsnag Enterprise to point to your own Bugsnag endpoint.
+     * Set the endpoints to send data to. Use this to override the default endpoints
+     * if you are using Bugsnag Enterprise to point to your own Bugsnag endpoint.
      * <p>
      * Please note that it is recommended that you set both endpoints. If the notify endpoint is
      * missing, an exception will be thrown. If the session endpoint is missing, a warning will be

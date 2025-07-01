@@ -236,7 +236,7 @@ public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
         }
 
         if (endpoint != null) {
-            bugsnag.setEndpoints(new EndpointConfiguration( endpoint, ""));
+            bugsnag.setEndpoints(new EndpointConfiguration(endpoint, ""));
         }
 
         if (proxy != null) {
@@ -369,7 +369,7 @@ public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
         this.endpoint = endpoint;
 
         if (bugsnag != null) {
-            bugsnag.setEndpoints(new EndpointConfiguration( endpoint, ""));
+            bugsnag.setEndpoints(new EndpointConfiguration(endpoint, ""));
         }
     }
 

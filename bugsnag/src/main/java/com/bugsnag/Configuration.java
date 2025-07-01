@@ -58,8 +58,8 @@ public class Configuration {
 
         endpointConfiguration = EndpointConfiguration.fromApiKey(apiKey);
 
-        this.delivery = new AsyncHttpDelivery(endpointConfiguration.notifyEndpoint);
-        this.sessionDelivery = new AsyncHttpDelivery(endpointConfiguration.sessionEndpoint);
+        this.delivery = new AsyncHttpDelivery(endpointConfiguration.getNotifyEndpoint());
+        this.sessionDelivery = new AsyncHttpDelivery(endpointConfiguration.getSessionEndpoint());
 
         if (JavaxServletCallback.isAvailable()) {
             addCallback(new JavaxServletCallback());
@@ -134,7 +134,8 @@ public class Configuration {
     }
 
     /**
-     * Set the endpoints to send data to. Use this to override the default endpoints if you are using Bugsnag Enterprise to point to your own Bugsnag endpoint.
+     * Set the endpoints to send data to. Use this to override the default endpoints
+     * if you are using Bugsnag Enterprise to point to your own Bugsnag endpoint.
      * <p>
      * Please note that it is recommended that you set both endpoints. If the notify endpoint is
      * missing, an exception will be thrown. If the session endpoint is missing, a warning will be
@@ -150,8 +151,8 @@ public class Configuration {
         if (endpointConfiguration == null) {
             throw new IllegalArgumentException("Endpoint configuration cannot be null.");
         }
-        String notify = endpointConfiguration.notifyEndpoint;
-        String sessions = endpointConfiguration.sessionEndpoint;
+        String notify = endpointConfiguration.getNotifyEndpoint();
+        String sessions = endpointConfiguration.getSessionEndpoint();
         if (notify == null || notify.isEmpty()) {
             throw new IllegalArgumentException("Notify endpoint cannot be empty or null.");
         } else {

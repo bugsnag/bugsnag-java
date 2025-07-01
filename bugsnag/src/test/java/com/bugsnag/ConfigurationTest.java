@@ -175,16 +175,16 @@ public class ConfigurationTest {
         EndpointConfiguration normalConfig = EndpointConfiguration.fromApiKey(CLASSIC_KEY);
 
         assertEquals(DEFAULT_NOTIFY_ENDPOINT,
-                normalConfig.notifyEndpoint);
+                normalConfig.getNotifyEndpoint());
         assertEquals(DEFAULT_SESSION_ENDPOINT,
-                normalConfig.sessionEndpoint);
+                normalConfig.getSessionEndpoint());
 
         EndpointConfiguration hubConfig = EndpointConfiguration.fromApiKey(HUB_KEY);
 
         assertEquals(HUB_NOTIFY_ENDPOINT,
-                hubConfig.notifyEndpoint);
+                hubConfig.getNotifyEndpoint());
         assertEquals(HUB_SESSION_ENDPOINT,
-                hubConfig.sessionEndpoint);
+                hubConfig.getSessionEndpoint());
 
     }
 
