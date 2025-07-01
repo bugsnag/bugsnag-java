@@ -127,9 +127,6 @@ public class Configuration {
      */
     @Deprecated
     public void setEndpoints(String notify, String sessions) throws IllegalArgumentException {
-        if (notify == null || notify.isEmpty() || sessions == null || sessions.isEmpty()) {
-            throw new IllegalArgumentException("endpoints cannot be empty or null.");
-        }
         setEndpoints(new EndpointConfiguration(notify, sessions));
     }
 
