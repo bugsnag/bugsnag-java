@@ -414,7 +414,7 @@ public class BugsnagTest {
             public void close() {
             }
         });
-        bugsnag.setEndpoints("https://www.example.com", null);
+        bugsnag.setEndpoints(new EndpointConfiguration("https://www.example.com", ""));
 
         assertTrue(bugsnag.notify(new Throwable()));
     }

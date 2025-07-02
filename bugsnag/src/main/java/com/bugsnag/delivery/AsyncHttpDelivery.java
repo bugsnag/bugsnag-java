@@ -39,13 +39,6 @@ public class AsyncHttpDelivery implements HttpDelivery {
     private boolean shuttingDown = false;
 
     /**
-     * Creates a new instance, which defaults to the https://notify.bugsnag.com endpoint
-     */
-    public AsyncHttpDelivery() {
-        this(SyncHttpDelivery.DEFAULT_NOTIFY_ENDPOINT);
-    }
-
-    /**
      * Creates a new instance, which uses a custom endpoint
      */
     public AsyncHttpDelivery(String endpoint) {

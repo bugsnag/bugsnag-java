@@ -69,7 +69,7 @@ public class SessionTrackerTest {
 
     @Test
     public void startSessionNoEndpoint() {
-        configuration.setEndpoints("http://example.com", null);
+        configuration.setEndpoints(new EndpointConfiguration("http://example.com", ""));
         sessionTracker.startSession(new Date(), true);
         assertNull(sessionTracker.getSession());
     }
