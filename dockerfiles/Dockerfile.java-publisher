@@ -1,0 +1,16 @@
+FROM 855461928731.dkr.ecr.us-west-1.amazonaws.com/android:java-release as java-publisher
+
+WORKDIR /app
+
+# Copy gradle files
+COPY gradlew gradle.properties /app/
+COPY gradle/ /app/gradle/
+COPY build.gradle settings.gradle release.gradle common.gradle /app/
+
+# Copy sdk source files
+COPY bugsnag/ bugsnag/
+COPY bugsnag-spring/ bugsnag-spring/
+COPY scripts/ scripts/
+COPY LICENSE LICENSE
+
+CMD "scripts/docker-publish.sh"

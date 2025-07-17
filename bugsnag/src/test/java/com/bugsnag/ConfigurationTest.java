@@ -26,6 +26,8 @@ import java.util.Queue;
 
 public class ConfigurationTest {
 
+    private static final String HUB_KEY = "00000aaaaaaaaaaaaaaaaaaaaaaaaaaa";
+    private static final String CLASSIC_KEY = "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb";
     private Configuration config;
 
     /**
@@ -65,7 +67,7 @@ public class ConfigurationTest {
     public void testEndpoints() {
         String notify = "https://notify.myexample.com";
         String sessions = "https://sessions.myexample.com";
-        config.setEndpoints(notify, sessions);
+        config.setEndpoints(new EndpointConfiguration(notify, sessions));
 
         assertEquals(notify, getDeliveryEndpoint(config.delivery));
         assertEquals(sessions, getDeliveryEndpoint(config.sessionDelivery));
@@ -73,28 +75,26 @@ public class ConfigurationTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void testNullNotifyEndpoint() {
-        config.setEndpoints(null, "http://example.com");
+        config.setEndpoints(new EndpointConfiguration(null, "http://example.com"));
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testEmptyNotifyEndpoint() {
-        config.setEndpoints("", "http://example.com");
+        config.setEndpoints(new EndpointConfiguration("", "http://example.com"));
     }
 
     @Test
     public void testInvalidSessionEndpoint() {
         config.setAutoCaptureSessions(true);
-        config.setEndpoints("http://example.com", null);
+        EndpointConfiguration emptySession = new EndpointConfiguration("http://example.com", "");
+        config.setEndpoints(emptySession);
         assertFalse(config.shouldAutoCaptureSessions());
         assertNull(getDeliveryEndpoint(config.sessionDelivery));
 
         config.setAutoCaptureSessions(true);
-        config.setEndpoints("http://example.com", "");
-        assertFalse(config.shouldAutoCaptureSessions());
-        assertNull(getDeliveryEndpoint(config.sessionDelivery));
-
-        config.setAutoCaptureSessions(true);
-        config.setEndpoints("http://example.com", "http://sessions.example.com");
+        EndpointConfiguration validSessions = new EndpointConfiguration(
+                "http://example.com", "http://sessions.example.com");
+        config.setEndpoints(validSessions);
         assertTrue(config.shouldAutoCaptureSessions());
         assertEquals("http://sessions.example.com", getDeliveryEndpoint(config.sessionDelivery));
     }
@@ -103,7 +103,7 @@ public class ConfigurationTest {
     public void testInvalidSessionWarningLogged() {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         System.setErr(new PrintStream(baos));
-        config.setEndpoints("http://example.com", "");
+        config.setEndpoints(new EndpointConfiguration("http://example.com", ""));
         String logMsg = new String(baos.toByteArray());
         assertTrue(logMsg.contains("The session tracking endpoint "
                 + "has not been set. Session tracking is disabled"));
@@ -112,7 +112,7 @@ public class ConfigurationTest {
     @Test
     public void testAutoCaptureOverride() {
         config.setAutoCaptureSessions(false);
-        config.setEndpoints("http://example.com", "http://example.com");
+        config.setEndpoints(new EndpointConfiguration("http://example.com", "http://example.com"));
         assertFalse(config.shouldAutoCaptureSessions());
     }
 
@@ -153,16 +153,38 @@ public class ConfigurationTest {
         config.delivery = delivery;
         config.sessionDelivery = delivery;
 
-        // ensure log message
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         System.setErr(new PrintStream(baos));
-        config.setEndpoints("http://example.com", "http://sessions.example.com");
+        config.setEndpoints(new EndpointConfiguration("http://example.com", "http://sessions.example.com"));
         String logMsg = new String(baos.toByteArray());
 
         assertTrue(logMsg.contains("Delivery is not instance of "
                 + "HttpDelivery, cannot set notify endpoint"));
         assertTrue(logMsg.contains("Delivery is not instance of "
                 + "HttpDelivery, cannot set sessions endpoint"));
+    }
+
+    @Test
+    public void testStaticEndpointHelpers() {
+
+        String defaultNotifyEndpoint = "https://notify.bugsnag.com";
+        String defaultSessionEndpoint = "https://sessions.bugsnag.com";
+        EndpointConfiguration normalConfig = EndpointConfiguration.fromApiKey(CLASSIC_KEY);
+
+        assertEquals(defaultNotifyEndpoint,
+                normalConfig.getNotifyEndpoint());
+        assertEquals(defaultSessionEndpoint,
+                normalConfig.getSessionEndpoint());
+
+        String hubNotifyEndpoint = "https://notify.insighthub.smartbear.com";
+        String hubSessionEndpoint = "https://sessions.insighthub.smartbear.com";
+        EndpointConfiguration hubConfig = EndpointConfiguration.fromApiKey(HUB_KEY);
+
+        assertEquals(hubNotifyEndpoint,
+                hubConfig.getNotifyEndpoint());
+        assertEquals(hubSessionEndpoint,
+                hubConfig.getSessionEndpoint());
+
     }
 
     private String getDeliveryEndpoint(Delivery delivery) {

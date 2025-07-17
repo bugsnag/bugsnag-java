@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.8.0 - 2025-07-17
+
+* Set default endpoints based on API key [#227](https://github.com/bugsnag/bugsnag-java/pull/227)
+
 ## 3.7.2 (2024-08-28)
 
 ### Changed

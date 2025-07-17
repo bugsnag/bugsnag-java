@@ -6,4 +6,5 @@ endif
 	@sed -i '' "s/version=.*/version=$(VERSION)/" gradle.properties
 	@sed -i '' "s/NOTIFIER_VERSION = .*;/NOTIFIER_VERSION = \"$(VERSION)\";/"\
 	 bugsnag/src/main/java/com/bugsnag/Notifier.java
+	@sed -i '' "s/## TBD/## $(VERSION) - $(shell date +%Y-%m-%d)/" CHANGELOG.md
 
