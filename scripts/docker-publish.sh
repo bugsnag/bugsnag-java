@@ -25,7 +25,7 @@ mkdir -p "$GRADLE_DIR"
 } >> "$GRADLE_PROPERTIES"
 
 # === Build and Publish ===
-/app/gradlew -Preleasing=true clean publishAllPublicationsToSonatypeRepository
+/app/gradlew -Preleasing=true clean publishPublicationPublicationToOssrhStagingRepository
 
 # === Close Staging Repository ===
 echo "--- Closing staging repository"
