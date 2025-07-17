@@ -73,3 +73,37 @@ steps:
     command:
       - 'features/scripts/assemble-fixtures.sh'
       - 'bundle exec maze-runner --exclude=features/[^n-z].*.feature'
+
+  # If this is the 'main' branch activate a manual publishing step
+
+  - block: 'Trigger package publish'
+    if: build.branch == "main"
+    key: trigger-publish
+    blocked_state: passed
+
+  - label: ':docker: Build Java base image'
+    if: build.branch == "main"
+    key: 'java-common'
+    timeout_in_minutes: 30
+    depends_on: 'trigger-publish'
+    plugins:
+      - docker-compose#v4.7.0:
+          build:
+            - java-common
+          image-repository: 855461928731.dkr.ecr.us-west-1.amazonaws.com/android
+          cache-from:
+            - java-common:855461928731.dkr.ecr.us-west-1.amazonaws.com/android:java-release
+      - docker-compose#v4.7.0:
+          push:
+            - java-common:855461928731.dkr.ecr.us-west-1.amazonaws.com/android:java-release
+
+  - label: 'Publish :rocket:'
+    if: build.branch == "main"
+    depends_on: 'java-common'
+    timeout_in_minutes: 30
+    env:
+      BUILDKITE_PLUGIN_S3_SECRETS_BUCKET_PREFIX: bugsnag-android-publish
+    plugins:
+      docker-compose#v4.7.0:
+        no-cache: true
+        run: java-publisher
