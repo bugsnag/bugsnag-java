@@ -93,7 +93,6 @@ steps:
           image-repository: 855461928731.dkr.ecr.us-west-1.amazonaws.com/android
           cache-from:
             - java-common:855461928731.dkr.ecr.us-west-1.amazonaws.com/android:java-release
-      - docker-compose#v4.7.0:
           push:
             - java-common:855461928731.dkr.ecr.us-west-1.amazonaws.com/android:java-release
 
