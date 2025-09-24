@@ -32,7 +32,8 @@ local.properties
 # Locally stored "Eclipse launch configurations"
 *.launch
 
-# mazerunner test jars
+# mazerunner
+maze-runner.log
 features/fixtures/libs
 
 # test output files
