@@ -15,7 +15,6 @@ repositories {
 
 dependencies {
     implementation("org.springframework:spring-webmvc:4.2.0.RELEASE")
-    implementation("javax.servlet:javax.servlet-api:3.1.0")
     implementation("ch.qos.logback:logback-classic:1.2.3")
 
     implementation("com.fasterxml.jackson.core:jackson-annotations:2.9.1")

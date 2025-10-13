@@ -32,8 +32,6 @@ dependencies {
     implementation 'com.bugsnag:bugsnag-spring:9.9.9-test'
     implementation project(":scenarios")
 
-    // required for JDK 9 and above
-    implementation('javax.xml.bind:jaxb-api:2.3.0')
 
     testImplementation group: 'junit', name: 'junit', version: '4.13.2'
 }

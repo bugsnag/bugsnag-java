@@ -4,7 +4,6 @@ import com.bugsnag.callbacks.AppCallback;
 import com.bugsnag.callbacks.Callback;
 import com.bugsnag.callbacks.DeviceCallback;
 import com.bugsnag.callbacks.JakartaServletCallback;
-import com.bugsnag.callbacks.JavaxServletCallback;
 import com.bugsnag.delivery.AsyncHttpDelivery;
 import com.bugsnag.delivery.Delivery;
 import com.bugsnag.delivery.HttpDelivery;
@@ -60,10 +59,6 @@ public class Configuration {
 
         this.delivery = new AsyncHttpDelivery(endpointConfiguration.getNotifyEndpoint());
         this.sessionDelivery = new AsyncHttpDelivery(endpointConfiguration.getSessionEndpoint());
-
-        if (JavaxServletCallback.isAvailable()) {
-            addCallback(new JavaxServletCallback());
-        }
 
         if (JakartaServletCallback.isAvailable()) {
             addCallback(new JakartaServletCallback());
