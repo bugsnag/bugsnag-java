@@ -12,6 +12,6 @@ repositories {
 }
 
 dependencies {
-    implementation("ch.qos.logback:logback-classic:1.2.3")
+    implementation("ch.qos.logback:logback-classic:1.4.14")
     implementation("com.bugsnag:bugsnag:9.9.9-test")
 }

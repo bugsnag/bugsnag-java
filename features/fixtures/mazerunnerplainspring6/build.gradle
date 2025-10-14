@@ -16,7 +16,7 @@ repositories {
 dependencies {
     implementation("org.springframework:spring-webmvc:6.0.0")
     implementation("jakarta.servlet:jakarta.servlet-api:5.0.0")
-    implementation("ch.qos.logback:logback-classic:1.2.3")
+    implementation("ch.qos.logback:logback-classic:1.4.14")
 
     implementation("com.fasterxml.jackson.core:jackson-annotations:2.14.1")
     implementation("com.fasterxml.jackson.core:jackson-databind:2.14.1")
