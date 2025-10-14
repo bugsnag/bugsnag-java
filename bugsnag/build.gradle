@@ -6,13 +6,13 @@ apply plugin: 'java-library'
 apply from: '../common.gradle'
 
 compileJava {
-    sourceCompatibility = '1.7'
-    targetCompatibility = '1.7'
+    sourceCompatibility = '17'
+    targetCompatibility = '17'
 }
 
 compileTestJava {
-    sourceCompatibility = '1.7'
-    targetCompatibility = '1.7'
+    sourceCompatibility = '17'
+    targetCompatibility = '17'
 }
 
 repositories {
