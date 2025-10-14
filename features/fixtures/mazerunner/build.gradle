@@ -28,7 +28,7 @@ repositories {
 
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter")
-    implementation("ch.qos.logback:logback-classic:1.4.14")
+    implementation("ch.qos.logback:logback-classic:1.5.18")
     implementation("org.codehaus.janino:janino:3.1.10")
 
     implementation("com.fasterxml.jackson.core:jackson-annotations:2.14.1")
