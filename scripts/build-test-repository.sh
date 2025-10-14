@@ -8,4 +8,4 @@ cd "$ROOT_DIR"
 REPO_DIR="$ROOT_DIR/build/repository"
 mkdir -p "$REPO_DIR"
 cd "$REPO_DIR"
-zip -r ../maven-repository.zip ./*
+zip -r "$ROOT_DIR/maven-repository.zip" ./*
