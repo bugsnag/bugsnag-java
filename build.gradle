@@ -13,3 +13,9 @@ gradle.projectsEvaluated {
         options.compilerArgs << "-Xlint:all" << "-Werror" << "-Xlint:-options"
     }
 }
+
+tasks.register('publishToTestRepoAll') {
+    dependsOn subprojects.collect {
+        tasks.findByPath("${it.path}:publishAllPublicationsToTestRepository") ?: []
+    }.flatten()
+}

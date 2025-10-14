@@ -55,3 +55,11 @@ dependencies {
     testImplementation "org.junit.jupiter:junit-jupiter:5.8.2"
     testCompileOnly "org.mockito:mockito-core:2.10.0"
 }
+
+/** ---- Publishing config ----
+ * Pulls in publishing+signing rules from the shared release.gradle.
+ * This will create tasks like:
+ *   :bugsnag:publishMavenJavaPublicationToTestRepository
+ *   :bugsnag:publishMavenJavaPublicationToOssrhStagingRepository
+ */
+apply from: "${rootProject.projectDir}/release.gradle"

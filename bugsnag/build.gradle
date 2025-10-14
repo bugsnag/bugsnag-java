@@ -49,3 +49,11 @@ downloadLicenses {
 java {
     withJavadocJar()
 }
+
+/** ---- Publishing config ----
+ * Pulls in publishing+signing rules from the shared release.gradle.
+ * This will create tasks like:
+ *   :bugsnag:publishMavenJavaPublicationToTestRepository
+ *   :bugsnag:publishMavenJavaPublicationToOssrhStagingRepository
+ */
+apply from: "${rootProject.projectDir}/release.gradle"
