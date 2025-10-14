@@ -1,6 +1,6 @@
 buildscript {
     ext {
-        springBootVersion = '2.1.1.RELEASE'
+        springBootVersion = '3.0.0'
     }
     repositories {
         mavenCentral()
@@ -30,8 +30,8 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter")
     implementation("ch.qos.logback:logback-classic:1.2.3")
 
-    implementation("com.fasterxml.jackson.core:jackson-annotations:2.9.1")
-    implementation("com.fasterxml.jackson.core:jackson-databind:2.9.1")
+    implementation("com.fasterxml.jackson.core:jackson-annotations:2.14.1")
+    implementation("com.fasterxml.jackson.core:jackson-databind:2.14.1")
     implementation("com.bugsnag:bugsnag:9.9.9-test")
     implementation project(":scenarios")
 

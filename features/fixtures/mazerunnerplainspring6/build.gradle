@@ -4,6 +4,8 @@ plugins {
 
 group 'com.bugsnag.mazerunnerplainspring'
 
+sourceCompatibility = '17'
+
 repositories {
     mavenCentral()
     maven {
@@ -16,13 +18,13 @@ dependencies {
     implementation("jakarta.servlet:jakarta.servlet-api:5.0.0")
     implementation("ch.qos.logback:logback-classic:1.2.3")
 
-    implementation("com.fasterxml.jackson.core:jackson-annotations:2.9.1")
-    implementation("com.fasterxml.jackson.core:jackson-databind:2.9.1")
+    implementation("com.fasterxml.jackson.core:jackson-annotations:2.14.1")
+    implementation("com.fasterxml.jackson.core:jackson-databind:2.14.1")
     implementation("com.bugsnag:bugsnag:9.9.9-test")
     implementation("com.bugsnag:bugsnag-spring:9.9.9-test")
     implementation project(":scenarios")
 }
 
 war {
-    archiveName = 'mazerunnerplainspring.war'
+    archiveFileName.set('mazerunnerplainspring.war')
 }

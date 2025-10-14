@@ -17,6 +17,8 @@ apply plugin: 'io.spring.dependency-management'
 group 'com.bugsnag.mazerunnerspringboot3'
 version '1.0-SNAPSHOT'
 
+sourceCompatibility = '17'
+
 repositories {
     mavenCentral()
     maven {
@@ -28,6 +30,8 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter'
     implementation 'org.springframework.boot:spring-boot-starter-web'
 
+    implementation 'com.fasterxml.jackson.core:jackson-annotations:2.14.1'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.14.1'
     implementation 'com.bugsnag:bugsnag:9.9.9-test'
     implementation 'com.bugsnag:bugsnag-spring:9.9.9-test'
     implementation project(":scenarios")
