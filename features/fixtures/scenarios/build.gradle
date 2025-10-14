@@ -13,5 +13,6 @@ repositories {
 
 dependencies {
     implementation("ch.qos.logback:logback-classic:1.4.14")
+    implementation("org.codehaus.janino:janino:3.1.10")
     implementation("com.bugsnag:bugsnag:9.9.9-test")
 }
