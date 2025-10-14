@@ -1,75 +1,78 @@
+// release.gradle — script plugin (OK to "apply from:"), no `plugins {}` here
+
+apply plugin: 'java'
 apply plugin: 'maven-publish'
 apply plugin: 'signing'
 
-archivesBaseName = project.findProperty('artifactId')
+base {
+    archivesName = findProperty('artifactId')
+}
 
-tasks.maybeCreate('sourceJar', Jar).configure {
-    from java.sourceSets.main.allJava
+java {
+    toolchain { languageVersion = JavaLanguageVersion.of(17) }
+    withSourcesJar() // attach sources jar automatically to components.java
 }
 
 publishing {
-
     repositories {
         maven {
             name = 'ossrhStaging'
-            url = "https://ossrh-staging-api.central.sonatype.com/service/local/staging/deploy/maven2/"
+            url = uri('https://ossrh-staging-api.central.sonatype.com/service/local/staging/deploy/maven2/')
             credentials {
-                username = project.hasProperty("NEXUS_USERNAME") ? "$NEXUS_USERNAME" : System.getenv("NEXUS_USERNAME")
-                password = project.hasProperty("NEXUS_PASSWORD") ? "$NEXUS_PASSWORD" : System.getenv("NEXUS_PASSWORD")
+                username = (findProperty('NEXUS_USERNAME') ?: System.getenv('NEXUS_USERNAME'))
+                password = (findProperty('NEXUS_PASSWORD') ?: System.getenv('NEXUS_PASSWORD'))
             }
         }
-
         maven {
-            name 'test'
-            url rootProject.file('build/repository').toURI().toString()
+            name = 'test'
+            url = uri(rootProject.file('build/repository'))
         }
     }
-    
+
     publications {
-        Publication(MavenPublication) {
-            from project(':' + project.name).components.java
-            groupId 'com.bugsnag'
-            artifactId project.findProperty('artifactId')
-            version rootProject.version
-            artifact sourceJar {
-                classifier "sources"
-            }
+        mavenJava(MavenPublication) {
+            from components.java
+
+            groupId    = 'com.bugsnag'
+            artifactId = findProperty('artifactId')
+            version    = rootProject.version
+
             pom {
-                name = project.findProperty('projectName')
-                description = project.findProperty('projectDescription')
-                url = 'https://github.com/bugsnag/bugsnag-java'
+                name        = findProperty('projectName')
+                description = findProperty('projectDescription')
+                url         = 'https://github.com/bugsnag/bugsnag-java'
 
                 scm {
-                    url = 'https://github.com/bugsnag/bugsnag-java'
-                    connection = 'scm:git:git://github.com/bugsnag/bugsnag-java.git'
+                    url                 = 'https://github.com/bugsnag/bugsnag-java'
+                    connection          = 'scm:git:git://github.com/bugsnag/bugsnag-java.git'
                     developerConnection = 'scm:git:ssh://git@github.com/bugsnag/bugsnag-java.git'
                 }
 
                 licenses {
                     license {
                         name = 'MIT'
-                        url = 'http://opensource.org/licenses/MIT'
+                        url  = 'http://opensource.org/licenses/MIT'
                         distribution = 'repo'
                     }
                 }
 
                 organization {
                     name = 'Bugsnag'
-                    url = 'https://bugsnag.com'
+                    url  = 'https://bugsnag.com'
                 }
 
                 developers {
                     developer {
-                        id = 'loopj'
-                        name = 'James Smith'
+                        id    = 'loopj'
+                        name  = 'James Smith'
                         email = 'james@bugsnag.com'
                     }
                 }
             }
         }
     }
+}
 
-    signing {
-        sign publishing.publications
-    }
+signing {
+    sign publishing.publications['mavenJava']
 }
