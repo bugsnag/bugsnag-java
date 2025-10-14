@@ -15,8 +15,8 @@ import java.util.concurrent.Executors;
 public class ScheduledTaskConfig {
 
     @ConditionalOnProperty(name = "scheduled_executor_service_bean", havingValue = "true")
-    @Bean
-    public Executor taskScheduler() {
+    @Bean(name = "scheduledExecutorService")
+    public Executor scheduledExecutorService() {
         return Executors.newScheduledThreadPool(4);
     }
 
@@ -35,7 +35,7 @@ public class ScheduledTaskConfig {
     }
 
     @ConditionalOnProperty(name = "second_task_scheduler_bean", havingValue = "true")
-    @Bean(name = "taskScheduler")
+    @Bean(name = "secondTaskScheduler")
     public TaskScheduler secondTaskScheduler() {
         ThreadPoolTaskScheduler scheduler = new ThreadPoolTaskScheduler();
         scheduler.setPoolSize(2);
