@@ -15,6 +15,7 @@ import org.springframework.scheduling.config.ScheduledTaskRegistrar;
 import org.springframework.util.ErrorHandler;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.concurrent.ScheduledExecutorService;
 
 /**
@@ -53,7 +54,15 @@ class ScheduledTaskConfiguration implements SchedulingConfigurer {
 
         if (taskScheduler != null) {
             //check if taskSchedular is a proxy
-            if (AopUtils.isAopProxy(taskScheduler)) {
+            // Spring Boot 3 creates a TaskSchedulerRouter which cannot be configured
+            // In this case, create our own scheduler instead
+            String schedulerClassName = taskScheduler.getClass().getName();
+            if (schedulerClassName.contains("TaskSchedulerRouter")) {
+                LOGGER.info("Detected TaskSchedulerRouter, creating Bugsnag-wrapped scheduler");
+                ScheduledExecutorService executorService = beanLocator.resolveScheduledExecutorService();
+                taskScheduler = createNewTaskScheduler(executorService, bugsnagErrorHandler);
+                taskRegistrar.setScheduler(taskScheduler);
+            } else if (AopUtils.isAopProxy(taskScheduler)) {
                 //if it's a proxy then get the target class and cast as necessary
                 Class<?> targetClass = AopProxyUtils.ultimateTargetClass(taskScheduler);
                 if (TaskScheduler.class.isAssignableFrom(targetClass)) {
@@ -98,6 +107,36 @@ class ScheduledTaskConfiguration implements SchedulingConfigurer {
      */
     private void configureExistingTaskScheduler(TaskScheduler taskScheduler,
                                                 BugsnagScheduledTaskExceptionHandler errorHandler) {
+        // First, try to use the public setter method if available (Spring Boot 3+)
+        if (trySetErrorHandlerViaMethod(taskScheduler, errorHandler)) {
+            LOGGER.info("Bugsnag scheduled task exception handler configured successfully");
+            return;
+        }
+
+        // Fall back to reflection for older Spring Boot versions
+        if (trySetErrorHandlerViaReflection(taskScheduler, errorHandler)) {
+            LOGGER.info("Bugsnag scheduled task exception handler configured successfully");
+            return;
+        }
+
+        LOGGER.warn("Bugsnag scheduled task exception handler could not be configured for scheduler type: "
+                + taskScheduler.getClass().getName());
+    }
+
+    private boolean trySetErrorHandlerViaMethod(TaskScheduler taskScheduler,
+                                                BugsnagScheduledTaskExceptionHandler errorHandler) {
+        try {
+            Method setErrorHandlerMethod = taskScheduler.getClass()
+                    .getMethod("setErrorHandler", ErrorHandler.class);
+            setErrorHandlerMethod.invoke(taskScheduler, errorHandler);
+            return true;
+        } catch (Throwable ex) {
+            return false;
+        }
+    }
+
+    private boolean trySetErrorHandlerViaReflection(TaskScheduler taskScheduler,
+                                                    BugsnagScheduledTaskExceptionHandler errorHandler) {
         try {
             Field errorHandlerField =
                     taskScheduler.getClass().getDeclaredField("errorHandler");
@@ -112,8 +151,9 @@ class ScheduledTaskConfiguration implements SchedulingConfigurer {
 
             // Add the bugsnag error handler to the scheduler.
             errorHandlerField.set(taskScheduler, errorHandler);
+            return true;
         } catch (Throwable ex) {
-            LOGGER.warn("Bugsnag scheduled task exception handler could not be configured");
+            return false;
         }
     }
 }
