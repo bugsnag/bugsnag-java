@@ -17,8 +17,8 @@ def ossrhPass = gp('NEXUS_PASSWORD') ?: gp('ossrhPassword')
 
 // Optional in-memory signing keys (recommended for CI)
 // signingKey: ASCII-armored private key, signingPassword: key passphrase
-def signingKey       = gp('signingKey')
-def signingPassword  = gp('signingPassword')
+def signingKey = gp('signingKey')
+def signingPassword = gp('signingPassword')
 
 /** -------- Java / Artifacts -------- */
 base {
@@ -59,38 +59,38 @@ publishing {
         mavenJava(MavenPublication) {
             from components.java
 
-            groupId    = 'com.bugsnag'
+            groupId = 'com.bugsnag'
             artifactId = gp('artifactId') ?: project.name
-            version    = rootProject.version
+            version = rootProject.version
 
             pom {
-                name        = gp('projectName') ?: artifactId
+                name = gp('projectName') ?: artifactId
                 description = gp('projectDescription') ?: "Bugsnag Java Notifier"
-                url         = 'https://github.com/bugsnag/bugsnag-java'
+                url = 'https://github.com/bugsnag/bugsnag-java'
 
                 scm {
-                    url                 = 'https://github.com/bugsnag/bugsnag-java'
-                    connection          = 'scm:git:git://github.com/bugsnag/bugsnag-java.git'
+                    url = 'https://github.com/bugsnag/bugsnag-java'
+                    connection = 'scm:git:git://github.com/bugsnag/bugsnag-java.git'
                     developerConnection = 'scm:git:ssh://git@github.com/bugsnag/bugsnag-java.git'
                 }
 
                 licenses {
                     license {
                         name = 'MIT'
-                        url  = 'http://opensource.org/licenses/MIT'
+                        url = 'http://opensource.org/licenses/MIT'
                         distribution = 'repo'
                     }
                 }
 
                 organization {
                     name = 'Bugsnag'
-                    url  = 'https://bugsnag.com'
+                    url = 'https://bugsnag.com'
                 }
 
                 developers {
                     developer {
-                        id    = 'loopj'
-                        name  = 'James Smith'
+                        id = 'loopj'
+                        name = 'James Smith'
                         email = 'james@bugsnag.com'
                     }
                 }
