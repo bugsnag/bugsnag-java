@@ -130,15 +130,9 @@ class ScheduledTaskConfiguration implements SchedulingConfigurer {
 
         // (2) Install the Bugsnag handler via public setter if available, else via private field
         if (trySetErrorHandlerViaMethod(taskScheduler, errorHandler)) {
-                    taskScheduler.getClass().getName());
             return;
         }
-        if (trySetErrorHandlerViaField(taskScheduler, errorHandler)) {
-                    taskScheduler.getClass().getName());
-            return;
-        }
-
-        taskScheduler.getClass().getName());
+        trySetErrorHandlerViaField(taskScheduler, errorHandler);
     }
 
     /**
