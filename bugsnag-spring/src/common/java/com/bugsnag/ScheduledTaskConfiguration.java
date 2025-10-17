@@ -63,8 +63,7 @@ class ScheduledTaskConfiguration implements SchedulingConfigurer {
             // Spring Boot 3 creates a TaskSchedulerRouter which cannot be configured.
             // In this case, create our own scheduler instead (but preserve any bean-level handler).
             String schedulerClassName = taskScheduler.getClass().getName();
-            if (schedulerClassName.contains("TaskSchedulerRouter")) {
-                LOGGER.info("Detected TaskSchedulerRouter, creating Bugsnag-wrapped scheduler");
+            if (schedulerClassName.equals("org.springframework.scheduling.config.TaskSchedulerRouter")) {
                 ScheduledExecutorService executorService = beanLocator.resolveScheduledExecutorService();
                 chainExistingBeanHandlerIfPresent(bugsnagErrorHandler);
                 taskScheduler = createNewTaskScheduler(executorService, bugsnagErrorHandler);
@@ -131,18 +130,15 @@ class ScheduledTaskConfiguration implements SchedulingConfigurer {
 
         // (2) Install the Bugsnag handler via public setter if available, else via private field
         if (trySetErrorHandlerViaMethod(taskScheduler, errorHandler)) {
-            LOGGER.info("Bugsnag scheduled task exception handler configured via setter on {}",
                     taskScheduler.getClass().getName());
             return;
         }
         if (trySetErrorHandlerViaField(taskScheduler, errorHandler)) {
-            LOGGER.info("Bugsnag scheduled task exception handler configured via field on {}",
                     taskScheduler.getClass().getName());
             return;
         }
 
-        LOGGER.warn("Bugsnag scheduled task exception handler could not be configured for scheduler type: {}",
-                taskScheduler.getClass().getName());
+        taskScheduler.getClass().getName());
     }
 
     /**
