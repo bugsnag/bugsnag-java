@@ -5,24 +5,24 @@ apply plugin: 'maven-publish'
 apply plugin: 'signing'
 
 /** -------- Helpers -------- */
-def gp = { String k, def d = null -> project.findProperty(k) ?: d }      // gradle property (no envs)
-def boolProp = { String k -> (gp(k)?.toString()?.toBoolean() ?: false) }
+def projectProperty = { String k, def d = null -> project.findProperty(k) ?: d }      // gradle property (no envs)
+def projectBoolean = { String k -> (projectProperty(k)?.toString()?.toBoolean() ?: false) }
 
-def isRelease = boolProp('releasing') // set with -Preleasing=true on real deploys
+def isRelease = projectBoolean('releasing') // set with -Preleasing=true on real deploys
 
 // Prefer Gradle properties (works on CI without env vars).
 // Put these in ~/.gradle/gradle.properties or project gradle.properties on CI.
-def ossrhUser = gp('NEXUS_USERNAME') ?: gp('ossrhUsername')
-def ossrhPass = gp('NEXUS_PASSWORD') ?: gp('ossrhPassword')
+def ossrhUser = projectProperty('NEXUS_USERNAME') ?: projectProperty('ossrhUsername')
+def ossrhPass = projectProperty('NEXUS_PASSWORD') ?: projectProperty('ossrhPassword')
 
 // Optional in-memory signing keys (recommended for CI)
 // signingKey: ASCII-armored private key, signingPassword: key passphrase
-def signingKey = gp('signingKey')
-def signingPassword = gp('signingPassword')
+def signingKey = projectProperty('signingKey')
+def signingPassword = projectProperty('signingPassword')
 
 /** -------- Java / Artifacts -------- */
 base {
-    archivesName = gp('artifactId') ?: project.name
+    archivesName = projectProperty('artifactId') ?: project.name
 }
 
 java {
@@ -60,12 +60,12 @@ publishing {
             from components.java
 
             groupId = 'com.bugsnag'
-            artifactId = gp('artifactId') ?: project.name
+            artifactId = projectProperty('artifactId') ?: project.name
             version = rootProject.version
 
             pom {
-                name = gp('projectName') ?: artifactId
-                description = gp('projectDescription') ?: "Bugsnag Java Notifier"
+                name = projectProperty('projectName') ?: artifactId
+                description = projectProperty('projectDescription') ?: "Bugsnag Java Notifier"
                 url = 'https://github.com/bugsnag/bugsnag-java'
 
                 scm {
