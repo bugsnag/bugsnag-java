@@ -22,6 +22,9 @@ public class ScheduledTaskService {
     @Scheduled(fixedDelay = 3000)
     public void doSomething() {
         if (throwException) {
+            // Reset the flag so we only throw once
+            throwException = false;
+
             // Add some thread meta data
             Bugsnag.addThreadMetaData("thread", "key1", "should be cleared from meta data");
             Bugsnag.clearThreadMetaData();
@@ -31,3 +34,4 @@ public class ScheduledTaskService {
         }
     }
 }
+

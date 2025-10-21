@@ -6,39 +6,39 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.scheduling.TaskScheduler;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
-import org.springframework.scheduling.annotation.EnableScheduling;
-import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 
 @Configuration
-@EnableScheduling
 public class ScheduledTaskConfig {
 
     @ConditionalOnProperty(name = "scheduled_executor_service_bean", havingValue = "true")
-    @Bean
-    public Executor taskScheduler() {
+    @Bean(name = "taskScheduler")
+    public ScheduledExecutorService taskScheduler() {
         return Executors.newScheduledThreadPool(4);
     }
 
     @ConditionalOnProperty(name = "other_scheduled_executor_service_bean", havingValue = "true")
     @Bean
-    public Executor otherTaskScheduler() {
+    public ScheduledExecutorService otherTaskScheduler() {
         return Executors.newScheduledThreadPool(2);
     }
 
     @ConditionalOnProperty(name = "custom_task_scheduler_bean", havingValue = "true")
-    @Bean
+    @Bean(name = "taskScheduler")
     public TaskScheduler customTaskScheduler() {
         ThreadPoolTaskScheduler scheduler = new ThreadPoolTaskScheduler();
         scheduler.setPoolSize(4);
+        scheduler.initialize();
         return scheduler;
     }
 
     @ConditionalOnProperty(name = "second_task_scheduler_bean", havingValue = "true")
-    @Bean(name = "taskScheduler")
+    @Bean(name = "secondTaskScheduler")
     public TaskScheduler secondTaskScheduler() {
         ThreadPoolTaskScheduler scheduler = new ThreadPoolTaskScheduler();
         scheduler.setPoolSize(2);
+        scheduler.initialize();
         return scheduler;
     }
 }

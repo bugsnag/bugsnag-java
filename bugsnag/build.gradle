@@ -6,13 +6,13 @@ apply plugin: 'java-library'
 apply from: '../common.gradle'
 
 compileJava {
-    sourceCompatibility = '1.7'
-    targetCompatibility = '1.7'
+    sourceCompatibility = '17'
+    targetCompatibility = '17'
 }
 
 compileTestJava {
-    sourceCompatibility = '1.7'
-    targetCompatibility = '1.7'
+    sourceCompatibility = '17'
+    targetCompatibility = '17'
 }
 
 repositories {
@@ -22,7 +22,6 @@ repositories {
 dependencies {
     api "com.fasterxml.jackson.core:jackson-databind:2.14.1"
     api "org.slf4j:slf4j-api:${slf4jApiVersion}"
-    compileOnly "javax.servlet:javax.servlet-api:${javaxServletApiVersion}"
     compileOnly "jakarta.servlet:jakarta.servlet-api:${jakartaServletApiVersion}"
     compileOnly("ch.qos.logback:logback-classic:${logbackVersion}") {
         exclude group: "org.slf4j"
@@ -30,7 +29,6 @@ dependencies {
 
     testImplementation "junit:junit:${junitVersion}"
     testImplementation "org.slf4j:log4j-over-slf4j:${slf4jApiVersion}"
-    testImplementation "javax.servlet:javax.servlet-api:${javaxServletApiVersion}"
     testImplementation "jakarta.servlet:jakarta.servlet-api:${jakartaServletApiVersion}"
     testImplementation "org.mockito:mockito-core:${mockitoVersion}"
     testImplementation("ch.qos.logback:logback-classic:${logbackVersion}") {
@@ -51,3 +49,11 @@ downloadLicenses {
 java {
     withJavadocJar()
 }
+
+/** ---- Publishing config ----
+ * Pulls in publishing+signing rules from the shared release.gradle.
+ * This will create tasks like:
+ *   :bugsnag:publishMavenJavaPublicationToTestRepository
+ *   :bugsnag:publishMavenJavaPublicationToOssrhStagingRepository
+ */
+apply from: "${rootProject.projectDir}/release.gradle"

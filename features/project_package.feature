@@ -13,7 +13,7 @@ Scenario: Test logback appender with no project packages
     And the event "exceptions.0.stacktrace.1.inProject" is false
     And the event "exceptions.0.stacktrace.2.method" equals "com.bugsnag.mazerunner.TestCaseRunner.run"
     And the event "exceptions.0.stacktrace.2.inProject" is false
-    And the event "exceptions.0.stacktrace.3.method" equals "org.springframework.boot.SpringApplication.callRunner"
+    And the event "exceptions.0.stacktrace.3.method" equals "org.springframework.boot.SpringApplication.lambda$callRunner$5"
     And the event "exceptions.0.stacktrace.3.inProject" is false
 
 Scenario: Test logback appender with a project package "com.bugsnag.mazerunner" defined
@@ -29,7 +29,7 @@ Scenario: Test logback appender with a project package "com.bugsnag.mazerunner" 
     And the event "exceptions.0.stacktrace.1.inProject" is true
     And the event "exceptions.0.stacktrace.2.method" equals "com.bugsnag.mazerunner.TestCaseRunner.run"
     And the event "exceptions.0.stacktrace.2.inProject" is true
-    And the event "exceptions.0.stacktrace.3.method" equals "org.springframework.boot.SpringApplication.callRunner"
+    And the event "exceptions.0.stacktrace.3.method" equals "org.springframework.boot.SpringApplication.lambda$callRunner$5"
     And the event "exceptions.0.stacktrace.3.inProject" is false
 
 Scenario: Test plain Java app with no project packages
@@ -44,7 +44,7 @@ Scenario: Test plain Java app with no project packages
     And the event "exceptions.0.stacktrace.1.inProject" is false
     And the event "exceptions.0.stacktrace.2.method" equals "com.bugsnag.mazerunner.TestCaseRunner.run"
     And the event "exceptions.0.stacktrace.2.inProject" is false
-    And the event "exceptions.0.stacktrace.3.method" equals "org.springframework.boot.SpringApplication.callRunner"
+    And the event "exceptions.0.stacktrace.3.method" equals "org.springframework.boot.SpringApplication.lambda$callRunner$5"
     And the event "exceptions.0.stacktrace.3.inProject" is false
 
 Scenario: Test plain Java app with a project package "com.bugsnag.mazerunner" defined
@@ -59,5 +59,5 @@ Scenario: Test plain Java app with a project package "com.bugsnag.mazerunner" de
     And the event "exceptions.0.stacktrace.1.inProject" is true
     And the event "exceptions.0.stacktrace.2.method" equals "com.bugsnag.mazerunner.TestCaseRunner.run"
     And the event "exceptions.0.stacktrace.2.inProject" is true
-    And the event "exceptions.0.stacktrace.3.method" equals "org.springframework.boot.SpringApplication.callRunner"
+    And the event "exceptions.0.stacktrace.3.method" equals "org.springframework.boot.SpringApplication.lambda$callRunner$5"
     And the event "exceptions.0.stacktrace.3.inProject" is false
