@@ -16,18 +16,6 @@ java {
     }
 }
 
-sourceSets {
-    main {
-        java {
-            srcDirs = ['src/common/java', 'src/jakarta/java']
-        }
-    }
-    test {
-        java {
-            srcDirs = ['src/commonTest/java', 'src/jakartaTest/java']
-        }
-    }
-}
 
 tasks.register('sourceJar', Jar).configure {
     from sourceSets.main.allJava
