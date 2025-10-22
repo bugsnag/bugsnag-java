@@ -11,14 +11,14 @@ public class MetaDataTest {
 
     @Test
     public void testEmptyMetaData() {
-        MetaData metaData = new MetaData();
+        Metadata metaData = new Metadata();
         assertEquals(0, metaData.size());
     }
 
     @Test
     @SuppressWarnings("unchecked")
     public void testSingleTabSingleValue() {
-        MetaData metaData = new MetaData();
+        Metadata metaData = new Metadata();
         metaData.addToTab("tab-name", "key-1", "value-1");
 
         assertEquals(1, metaData.size());
@@ -29,7 +29,7 @@ public class MetaDataTest {
     @Test
     @SuppressWarnings("unchecked")
     public void testSingleTabMultipleValues() {
-        MetaData metaData = new MetaData();
+        Metadata metaData = new Metadata();
         metaData.addToTab("tab-name", "key-1", "value-1");
         metaData.addToTab("tab-name", "key-2", "value-2");
 
@@ -42,7 +42,7 @@ public class MetaDataTest {
     @Test
     @SuppressWarnings("unchecked")
     public void testMultipleTabs() {
-        MetaData metaData = new MetaData();
+        Metadata metaData = new Metadata();
         metaData.addToTab("tab-name-1", "key-1", "value-1");
         metaData.addToTab("tab-name-2", "key-1", "value-1");
 
@@ -56,7 +56,7 @@ public class MetaDataTest {
     @Test
     @SuppressWarnings("unchecked")
     public void testClearTab() {
-        MetaData metaData = new MetaData();
+        Metadata metaData = new Metadata();
         metaData.addToTab("tab-name-1", "key-1", "value-1");
         metaData.addToTab("tab-name-2", "key-1", "value-1");
 

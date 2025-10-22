@@ -58,10 +58,10 @@ public class Bugsnag implements Closeable {
     private Configuration config;
     private final SessionTracker sessionTracker;
 
-    private static final ThreadLocal<MetaData> THREAD_METADATA = new ThreadLocal<MetaData>() {
+    private static final ThreadLocal<Metadata> THREAD_METADATA = new ThreadLocal<Metadata>() {
         @Override
-        public MetaData initialValue() {
-            return new MetaData();
+        public Metadata initialValue() {
+            return new Metadata();
         }
     };
 
@@ -228,25 +228,62 @@ public class Bugsnag implements Closeable {
     }
 
     /**
-     * Set which keys should be filtered when sending metaData to Bugsnag.
+     * Set which keys should be filtered when sending metadata to Bugsnag.
      * Use this when you want to ensure sensitive information, such as passwords
-     * or credit card information is stripped from metaData you send to Bugsnag.
-     * Any keys in metaData which contain these strings will be marked as
+     * or credit card information is stripped from metadata you send to Bugsnag.
+     * Any keys in metadata which contain these strings will be marked as
      * [FILTERED] when send to Bugsnag.
      *
-     * @param filters a list of String keys to filter from metaData
+     * @param redactedKeys a list of String keys to filter from metadata
      */
+    public void setRedactedKeys(String... redactedKeys) {
+        config.redactedKeys = redactedKeys;
+    }
+
+    /**
+     * Set which keys should be filtered when sending metadata to Bugsnag.
+     * Use this when you want to ensure sensitive information, such as passwords
+     * or credit card information is stripped from metadata you send to Bugsnag.
+     * Any keys in metadata which contain these strings will be marked as
+     * [FILTERED] when send to Bugsnag.
+     *
+     * @param filters a list of String keys to filter from metadata
+     * @deprecated use {@link #setRedactedKeys(String...)} instead
+     */
+    @Deprecated
     public void setFilters(String... filters) {
-        config.filters = filters;
+        setRedactedKeys(filters);
+    }
+
+    /**
+     * Set which exception classes should be discarded (not sent) by Bugsnag.
+     *
+     * @param discardClasses a list of exception classes to discard
+     */
+    public void setDiscardClasses(String... discardClasses) {
+        config.discardClasses = discardClasses;
     }
 
     /**
      * Set which exception classes should be ignored (not sent) by Bugsnag.
      *
      * @param ignoreClasses a list of exception classes to ignore
+     * @deprecated use {@link #setDiscardClasses(String...)} instead
      */
+    @Deprecated
     public void setIgnoreClasses(String... ignoreClasses) {
-        config.ignoreClasses = ignoreClasses;
+        setDiscardClasses(ignoreClasses);
+    }
+
+    /**
+     * Set for which releaseStages errors should be sent to Bugsnag.
+     * Use this to stop errors from development builds being sent.
+     *
+     * @param enabledReleaseStages a list of releaseStages to notify for
+     * @see #setReleaseStage
+     */
+    public void setEnabledReleaseStages(String... enabledReleaseStages) {
+        config.enabledReleaseStages = enabledReleaseStages;
     }
 
     /**
@@ -255,9 +292,11 @@ public class Bugsnag implements Closeable {
      *
      * @param notifyReleaseStages a list of releaseStages to notify for
      * @see #setReleaseStage
+     * @deprecated use {@link #setEnabledReleaseStages(String...)} instead
      */
+    @Deprecated
     public void setNotifyReleaseStages(String... notifyReleaseStages) {
-        config.notifyReleaseStages = notifyReleaseStages;
+        setEnabledReleaseStages(notifyReleaseStages);
     }
 
     /**
@@ -435,28 +474,28 @@ public class Bugsnag implements Closeable {
 
         // Don't notify if this error class should be ignored
         if (config.shouldIgnoreClass(report.getExceptionName())) {
-            LOGGER.debug("Error not reported to Bugsnag - {} is in 'ignoreClasses'",
+            LOGGER.debug("Error not reported to Bugsnag - {} is in 'discardClasses'",
                     report.getExceptionName());
             return false;
         }
 
-        // Don't notify unless releaseStage is in notifyReleaseStages
+        // Don't notify unless releaseStage is in enabledReleaseStages
         if (!config.shouldNotifyForReleaseStage()) {
-            LOGGER.debug("Error not reported to Bugsnag - {} is not in 'notifyReleaseStages'",
+            LOGGER.debug("Error not reported to Bugsnag - {} is not in 'enabledReleaseStages'",
                     config.releaseStage);
             return false;
         }
 
-        // Run all client-wide beforeNotify callbacks
+        // Run all client-wide onError callbacks
         for (Callback callback : config.callbacks) {
             try {
                 // Run the callback
-                callback.beforeNotify(report);
+                callback.onError(report);
 
                 // Check if callback cancelled delivery
                 if (report.getShouldCancel()) {
                     LOGGER.debug("Error not reported to Bugsnag - "
-                            + "cancelled by a client-wide beforeNotify callback");
+                            + "cancelled by a client-wide onError callback");
                     return false;
                 }
             } catch (Throwable ex) {
@@ -465,13 +504,13 @@ public class Bugsnag implements Closeable {
         }
 
         // Add thread metadata to the report
-        report.mergeMetaData(THREAD_METADATA.get());
+        report.mergeMetadata(THREAD_METADATA.get());
 
-        // Run the report-specific beforeNotify callback, if given
+        // Run the report-specific onError callback, if given
         if (reportCallback != null) {
             try {
                 // Run the callback
-                reportCallback.beforeNotify(report);
+                reportCallback.onError(report);
 
                 // Check if callback cancelled delivery
                 if (report.getShouldCancel()) {
@@ -612,14 +651,27 @@ public class Bugsnag implements Closeable {
     // Thread metadata
 
     /**
+     * Add a key value pair to a metadata section just for this thread.
+     *
+     * @param section the name of the section to add the key value pair to
+     * @param key     the key of the metadata to add
+     * @param value   the metadata value to add
+     */
+    public static void addMetadata(String section, String key, Object value) {
+        THREAD_METADATA.get().addToTab(section, key, value);
+    }
+
+    /**
      * Add a key value pair to a metadata tab just for this thread.
      *
      * @param tabName the name of the tab to add the key value pair to
      * @param key     the key of the metadata to add
      * @param value   the metadata value to add
+     * @deprecated use {@link #addMetadata(String, String, Object)} instead
      */
+    @Deprecated
     public static void addThreadMetaData(String tabName, String key, Object value) {
-        THREAD_METADATA.get().addToTab(tabName, key, value);
+        addMetadata(tabName, key, value);
     }
 
     /**

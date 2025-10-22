@@ -26,7 +26,7 @@ public class JakartaServletCallback implements Callback {
     }
 
     @Override
-    public void beforeNotify(Report report) {
+    public void onError(Report report) {
         // Check if we have any servlet request data available
         HttpServletRequest request = BugsnagServletRequestListener.getServletRequest();
         if (request == null) {

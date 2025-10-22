@@ -125,8 +125,8 @@ public class Report {
     }
 
     @Expose
-    public Map<String, Object> getMetaData() {
-        return new FilteredMap(diagnostics.metaData, Arrays.asList(config.filters));
+    public Map<String, Object> getMetadata() {
+        return new FilteredMap(diagnostics.metadata, Arrays.asList(config.redactedKeys));
     }
 
     @Expose
@@ -180,16 +180,30 @@ public class Report {
     }
 
     /**
+     * Add a key value pair to a metadata section.
+     *
+     * @param section the name of the section to add the key value pair to
+     * @param key     the key of the metadata to add
+     * @param value   the metadata value to add
+     * @return the modified report
+     */
+    public Report addMetadata(String section, String key, Object value) {
+        diagnostics.metadata.addToTab(section, key, value);
+        return this;
+    }
+
+    /**
      * Add a key value pair to a metadata tab.
      *
      * @param tabName the name of the tab to add the key value pair to
      * @param key     the key of the metadata to add
      * @param value   the metadata value to add
      * @return the modified report
+        diagnostics.metadata.clearTab(tabName);
      */
+    @Deprecated
     public Report addToTab(String tabName, String key, Object value) {
-        diagnostics.metaData.addToTab(tabName, key, value);
-        return this;
+        return addMetadata(tabName, key, value);
     }
 
     /**
@@ -199,7 +213,7 @@ public class Report {
      * @return The message from the exception contained in this error report.
      */
     public Report clearTab(String tabName) {
-        diagnostics.metaData.clearTab(tabName);
+        diagnostics.metadata.clearTab(tabName);
         return this;
     }
 
@@ -333,8 +347,13 @@ public class Report {
         this.handledState = handledState;
     }
 
-    void mergeMetaData(MetaData metaData) {
-        diagnostics.metaData.merge(metaData);
+    void mergeMetadata(Metadata metadata) {
+        diagnostics.metadata.merge(metadata);
+    }
+
+    @Deprecated
+    void mergeMetaData(Metadata metaData) {
+        diagnostics.metadata.merge(metaData);
     }
 
     static class SeverityReason {

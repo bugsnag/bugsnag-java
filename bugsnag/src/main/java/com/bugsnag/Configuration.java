@@ -34,11 +34,11 @@ public class Configuration {
     public String appType;
     public String appVersion;
     public Delivery delivery;
-    public EndpointConfiguration endpointConfiguration;
+    public EndpointConfiguration endpoints;
     public Delivery sessionDelivery;
-    public String[] filters = new String[]{"password", "secret", "Authorization", "Cookie"};
-    public String[] ignoreClasses;
-    public String[] notifyReleaseStages = null;
+    public String[] redactedKeys = new String[]{"password", "secret", "Authorization", "Cookie"};
+    public String[] discardClasses;
+    public String[] enabledReleaseStages = null;
     public String[] projectPackages;
     public String releaseStage;
     public boolean sendThreads = false;
@@ -55,10 +55,10 @@ public class Configuration {
         addCallback(new DeviceCallback());
         DeviceCallback.initializeCache();
 
-        endpointConfiguration = EndpointConfiguration.fromApiKey(apiKey);
+        endpoints = EndpointConfiguration.fromApiKey(apiKey);
 
-        this.delivery = new AsyncHttpDelivery(endpointConfiguration.getNotifyEndpoint());
-        this.sessionDelivery = new AsyncHttpDelivery(endpointConfiguration.getSessionEndpoint());
+        this.delivery = new AsyncHttpDelivery(endpoints.getNotifyEndpoint());
+        this.sessionDelivery = new AsyncHttpDelivery(endpoints.getSessionEndpoint());
 
         if (JakartaServletCallback.isAvailable()) {
             addCallback(new JakartaServletCallback());
@@ -66,20 +66,20 @@ public class Configuration {
     }
 
     boolean shouldNotifyForReleaseStage() {
-        if (notifyReleaseStages == null) {
+        if (enabledReleaseStages == null) {
             return true;
         }
 
-        List<String> stages = Arrays.asList(notifyReleaseStages);
+        List<String> stages = Arrays.asList(enabledReleaseStages);
         return stages.contains(releaseStage);
     }
 
     boolean shouldIgnoreClass(String className) {
-        if (ignoreClasses == null) {
+        if (discardClasses == null) {
             return false;
         }
 
-        List<String> classes = Arrays.asList(ignoreClasses);
+        List<String> classes = Arrays.asList(discardClasses);
         return classes.contains(className);
     }
 
@@ -136,15 +136,15 @@ public class Configuration {
      * Note that if you are setting a custom {@link Delivery}, this method should be called after
      * the custom implementation has been set.
      *
-     * @param endpointConfiguration the endpoint configuration
+     * @param endpoints the endpoint configuration
      * @throws IllegalArgumentException if the endpoint configuration is null or if the notify endpoint is empty or null
      */
-    public void setEndpoints(EndpointConfiguration endpointConfiguration) throws IllegalArgumentException {
-        if (endpointConfiguration == null) {
+    public void setEndpoints(EndpointConfiguration endpoints) throws IllegalArgumentException {
+        if (endpoints == null) {
             throw new IllegalArgumentException("Endpoint configuration cannot be null.");
         }
-        String notify = endpointConfiguration.getNotifyEndpoint();
-        String sessions = endpointConfiguration.getSessionEndpoint();
+        String notify = endpoints.getNotifyEndpoint();
+        String sessions = endpoints.getSessionEndpoint();
         if (notify == null || notify.isEmpty()) {
             throw new IllegalArgumentException("Notify endpoint cannot be empty or null.");
         } else {
