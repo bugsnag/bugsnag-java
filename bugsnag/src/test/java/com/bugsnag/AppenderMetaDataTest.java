@@ -63,7 +63,7 @@ public class AppenderMetaDataTest {
 
         // Get the notification details
         Notification notification = delivery.getNotifications().get(0);
-        assertTrue(notification.getEvents().get(0).getMetaData().containsKey("logbackTab"));
+        assertTrue(notification.getEvents().get(0).getMetadata().containsKey("logbackTab"));
         Map<String, Object> myTab = getMetaDataMap(notification, "logbackTab");
 
         assertEquals("logbackValue1", myTab.get("logbackKey1"));
@@ -91,7 +91,7 @@ public class AppenderMetaDataTest {
 
         // Get the notification details
         Notification notification = delivery.getNotifications().get(0);
-        assertTrue(notification.getEvents().get(0).getMetaData().containsKey("myTab"));
+        assertTrue(notification.getEvents().get(0).getMetadata().containsKey("myTab"));
         Map<String, Object> myTab = getMetaDataMap(notification, "myTab");
 
         assertEquals("string value", myTab.get("string key"));
@@ -111,7 +111,7 @@ public class AppenderMetaDataTest {
         // Send three test logs, the first one with report meta data added
         LOGGER.warn(new BugsnagMarker(new Callback() {
             @Override
-            public void beforeNotify(Report report) {
+            public void onError(Report report) {
                 report.addToTab("report", "some key", "some report value");
             }
         }), "Test exception", new RuntimeException("test"));
@@ -129,23 +129,23 @@ public class AppenderMetaDataTest {
         Notification notification = delivery.getNotifications().get(0);
         Report report = notification.getEvents().get(0);
 
-        assertTrue(report.getMetaData().containsKey("report"));
-        assertTrue(report.getMetaData().containsKey("thread"));
+        assertTrue(report.getMetadata().containsKey("report"));
+        assertTrue(report.getMetadata().containsKey("thread"));
         assertEquals("some report value", getMetaDataMap(notification, "report").get("some key"));
         assertEquals("some thread value", getMetaDataMap(notification, "thread").get("some key"));
 
         // Should have just thread meta data
         notification = delivery.getNotifications().get(1);
         report = notification.getEvents().get(0);
-        assertFalse(report.getMetaData().containsKey("report"));
-        assertTrue(report.getMetaData().containsKey("thread"));
+        assertFalse(report.getMetadata().containsKey("report"));
+        assertTrue(report.getMetadata().containsKey("thread"));
         assertEquals("some thread value", getMetaDataMap(notification, "thread").get("some key"));
 
         // Should have neither meta data
         notification = delivery.getNotifications().get(2);
         report = notification.getEvents().get(0);
-        assertFalse(report.getMetaData().containsKey("report"));
-        assertFalse(report.getMetaData().containsKey("thread"));
+        assertFalse(report.getMetadata().containsKey("report"));
+        assertFalse(report.getMetadata().containsKey("thread"));
     }
 
     @Test
@@ -160,7 +160,7 @@ public class AppenderMetaDataTest {
 
         // Get the notification details
         Notification notification = delivery.getNotifications().get(0);
-        assertTrue(notification.getEvents().get(0).getMetaData().containsKey("Context"));
+        assertTrue(notification.getEvents().get(0).getMetadata().containsKey("Context"));
         Map<String, Object> myTab = getMetaDataMap(notification, "Context");
 
         assertEquals("context value1", myTab.get("context key1"));
@@ -176,6 +176,6 @@ public class AppenderMetaDataTest {
      */
     @SuppressWarnings (value = "unchecked")
     private Map<String, Object> getMetaDataMap(Notification notification, String key) {
-        return ((Map<String, Object>) notification.getEvents().get(0).getMetaData().get(key));
+        return ((Map<String, Object>) notification.getEvents().get(0).getMetadata().get(key));
     }
 }

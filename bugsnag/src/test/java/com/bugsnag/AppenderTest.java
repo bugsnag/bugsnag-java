@@ -144,20 +144,20 @@ public class AppenderTest {
         assertEquals("gradleTask", config.appType);
         assertFalse(config.shouldAutoCaptureSessions());
 
-        assertEquals(2, config.filters.length);
-        ArrayList<String> filters = new ArrayList<String>(Arrays.asList(config.filters));
+        assertEquals(2, config.redactedKeys.length);
+        ArrayList<String> filters = new ArrayList<String>(Arrays.asList(config.redactedKeys));
         assertTrue(filters.contains("password"));
         assertTrue(filters.contains("credit_card_number"));
 
-        assertEquals(2, config.ignoreClasses.length);
+        assertEquals(2, config.discardClasses.length);
         ArrayList<String> ignoreClasses
-                = new ArrayList<String>(Arrays.asList(config.ignoreClasses));
+                = new ArrayList<String>(Arrays.asList(config.discardClasses));
         assertTrue(ignoreClasses.contains("com.example.Custom"));
         assertTrue(ignoreClasses.contains("java.io.IOException"));
 
-        assertEquals(2, config.notifyReleaseStages.length);
+        assertEquals(2, config.enabledReleaseStages.length);
         ArrayList<String> notifyReleaseStages
-                = new ArrayList<String>(Arrays.asList(config.notifyReleaseStages));
+                = new ArrayList<String>(Arrays.asList(config.enabledReleaseStages));
         assertTrue(notifyReleaseStages.contains("development"));
         assertTrue(notifyReleaseStages.contains("test"));
 
@@ -288,7 +288,7 @@ public class AppenderTest {
         assertEquals(1, delivery.getNotifications().size());
 
         Notification notification = delivery.getNotifications().get(0);
-        assertTrue(notification.getEvents().get(0).getMetaData().containsKey("myTab"));
+        assertTrue(notification.getEvents().get(0).getMetadata().containsKey("myTab"));
         Map<String, Object> myTab = getMetaDataMap(notification, "myTab");
 
         assertEquals("[FILTERED]", myTab.get("password"));
@@ -302,7 +302,7 @@ public class AppenderTest {
         // Setup a callback to set the user
         appender.addCallback(new Callback() {
             @Override
-            public void beforeNotify(Report report) {
+            public void onError(Report report) {
                 report.setUserName("User Name");
                 report.setUserEmail("user@example.com");
                 report.setUserId("12345");
@@ -420,6 +420,6 @@ public class AppenderTest {
      */
     @SuppressWarnings (value = "unchecked")
     private Map<String, Object> getMetaDataMap(Notification notification, String key) {
-        return ((Map<String, Object>) notification.getEvents().get(0).getMetaData().get(key));
+        return ((Map<String, Object>) notification.getEvents().get(0).getMetadata().get(key));
     }
 }
