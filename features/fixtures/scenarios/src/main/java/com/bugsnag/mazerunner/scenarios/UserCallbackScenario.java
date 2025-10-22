@@ -17,7 +17,7 @@ public class UserCallbackScenario extends Scenario {
     public void run() {
         bugsnag.notify(generateException(), new Callback() {
             @Override
-            public void beforeNotify(Report report) {
+            public void onError(Report report) {
                 report.setUser("Agent Pink", "bob@example.com", "Zebedee");
             }
         });

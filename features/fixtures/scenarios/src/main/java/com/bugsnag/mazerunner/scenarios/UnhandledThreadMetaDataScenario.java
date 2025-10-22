@@ -18,7 +18,7 @@ public class UnhandledThreadMetaDataScenario extends Scenario {
         // Global callback metadata has lowest precedence
         bugsnag.addCallback(new Callback() {
             @Override
-            public void beforeNotify(Report report) {
+            public void onError(Report report) {
                 report.addToTab("Custom", "test", "Global value");
                 report.addToTab("Custom", "foo", "Global value to be overwritten");
             }
