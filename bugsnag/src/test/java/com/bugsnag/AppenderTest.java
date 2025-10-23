@@ -274,15 +274,15 @@ public class AppenderTest {
     }
 
     @Test
-    public void testFilters() {
+    public void testRedactedKeys() {
 
-        // Add some meta data which should be filtered by key name
+        // Add some metadata which should be redacted by key name
         Bugsnag.addThreadMetaData("myTab", "password", "password value");
         Bugsnag.addThreadMetaData("myTab", "credit_card_number", "card number");
-        Bugsnag.addThreadMetaData("myTab", "mysecret", "not filtered");
+        Bugsnag.addThreadMetaData("myTab", "mysecret", "not redacted");
 
         // Send a log message
-        LOGGER.warn("Exception with filtered meta data", new RuntimeException("test"));
+        LOGGER.warn("Exception with redacted meta data", new RuntimeException("test"));
 
         // Check that a report was sent to Bugsnag
         assertEquals(1, delivery.getNotifications().size());
@@ -291,9 +291,9 @@ public class AppenderTest {
         assertTrue(notification.getEvents().get(0).getMetaData().containsKey("myTab"));
         Map<String, Object> myTab = getMetaDataMap(notification, "myTab");
 
-        assertEquals("[FILTERED]", myTab.get("password"));
-        assertEquals("[FILTERED]", myTab.get("credit_card_number"));
-        assertEquals("not filtered", myTab.get("mysecret"));
+        assertEquals("[REDACTED]", myTab.get("password"));
+        assertEquals("[REDACTED]", myTab.get("credit_card_number"));
+        assertEquals("not redacted", myTab.get("mysecret"));
     }
 
     @Test
@@ -316,7 +316,7 @@ public class AppenderTest {
         });
 
         // Send a log message
-        LOGGER.warn("Exception with filtered meta data", new RuntimeException("test"));
+        LOGGER.warn("Exception with redacted meta data", new RuntimeException("test"));
 
         // Check that a report was sent to Bugsnag
         assertEquals(1, delivery.getNotifications().size());
@@ -412,7 +412,7 @@ public class AppenderTest {
     }
 
     /**
-     * Gets a hashmap key from the meta data in a notification
+     * Gets a hashmap key from the metadata in a notification
      *
      * @param notification The notification
      * @param key The key to get

@@ -7,18 +7,18 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * Decorates a map by replacing values of filtered keys.
+ * Decorates a map by replacing values of redacted keys.
  */
-public class FilteredMap implements Map<String, Object> {
+public class RedactedMap implements Map<String, Object> {
 
-    private static final String FILTERED_PLACEHOLDER = "[FILTERED]";
+    private static final String REDACTED_PLACEHOLDER = "[REDACTED]";
 
-    private final Map<String, Object> filteredCopy;
-    private final Collection<String> keyFilters = new ArrayList<String>();
+    private final Map<String, Object> redactedCopy;
+    private final Collection<String> redactedKeys = new ArrayList<String>();
 
-    public FilteredMap(Map<String, Object> map, Collection<String> keyFilters) {
-        this.keyFilters.addAll(keyFilters);
-        this.filteredCopy = createCopy(map);
+    public RedactedMap(Map<String, Object> map, Collection<String> redactedKeys) {
+        this.redactedKeys.addAll(redactedKeys);
+        this.redactedCopy = createCopy(map);
     }
 
     private Map<String, Object> createCopy(Map<? extends String, ?> map) {
@@ -36,84 +36,84 @@ public class FilteredMap implements Map<String, Object> {
 
     @Override
     public int size() {
-        return filteredCopy.size();
+        return redactedCopy.size();
     }
 
     @Override
     public boolean isEmpty() {
-        return filteredCopy.isEmpty();
+        return redactedCopy.isEmpty();
     }
 
     @Override
     public boolean containsKey(Object key) {
-        return filteredCopy.containsKey(key);
+        return redactedCopy.containsKey(key);
     }
 
     @Override
     public boolean containsValue(Object value) {
-        return filteredCopy.containsValue(value);
+        return redactedCopy.containsValue(value);
     }
 
     @Override
     public Object get(Object key) {
-        return filteredCopy.get(key);
+        return redactedCopy.get(key);
     }
 
     @Override
     public Object put(String key, Object value) {
         if (value == null) {
-            return filteredCopy.put(key, null);
+            return redactedCopy.put(key, null);
         }
         Object transformedValue = transformEntry(key, value);
-        return filteredCopy.put(key, transformedValue);
+        return redactedCopy.put(key, transformedValue);
     }
 
     @Override
     public Object remove(Object key) {
-        return filteredCopy.remove(key);
+        return redactedCopy.remove(key);
     }
 
     @Override
     public void putAll(Map<? extends String, ?> mapValues) {
         Map<String, Object> copy = createCopy(mapValues);
-        filteredCopy.putAll(copy);
+        redactedCopy.putAll(copy);
     }
 
     @Override
     public void clear() {
-        filteredCopy.clear();
+        redactedCopy.clear();
     }
 
     @Override
     public Set<String> keySet() {
-        return filteredCopy.keySet();
+        return redactedCopy.keySet();
     }
 
     @Override
     public Collection<Object> values() {
-        return filteredCopy.values();
+        return redactedCopy.values();
     }
 
     @Override
     public Set<Entry<String, Object>> entrySet() {
-        return filteredCopy.entrySet();
+        return redactedCopy.entrySet();
     }
 
     @SuppressWarnings("unchecked")
     private Object transformEntry(Object key, Object value) {
         if (value instanceof Map) {
-            return new FilteredMap((Map<String, Object>) value, keyFilters);
+            return new RedactedMap((Map<String, Object>) value, redactedKeys);
         }
-        return shouldFilterKey((String) key) ? FILTERED_PLACEHOLDER : value;
+        return shouldRedactKey((String) key) ? REDACTED_PLACEHOLDER : value;
     }
 
-    private boolean shouldFilterKey(String key) {
-        if (keyFilters == null || key == null) {
+    private boolean shouldRedactKey(String key) {
+        if (redactedKeys == null || key == null) {
             return false;
         }
 
-        for (String filter : keyFilters) {
-            if (key.contains(filter)) {
+        for (String redactedKey : redactedKeys) {
+            if (key.contains(redactedKey)) {
                 return true;
             }
         }

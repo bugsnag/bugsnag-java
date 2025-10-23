@@ -48,8 +48,8 @@ public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
     /** Bugsnag error server endpoint. */
     private String endpoint;
 
-    /** Property names that should be filtered out before sending to Bugsnag servers. */
-    private Set<String> filteredProperties = new HashSet<String>();
+    /** Property names that should be redacted before sending to Bugsnag servers. */
+    private Set<String> redactedKeys = new HashSet<String>();
 
     /** Exception classes to be ignored. */
     private Set<String> ignoredClasses = new HashSet<String>();
@@ -254,8 +254,8 @@ public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
             bugsnag.setTimeout(timeout);
         }
 
-        if (filteredProperties.size() > 0) {
-            bugsnag.setFilters(filteredProperties.toArray(new String[0]));
+        if (redactedKeys.size() > 0) {
+            bugsnag.setRedactedKeys(redactedKeys.toArray(new String[0]));
         }
 
         bugsnag.setIgnoreClasses(ignoredClasses.toArray(new String[0]));
@@ -374,24 +374,24 @@ public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
     }
 
     /**
-     * @see Bugsnag#setFilters(String...)
+     * @see Bugsnag#setRedactedKeys(String...)
      */
-    public void setFilteredProperty(String filter) {
-        this.filteredProperties.add(filter);
+    public void setRedactedKey(String key) {
+        this.redactedKeys.add(key);
 
         if (bugsnag != null) {
-            bugsnag.setFilters(this.filteredProperties.toArray(new String[0]));
+            bugsnag.setRedactedKeys(this.redactedKeys.toArray(new String[0]));
         }
     }
 
     /**
-     * @see Bugsnag#setFilters(String...)
+     * @see Bugsnag#setRedactedKeys(String...)
      */
-    public void setFilteredProperties(String filters) {
-        this.filteredProperties.addAll(split(filters));
+    public void setRedactedKeys(String key) {
+        this.redactedKeys.addAll(split(key));
 
         if (bugsnag != null) {
-            bugsnag.setFilters(this.filteredProperties.toArray(new String[0]));
+            bugsnag.setRedactedKeys(this.redactedKeys.toArray(new String[0]));
         }
     }
 

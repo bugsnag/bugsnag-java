@@ -164,8 +164,8 @@ public class BugsnagTest {
     }
 
     @Test
-    public void testFilters() {
-        bugsnag.setFilters("testfilter1", "testfilter2");
+    public void testRedactedKeys() {
+        bugsnag.setRedactedKeys("testfilter1", "testfilter2");
         bugsnag.setDelivery(new Delivery() {
             @SuppressWarnings("unchecked")
             @Override
@@ -175,10 +175,10 @@ public class BugsnagTest {
                         (Map<String, Object>) report.getMetaData().get("firsttab");
                 final Map<String, Object> secondTab =
                         (Map<String, Object>) report.getMetaData().get("secondtab");
-                assertEquals("[FILTERED]", firstTab.get("testfilter1"));
-                assertEquals("[FILTERED]", firstTab.get("testfilter2"));
+                assertEquals("[REDACTED]", firstTab.get("testfilter1"));
+                assertEquals("[REDACTED]", firstTab.get("testfilter2"));
                 assertEquals("secretpassword", firstTab.get("testfilter3"));
-                assertEquals("[FILTERED]", secondTab.get("testfilter1"));
+                assertEquals("[REDACTED]", secondTab.get("testfilter1"));
             }
 
             @Override
@@ -197,7 +197,7 @@ public class BugsnagTest {
     }
 
     @Test
-    public void testFilterHeaders() {
+    public void testRedactHeaders() {
         bugsnag.setDelivery(new Delivery() {
             @SuppressWarnings("unchecked")
             @Override
@@ -209,9 +209,9 @@ public class BugsnagTest {
                 Map<String, Object> headersMap =
                         (Map<String, Object>) requestTab.get("headers");
 
-                assertEquals("[FILTERED]", headersMap.get("Authorization"));
+                assertEquals("[REDACTED]", headersMap.get("Authorization"));
                 assertEquals("User:Password", headersMap.get("authorization"));
-                assertEquals("[FILTERED]", headersMap.get("Cookie"));
+                assertEquals("[REDACTED]", headersMap.get("Cookie"));
                 assertEquals("123456ABCDEF", headersMap.get("cookie"));
             }
 
