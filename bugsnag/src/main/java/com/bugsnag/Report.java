@@ -126,7 +126,7 @@ public class Report {
 
     @Expose
     public Map<String, Object> getMetaData() {
-        return new FilteredMap(diagnostics.metaData, Arrays.asList(config.filters));
+        return new FilteredMap(diagnostics.metaData, Arrays.asList(config.redactedKeys));
     }
 
     @Expose

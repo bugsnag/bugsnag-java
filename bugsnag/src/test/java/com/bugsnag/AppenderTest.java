@@ -144,10 +144,10 @@ public class AppenderTest {
         assertEquals("gradleTask", config.appType);
         assertFalse(config.shouldAutoCaptureSessions());
 
-        assertEquals(2, config.filters.length);
-        ArrayList<String> filters = new ArrayList<String>(Arrays.asList(config.filters));
-        assertTrue(filters.contains("password"));
-        assertTrue(filters.contains("credit_card_number"));
+        assertEquals(2, config.redactedKeys.length);
+        ArrayList<String> redactedKeys = new ArrayList<String>(Arrays.asList(config.redactedKeys));
+        assertTrue(redactedKeys.contains("password"));
+        assertTrue(redactedKeys.contains("credit_card_number"));
 
         assertEquals(2, config.ignoreClasses.length);
         ArrayList<String> ignoreClasses
