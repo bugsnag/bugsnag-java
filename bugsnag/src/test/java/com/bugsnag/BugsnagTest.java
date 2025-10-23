@@ -165,7 +165,7 @@ public class BugsnagTest {
 
     @Test
     public void testRedactedKeys() {
-        bugsnag.setRedactedKeys("testfilter1", "testfilter2");
+        bugsnag.setRedactedKeys("testredact1", "testredact2");
         bugsnag.setDelivery(new Delivery() {
             @SuppressWarnings("unchecked")
             @Override
@@ -175,10 +175,10 @@ public class BugsnagTest {
                         (Map<String, Object>) report.getMetaData().get("firsttab");
                 final Map<String, Object> secondTab =
                         (Map<String, Object>) report.getMetaData().get("secondtab");
-                assertEquals("[REDACTED]", firstTab.get("testfilter1"));
-                assertEquals("[REDACTED]", firstTab.get("testfilter2"));
-                assertEquals("secretpassword", firstTab.get("testfilter3"));
-                assertEquals("[REDACTED]", secondTab.get("testfilter1"));
+                assertEquals("[REDACTED]", firstTab.get("testredact1"));
+                assertEquals("[REDACTED]", firstTab.get("testredact2"));
+                assertEquals("secretpassword", firstTab.get("testredact3"));
+                assertEquals("[REDACTED]", secondTab.get("testredact1"));
             }
 
             @Override
@@ -188,10 +188,10 @@ public class BugsnagTest {
         assertTrue(bugsnag.notify(new Throwable(), new Callback() {
             @Override
             public void beforeNotify(Report report) {
-                report.addToTab("firsttab", "testfilter1", "secretpassword");
-                report.addToTab("firsttab", "testfilter2", "secretpassword");
-                report.addToTab("firsttab", "testfilter3", "secretpassword");
-                report.addToTab("secondtab", "testfilter1", "secretpassword");
+                report.addToTab("firsttab", "testredact1", "secretpassword");
+                report.addToTab("firsttab", "testredact2", "secretpassword");
+                report.addToTab("firsttab", "testredact3", "secretpassword");
+                report.addToTab("secondtab", "testredact1", "secretpassword");
             }
         }));
     }

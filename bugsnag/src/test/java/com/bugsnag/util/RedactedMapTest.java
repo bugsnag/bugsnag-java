@@ -80,8 +80,8 @@ public class RedactedMapTest {
         map.put(KEY_REDACTED, VAL_REDACTED);
 
         HashMap<String, Object> emptyMap = new HashMap<String, Object>();
-        Set<String> filters = Collections.singleton(KEY_REDACTED);
-        Map<String, Object> removeMap = new RedactedMap(emptyMap, filters);
+        Set<String> keys = Collections.singleton(KEY_REDACTED);
+        Map<String, Object> removeMap = new RedactedMap(emptyMap, keys);
         removeMap.putAll(map);
 
         assertEquals(2, removeMap.size());
