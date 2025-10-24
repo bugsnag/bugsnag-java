@@ -2,13 +2,11 @@ package com.bugsnag;
 
 import com.bugsnag.serialization.Expose;
 
-import com.bugsnag.util.FilteredMap;
-
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class Report {
 
@@ -126,7 +124,7 @@ public class Report {
 
     @Expose
     public Map<String, Object> getMetaData() {
-        return new FilteredMap(diagnostics.metaData, Arrays.asList(config.filters));
+        return new RedactedMap(diagnostics.metaData, Set.of(config.redactedKeys));
     }
 
     @Expose
