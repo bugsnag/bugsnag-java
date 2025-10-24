@@ -3,10 +3,10 @@ package com.bugsnag;
 import com.bugsnag.serialization.Expose;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class Report {
 
@@ -124,7 +124,7 @@ public class Report {
 
     @Expose
     public Map<String, Object> getMetaData() {
-        return new RedactedMap(diagnostics.metaData, Arrays.asList(config.redactedKeys));
+        return new RedactedMap(diagnostics.metaData, Set.of(config.redactedKeys));
     }
 
     @Expose
