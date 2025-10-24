@@ -31,8 +31,8 @@ public class Application {
             });
         }
 
-        // Add meta data that will be added to all reports on the current thread
-        Bugsnag.addThreadMetaData("thread tab", "thread key 1", "thread value 1");
+        // Add metadata that will be added to all reports on the current thread
+        Bugsnag.addThreadMetadata("thread tab", "thread key 1", "thread value 1");
 
         // Send a handled exception to Bugsnag
         LOGGER.info("Sending a handled exception to Bugsnag");
@@ -50,8 +50,8 @@ public class Application {
             LOGGER.info(e.getMessage(), e);
         }
 
-        // Send a handled exception with custom MetaData
-        LOGGER.info("Sending a handled exception to Bugsnag with custom MetaData");
+        // Send a handled exception with custom Metadata
+        LOGGER.info("Sending a handled exception to Bugsnag with custom Metadata");
         try {
             throw new RuntimeException("Handled exception - custom metadata");
         } catch (RuntimeException e) {
@@ -76,8 +76,8 @@ public class Application {
         // Wait for unhandled exception thread to finish before exiting
         thread.join();
 
-        // Remove the thread meta data so it won't be added to future reports on this thread
-        Bugsnag.clearThreadMetaData();
+        // Remove the thread metadata so it won't be added to future reports on this thread
+        Bugsnag.clearThreadMetadata();
 
         // Exit the application
         System.exit(0);

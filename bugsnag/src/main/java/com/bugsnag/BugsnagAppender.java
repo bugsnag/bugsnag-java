@@ -3,9 +3,9 @@ package com.bugsnag;
 import com.bugsnag.callbacks.Callback;
 import com.bugsnag.delivery.Delivery;
 import com.bugsnag.logback.BugsnagMarker;
-import com.bugsnag.logback.LogbackMetaData;
-import com.bugsnag.logback.LogbackMetaDataKey;
-import com.bugsnag.logback.LogbackMetaDataTab;
+import com.bugsnag.logback.LogbackMetadata;
+import com.bugsnag.logback.LogbackMetadataKey;
+import com.bugsnag.logback.LogbackMetadataTab;
 import com.bugsnag.logback.ProxyConfiguration;
 
 import ch.qos.logback.classic.Level;
@@ -75,7 +75,7 @@ public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
     /** Application version. */
     private String appVersion;
 
-    private List<LogbackMetaData> globalMetaData = new ArrayList<LogbackMetaData>();
+    private List<LogbackMetadata> globalMetadata = new ArrayList<LogbackMetadata>();
 
     /** Bugsnag client. */
     private Bugsnag bugsnag = null;
@@ -272,9 +272,9 @@ public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
             @Override
             public void beforeNotify(Report report) {
 
-                for (LogbackMetaData metaData : globalMetaData) {
-                    for (LogbackMetaDataTab tab : metaData.getTabs()) {
-                        for (LogbackMetaDataKey key : tab.getKeys()) {
+                for (LogbackMetadata metadata : globalMetadata) {
+                    for (LogbackMetadataTab tab : metadata.getTabs()) {
+                        for (LogbackMetadataKey key : tab.getKeys()) {
                             report.addToTab(tab.getName(),
                                     key.getName(),
                                     key.getValue());
@@ -524,10 +524,10 @@ public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
      * Internal use only
      * Should only be used via the logback.xml file
      *
-     * @param metaData Adds meta data to every report
+     * @param metadata Adds metadata to every report
      */
-    public void setMetaData(LogbackMetaData metaData) {
-        this.globalMetaData.add(metaData);
+    public void setMetadata(LogbackMetadata metadata) {
+        this.globalMetadata.add(metadata);
     }
 
     /**

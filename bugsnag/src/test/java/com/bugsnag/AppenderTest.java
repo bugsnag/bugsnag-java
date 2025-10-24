@@ -87,7 +87,7 @@ public class AppenderTest {
         assertEquals("test", notification.getEvents().get(0).getExceptionMessage());
         assertEquals(Severity.WARNING.getValue(), notification.getEvents().get(0).getSeverity());
         assertEquals("Test exception",
-                getMetaDataMap(notification, "Log event data").get("Message"));
+                getMetadataMap(notification, "Log event data").get("Message"));
     }
 
     @Test
@@ -109,7 +109,7 @@ public class AppenderTest {
         assertEquals("test", notification.getEvents().get(0).getExceptionMessage());
         assertEquals(Severity.WARNING.getValue(), notification.getEvents().get(0).getSeverity());
         assertEquals("Test exception, errorCode: " + value,
-                getMetaDataMap(notification, "Log event data").get("Message"));
+                getMetadataMap(notification, "Log event data").get("Message"));
     }
 
     @Test
@@ -277,19 +277,19 @@ public class AppenderTest {
     public void testRedactedKeys() {
 
         // Add some metadata which should be redacted by key name
-        Bugsnag.addThreadMetaData("myTab", "password", "password value");
-        Bugsnag.addThreadMetaData("myTab", "credit_card_number", "card number");
-        Bugsnag.addThreadMetaData("myTab", "mysecret", "not redacted");
+        Bugsnag.addThreadMetadata("myTab", "password", "password value");
+        Bugsnag.addThreadMetadata("myTab", "credit_card_number", "card number");
+        Bugsnag.addThreadMetadata("myTab", "mysecret", "not redacted");
 
         // Send a log message
-        LOGGER.warn("Exception with redacted meta data", new RuntimeException("test"));
+        LOGGER.warn("Exception with redacted metadata", new RuntimeException("test"));
 
         // Check that a report was sent to Bugsnag
         assertEquals(1, delivery.getNotifications().size());
 
         Notification notification = delivery.getNotifications().get(0);
-        assertTrue(notification.getEvents().get(0).getMetaData().containsKey("myTab"));
-        Map<String, Object> myTab = getMetaDataMap(notification, "myTab");
+        assertTrue(notification.getEvents().get(0).getMetadata().containsKey("myTab"));
+        Map<String, Object> myTab = getMetadataMap(notification, "myTab");
 
         assertEquals("[REDACTED]", myTab.get("password"));
         assertEquals("[REDACTED]", myTab.get("credit_card_number"));
@@ -419,7 +419,7 @@ public class AppenderTest {
      * @return The hash map
      */
     @SuppressWarnings (value = "unchecked")
-    private Map<String, Object> getMetaDataMap(Notification notification, String key) {
-        return ((Map<String, Object>) notification.getEvents().get(0).getMetaData().get(key));
+    private Map<String, Object> getMetadataMap(Notification notification, String key) {
+        return ((Map<String, Object>) notification.getEvents().get(0).getMetadata().get(key));
     }
 }

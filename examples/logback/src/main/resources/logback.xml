@@ -29,15 +29,15 @@
         <!--<projectPackage>com.company.package1</projectPackage>-->
         <!--<projectPackage>com.company.package2</projectPackage>-->
 
-		<!--<metaData>-->
+		<!--<metadata>-->
 			<!--<tab>-->
-				<!--<name>myTab</name>-->
+				<!--<name>customMetaData</name>-->
 				<!--<key>-->
-					<!--<name>myKey</name>-->
-					<!--<value>myValue</value>-->
+					<!--<name>somedata</name>-->
+					<!--<value>value</value>-->
 				<!--</key>-->
 			<!--</tab>-->
-		<!--</metaData>-->
+		<!--</metadata>-->
 
         <!--<proxy>-->
             <!--<type>HTTP</type>-->

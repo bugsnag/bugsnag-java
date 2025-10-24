@@ -58,10 +58,10 @@ public class Bugsnag implements Closeable {
     private Configuration config;
     private final SessionTracker sessionTracker;
 
-    private static final ThreadLocal<MetaData> THREAD_METADATA = new ThreadLocal<MetaData>() {
+    private static final ThreadLocal<Metadata> THREAD_METADATA = new ThreadLocal<Metadata>() {
         @Override
-        public MetaData initialValue() {
-            return new MetaData();
+        public Metadata initialValue() {
+            return new Metadata();
         }
     };
 
@@ -228,13 +228,13 @@ public class Bugsnag implements Closeable {
     }
 
     /**
-     * Set which keys should be redacted when sending metaData to Bugsnag.
+     * Set which keys should be redacted when sending metadata to Bugsnag.
      * Use this when you want to ensure sensitive information, such as passwords
-     * or credit card information is stripped from metaData you send to Bugsnag.
-     * Any keys in metaData which contain these strings will be marked as
+     * or credit card information is stripped from metadata you send to Bugsnag.
+     * Any keys in metadata which contain these strings will be marked as
      * [REDACTED] when send to Bugsnag.
      *
-     * @param redactedKeys a list of String keys to redact from metaData
+     * @param redactedKeys a list of String keys to redact from metadata
      */
     public void setRedactedKeys(String... redactedKeys) {
         config.redactedKeys = redactedKeys;
@@ -465,7 +465,7 @@ public class Bugsnag implements Closeable {
         }
 
         // Add thread metadata to the report
-        report.mergeMetaData(THREAD_METADATA.get());
+        report.mergeMetadata(THREAD_METADATA.get());
 
         // Run the report-specific beforeNotify callback, if given
         if (reportCallback != null) {
@@ -618,14 +618,14 @@ public class Bugsnag implements Closeable {
      * @param key     the key of the metadata to add
      * @param value   the metadata value to add
      */
-    public static void addThreadMetaData(String tabName, String key, Object value) {
+    public static void addThreadMetadata(String tabName, String key, Object value) {
         THREAD_METADATA.get().addToTab(tabName, key, value);
     }
 
     /**
      * Clears all metadata added to the current thread
      */
-    public static void clearThreadMetaData() {
+    public static void clearThreadMetadata() {
         THREAD_METADATA.get().clear();
     }
 
@@ -634,7 +634,7 @@ public class Bugsnag implements Closeable {
      *
      * @param tabName the name of the tab to remove
      */
-    public static void clearThreadMetaData(String tabName) {
+    public static void clearThreadMetadata(String tabName) {
         THREAD_METADATA.get().clearTab(tabName);
     }
 
@@ -644,7 +644,7 @@ public class Bugsnag implements Closeable {
      * @param tabName the name of the tab to that the metadata is in
      * @param key     the key of the metadata to remove
      */
-    public static void clearThreadMetaData(String tabName, String key) {
+    public static void clearThreadMetadata(String tabName, String key) {
         THREAD_METADATA.get().clearKey(tabName, key);
     }
 

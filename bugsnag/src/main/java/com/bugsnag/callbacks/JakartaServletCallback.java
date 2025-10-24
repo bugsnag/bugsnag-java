@@ -33,7 +33,7 @@ public class JakartaServletCallback implements Callback {
             return;
         }
 
-        // Add request information to metaData
+        // Add request information to metadata
         report
                 .addToTab("request", "url", request.getRequestURL().toString())
                 .addToTab("request", "method", request.getMethod())

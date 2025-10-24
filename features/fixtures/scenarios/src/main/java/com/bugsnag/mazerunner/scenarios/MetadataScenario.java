@@ -7,9 +7,9 @@ import com.bugsnag.callbacks.Callback;
 /**
  * Sends a handled exception to Bugsnag, which includes custom metadata
  */
-public class MetaDataScenario extends Scenario {
+public class MetadataScenario extends Scenario {
 
-    public MetaDataScenario(Bugsnag bugsnag) {
+    public MetadataScenario(Bugsnag bugsnag) {
         super(bugsnag);
     }
 

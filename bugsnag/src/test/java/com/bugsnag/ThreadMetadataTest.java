@@ -12,7 +12,7 @@ import org.junit.Test;
 
 import java.util.Map;
 
-public class ThreadMetaDataTest {
+public class ThreadMetadataTest {
 
     private StubNotificationDelivery delivery;
     private Delivery originalDelivery;
@@ -39,39 +39,39 @@ public class ThreadMetaDataTest {
     }
 
     @Test
-    public void testMetaDataClearAll() {
+    public void testMetadataClearAll() {
 
-        // Add some thread meta data
-        Bugsnag.addThreadMetaData("thread", "some key", "some thread value");
+        // Add some thread metadata
+        Bugsnag.addThreadMetadata("thread", "some key", "some thread value");
 
         bugsnag.notify(new RuntimeException("test"));
-        Bugsnag.clearThreadMetaData();
+        Bugsnag.clearThreadMetadata();
         bugsnag.notify(new RuntimeException("test"));
 
         // Check that two reports were sent to Bugsnag
         assertEquals(2, delivery.getNotifications().size());
 
-        // Check the meta data is added to the first report
+        // Check the metadata is added to the first report
         Notification notification = delivery.getNotifications().get(0);
         Report report = notification.getEvents().get(0);
-        assertTrue(report.getMetaData().containsKey("thread"));
-        assertEquals("some thread value", getMetaDataMap(notification, "thread").get("some key"));
+        assertTrue(report.getMetadata().containsKey("thread"));
+        assertEquals("some thread value", getMetadataMap(notification, "thread").get("some key"));
 
-        // Check the meta data is not added to the second report
+        // Check the metadata is not added to the second report
         notification = delivery.getNotifications().get(1);
         report = notification.getEvents().get(0);
-        assertFalse(report.getMetaData().containsKey("thread"));
+        assertFalse(report.getMetadata().containsKey("thread"));
     }
 
     @Test
-    public void testMetaDataClearTab() {
+    public void testMetadataClearTab() {
 
-        // Add some thread meta data
-        Bugsnag.addThreadMetaData("tab1", "some key", "some value");
-        Bugsnag.addThreadMetaData("tab2", "some key", "some value");
+        // Add some thread metadata
+        Bugsnag.addThreadMetadata("tab1", "some key", "some value");
+        Bugsnag.addThreadMetadata("tab2", "some key", "some value");
 
         bugsnag.notify(new RuntimeException("test"));
-        Bugsnag.clearThreadMetaData("tab2");
+        Bugsnag.clearThreadMetadata("tab2");
         bugsnag.notify(new RuntimeException("test"));
 
         // Check that two reports were sent to Bugsnag
@@ -80,28 +80,28 @@ public class ThreadMetaDataTest {
         // Check that both tabs are populated in the first report
         Notification notification = delivery.getNotifications().get(0);
         Report report = notification.getEvents().get(0);
-        assertTrue(report.getMetaData().containsKey("tab1"));
-        assertEquals("some value", getMetaDataMap(notification, "tab1").get("some key"));
-        assertTrue(report.getMetaData().containsKey("tab2"));
-        assertEquals("some value", getMetaDataMap(notification, "tab2").get("some key"));
+        assertTrue(report.getMetadata().containsKey("tab1"));
+        assertEquals("some value", getMetadataMap(notification, "tab1").get("some key"));
+        assertTrue(report.getMetadata().containsKey("tab2"));
+        assertEquals("some value", getMetadataMap(notification, "tab2").get("some key"));
 
         // Check that only the first tab is in the second tab
         notification = delivery.getNotifications().get(1);
         report = notification.getEvents().get(0);
-        assertTrue(report.getMetaData().containsKey("tab1"));
-        assertEquals("some value", getMetaDataMap(notification, "tab1").get("some key"));
-        assertFalse(report.getMetaData().containsKey("tab2"));
+        assertTrue(report.getMetadata().containsKey("tab1"));
+        assertEquals("some value", getMetadataMap(notification, "tab1").get("some key"));
+        assertFalse(report.getMetadata().containsKey("tab2"));
     }
 
     @Test
-    public void testMetaDataClearKey() {
+    public void testMetadataClearKey() {
 
-        // Add some thread meta data
-        Bugsnag.addThreadMetaData("tab1", "key1", "some value");
-        Bugsnag.addThreadMetaData("tab1", "key2", "some value");
+        // Add some thread metadata
+        Bugsnag.addThreadMetadata("tab1", "key1", "some value");
+        Bugsnag.addThreadMetadata("tab1", "key2", "some value");
 
         bugsnag.notify(new RuntimeException("test"));
-        Bugsnag.clearThreadMetaData("tab1", "key2");
+        Bugsnag.clearThreadMetadata("tab1", "key2");
         bugsnag.notify(new RuntimeException("test"));
 
         // Check that two reports were sent to Bugsnag
@@ -110,29 +110,29 @@ public class ThreadMetaDataTest {
         // Check that both keys are populated in the first report
         Notification notification = delivery.getNotifications().get(0);
         Report report = notification.getEvents().get(0);
-        assertTrue(report.getMetaData().containsKey("tab1"));
-        assertEquals("some value", getMetaDataMap(notification, "tab1").get("key1"));
-        assertEquals("some value", getMetaDataMap(notification, "tab1").get("key2"));
+        assertTrue(report.getMetadata().containsKey("tab1"));
+        assertEquals("some value", getMetadataMap(notification, "tab1").get("key1"));
+        assertEquals("some value", getMetadataMap(notification, "tab1").get("key2"));
 
         // Check that only the first tab is in the second tab
         notification = delivery.getNotifications().get(1);
         report = notification.getEvents().get(0);
-        assertTrue(report.getMetaData().containsKey("tab1"));
-        assertEquals("some value", getMetaDataMap(notification, "tab1").get("key1"));
-        assertFalse(getMetaDataMap(notification, "tab1").containsKey("key2"));
+        assertTrue(report.getMetadata().containsKey("tab1"));
+        assertEquals("some value", getMetadataMap(notification, "tab1").get("key1"));
+        assertFalse(getMetadataMap(notification, "tab1").containsKey("key2"));
     }
 
     @Test
-    public void testInnerThreadMetaData() {
+    public void testInnerThreadMetadata() {
 
-        // Add some thread meta data in the outer thread
-        Bugsnag.addThreadMetaData("outerthread", "some key", "value should not be in report");
+        // Add some thread metadata in the outer thread
+        Bugsnag.addThreadMetadata("outerthread", "some key", "value should not be in report");
 
         Thread thread = new Thread(new Runnable() {
             @Override
             public void run() {
-                // Add thread meta data which should get associated with the exception
-                Bugsnag.addThreadMetaData("innerthread", "some key", "value should be in report");
+                // Add thread metadata which should get associated with the exception
+                Bugsnag.addThreadMetadata("innerthread", "some key", "value should be in report");
 
                 // Notify to Bugsnag
                 bugsnag.notify(new RuntimeException("test"));
@@ -151,26 +151,26 @@ public class ThreadMetaDataTest {
         Notification notification = delivery.getNotifications().get(0);
         Report report = notification.getEvents().get(0);
 
-        assertTrue(report.getMetaData().containsKey("innerthread"));
+        assertTrue(report.getMetadata().containsKey("innerthread"));
         assertEquals("value should be in report",
-                getMetaDataMap(notification, "innerthread").get("some key"));
+                getMetadataMap(notification, "innerthread").get("some key"));
 
-        assertFalse(report.getMetaData().containsKey("outerthread"));
+        assertFalse(report.getMetadata().containsKey("outerthread"));
     }
 
     @Test
-    public void testUnhandledThreadMetaDataRemoval() {
+    public void testUnhandledThreadMetadataRemoval() {
 
         Thread thread = new Thread(new Runnable() {
             @Override
             public void run() {
-                // Add some thread meta data
-                Bugsnag.addThreadMetaData("thread", "key1", "should be cleared from meta data");
+                // Add some thread metadata
+                Bugsnag.addThreadMetadata("thread", "key1", "should be cleared from metadata");
 
-                Bugsnag.clearThreadMetaData();
+                Bugsnag.clearThreadMetadata();
 
-                // Add some thread meta data
-                Bugsnag.addThreadMetaData("thread", "key2", "should be included in meta data");
+                // Add some thread metadata
+                Bugsnag.addThreadMetadata("thread", "key2", "should be included in metadata");
 
                 // Thrown unhandled exception
                 throw new RuntimeException("test");
@@ -189,23 +189,23 @@ public class ThreadMetaDataTest {
         Notification notification = delivery.getNotifications().get(0);
         Report report = notification.getEvents().get(0);
 
-        assertTrue(report.getMetaData().containsKey("thread"));
-        assertFalse(getMetaDataMap(notification, "thread").containsKey("key1"));
-        assertEquals("should be included in meta data",
-                getMetaDataMap(notification, "thread").get("key2"));
+        assertTrue(report.getMetadata().containsKey("thread"));
+        assertFalse(getMetadataMap(notification, "thread").containsKey("key1"));
+        assertEquals("should be included in metadata",
+                getMetadataMap(notification, "thread").get("key2"));
     }
 
     @Test
-    public void testUnhandledThreadMetaData() {
+    public void testUnhandledThreadMetadata() {
 
-        // Add some thread meta data in the outer thread
-        Bugsnag.addThreadMetaData("outerthread", "some key", "value should not be in report");
+        // Add some thread metadata in the outer thread
+        Bugsnag.addThreadMetadata("outerthread", "some key", "value should not be in report");
 
         Thread thread = new Thread(new Runnable() {
             @Override
             public void run() {
-                // Add thread meta data which should get associated with the exception
-                Bugsnag.addThreadMetaData("innerthread", "some key", "value should be in report");
+                // Add thread metadata which should get associated with the exception
+                Bugsnag.addThreadMetadata("innerthread", "some key", "value should be in report");
 
                 // Thrown unhandled exception
                 throw new RuntimeException("test");
@@ -224,22 +224,22 @@ public class ThreadMetaDataTest {
         Notification notification = delivery.getNotifications().get(0);
         Report report = notification.getEvents().get(0);
 
-        assertTrue(report.getMetaData().containsKey("innerthread"));
+        assertTrue(report.getMetadata().containsKey("innerthread"));
         assertEquals("value should be in report",
-                getMetaDataMap(notification, "innerthread").get("some key"));
+                getMetadataMap(notification, "innerthread").get("some key"));
 
-        assertFalse(report.getMetaData().containsKey("outerthread"));
+        assertFalse(report.getMetadata().containsKey("outerthread"));
     }
 
     /**
-     * Gets a hashmap key from the meta data in a notification
+     * Gets a hashmap key from the metadata in a notification
      *
      * @param notification The notification
      * @param key The key to get
      * @return The hash map
      */
     @SuppressWarnings (value = "unchecked")
-    private Map<String, Object> getMetaDataMap(Notification notification, String key) {
-        return ((Map<String, Object>) notification.getEvents().get(0).getMetaData().get(key));
+    private Map<String, Object> getMetadataMap(Notification notification, String key) {
+        return ((Map<String, Object>) notification.getEvents().get(0).getMetadata().get(key));
     }
 }

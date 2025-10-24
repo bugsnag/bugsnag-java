@@ -9,13 +9,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Sends an exception to Bugsnag with custom meta data using the logback appender
+ * Sends an exception to Bugsnag with custom metadata using the logback appender
  */
-public class LogbackMetaDataScenario extends Scenario {
+public class LogbackMetadataScenario extends Scenario {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(LogbackMetaDataScenario.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(LogbackMetadataScenario.class);
 
-    public LogbackMetaDataScenario(Bugsnag bugsnag) {
+    public LogbackMetadataScenario(Bugsnag bugsnag) {
         super(bugsnag);
     }
 

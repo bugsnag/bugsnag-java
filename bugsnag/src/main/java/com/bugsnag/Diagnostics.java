@@ -11,7 +11,7 @@ class Diagnostics {
     Map<String, Object> app;
     Map<String, Object> device;
     Map<String, String> user = new HashMap<String, String>();
-    MetaData metaData = new MetaData();
+    Metadata metadata = new Metadata();
 
     Diagnostics(Configuration configuration) {
         app = getDefaultAppInfo(configuration);

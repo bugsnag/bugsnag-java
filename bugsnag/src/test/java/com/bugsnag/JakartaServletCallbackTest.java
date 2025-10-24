@@ -85,7 +85,7 @@ public class JakartaServletCallbackTest {
         JakartaServletCallback callback = new JakartaServletCallback();
         callback.beforeNotify(report);
 
-        Map<String, Object> metadata = report.getMetaData();
+        Map<String, Object> metadata = report.getMetadata();
         assertTrue(metadata.containsKey("request"));
 
         Map<String, Object> request = (Map<String, Object>) metadata.get("request");
