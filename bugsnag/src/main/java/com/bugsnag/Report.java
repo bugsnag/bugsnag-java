@@ -2,8 +2,6 @@ package com.bugsnag;
 
 import com.bugsnag.serialization.Expose;
 
-import com.bugsnag.util.RedactedMap;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;

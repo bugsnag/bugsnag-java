@@ -1,4 +1,4 @@
-package com.bugsnag.util;
+package com.bugsnag;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -7,6 +7,7 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.lang.Exception;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;

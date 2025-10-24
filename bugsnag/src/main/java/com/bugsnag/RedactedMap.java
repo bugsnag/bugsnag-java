@@ -1,20 +1,16 @@
-package com.bugsnag.util;
+package com.bugsnag;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Decorates a map by replacing values of redacted keys.
  */
-public class RedactedMap implements Map<String, Object> {
+class RedactedMap implements Map<String, Object> {
 
     private static final String REDACTED_PLACEHOLDER = "[REDACTED]";
 
     private final Map<String, Object> redactedCopy;
-    private final Collection<String> redactedKeys = new ArrayList<String>();
+    private final Collection<String> redactedKeys = new HashSet<>();
 
     public RedactedMap(Map<String, Object> map, Collection<String> redactedKeys) {
         this.redactedKeys.addAll(redactedKeys);
@@ -108,10 +104,13 @@ public class RedactedMap implements Map<String, Object> {
     }
 
     private boolean shouldRedactKey(String key) {
-        if (redactedKeys == null || key == null) {
+        if (key == null) {
             return false;
         }
-
+        //Check for common keys first before looping through all
+        if(redactedKeys.contains(key)) {
+            return true;
+        }
         for (String redactedKey : redactedKeys) {
             if (key.contains(redactedKey)) {
                 return true;
