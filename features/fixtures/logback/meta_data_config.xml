@@ -7,7 +7,7 @@
         <releaseStage>production</releaseStage>
         <appVersion>1.0.0</appVersion>
 
-		<metaData>
+		<metadata>
 			<tab>
 				<name>configTab</name>
 				<key>
@@ -19,7 +19,7 @@
 					<value>tabValue2</value>
 				</key>
 			</tab>
-		</metaData>
+		</metadata>
 
 		<endpoint>http://localhost:9339/notify</endpoint>
 	</appender>

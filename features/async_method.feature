@@ -25,8 +25,8 @@ Scenario: Notify an exception from a spring boot async method
     And the error is valid for the error reporting API version "4" for the "Bugsnag Spring" notifier
     And the exception "errorClass" equals "java.lang.RuntimeException"
     And the exception "message" equals "test from async"
-    And the event "metaData.thread.controllerMethod" is null
-    And the event "metaData.thread.inAsyncMethod" equals "meta data from async method"
+    And the event "metadata.thread.controllerMethod" is null
+    And the event "metadata.thread.inAsyncMethod" equals "meta data from async method"
 
 Scenario: Report an exception from a plain spring async method
     Given I run the plain spring app

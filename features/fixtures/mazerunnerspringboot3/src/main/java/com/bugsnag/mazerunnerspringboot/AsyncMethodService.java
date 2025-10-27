@@ -32,7 +32,7 @@ public class AsyncMethodService {
     @Async
     public void notifyAsync() {
         // Add some thread meta data
-        Bugsnag.addThreadMetaData("thread", "inAsyncMethod", "meta data from async method");
+        Bugsnag.addThreadMetadata("thread", "inAsyncMethod", "meta data from async method");
 
         bugsnag.notify(new RuntimeException("test from async"));
     }

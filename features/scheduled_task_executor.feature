@@ -41,4 +41,4 @@ Scenario: Scheduled tasks execute on a ScheduledExecutorService rather than a si
     And I run spring boot "ScheduledTaskExecutorScenario" with the defaults
     And I wait to receive an error
     And the error is valid for the error reporting API version "4" for the "Bugsnag Spring" notifier
-    And the event "metaData.executor.multiThreaded" is true
+    And the event "metadata.executor.multiThreaded" is true
