@@ -21,8 +21,8 @@ tasks.register('sourceJar', Jar).configure {
     from sourceSets.main.allJava
 }
 
-// do not move this higher - sourceJar must be registered before we apply common.gradle
-apply from: '../common.gradle'
+// do not move this higher - sourceJar must be registered before we apply common.gradle.kts
+apply from: '../common.gradle.kts'
 
 dependencies {
     implementation project(':bugsnag')
