@@ -137,14 +137,14 @@ Scenario: Test thread meta data in plain spring async method
     And I wait to receive an error
     And the error is valid for the error reporting API version "4" for the "Bugsnag Spring" notifier
     And the event "metadata.thread.key1" is null
-    And the event "metadata.thread.key2" equals "should be included in meta data"
+    And the event "metadata.thread.key2" equals "should be included in metadata"
 
 Scenario: Test thread meta data in spring boot async method
     When I run spring boot "AsyncMethodScenario" with the defaults
     And I wait to receive an error
     And the error is valid for the error reporting API version "4" for the "Bugsnag Spring" notifier
     And the event "metadata.thread.key1" is null
-    And the event "metadata.thread.key2" equals "should be included in meta data"
+    And the event "metadata.thread.key2" equals "should be included in metadata"
 
 Scenario: Test thread meta data in plain spring scheduled task
     Given I set environment variable "RUN_SCHEDULED_TASK" to "true"
@@ -152,11 +152,11 @@ Scenario: Test thread meta data in plain spring scheduled task
     And I wait to receive an error
     And the error is valid for the error reporting API version "4" for the "Bugsnag Spring" notifier
     And the event "metadata.thread.key1" is null
-    And the event "metadata.thread.key2" equals "should be included in meta data"
+    And the event "metadata.thread.key2" equals "should be included in metadata"
 
 Scenario: Test thread meta data in spring boot scheduled task
     When I run spring boot "ScheduledTaskScenario" with the defaults
     And I wait to receive an error
     And the error is valid for the error reporting API version "4" for the "Bugsnag Spring" notifier
     And the event "metadata.thread.key1" is null
-    And the event "metadata.thread.key2" equals "should be included in meta data"
+    And the event "metadata.thread.key2" equals "should be included in metadata"
