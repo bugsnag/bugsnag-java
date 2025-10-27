@@ -18,8 +18,8 @@ Scenario: Notify an exception from a spring boot async method
     And the error is valid for the error reporting API version "4" for the "Bugsnag Spring" notifier
     And the exception "errorClass" equals "java.lang.RuntimeException"
     And the exception "message" equals "test from before async"
-    And the event "metaData.thread.controllerMethod" equals "meta data from controller method"
-    And the event "metaData.thread.inAsyncMethod" is null
+    And the event "metadata.thread.controllerMethod" equals "meta data from controller method"
+    And the event "metadata.thread.inAsyncMethod" is null
     Then I discard the oldest error
 
     And the error is valid for the error reporting API version "4" for the "Bugsnag Spring" notifier

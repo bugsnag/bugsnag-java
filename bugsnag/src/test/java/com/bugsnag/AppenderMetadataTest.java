@@ -56,7 +56,7 @@ public class AppenderMetadataTest {
     }
 
     @Test
-    public void testMetaDataFromLogbackFile() {
+    public void testMetadataFromLogbackFile() {
 
         // Send a log message
         LOGGER.warn("Test exception", new RuntimeException("test"));
@@ -72,7 +72,7 @@ public class AppenderMetadataTest {
 
     @Test
     @SuppressWarnings (value = "unchecked")
-    public void testMetaDataTypes() {
+    public void testMetadataTypes() {
 
         Bugsnag.addThreadMetadata("myTab", "string key", "string value");
         Bugsnag.addThreadMetadata("myTab", "bool key", true);
