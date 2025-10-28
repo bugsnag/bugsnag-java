@@ -1,13 +1,17 @@
-apply plugin: 'java'
+plugins {
+    java
+}
 
-group 'com.bugsnag.mazerunner'
+group = "com.bugsnag.mazerunner"
 
-sourceCompatibility = '17'
+java {
+    sourceCompatibility = JavaVersion.VERSION_17
+}
 
 repositories {
     mavenCentral()
     maven {
-        url file('../libs').toURI()
+        url = file("../libs").toURI()
     }
 }
 
@@ -16,3 +20,4 @@ dependencies {
     implementation("org.codehaus.janino:janino:3.1.10")
     implementation("com.bugsnag:bugsnag:9.9.9-test")
 }
+

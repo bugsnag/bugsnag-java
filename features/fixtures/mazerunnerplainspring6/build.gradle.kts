@@ -1,15 +1,17 @@
 plugins {
-    id "war"
+    war
 }
 
-group 'com.bugsnag.mazerunnerplainspring'
+group = "com.bugsnag.mazerunnerplainspring"
 
-sourceCompatibility = '17'
+java {
+    sourceCompatibility = JavaVersion.VERSION_17
+}
 
 repositories {
     mavenCentral()
     maven {
-        url file('../libs').toURI()
+        url = file("../libs").toURI()
     }
 }
 
@@ -23,9 +25,10 @@ dependencies {
     implementation("com.fasterxml.jackson.core:jackson-databind:2.14.1")
     implementation("com.bugsnag:bugsnag:9.9.9-test")
     implementation("com.bugsnag:bugsnag-spring:9.9.9-test")
-    implementation project(":scenarios")
+    implementation(project(":scenarios"))
 }
 
-war {
-    archiveFileName.set('mazerunnerplainspring.war')
+tasks.named<War>("war") {
+    archiveFileName.set("mazerunnerplainspring.war")
 }
+
