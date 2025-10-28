@@ -7,7 +7,7 @@ if (JavaVersion.current().isJava8Compatible) {
     apply(plugin = "checkstyle")
 }
 if (project.hasProperty("releasing") && project.depth <= 1) {
-    apply(from = "../release.gradle")
+    apply(from = "../release.gradle.kts")
 }
 tasks.named<Test>("test") {
     testLogging {

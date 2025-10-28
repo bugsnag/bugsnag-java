@@ -45,9 +45,9 @@ dependencies {
 }
 
 /** ---- Publishing config ----
- * Pulls in publishing+signing rules from the shared release.gradle.
+ * Pulls in publishing+signing rules from the shared release.gradle.kts.
  * This will create tasks like:
  *   :bugsnag:publishMavenJavaPublicationToTestRepository
  *   :bugsnag:publishMavenJavaPublicationToOssrhStagingRepository
  */
-apply from: "${rootProject.projectDir}/release.gradle"
+apply from: "${rootProject.projectDir}/release.gradle.kts"
