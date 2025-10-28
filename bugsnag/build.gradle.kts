@@ -1,5 +1,5 @@
 plugins {
-    id("com.github.hierynomus.license") version "0.16.1"
+    alias(libs.plugins.license)
     `java-library`
 }
 
@@ -19,25 +19,19 @@ repositories {
     mavenCentral()
 }
 
-val slf4jApiVersion: String by project
-val jakartaServletApiVersion: String by project
-val logbackVersion: String by project
-val junitVersion: String by project
-val mockitoVersion: String by project
-
 dependencies {
-    api("com.fasterxml.jackson.core:jackson-databind:2.14.1")
-    api("org.slf4j:slf4j-api:$slf4jApiVersion")
-    compileOnly("jakarta.servlet:jakarta.servlet-api:$jakartaServletApiVersion")
-    compileOnly("ch.qos.logback:logback-classic:$logbackVersion") {
+    api(libs.jackson.databind)
+    api(libs.slf4j.api)
+    compileOnly(libs.jakarta.servlet.api)
+    compileOnly(libs.logback.classic) {
         exclude(group = "org.slf4j")
     }
 
-    testImplementation("junit:junit:$junitVersion")
-    testImplementation("org.slf4j:log4j-over-slf4j:$slf4jApiVersion")
-    testImplementation("jakarta.servlet:jakarta.servlet-api:$jakartaServletApiVersion")
-    testImplementation("org.mockito:mockito-core:$mockitoVersion")
-    testImplementation("ch.qos.logback:logback-classic:$logbackVersion") {
+    testImplementation(libs.junit)
+    testImplementation(libs.log4j.over.slf4j)
+    testImplementation(libs.jakarta.servlet.api)
+    testImplementation(libs.mockito.core)
+    testImplementation(libs.logback.classic) {
         exclude(group = "org.slf4j")
     }
 }

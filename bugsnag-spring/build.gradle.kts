@@ -1,6 +1,3 @@
-val jakartaSpringVersion = "6.0.0"
-val jakartaSpringBootVersion = "3.0.0"
-
 plugins {
     `java-library`
 }
@@ -23,29 +20,24 @@ val sourceJar by tasks.registering(Jar::class) {
 // do not move this higher - sourceJar must be registered before we apply common.gradle.kts
 apply(from = "../common.gradle.kts")
 
-val logbackVersion: String by project
-val slf4jApiVersion: String by project
-val jakartaServletApiVersion: String by project
-val junitVersion: String by project
-
 dependencies {
     implementation(project(":bugsnag"))
 
-    implementation("ch.qos.logback:logback-core:$logbackVersion")
-    implementation("org.slf4j:slf4j-api:$slf4jApiVersion")
+    implementation(libs.logback.core)
+    implementation(libs.slf4j.api)
 
-    implementation("jakarta.servlet:jakarta.servlet-api:$jakartaServletApiVersion")
-    implementation("org.springframework:spring-webmvc:$jakartaSpringVersion")
-    implementation("org.springframework.boot:spring-boot:$jakartaSpringBootVersion")
-    implementation("org.springframework:spring-aop:$jakartaSpringVersion")
+    implementation(libs.jakarta.servlet.api)
+    implementation(libs.spring.webmvc)
+    implementation(libs.springBoot3.boot)
+    implementation(libs.spring.aop)
 
     testImplementation(project(":bugsnag").dependencyProject.sourceSets["test"].output)
     testImplementation(project(":bugsnag"))
-    testImplementation("junit:junit:$junitVersion")
-    testImplementation("org.springframework.boot:spring-boot-starter-test:$jakartaSpringBootVersion")
-    testImplementation("org.springframework.boot:spring-boot-starter-web:$jakartaSpringBootVersion")
-    testImplementation("org.junit.jupiter:junit-jupiter:5.8.2")
-    testCompileOnly("org.mockito:mockito-core:2.10.0")
+    testImplementation(libs.junit)
+    testImplementation(libs.springBoot3.starter.test)
+    testImplementation(libs.springBoot3.starter.web)
+    testImplementation(libs.junit.jupiter)
+    testCompileOnly(libs.mockito.core.legacy)
 }
 
 /** ---- Publishing config ----

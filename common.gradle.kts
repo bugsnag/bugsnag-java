@@ -1,8 +1,4 @@
-extra["jakartaServletApiVersion"] = "5.0.0"
-extra["logbackVersion"] = "1.2.3"
-extra["slf4jApiVersion"] = "1.7.25"
-extra["junitVersion"] = "4.13.2"
-extra["mockitoVersion"] = "5.0.0"
+// Version catalog is now used - see gradle/libs.versions.toml
 if (JavaVersion.current().isJava8Compatible) {
     apply(plugin = "checkstyle")
 }
