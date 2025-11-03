@@ -5,7 +5,9 @@ plugins {
 group = "com.bugsnag.mazerunnerplainspring"
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_17
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(17))
+    }
 }
 
 repositories {

@@ -5,14 +5,10 @@ plugins {
 
 apply(from = "../common.gradle.kts")
 
-tasks.named<JavaCompile>("compileJava") {
-    sourceCompatibility = "17"
-    targetCompatibility = "17"
-}
-
-tasks.named<JavaCompile>("compileTestJava") {
-    sourceCompatibility = "17"
-    targetCompatibility = "17"
+java {
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(17))
+    }
 }
 
 repositories {
