@@ -9,7 +9,7 @@ RUN apt-get update && DEBIAN_FRONTEND=noninteractive \
 COPY gradlew gradle.properties /app/
 COPY gradle/ /app/gradle/
 ENV GRADLE_OPTS="-Dorg.gradle.daemon=false"
-COPY settings.gradle /app/
+COPY settings.gradle.kts /app/
 RUN ./gradlew
 
 # Copy repo into docker
