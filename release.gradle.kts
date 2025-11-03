@@ -5,7 +5,7 @@ apply(plugin = "maven-publish")
 apply(plugin = "signing")
 
 /** -------- Helpers -------- */
-fun projectProperty(k: String, d: String? = null): String? = project.findProperty(k) as String? ?: d
+fun projectProperty(k: String): String? = project.findProperty(k) as String?
 fun projectBoolean(k: String): Boolean = projectProperty(k)?.toBoolean() ?: false
 
 val isRelease = projectBoolean("releasing") // set with -Preleasing=true on real deploys
