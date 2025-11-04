@@ -1,4 +1,4 @@
-FROM eclipse-temurin:17-jdk-jammy
+FROM amazoncorretto:17
 WORKDIR /app
 
 RUN apt-get update && DEBIAN_FRONTEND=noninteractive \
