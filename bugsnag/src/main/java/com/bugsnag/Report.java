@@ -122,7 +122,7 @@ public class Report {
         return diagnostics.user;
     }
 
-    @Expose
+    @Expose("metaData")
     public Map<String, Object> getMetadata() {
         return new RedactedMap(diagnostics.metadata, Set.of(config.redactedKeys));
     }
