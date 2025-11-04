@@ -1,4 +1,4 @@
-FROM openjdk:26-ea-17-jdk-slim
+FROM eclipse-temurin:17-jdk-jammy
 
 RUN apt-get update
 RUN apt-get install -y ruby-full curl

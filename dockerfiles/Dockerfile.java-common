@@ -1,4 +1,4 @@
-FROM openjdk:26-ea-17-jdk-slim
+FROM eclipse-temurin:17-jdk-jammy
 WORKDIR /app
 
 RUN apt-get update > /dev/null
