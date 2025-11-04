@@ -1,4 +1,4 @@
-FROM tomcat:10-jdk17-openjdk-slim
+FROM openjdk:26-ea-17-jdk-slim
 WORKDIR /app
 
 RUN apt-get update && DEBIAN_FRONTEND=noninteractive \
