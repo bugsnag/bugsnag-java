@@ -1,6 +1,6 @@
 When("I run {string} with the defaults") do |eventType|
   steps %Q{
-    And I set environment variable "MAZERUNNER_BASE_URL" to "http://127.0.0.1:9339/"
+    And I set environment variable "MAZERUNNER_BASE_URL" to "http://localhost:9339/"
     And I set environment variable "BUGSNAG_API_KEY" to "a35a2a72bd230ac0aa0f52715bbdc6aa"
     And I set environment variable "EVENT_TYPE" to "#{eventType}"
     And I run the script "features/scripts/run-java-app.sh" synchronously
@@ -9,7 +9,7 @@ end
 
 When("I run {string} with logback config {string}") do |eventType, logback_config|
   steps %Q{
-    And I set environment variable "MAZERUNNER_BASE_URL" to "http://127.0.0.1:9339/"
+    And I set environment variable "MAZERUNNER_BASE_URL" to "http://localhost:9339/"
     And I set environment variable "BUGSNAG_API_KEY" to "a35a2a72bd230ac0aa0f52715bbdc6aa"
     And I set environment variable "EVENT_TYPE" to "#{eventType}"
     And I set environment variable "LOGBACK_FILE" to "#{logback_config}"
@@ -19,7 +19,7 @@ end
 
 When("I run spring boot {string} with the defaults") do |eventType|
   steps %Q{
-    And I set environment variable "MAZERUNNER_BASE_URL" to "http://127.0.0.1:9339/"
+    And I set environment variable "MAZERUNNER_BASE_URL" to "http://localhost:9339/"
     And I set environment variable "BUGSNAG_API_KEY" to "a35a2a72bd230ac0aa0f52715bbdc6aa"
     And I set environment variable "EVENT_TYPE" to "#{eventType}"
     And I run the script "features/scripts/run-java-spring-boot-app.sh" synchronously
@@ -28,7 +28,7 @@ end
 
 Given("I run the plain spring app") do
   steps %Q{
-    And I set environment variable "MAZERUNNER_BASE_URL" to "http://127.0.0.1:9339/"
+    And I set environment variable "MAZERUNNER_BASE_URL" to "http://localhost:9339/"
     And I set environment variable "BUGSNAG_API_KEY" to "a35a2a72bd230ac0aa0f52715bbdc6aa"
     And I run the script "features/scripts/build-plain-spring-app.sh" synchronously
   }
@@ -43,6 +43,6 @@ end
 
 When(/^I navigate to the route "(.*)" on port "(\d*)"/) do |route, port|
   steps %Q{
-    When I open the URL "http://127.0.0.1:#{port}#{route}"
+    When I open the URL "http://localhost:#{port}#{route}"
   }
 end
