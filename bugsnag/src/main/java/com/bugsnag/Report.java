@@ -1,6 +1,7 @@
 package com.bugsnag;
 
 import com.bugsnag.serialization.Expose;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -122,7 +123,8 @@ public class Report {
         return diagnostics.user;
     }
 
-    @Expose("metaData")
+    @Expose
+    @JsonProperty("metaData")
     public Map<String, Object> getMetadata() {
         return new RedactedMap(diagnostics.metadata, Set.of(config.redactedKeys));
     }
