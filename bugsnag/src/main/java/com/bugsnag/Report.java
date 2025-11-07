@@ -1,6 +1,7 @@
 package com.bugsnag;
 
 import com.bugsnag.serialization.Expose;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.ArrayList;

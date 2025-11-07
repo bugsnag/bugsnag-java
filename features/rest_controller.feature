@@ -10,7 +10,7 @@ Scenario: Report an exception from a spring boot rest controller
     And the event "context" equals "GET /send-unhandled-exception"
     And the exception "errorClass" equals "java.lang.RuntimeException"
     And the exception "message" equals "Unhandled exception from TestRestController"
-    And the event "metadata.request.url" ends with "/send-unhandled-exception"
+    And the event "metaData.request.url" ends with "/send-unhandled-exception"
     And the event "severityReason.type" equals "unhandledExceptionMiddleware"
     And the event "severityReason.attributes.framework" equals "Spring"
 
@@ -25,6 +25,6 @@ Scenario: Report an exception from a plain spring rest controller
     And the event "context" equals "GET /send-unhandled-exception"
     And the exception "errorClass" equals "java.lang.RuntimeException"
     And the exception "message" equals "Unhandled exception from TestRestController"
-    And the event "metadata.request.url" ends with "/send-unhandled-exception"
+    And the event "metaData.request.url" ends with "/send-unhandled-exception"
     And the event "severityReason.type" equals "unhandledExceptionMiddleware"
     And the event "severityReason.attributes.framework" equals "Spring"
