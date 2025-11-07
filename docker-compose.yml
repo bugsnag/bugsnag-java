@@ -14,7 +14,7 @@ services:
       context: .
       dockerfile: dockerfiles/Dockerfile.java17-mazerunner
     volumes:
-      - maze_output:/app/maze_output
+      - ./maze_output:/app/maze_output
   java-publisher:
     build:
       context: .
