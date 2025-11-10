@@ -530,6 +530,11 @@ public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
         this.globalMetadata.add(metadata);
     }
 
+    @Deprecated
+    public void setMetaData(LogbackMetadata metadata) {
+        setMetadata(metadata);
+    }
+
     /**
      * Add a regex logger name pattern to match loggers that should not generate Bugsnag reports
      *
