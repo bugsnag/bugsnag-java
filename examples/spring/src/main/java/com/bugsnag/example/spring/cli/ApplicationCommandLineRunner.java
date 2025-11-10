@@ -43,8 +43,8 @@ public class ApplicationCommandLineRunner implements CommandLineRunner {
             bugsnag.notify(e, Severity.INFO);
         }
 
-        // Send a handled exception with custom MetaData
-        LOGGER.info("Sending a handled exception to Bugsnag with custom MetaData");
+        // Send a handled exception with custom Metadata
+        LOGGER.info("Sending a handled exception to Bugsnag with custom Metadata");
         try {
             throw new RuntimeException("Handled exception - custom metadata");
         } catch (RuntimeException e) {

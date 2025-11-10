@@ -21,11 +21,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Test for using meta data via the Bugsnag Appender
+ * Test for using metadata via the Bugsnag Appender
  */
-public class AppenderMetaDataTest {
+public class AppenderMetadataTest {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(AppenderMetaDataTest.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(AppenderMetadataTest.class);
     private StubNotificationDelivery delivery;
     private Delivery originalDelivery;
     private BugsnagAppender appender;
@@ -56,15 +56,15 @@ public class AppenderMetaDataTest {
     }
 
     @Test
-    public void testMetaDataFromLogbackFile() {
+    public void testMetadataFromLogbackFile() {
 
         // Send a log message
         LOGGER.warn("Test exception", new RuntimeException("test"));
 
         // Get the notification details
         Notification notification = delivery.getNotifications().get(0);
-        assertTrue(notification.getEvents().get(0).getMetaData().containsKey("logbackTab"));
-        Map<String, Object> myTab = getMetaDataMap(notification, "logbackTab");
+        assertTrue(notification.getEvents().get(0).getMetadata().containsKey("logbackTab"));
+        Map<String, Object> myTab = getMetadataMap(notification, "logbackTab");
 
         assertEquals("logbackValue1", myTab.get("logbackKey1"));
         assertEquals("logbackValue2", myTab.get("logbackKey2"));
@@ -72,27 +72,27 @@ public class AppenderMetaDataTest {
 
     @Test
     @SuppressWarnings (value = "unchecked")
-    public void testMetaDataTypes() {
+    public void testMetadataTypes() {
 
-        Bugsnag.addThreadMetaData("myTab", "string key", "string value");
-        Bugsnag.addThreadMetaData("myTab", "bool key", true);
-        Bugsnag.addThreadMetaData("myTab", "int key", 1);
-        Bugsnag.addThreadMetaData("myTab", "float key", 1.1);
+        Bugsnag.addThreadMetadata("myTab", "string key", "string value");
+        Bugsnag.addThreadMetadata("myTab", "bool key", true);
+        Bugsnag.addThreadMetadata("myTab", "int key", 1);
+        Bugsnag.addThreadMetadata("myTab", "float key", 1.1);
 
         Map<String, String> map = new HashMap<String, String>();
         map.put("key", "value");
-        Bugsnag.addThreadMetaData("myTab", "object key", map);
+        Bugsnag.addThreadMetadata("myTab", "object key", map);
 
         Integer[] array = new Integer[] {1, 2, 3, 4, 5};
-        Bugsnag.addThreadMetaData("myTab", "array key", array);
+        Bugsnag.addThreadMetadata("myTab", "array key", array);
 
         // Send a log message
         LOGGER.warn("Test exception", new RuntimeException("test"));
 
         // Get the notification details
         Notification notification = delivery.getNotifications().get(0);
-        assertTrue(notification.getEvents().get(0).getMetaData().containsKey("myTab"));
-        Map<String, Object> myTab = getMetaDataMap(notification, "myTab");
+        assertTrue(notification.getEvents().get(0).getMetadata().containsKey("myTab"));
+        Map<String, Object> myTab = getMetadataMap(notification, "myTab");
 
         assertEquals("string value", myTab.get("string key"));
         assertEquals(true, myTab.get("bool key"));
@@ -103,12 +103,12 @@ public class AppenderMetaDataTest {
     }
 
     @Test
-    public void testMetaDataRemoval() {
+    public void testMetadataRemoval() {
 
-        // Add some thread meta data
-        Bugsnag.addThreadMetaData("thread", "some key", "some thread value");
+        // Add some thread metadata
+        Bugsnag.addThreadMetadata("thread", "some key", "some thread value");
 
-        // Send three test logs, the first one with report meta data added
+        // Send three test logs, the first one with report metadata added
         LOGGER.warn(new BugsnagMarker(new Callback() {
             @Override
             public void beforeNotify(Report report) {
@@ -118,39 +118,39 @@ public class AppenderMetaDataTest {
 
 
         LOGGER.warn("Test exception", new RuntimeException("test"));
-        Bugsnag.clearThreadMetaData();
+        Bugsnag.clearThreadMetadata();
         LOGGER.warn("Test exception", new RuntimeException("test"));
 
         // Check that three reports were sent to Bugsnag
         assertEquals(3, delivery.getNotifications().size());
 
-        // Check the meta data is set as expected
-        // Should have both report and thread meta data
+        // Check the metadata is set as expected
+        // Should have both report and thread metadata
         Notification notification = delivery.getNotifications().get(0);
         Report report = notification.getEvents().get(0);
 
-        assertTrue(report.getMetaData().containsKey("report"));
-        assertTrue(report.getMetaData().containsKey("thread"));
-        assertEquals("some report value", getMetaDataMap(notification, "report").get("some key"));
-        assertEquals("some thread value", getMetaDataMap(notification, "thread").get("some key"));
+        assertTrue(report.getMetadata().containsKey("report"));
+        assertTrue(report.getMetadata().containsKey("thread"));
+        assertEquals("some report value", getMetadataMap(notification, "report").get("some key"));
+        assertEquals("some thread value", getMetadataMap(notification, "thread").get("some key"));
 
-        // Should have just thread meta data
+        // Should have just thread metadata
         notification = delivery.getNotifications().get(1);
         report = notification.getEvents().get(0);
-        assertFalse(report.getMetaData().containsKey("report"));
-        assertTrue(report.getMetaData().containsKey("thread"));
-        assertEquals("some thread value", getMetaDataMap(notification, "thread").get("some key"));
+        assertFalse(report.getMetadata().containsKey("report"));
+        assertTrue(report.getMetadata().containsKey("thread"));
+        assertEquals("some thread value", getMetadataMap(notification, "thread").get("some key"));
 
-        // Should have neither meta data
+        // Should have neither metadata
         notification = delivery.getNotifications().get(2);
         report = notification.getEvents().get(0);
-        assertFalse(report.getMetaData().containsKey("report"));
-        assertFalse(report.getMetaData().containsKey("thread"));
+        assertFalse(report.getMetadata().containsKey("report"));
+        assertFalse(report.getMetadata().containsKey("thread"));
     }
 
     @Test
     @SuppressWarnings (value = "unchecked")
-    public void testMetaDataFromMdc() {
+    public void testMetadataFromMdc() {
 
         MDC.put("context key1", "context value1");
         MDC.put("context key2", "context value2");
@@ -160,22 +160,22 @@ public class AppenderMetaDataTest {
 
         // Get the notification details
         Notification notification = delivery.getNotifications().get(0);
-        assertTrue(notification.getEvents().get(0).getMetaData().containsKey("Context"));
-        Map<String, Object> myTab = getMetaDataMap(notification, "Context");
+        assertTrue(notification.getEvents().get(0).getMetadata().containsKey("Context"));
+        Map<String, Object> myTab = getMetadataMap(notification, "Context");
 
         assertEquals("context value1", myTab.get("context key1"));
         assertEquals("context value2", myTab.get("context key2"));
     }
 
     /**
-     * Gets a hashmap key from the meta data in a notification
+     * Gets a hashmap key from the metadata in a notification
      *
      * @param notification The notification
      * @param key The key to get
      * @return The hash map
      */
     @SuppressWarnings (value = "unchecked")
-    private Map<String, Object> getMetaDataMap(Notification notification, String key) {
-        return ((Map<String, Object>) notification.getEvents().get(0).getMetaData().get(key));
+    private Map<String, Object> getMetadataMap(Notification notification, String key) {
+        return ((Map<String, Object>) notification.getEvents().get(0).getMetadata().get(key));
     }
 }

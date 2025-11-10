@@ -136,7 +136,7 @@ public class SpringMvcTest {
 
         // Check that the request metadata is set as expected
         @SuppressWarnings(value = "unchecked") Map<String, Object> requestMetadata =
-                (Map<String, Object>) report.getMetaData().get("request");
+                (Map<String, Object>) report.getMetadata().get("request");
         assertEquals("http://localhost:" + randomServerPort + "/throw-runtime-exception",
                 requestMetadata.get("url"));
         assertEquals("GET", requestMetadata.get("method"));

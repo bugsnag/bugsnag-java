@@ -5,11 +5,11 @@ import com.bugsnag.callbacks.Callback;
 import com.bugsnag.Report;
 
 /**
- * Sends an exception to Bugsnag with custom meta data on the thread
+ * Sends an unhandled exception to Bugsnag with custom metadata on the thread
  */
-public class ThreadMetaDataScenario extends Scenario {
+public class UnhandledThreadMetadataScenario extends Scenario {
 
-    public ThreadMetaDataScenario(Bugsnag bugsnag) {
+    public UnhandledThreadMetadataScenario(Bugsnag bugsnag) {
         super(bugsnag);
     }
 
@@ -24,18 +24,13 @@ public class ThreadMetaDataScenario extends Scenario {
             }
         });
 
-        // Thread metadata should merge with global metadata and overwrite when duplicate key
-        Bugsnag.addThreadMetaData("Custom", "foo", "Thread value");
-        Bugsnag.addThreadMetaData("Custom", "bar", "Thread value to be overwritten");
-
         // Thread metadata on a different thread should not get added
         Thread t1 = new Thread(new Runnable() {
             @Override
             public void run() {
-                Bugsnag.addThreadMetaData("Custom", "something", "This should not be on the report");
+                Bugsnag.addThreadMetadata("Custom", "something", "This should not be on the report");
             }
         });
-
         t1.start();
 
         try {
@@ -44,12 +39,21 @@ public class ThreadMetaDataScenario extends Scenario {
             // ignore
         }
 
-        // Report-specific metadata should merge with global + thread metadata and overwrite when duplicate key
-        bugsnag.notify(generateException(), new Callback() {
+        Thread t2 = new Thread(new Runnable() {
             @Override
-            public void beforeNotify(Report report) {
-                report.addToTab("Custom", "bar", "Hello World!");
+            public void run() {
+                // Thread metadata should merge with global metadata and overwrite when duplicate key
+                Bugsnag.addThreadMetadata("Custom", "foo", "Thread value 1");
+                Bugsnag.addThreadMetadata("Custom", "bar", "Thread value 2");
+                throw new RuntimeException("UnhandledThreadMetadataScenario");
             }
         });
+        t2.start();
+
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException ex) {
+            // ignore
+        }
     }
 }

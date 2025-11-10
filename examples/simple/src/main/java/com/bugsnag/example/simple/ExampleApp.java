@@ -47,7 +47,7 @@ public class ExampleApp {
             bugsnag.notify(e, Severity.INFO);
         }
 
-        // Send a handled exception with custom MetaData
+        // Send a handled exception with custom Metadata
         try {
             throw new RuntimeException("Handled exception - custom metadata");
         } catch (RuntimeException e) {

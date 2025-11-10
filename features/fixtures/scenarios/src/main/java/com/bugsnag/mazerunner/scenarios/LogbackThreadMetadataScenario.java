@@ -7,27 +7,27 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Sends an exception to Bugsnag with custom meta data using the logback appender
+ * Sends an exception to Bugsnag with custom metadata using the logback appender
  */
-public class LogbackThreadMetaDataScenario extends Scenario {
+public class LogbackThreadMetadataScenario extends Scenario {
 
     private static final Logger LOGGER =
-            LoggerFactory.getLogger(LogbackThreadMetaDataScenario.class);
+            LoggerFactory.getLogger(LogbackThreadMetadataScenario.class);
 
-    public LogbackThreadMetaDataScenario(Bugsnag bugsnag) {
+    public LogbackThreadMetadataScenario(Bugsnag bugsnag) {
         super(bugsnag);
     }
 
     @Override
     public void run() {
-        Bugsnag.addThreadMetaData("thread", "foo", "threadvalue1");
-        Bugsnag.addThreadMetaData("thread", "bar", "threadvalue2");
+        Bugsnag.addThreadMetadata("thread", "foo", "threadvalue1");
+        Bugsnag.addThreadMetadata("thread", "bar", "threadvalue2");
 
         // Thread metadata on a different thread should not get added
         Thread t1 = new Thread(new Runnable() {
             @Override
             public void run() {
-                Bugsnag.addThreadMetaData("Custom", "something", "This should not be on the report");
+                Bugsnag.addThreadMetadata("Custom", "something", "This should not be on the report");
             }
         });
 

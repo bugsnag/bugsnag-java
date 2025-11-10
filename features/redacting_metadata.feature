@@ -19,18 +19,18 @@ Scenario: Adding a custom metadata redaction
     And the event "metaData.custom.bar" equals "hunter2"
 
 Scenario: Adding a thread metadata redaction using logback
-    When I run "LogbackThreadMetaDataScenario" with logback config "meta_data_redact_config.xml"
+    When I run "LogbackThreadMetadataScenario" with logback config "meta_data_redact_config.xml"
     And I wait to receive an error
     And the error is valid for the error reporting API version "4" for the "Bugsnag Java" notifier
-    And the exception "message" equals "LogbackThreadMetaDataScenario"
+    And the exception "message" equals "LogbackThreadMetadataScenario"
     And the event "metaData.thread.foo" equals "[REDACTED]"
     And the event "metaData.thread.bar" equals "threadvalue2"
 
 Scenario: Adding a custom metadata redaction using logback
-    When I run "LogbackMetaDataScenario" with logback config "meta_data_redact_config.xml"
+    When I run "LogbackMetadataScenario" with logback config "meta_data_redact_config.xml"
     And I wait to receive an error
     And the error is valid for the error reporting API version "4" for the "Bugsnag Java" notifier
-    And the exception "message" equals "LogbackMetaDataScenario"
+    And the exception "message" equals "LogbackMetadataScenario"
     And the event "metaData.custom.foo" equals "[REDACTED]"
     And the event "metaData.user.foo" equals "[REDACTED]"
     And the event "metaData.custom.bar" equals "hunter2"

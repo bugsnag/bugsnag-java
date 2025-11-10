@@ -172,9 +172,9 @@ public class BugsnagTest {
             public void deliver(Serializer serializer, Object object, Map<String, String> headers) {
                 Report report = ((Notification) object).getEvents().get(0);
                 Map<String, Object> firstTab =
-                        (Map<String, Object>) report.getMetaData().get("firsttab");
+                        (Map<String, Object>) report.getMetadata().get("firsttab");
                 final Map<String, Object> secondTab =
-                        (Map<String, Object>) report.getMetaData().get("secondtab");
+                        (Map<String, Object>) report.getMetadata().get("secondtab");
                 assertEquals("[REDACTED]", firstTab.get("testredact1"));
                 assertEquals("[REDACTED]", firstTab.get("testredact2"));
                 assertEquals("secretpassword", firstTab.get("testredact3"));
@@ -204,7 +204,7 @@ public class BugsnagTest {
             public void deliver(Serializer serializer, Object object, Map<String, String> headers) {
                 Report report = ((Notification) object).getEvents().get(0);
                 Map<String, Object> requestTab =
-                        (Map<String, Object>) report.getMetaData().get("request");
+                        (Map<String, Object>) report.getMetadata().get("request");
 
                 Map<String, Object> headersMap =
                         (Map<String, Object>) requestTab.get("headers");

@@ -19,7 +19,7 @@
         <projectPackage>com.company.package1</projectPackage>
         <projectPackage>com.company.package2</projectPackage>
 
-        <metaData>
+        <metadata>
             <tab>
                 <name>logbackTab</name>
                 <key>
@@ -31,7 +31,7 @@
                     <value>logbackValue2</value>
                 </key>
             </tab>
-        </metaData>
+        </metadata>
 
         <sendThreads>true</sendThreads>
 

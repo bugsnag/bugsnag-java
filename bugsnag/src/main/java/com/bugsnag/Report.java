@@ -2,6 +2,8 @@ package com.bugsnag;
 
 import com.bugsnag.serialization.Expose;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -123,8 +125,9 @@ public class Report {
     }
 
     @Expose
-    public Map<String, Object> getMetaData() {
-        return new RedactedMap(diagnostics.metaData, Set.of(config.redactedKeys));
+    @JsonProperty("metaData")
+    public Map<String, Object> getMetadata() {
+        return new RedactedMap(diagnostics.metadata, Set.of(config.redactedKeys));
     }
 
     @Expose
@@ -186,7 +189,7 @@ public class Report {
      * @return the modified report
      */
     public Report addToTab(String tabName, String key, Object value) {
-        diagnostics.metaData.addToTab(tabName, key, value);
+        diagnostics.metadata.addToTab(tabName, key, value);
         return this;
     }
 
@@ -197,7 +200,7 @@ public class Report {
      * @return The message from the exception contained in this error report.
      */
     public Report clearTab(String tabName) {
-        diagnostics.metaData.clearTab(tabName);
+        diagnostics.metadata.clearTab(tabName);
         return this;
     }
 
@@ -331,8 +334,8 @@ public class Report {
         this.handledState = handledState;
     }
 
-    void mergeMetaData(MetaData metaData) {
-        diagnostics.metaData.merge(metaData);
+    void mergeMetadata(Metadata metadata) {
+        diagnostics.metadata.merge(metadata);
     }
 
     static class SeverityReason {

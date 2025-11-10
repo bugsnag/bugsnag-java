@@ -65,7 +65,7 @@ public class ApplicationRestController {
 
     @RequestMapping("/send-handled-exception-with-metadata")
     public String sendHandledExceptionWithMetadata() {
-        LOGGER.info("Sending a handled exception to Bugsnag with custom MetaData");
+        LOGGER.info("Sending a handled exception to Bugsnag with custom Metadata");
         try {
             throw new RuntimeException("Handled exception - custom metadata");
         } catch (RuntimeException e) {
@@ -79,7 +79,7 @@ public class ApplicationRestController {
             });
         }
 
-        return exampleWebsiteLinks + "<br/>Sent a handled exception to Bugsnag with custom MetaData";
+        return exampleWebsiteLinks + "<br/>Sent a handled exception to Bugsnag with custom Metadata";
     }
 
     @RequestMapping("/send-unhandled-exception")

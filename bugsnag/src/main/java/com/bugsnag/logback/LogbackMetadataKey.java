@@ -1,7 +1,7 @@
 package com.bugsnag.logback;
 
-/** Used to allow meta data to be added in the logback.xml file */
-public class LogbackMetaDataKey {
+/** Used to allow metadata to be added in the logback.xml file */
+public class LogbackMetadataKey {
 
     private String name;
 
