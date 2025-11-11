@@ -73,25 +73,25 @@ public class BugsnagTest {
     }
 
     @Test
-    public void testNotifyReleaseStages() {
+    public void testEnabledReleaseStages() {
         bugsnag.setDelivery(BugsnagTestUtils.generateDelivery());
 
         bugsnag.setReleaseStage("production");
 
         // Never send
-        bugsnag.setNotifyReleaseStages();
+        bugsnag.setEnabledReleaseStages();
         assertFalse(bugsnag.notify(new Throwable()));
 
         // Ignore 'production'
-        bugsnag.setNotifyReleaseStages("staging", "development");
+        bugsnag.setEnabledReleaseStages("staging", "development");
         assertFalse(bugsnag.notify(new Throwable()));
 
         // Allow 'production'
-        bugsnag.setNotifyReleaseStages("production");
+        bugsnag.setEnabledReleaseStages("production");
         assertTrue(bugsnag.notify(new Throwable()));
 
         // Allow 'production' and others
-        bugsnag.setNotifyReleaseStages("production", "staging", "development");
+        bugsnag.setEnabledReleaseStages("production", "staging", "development");
         assertTrue(bugsnag.notify(new Throwable()));
     }
 

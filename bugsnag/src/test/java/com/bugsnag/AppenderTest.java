@@ -150,20 +150,17 @@ public class AppenderTest {
         assertTrue(redactedKeys.contains("credit_card_number"));
 
         assertEquals(2, config.ignoreClasses.length);
-        ArrayList<String> ignoreClasses
-                = new ArrayList<String>(Arrays.asList(config.ignoreClasses));
+        ArrayList<String> ignoreClasses = new ArrayList<String>(Arrays.asList(config.ignoreClasses));
         assertTrue(ignoreClasses.contains("com.example.Custom"));
         assertTrue(ignoreClasses.contains("java.io.IOException"));
 
-        assertEquals(2, config.notifyReleaseStages.length);
-        ArrayList<String> notifyReleaseStages
-                = new ArrayList<String>(Arrays.asList(config.notifyReleaseStages));
-        assertTrue(notifyReleaseStages.contains("development"));
-        assertTrue(notifyReleaseStages.contains("test"));
+        assertEquals(2, config.enabledReleaseStages.length);
+        ArrayList<String> enabledReleaseStages = new ArrayList<String>(Arrays.asList(config.enabledReleaseStages));
+        assertTrue(enabledReleaseStages.contains("development"));
+        assertTrue(enabledReleaseStages.contains("test"));
 
         assertEquals(2, config.projectPackages.length);
-        ArrayList<String> projectPackages
-                = new ArrayList<String>(Arrays.asList(config.projectPackages));
+        ArrayList<String> projectPackages = new ArrayList<String>(Arrays.asList(config.projectPackages));
         assertTrue(projectPackages.contains("com.company.package2"));
         assertTrue(projectPackages.contains("com.company.package1"));
 
@@ -208,7 +205,7 @@ public class AppenderTest {
     }
 
     @Test
-    public void testNotifyReleaseStages() {
+    public void testEnabledReleaseStages() {
         // Send a log with the release stage set to an excluded one
         appender.setReleaseStage("ignoredReleaseStage");
         LOGGER.warn("Release stage ignored", new RuntimeException("test"));

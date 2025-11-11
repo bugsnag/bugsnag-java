@@ -7,8 +7,8 @@
         <releaseStage>staging</releaseStage>
         <appVersion>1.0.0</appVersion>
 
-		<notifyReleaseStage>production</notifyReleaseStage>
-		<notifyReleaseStage>development</notifyReleaseStage>
+		<enabledReleaseStage>production</enabledReleaseStage>
+		<enabledReleaseStage>development</enabledReleaseStage>
 
 		<endpoint>http://localhost:9339/notify</endpoint>
 	</appender>

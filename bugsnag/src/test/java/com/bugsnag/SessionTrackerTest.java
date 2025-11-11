@@ -133,7 +133,7 @@ public class SessionTrackerTest {
 
     @Test
     public void disabledReleaseStage() {
-        configuration.notifyReleaseStages = new String[]{"prod"};
+        configuration.enabledReleaseStages = new String[] { "prod" };
         configuration.releaseStage = "dev";
         sessionTracker.startSession(new Date(), false);
         assertNull(sessionTracker.getSession());
@@ -141,7 +141,7 @@ public class SessionTrackerTest {
 
     @Test
     public void enabledReleaseStage() {
-        configuration.notifyReleaseStages = new String[]{"prod"};
+        configuration.enabledReleaseStages = new String[] { "prod" };
         configuration.releaseStage = "prod";
         sessionTracker.startSession(new Date(), false);
         assertNotNull(sessionTracker.getSession());

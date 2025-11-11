@@ -36,9 +36,9 @@ public class Configuration {
     public Delivery delivery;
     public EndpointConfiguration endpointConfiguration;
     public Delivery sessionDelivery;
-    public String[] redactedKeys = new String[]{"password", "secret", "Authorization", "Cookie"};
+    public String[] redactedKeys = new String[] { "password", "secret", "Authorization", "Cookie" };
     public String[] ignoreClasses;
-    public String[] notifyReleaseStages = null;
+    public String[] enabledReleaseStages = null;
     public String[] projectPackages;
     public String releaseStage;
     public boolean sendThreads = false;
@@ -66,11 +66,11 @@ public class Configuration {
     }
 
     boolean shouldNotifyForReleaseStage() {
-        if (notifyReleaseStages == null) {
+        if (enabledReleaseStages == null) {
             return true;
         }
 
-        List<String> stages = Arrays.asList(notifyReleaseStages);
+        List<String> stages = Arrays.asList(enabledReleaseStages);
         return stages.contains(releaseStage);
     }
 

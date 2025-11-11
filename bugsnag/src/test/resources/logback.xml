@@ -13,8 +13,8 @@
         <ignoredClass>java.io.IOException</ignoredClass>
         <ignoredClass>com.example.Custom</ignoredClass>
 
-        <notifyReleaseStage>test</notifyReleaseStage>
-        <notifyReleaseStage>development</notifyReleaseStage>
+        <enabledReleaseStage>test</enabledReleaseStage>
+        <enabledReleaseStage>development</enabledReleaseStage>
 
         <projectPackage>com.company.package1</projectPackage>
         <projectPackage>com.company.package2</projectPackage>
