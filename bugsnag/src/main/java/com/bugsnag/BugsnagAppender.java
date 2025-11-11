@@ -417,6 +417,11 @@ public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
         }
     }
 
+    @Deprecated
+    public void setNotifyReleaseStage(String notifyReleaseStage) {
+        setEnabledReleaseStage(notifyReleaseStage);
+    }
+
     /**
      * @see Bugsnag#setEnabledReleaseStages(String...)
      */
