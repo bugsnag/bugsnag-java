@@ -256,7 +256,7 @@ public class Bugsnag implements Closeable {
      * @param enabledReleaseStages a list of releaseStages to notify for
      * @see #setReleaseStage
      */
-    public void setEnabledReleaseStages(String... enabledReleaseStages) {
+    public void setEnabledReleaseStages(Set<String> enabledReleaseStages) {
         config.enabledReleaseStages = enabledReleaseStages;
     }
 

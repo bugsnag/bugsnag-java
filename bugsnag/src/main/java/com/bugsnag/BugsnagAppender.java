@@ -260,14 +260,14 @@ public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
 
         bugsnag.setIgnoreClasses(ignoredClasses.toArray(new String[0]));
 
-        if (enabledReleaseStages.size() > 0) {
-            bugsnag.setEnabledReleaseStages(enabledReleaseStages.toArray(new String[0]));
+        if (!enabledReleaseStages.isEmpty()) {
+            bugsnag.setEnabledReleaseStages(enabledReleaseStages);
         }
 
         bugsnag.setProjectPackages(projectPackages.toArray(new String[0]));
         bugsnag.setSendThreads(sendThreads);
 
-        // Add a callback to put global meta data on every report
+        // Add a callback to put global metadata on every report
         bugsnag.addCallback(new Callback() {
             @Override
             public void beforeNotify(Report report) {
@@ -423,24 +423,24 @@ public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
     }
 
     /**
-     * @see Bugsnag#setEnabledReleaseStages(String...)
+     * @see Bugsnag#setEnabledReleaseStages(Set)
      */
     public void setEnabledReleaseStage(String enabledReleaseStage) {
         this.enabledReleaseStages.add(enabledReleaseStage);
 
         if (bugsnag != null) {
-            bugsnag.setEnabledReleaseStages(this.enabledReleaseStages.toArray(new String[0]));
+            bugsnag.setEnabledReleaseStages(this.enabledReleaseStages);
         }
     }
 
     /**
-     * @see Bugsnag#setEnabledReleaseStages(String...)
+     * @see Bugsnag#setEnabledReleaseStages(Set)
      */
     public void setEnabledReleaseStages(String enabledReleaseStages) {
         this.enabledReleaseStages.addAll(split(enabledReleaseStages));
 
         if (bugsnag != null) {
-            bugsnag.setEnabledReleaseStages(this.enabledReleaseStages.toArray(new String[0]));
+            bugsnag.setEnabledReleaseStages(this.enabledReleaseStages);
         }
     }
 

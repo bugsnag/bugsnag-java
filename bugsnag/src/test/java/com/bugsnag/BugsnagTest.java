@@ -17,12 +17,15 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.io.ByteArrayOutputStream;
+
 import java.net.InetSocketAddress;
 import java.net.Proxy;
+
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-
 
 public class BugsnagTest {
 
@@ -79,19 +82,19 @@ public class BugsnagTest {
         bugsnag.setReleaseStage("production");
 
         // Never send
-        bugsnag.setEnabledReleaseStages();
+        bugsnag.setEnabledReleaseStages(new HashSet<>());
         assertFalse(bugsnag.notify(new Throwable()));
 
         // Ignore 'production'
-        bugsnag.setEnabledReleaseStages("staging", "development");
+        bugsnag.setEnabledReleaseStages(Collections.singleton("staging"));
         assertFalse(bugsnag.notify(new Throwable()));
 
         // Allow 'production'
-        bugsnag.setEnabledReleaseStages("production");
+        bugsnag.setEnabledReleaseStages(Collections.singleton("production"));
         assertTrue(bugsnag.notify(new Throwable()));
 
         // Allow 'production' and others
-        bugsnag.setEnabledReleaseStages("production", "staging", "development");
+        bugsnag.setEnabledReleaseStages(Collections.singleton("production"));
         assertTrue(bugsnag.notify(new Throwable()));
     }
 

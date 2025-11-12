@@ -19,6 +19,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -38,7 +39,7 @@ public class Configuration {
     public Delivery sessionDelivery;
     public String[] redactedKeys = new String[] {"password", "secret", "Authorization", "Cookie"};
     public String[] ignoreClasses;
-    public String[] enabledReleaseStages = null;
+    public Set<String> enabledReleaseStages = null;
     public String[] projectPackages;
     public String releaseStage;
     public boolean sendThreads = false;
@@ -69,9 +70,7 @@ public class Configuration {
         if (enabledReleaseStages == null) {
             return true;
         }
-
-        List<String> stages = Arrays.asList(enabledReleaseStages);
-        return stages.contains(releaseStage);
+        return enabledReleaseStages.contains(releaseStage);
     }
 
     boolean shouldIgnoreClass(String className) {

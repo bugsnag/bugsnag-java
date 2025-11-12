@@ -154,10 +154,9 @@ public class AppenderTest {
         assertTrue(ignoreClasses.contains("com.example.Custom"));
         assertTrue(ignoreClasses.contains("java.io.IOException"));
 
-        assertEquals(2, config.enabledReleaseStages.length);
-        ArrayList<String> enabledReleaseStages = new ArrayList<String>(Arrays.asList(config.enabledReleaseStages));
-        assertTrue(enabledReleaseStages.contains("development"));
-        assertTrue(enabledReleaseStages.contains("test"));
+        assertEquals(2, config.enabledReleaseStages.size());
+        assertTrue(config.enabledReleaseStages.contains("development"));
+        assertTrue(config.enabledReleaseStages.contains("test"));
 
         assertEquals(2, config.projectPackages.length);
         ArrayList<String> projectPackages = new ArrayList<String>(Arrays.asList(config.projectPackages));
