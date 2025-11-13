@@ -254,14 +254,14 @@ public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
             bugsnag.setTimeout(timeout);
         }
 
-        if (redactedKeys.size() > 0) {
+        if (!redactedKeys.isEmpty()) {
             bugsnag.setRedactedKeys(redactedKeys.toArray(new String[0]));
         }
 
         bugsnag.setIgnoreClasses(ignoredClasses.toArray(new String[0]));
 
         if (!enabledReleaseStages.isEmpty()) {
-            bugsnag.setEnabledReleaseStages(enabledReleaseStages);
+            bugsnag.setEnabledReleaseStages(enabledReleaseStages.toArray(new String[0]));
         }
 
         bugsnag.setProjectPackages(projectPackages.toArray(new String[0]));
@@ -423,24 +423,24 @@ public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
     }
 
     /**
-     * @see Bugsnag#setEnabledReleaseStages(Set)
+     * @see Bugsnag#setEnabledReleaseStages(String...)
      */
     public void setEnabledReleaseStage(String enabledReleaseStage) {
         this.enabledReleaseStages.add(enabledReleaseStage);
 
         if (bugsnag != null) {
-            bugsnag.setEnabledReleaseStages(this.enabledReleaseStages);
+            bugsnag.setEnabledReleaseStages(this.enabledReleaseStages.toArray(new String[0]));
         }
     }
 
     /**
-     * @see Bugsnag#setEnabledReleaseStages(Set)
+     * @see Bugsnag#setEnabledReleaseStages(String...)
      */
     public void setEnabledReleaseStages(String enabledReleaseStages) {
         this.enabledReleaseStages.addAll(split(enabledReleaseStages));
 
         if (bugsnag != null) {
-            bugsnag.setEnabledReleaseStages(this.enabledReleaseStages);
+            bugsnag.setEnabledReleaseStages(this.enabledReleaseStages.toArray(new String[0]));
         }
     }
 

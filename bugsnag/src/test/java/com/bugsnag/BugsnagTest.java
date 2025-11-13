@@ -21,9 +21,7 @@ import java.io.ByteArrayOutputStream;
 import java.net.InetSocketAddress;
 import java.net.Proxy;
 
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -82,19 +80,19 @@ public class BugsnagTest {
         bugsnag.setReleaseStage("production");
 
         // Never send
-        bugsnag.setEnabledReleaseStages(new HashSet<>());
+        bugsnag.setEnabledReleaseStages();
         assertFalse(bugsnag.notify(new Throwable()));
 
         // Ignore 'production'
-        bugsnag.setEnabledReleaseStages(Collections.singleton("staging"));
+        bugsnag.setEnabledReleaseStages("staging");
         assertFalse(bugsnag.notify(new Throwable()));
 
         // Allow 'production'
-        bugsnag.setEnabledReleaseStages(Collections.singleton("production"));
+        bugsnag.setEnabledReleaseStages("production");
         assertTrue(bugsnag.notify(new Throwable()));
 
         // Allow 'production' and others
-        bugsnag.setEnabledReleaseStages(Collections.singleton("production"));
+        bugsnag.setEnabledReleaseStages("production");
         assertTrue(bugsnag.notify(new Throwable()));
     }
 
