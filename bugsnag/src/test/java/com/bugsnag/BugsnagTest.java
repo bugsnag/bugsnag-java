@@ -17,12 +17,13 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.io.ByteArrayOutputStream;
+
 import java.net.InetSocketAddress;
 import java.net.Proxy;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-
 
 public class BugsnagTest {
 
@@ -73,25 +74,25 @@ public class BugsnagTest {
     }
 
     @Test
-    public void testNotifyReleaseStages() {
+    public void testEnabledReleaseStages() {
         bugsnag.setDelivery(BugsnagTestUtils.generateDelivery());
 
         bugsnag.setReleaseStage("production");
 
         // Never send
-        bugsnag.setNotifyReleaseStages();
+        bugsnag.setEnabledReleaseStages();
         assertFalse(bugsnag.notify(new Throwable()));
 
         // Ignore 'production'
-        bugsnag.setNotifyReleaseStages("staging", "development");
+        bugsnag.setEnabledReleaseStages("staging");
         assertFalse(bugsnag.notify(new Throwable()));
 
         // Allow 'production'
-        bugsnag.setNotifyReleaseStages("production");
+        bugsnag.setEnabledReleaseStages("production");
         assertTrue(bugsnag.notify(new Throwable()));
 
         // Allow 'production' and others
-        bugsnag.setNotifyReleaseStages("production", "staging", "development");
+        bugsnag.setEnabledReleaseStages("production");
         assertTrue(bugsnag.notify(new Throwable()));
     }
 

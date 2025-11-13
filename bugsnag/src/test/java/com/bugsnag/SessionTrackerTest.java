@@ -14,6 +14,7 @@ import com.bugsnag.serialization.Serializer;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -133,7 +134,7 @@ public class SessionTrackerTest {
 
     @Test
     public void disabledReleaseStage() {
-        configuration.notifyReleaseStages = new String[]{"prod"};
+        configuration.enabledReleaseStages = Collections.singleton("prod");
         configuration.releaseStage = "dev";
         sessionTracker.startSession(new Date(), false);
         assertNull(sessionTracker.getSession());
@@ -141,7 +142,7 @@ public class SessionTrackerTest {
 
     @Test
     public void enabledReleaseStage() {
-        configuration.notifyReleaseStages = new String[]{"prod"};
+        configuration.enabledReleaseStages = Collections.singleton("prod");
         configuration.releaseStage = "prod";
         sessionTracker.startSession(new Date(), false);
         assertNotNull(sessionTracker.getSession());

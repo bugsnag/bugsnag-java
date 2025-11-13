@@ -253,11 +253,15 @@ public class Bugsnag implements Closeable {
      * Set for which releaseStages errors should be sent to Bugsnag.
      * Use this to stop errors from development builds being sent.
      *
-     * @param notifyReleaseStages a list of releaseStages to notify for
+     * @param enabledReleaseStages a list of releaseStages to notify for
      * @see #setReleaseStage
      */
-    public void setNotifyReleaseStages(String... notifyReleaseStages) {
-        config.notifyReleaseStages = notifyReleaseStages;
+    public void setEnabledReleaseStages(String... enabledReleaseStages) {
+        if (enabledReleaseStages == null || enabledReleaseStages.length == 0) {
+            config.enabledReleaseStages = Collections.emptySet();
+        } else {
+            config.enabledReleaseStages = Set.of(enabledReleaseStages);
+        }
     }
 
     /**
@@ -289,7 +293,7 @@ public class Bugsnag implements Closeable {
      * Set the current "release stage" of your application.
      *
      * @param releaseStage the release stage of the app
-     * @see #setNotifyReleaseStages
+     * @see #setEnabledReleaseStages
      */
     public void setReleaseStage(String releaseStage) {
         config.releaseStage = releaseStage;
@@ -302,14 +306,15 @@ public class Bugsnag implements Closeable {
      * environment.
      *
      * @param sendThreads should we send thread state with error reports
-     * @see #setNotifyReleaseStages
+     * @see #setEnabledReleaseStages
      */
     public void setSendThreads(boolean sendThreads) {
         config.sendThreads = sendThreads;
     }
 
     /**
-     * Set a timeout (in ms) to use when delivering Bugsnag error reports and sessions.
+     * Set a timeout (in ms) to use when delivering Bugsnag error reports and
+     * sessions.
      * This is a convenient shorthand for bugsnag.getDelivery().setTimeout();
      *
      * @param timeout the timeout to set (in ms)
@@ -440,9 +445,9 @@ public class Bugsnag implements Closeable {
             return false;
         }
 
-        // Don't notify unless releaseStage is in notifyReleaseStages
+        // Don't notify unless releaseStage is in enabledReleaseStages
         if (!config.shouldNotifyForReleaseStage()) {
-            LOGGER.debug("Error not reported to Bugsnag - {} is not in 'notifyReleaseStages'",
+            LOGGER.debug("Error not reported to Bugsnag - {} is not in 'enabledReleaseStages'",
                     config.releaseStage);
             return false;
         }
