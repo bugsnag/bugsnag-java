@@ -258,7 +258,7 @@ public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
             bugsnag.setRedactedKeys(redactedKeys.toArray(new String[0]));
         }
 
-        bugsnag.setIgnoreClasses(ignoredClasses.toArray(new String[0]));
+        bugsnag.setDiscardClasses(ignoredClasses.toArray(new String[0]));
 
         if (!enabledReleaseStages.isEmpty()) {
             bugsnag.setEnabledReleaseStages(enabledReleaseStages.toArray(new String[0]));
@@ -396,24 +396,24 @@ public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
     }
 
     /**
-     * @see Bugsnag#setIgnoreClasses(String...)
+     * @see Bugsnag#setDiscardClasses(String...)
      */
     public void setIgnoredClass(String ignoredClass) {
         this.ignoredClasses.add(ignoredClass);
 
         if (bugsnag != null) {
-            bugsnag.setIgnoreClasses(this.ignoredClasses.toArray(new String[0]));
+            bugsnag.setDiscardClasses(this.ignoredClasses.toArray(new String[0]));
         }
     }
 
     /**
-     * @see Bugsnag#setIgnoreClasses(String...)
+     * @see Bugsnag#setDiscardClasses(String...)
      */
     public void setIgnoredClasses(String ignoredClasses) {
         this.ignoredClasses.addAll(split(ignoredClasses));
 
         if (bugsnag != null) {
-            bugsnag.setIgnoreClasses(this.ignoredClasses.toArray(new String[0]));
+            bugsnag.setDiscardClasses(this.ignoredClasses.toArray(new String[0]));
         }
     }
 

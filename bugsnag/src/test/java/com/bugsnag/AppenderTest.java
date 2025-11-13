@@ -149,10 +149,10 @@ public class AppenderTest {
         assertTrue(redactedKeys.contains("password"));
         assertTrue(redactedKeys.contains("credit_card_number"));
 
-        assertEquals(2, config.ignoreClasses.length);
-        ArrayList<String> ignoreClasses = new ArrayList<String>(Arrays.asList(config.ignoreClasses));
-        assertTrue(ignoreClasses.contains("com.example.Custom"));
-        assertTrue(ignoreClasses.contains("java.io.IOException"));
+        assertEquals(2, config.discardClasses.length);
+        ArrayList<String> discardClasses = new ArrayList<String>(Arrays.asList(config.discardClasses));
+        assertTrue(discardClasses.contains("com.example.Custom"));
+        assertTrue(discardClasses.contains("java.io.IOException"));
 
         assertEquals(2, config.enabledReleaseStages.size());
         assertTrue(config.enabledReleaseStages.contains("development"));

@@ -15,7 +15,7 @@ public class IgnoredExceptionScenario extends Scenario {
     @Override
     public void run() {
 
-        bugsnag.setIgnoreClasses("java.lang.RuntimeException");
+        bugsnag.setDiscardClasses("java.lang.RuntimeException");
 
         bugsnag.notify(new RuntimeException("Should never appear"));
     }
