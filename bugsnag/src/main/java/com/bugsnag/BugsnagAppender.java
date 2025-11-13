@@ -52,7 +52,7 @@ public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
     private Set<String> redactedKeys = new HashSet<String>();
 
     /** Exception classes to be ignored. */
-    private Set<String> ignoredClasses = new HashSet<String>();
+    private Set<String> discardClasses = new HashSet<String>();
 
     /** Release stages that should be notified. */
     private Set<String> enabledReleaseStages = new HashSet<String>();
@@ -258,7 +258,7 @@ public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
             bugsnag.setRedactedKeys(redactedKeys.toArray(new String[0]));
         }
 
-        bugsnag.setDiscardClasses(ignoredClasses.toArray(new String[0]));
+        bugsnag.setDiscardClasses(discardClasses.toArray(new String[0]));
 
         if (!enabledReleaseStages.isEmpty()) {
             bugsnag.setEnabledReleaseStages(enabledReleaseStages.toArray(new String[0]));
@@ -395,25 +395,30 @@ public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
         }
     }
 
+    @Deprecated
+    public void setIgnoredClass(String ignoredClass) {
+        setDiscardClass(ignoredClass);
+    }
+
     /**
      * @see Bugsnag#setDiscardClasses(String...)
      */
-    public void setIgnoredClass(String ignoredClass) {
-        this.ignoredClasses.add(ignoredClass);
+    public void setDiscardClass(String discardClass) {
+        this.discardClasses.add(discardClass);
 
         if (bugsnag != null) {
-            bugsnag.setDiscardClasses(this.ignoredClasses.toArray(new String[0]));
+            bugsnag.setDiscardClasses(this.discardClasses.toArray(new String[0]));
         }
     }
 
     /**
      * @see Bugsnag#setDiscardClasses(String...)
      */
-    public void setIgnoredClasses(String ignoredClasses) {
-        this.ignoredClasses.addAll(split(ignoredClasses));
+    public void setDiscardClasses(String discardClasses) {
+        this.discardClasses.addAll(split(discardClasses));
 
         if (bugsnag != null) {
-            bugsnag.setDiscardClasses(this.ignoredClasses.toArray(new String[0]));
+            bugsnag.setDiscardClasses(this.discardClasses.toArray(new String[0]));
         }
     }
 
