@@ -243,10 +243,10 @@ public class Bugsnag implements Closeable {
     /**
      * Set which exception classes should be ignored (not sent) by Bugsnag.
      *
-     * @param ignoreClasses a list of exception classes to ignore
+     * @param discardClasses a list of exception classes to ignore
      */
-    public void setIgnoreClasses(String... ignoreClasses) {
-        config.ignoreClasses = ignoreClasses;
+    public void setDiscardClasses(String... discardClasses) {
+        config.discardClasses = discardClasses;
     }
 
     /**
@@ -440,7 +440,7 @@ public class Bugsnag implements Closeable {
 
         // Don't notify if this error class should be ignored
         if (config.shouldIgnoreClass(report.getExceptionName())) {
-            LOGGER.debug("Error not reported to Bugsnag - {} is in 'ignoreClasses'",
+            LOGGER.debug("Error not reported to Bugsnag - {} is in 'discardClasses'",
                     report.getExceptionName());
             return false;
         }

@@ -58,17 +58,17 @@ public class BugsnagTest {
         bugsnag.setDelivery(BugsnagTestUtils.generateDelivery());
 
         // Ignore neither
-        bugsnag.setIgnoreClasses();
+        bugsnag.setDiscardClasses();
         assertTrue(bugsnag.notify(new RuntimeException()));
         assertTrue(bugsnag.notify(new TestException()));
 
         // Ignore just RuntimeException
-        bugsnag.setIgnoreClasses(RuntimeException.class.getName());
+        bugsnag.setDiscardClasses(RuntimeException.class.getName());
         assertFalse(bugsnag.notify(new RuntimeException()));
         assertTrue(bugsnag.notify(new TestException()));
 
         // Ignore both
-        bugsnag.setIgnoreClasses(RuntimeException.class.getName(), TestException.class.getName());
+        bugsnag.setDiscardClasses(RuntimeException.class.getName(), TestException.class.getName());
         assertFalse(bugsnag.notify(new RuntimeException()));
         assertFalse(bugsnag.notify(new TestException()));
     }

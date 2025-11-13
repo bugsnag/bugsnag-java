@@ -10,8 +10,8 @@
         <redactedKey>password</redactedKey>
         <redactedKey>credit_card_number</redactedKey>
 
-        <ignoredClass>java.io.IOException</ignoredClass>
-        <ignoredClass>com.example.Custom</ignoredClass>
+        <discardClass>java.io.IOException</discardClass>
+        <discardClass>com.example.Custom</discardClass>
 
         <enabledReleaseStage>test</enabledReleaseStage>
         <enabledReleaseStage>development</enabledReleaseStage>

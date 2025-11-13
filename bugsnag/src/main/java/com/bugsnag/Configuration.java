@@ -38,7 +38,7 @@ public class Configuration {
     public EndpointConfiguration endpointConfiguration;
     public Delivery sessionDelivery;
     public String[] redactedKeys = new String[] {"password", "secret", "Authorization", "Cookie"};
-    public String[] ignoreClasses;
+    public String[] discardClasses;
     public Set<String> enabledReleaseStages = null;
     public String[] projectPackages;
     public String releaseStage;
@@ -74,11 +74,11 @@ public class Configuration {
     }
 
     boolean shouldIgnoreClass(String className) {
-        if (ignoreClasses == null) {
+        if (discardClasses == null) {
             return false;
         }
 
-        List<String> classes = Arrays.asList(ignoreClasses);
+        List<String> classes = Arrays.asList(discardClasses);
         return classes.contains(className);
     }
 
