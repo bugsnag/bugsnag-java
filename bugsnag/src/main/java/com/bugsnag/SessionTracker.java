@@ -16,8 +16,7 @@ class SessionTracker {
     private final Configuration config;
     private final ThreadLocal<Session> session = new ThreadLocal<Session>();
     private final AtomicReference<SessionCount> batchCount = new AtomicReference<SessionCount>();
-    private final Collection<SessionCount>
-            enqueuedSessionCounts = new ConcurrentLinkedQueue<SessionCount>();
+    private final Collection<SessionCount> enqueuedSessionCounts = new ConcurrentLinkedQueue<SessionCount>();
 
     private final Semaphore flushingRequest = new Semaphore(1);
     private final AtomicBoolean shuttingDown = new AtomicBoolean();
@@ -86,12 +85,11 @@ class SessionTracker {
 
         if (!enqueuedSessionCounts.isEmpty() && flushingRequest.tryAcquire(1)) {
             try {
-                Collection<SessionCount> requestValues
-                        = new ArrayList<SessionCount>(enqueuedSessionCounts);
+                Collection<SessionCount> requestValues = new ArrayList<SessionCount>(enqueuedSessionCounts);
                 SessionPayload payload = new SessionPayload(requestValues, config);
 
                 for (BeforeSendSession callback : sessionCallbacks) {
-                    callback.beforeSendSession(payload);
+                    callback.onSession(payload);
                 }
 
                 Delivery delivery = config.sessionDelivery;

@@ -31,7 +31,7 @@ public class SpringBootConfiguration {
     BeforeSendSession springBootVersionSessionCallback() {
         BeforeSendSession beforeSendSession = new BeforeSendSession() {
             @Override
-            public void beforeSendSession(SessionPayload payload) {
+            public void onSession(SessionPayload payload) {
                 addSpringRuntimeVersion(payload.getDevice());
             }
         };
