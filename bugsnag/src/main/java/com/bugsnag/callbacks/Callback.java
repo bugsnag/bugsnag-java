@@ -8,5 +8,5 @@ public interface Callback {
      *
      * @param report the report to perform changes on.
      */
-    void beforeNotify(Report report);
+    void onError(Report report);
 }

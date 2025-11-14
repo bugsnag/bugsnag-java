@@ -298,7 +298,7 @@ public class AppenderTest {
         // Setup a callback to set the user
         appender.addCallback(new Callback() {
             @Override
-            public void beforeNotify(Report report) {
+            public void onError(Report report) {
                 report.setUserName("User Name");
                 report.setUserEmail("user@example.com");
                 report.setUserId("12345");

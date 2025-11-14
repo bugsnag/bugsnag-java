@@ -17,7 +17,7 @@ public class MetadataScenario extends Scenario {
     public void run() {
         bugsnag.notify(generateException(), new Callback() {
             @Override
-            public void beforeNotify(Report report) {
+            public void onError(Report report) {
                 report.addToTab("Custom", "foo", "Hello World!");
             }
         });
