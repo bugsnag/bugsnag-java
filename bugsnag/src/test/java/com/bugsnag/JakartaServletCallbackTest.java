@@ -83,7 +83,7 @@ public class JakartaServletCallbackTest {
     public void testRequestMetadataAdded() {
         Report report = generateReport(new java.lang.Exception("Spline reticulation failed"));
         JakartaServletCallback callback = new JakartaServletCallback();
-        callback.beforeNotify(report);
+        callback.onError(report);
 
         Map<String, Object> metadata = report.getMetadata();
         assertTrue(metadata.containsKey("request"));
@@ -120,7 +120,7 @@ public class JakartaServletCallbackTest {
     public void testRequestContextSet() {
         Report report = generateReport(new java.lang.Exception("Spline reticulation failed"));
         JakartaServletCallback callback = new JakartaServletCallback();
-        callback.beforeNotify(report);
+        callback.onError(report);
 
         assertEquals("PATCH /foo/bar", report.getContext());
     }
@@ -130,7 +130,7 @@ public class JakartaServletCallbackTest {
         Report report = generateReport(new java.lang.Exception("Spline reticulation failed"));
         report.setContext("Honey nut corn flakes");
         JakartaServletCallback callback = new JakartaServletCallback();
-        callback.beforeNotify(report);
+        callback.onError(report);
 
         assertEquals("Honey nut corn flakes", report.getContext());
     }

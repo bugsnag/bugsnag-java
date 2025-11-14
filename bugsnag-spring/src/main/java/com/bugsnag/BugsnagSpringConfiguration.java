@@ -28,7 +28,7 @@ public class BugsnagSpringConfiguration implements InitializingBean {
     Callback springVersionErrorCallback() {
         Callback callback = new Callback() {
             @Override
-            public void beforeNotify(Report report) {
+            public void onError(Report report) {
                 addSpringRuntimeVersion(report.getDevice());
             }
         };

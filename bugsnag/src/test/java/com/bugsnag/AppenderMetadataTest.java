@@ -111,7 +111,7 @@ public class AppenderMetadataTest {
         // Send three test logs, the first one with report metadata added
         LOGGER.warn(new BugsnagMarker(new Callback() {
             @Override
-            public void beforeNotify(Report report) {
+            public void onError(Report report) {
                 report.addToTab("report", "some key", "some report value");
             }
         }), "Test exception", new RuntimeException("test"));

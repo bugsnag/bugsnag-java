@@ -50,7 +50,7 @@ public class ApplicationCommandLineRunner implements CommandLineRunner {
         } catch (RuntimeException e) {
             bugsnag.notify(e, new Callback() {
                 @Override
-                public void beforeNotify(Report report) {
+                public void onError(Report report) {
                     report.setSeverity(Severity.WARNING);
                     report.addToTab("report", "something", "that happened");
                     report.setContext("the context");

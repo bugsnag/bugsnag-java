@@ -67,7 +67,7 @@ public class TestController {
         } catch (TypeMismatchException ex) {
             bugsnag.notify(ex, new Callback() {
                 @Override
-                public void beforeNotify(Report report) {
+                public void onError(Report report) {
                     report.setSeverity(Severity.WARNING);
                 }
             });

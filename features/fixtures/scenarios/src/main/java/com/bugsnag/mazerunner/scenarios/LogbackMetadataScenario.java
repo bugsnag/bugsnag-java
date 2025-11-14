@@ -23,7 +23,7 @@ public class LogbackMetadataScenario extends Scenario {
     public void run() {
         LOGGER.warn(new BugsnagMarker(new Callback() {
                     @Override
-                    public void beforeNotify(Report report) {
+                    public void onError(Report report) {
                         report.addToTab("user", "foo", "hunter2");
                         report.addToTab("custom", "foo", "hunter2");
                         report.addToTab("custom", "bar", "hunter2");

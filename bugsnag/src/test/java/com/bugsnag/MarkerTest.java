@@ -29,7 +29,7 @@ public class MarkerTest {
     public void createMarker() {
         callback = new Callback() {
             @Override
-            public void beforeNotify(Report report) {
+            public void onError(Report report) {
 
             }
         };

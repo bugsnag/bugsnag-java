@@ -62,7 +62,7 @@ public class ExceptionTest {
         });
         assertTrue(bugsnag.notify(ogThrowable, new Callback() {
             @Override
-            public void beforeNotify(Report report) {
+            public void onError(Report report) {
                 try {
                     assertEquals(ogThrowable, report.getException());
                     assertEquals("Test", report.getExceptionMessage());

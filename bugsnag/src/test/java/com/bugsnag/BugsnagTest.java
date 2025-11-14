@@ -188,7 +188,7 @@ public class BugsnagTest {
         });
         assertTrue(bugsnag.notify(new Throwable(), new Callback() {
             @Override
-            public void beforeNotify(Report report) {
+            public void onError(Report report) {
                 report.addToTab("firsttab", "testredact1", "secretpassword");
                 report.addToTab("firsttab", "testredact2", "secretpassword");
                 report.addToTab("firsttab", "testredact3", "secretpassword");
@@ -223,7 +223,7 @@ public class BugsnagTest {
 
         assertTrue(bugsnag.notify(new Throwable(), new Callback() {
             @Override
-            public void beforeNotify(Report report) {
+            public void onError(Report report) {
                 Map<String, String> headers = new HashMap<String, String>();
                 headers.put("Authorization", "User:Password");
                 headers.put("authorization", "User:Password");
@@ -252,7 +252,7 @@ public class BugsnagTest {
         });
         assertTrue(bugsnag.notify(new Throwable(), new Callback() {
             @Override
-            public void beforeNotify(Report report) {
+            public void onError(Report report) {
                 report.setUser("123", "test@example.com", "test name");
             }
         }));
@@ -262,7 +262,7 @@ public class BugsnagTest {
     public void testContext() {
         bugsnag.addCallback(new Callback() {
             @Override
-            public void beforeNotify(Report report) {
+            public void onError(Report report) {
                 report.setContext("the context");
             }
         });
@@ -284,7 +284,7 @@ public class BugsnagTest {
     public void testGroupingHash() {
         bugsnag.addCallback(new Callback() {
             @Override
-            public void beforeNotify(Report report) {
+            public void onError(Report report) {
                 report.setGroupingHash("the grouping hash");
             }
         });
@@ -306,7 +306,7 @@ public class BugsnagTest {
     public void testSingleCallback() {
         bugsnag.addCallback(new Callback() {
             @Override
-            public void beforeNotify(Report report) {
+            public void onError(Report report) {
                 report.setApiKey("newapikey");
             }
         });
@@ -340,7 +340,7 @@ public class BugsnagTest {
 
         assertTrue(bugsnag.notify(new Throwable(), new Callback() {
             @Override
-            public void beforeNotify(Report report) {
+            public void onError(Report report) {
                 report.setApiKey("newapikey");
             }
         }));
@@ -350,13 +350,13 @@ public class BugsnagTest {
     public void testCallbackOrder() {
         bugsnag.addCallback(new Callback() {
             @Override
-            public void beforeNotify(Report report) {
+            public void onError(Report report) {
                 report.setApiKey("newapikey");
             }
         });
         bugsnag.addCallback(new Callback() {
             @Override
-            public void beforeNotify(Report report) {
+            public void onError(Report report) {
                 report.setApiKey("secondnewapikey");
             }
         });
@@ -379,7 +379,7 @@ public class BugsnagTest {
         bugsnag.setDelivery(BugsnagTestUtils.generateDelivery());
         bugsnag.addCallback(new Callback() {
             @Override
-            public void beforeNotify(Report report) {
+            public void onError(Report report) {
                 report.cancel();
             }
         });

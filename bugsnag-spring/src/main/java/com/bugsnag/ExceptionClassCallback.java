@@ -111,7 +111,7 @@ class ExceptionClassCallback implements Callback {
     }
 
     @Override
-    public void beforeNotify(Report report) {
+    public void onError(Report report) {
 
         HandledState handledState = report.getHandledState();
 
