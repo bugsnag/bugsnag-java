@@ -37,15 +37,15 @@ public class BugsnagSpringConfiguration implements InitializingBean {
     }
 
     @Bean
-    BeforeSendSession springVersionSessionCallback() {
-        BeforeSendSession beforeSendSession = new BeforeSendSession() {
+    OnSession springVersionSessionCallback() {
+        OnSession onSession = new OnSession() {
             @Override
             public void onSession(SessionPayload payload) {
                 addSpringRuntimeVersion(payload.getDevice());
             }
         };
-        bugsnag.addBeforeSendSession(beforeSendSession);
-        return beforeSendSession;
+        bugsnag.addOnSession(onSession);
+        return onSession;
     }
 
     private void addSpringRuntimeVersion(Map<String, Object> device) {

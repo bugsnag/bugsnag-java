@@ -1,5 +1,5 @@
 package com.bugsnag;
 
-interface BeforeSendSession {
+interface OnSession {
     void onSession(SessionPayload payload);
 }

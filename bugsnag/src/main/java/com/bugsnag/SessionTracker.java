@@ -20,7 +20,7 @@ class SessionTracker {
 
     private final Semaphore flushingRequest = new Semaphore(1);
     private final AtomicBoolean shuttingDown = new AtomicBoolean();
-    private final Collection<BeforeSendSession> sessionCallbacks = new ConcurrentLinkedQueue<BeforeSendSession>();
+    private final Collection<OnSession> sessionCallbacks = new ConcurrentLinkedQueue<OnSession>();
 
     SessionTracker(Configuration configuration) {
         this.config = configuration;
@@ -88,7 +88,7 @@ class SessionTracker {
                 Collection<SessionCount> requestValues = new ArrayList<SessionCount>(enqueuedSessionCounts);
                 SessionPayload payload = new SessionPayload(requestValues, config);
 
-                for (BeforeSendSession callback : sessionCallbacks) {
+                for (OnSession callback : sessionCallbacks) {
                     callback.onSession(payload);
                 }
 
@@ -107,7 +107,7 @@ class SessionTracker {
         }
     }
 
-    void addBeforeSendSession(BeforeSendSession beforeSendSession) {
-        sessionCallbacks.add(beforeSendSession);
+    void addOnSession(OnSession onSession) {
+        sessionCallbacks.add(onSession);
     }
 }

@@ -28,15 +28,15 @@ public class SpringBootConfiguration {
     }
 
     @Bean
-    BeforeSendSession springBootVersionSessionCallback() {
-        BeforeSendSession beforeSendSession = new BeforeSendSession() {
+    OnSession springBootVersionSessionCallback() {
+        OnSession onSession = new OnSession() {
             @Override
             public void onSession(SessionPayload payload) {
                 addSpringRuntimeVersion(payload.getDevice());
             }
         };
-        bugsnag.addBeforeSendSession(beforeSendSession);
-        return beforeSendSession;
+        bugsnag.addOnSession(onSession);
+        return onSession;
     }
 
     private void addSpringRuntimeVersion(Map<String, Object> device) {

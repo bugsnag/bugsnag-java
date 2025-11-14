@@ -676,7 +676,7 @@ public class Bugsnag implements Closeable {
         return Collections.emptySet();
     }
 
-    void addBeforeSendSession(BeforeSendSession beforeSendSession) {
-        sessionTracker.addBeforeSendSession(beforeSendSession);
+    void addOnSession(OnSession onSession) {
+        sessionTracker.addOnSession(onSession);
     }
 }
