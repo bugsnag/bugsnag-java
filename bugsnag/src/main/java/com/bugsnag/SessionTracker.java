@@ -86,14 +86,12 @@ class SessionTracker {
 
         if (!enqueuedSessionCounts.isEmpty() && flushingRequest.tryAcquire(1)) {
             try {
-                Collection<SessionCount> requestValues =
-                        new ArrayList<SessionCount>(enqueuedSessionCounts);
+                Collection<SessionCount> requestValues = new ArrayList<SessionCount>(enqueuedSessionCounts);
 
                 Collection<SessionCount> approvedSessions = new ArrayList<SessionCount>();
 
                 for (SessionCount sessionCount : requestValues) {
-                    SessionPayload singlePayload =
-                            new SessionPayload(Collections.singleton(sessionCount), config);
+                    SessionPayload singlePayload = new SessionPayload(Collections.singleton(sessionCount), config);
 
                     boolean sendThisSession = true;
                     for (OnSession callback : sessionCallbacks) {
