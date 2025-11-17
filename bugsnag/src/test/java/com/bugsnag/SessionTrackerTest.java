@@ -10,17 +10,14 @@ import static org.junit.Assert.fail;
 
 import com.bugsnag.delivery.Delivery;
 import com.bugsnag.serialization.Serializer;
-
-import org.junit.Before;
-import org.junit.Test;
-
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicInteger;
-
+import java.util.concurrent.CountDownLatch;
+import org.junit.Before;
+import org.junit.Test;
 
 public class SessionTrackerTest {
 
@@ -185,7 +182,6 @@ public class SessionTrackerTest {
                 super.deliver(serializer, object, headers);
                 SessionPayload payload = (SessionPayload) object;
 
-
                 List<SessionCount> sessionCounts = (List<SessionCount>) payload.getSessionCounts();
                 assertEquals(3, sessionCounts.size());
 
@@ -284,7 +280,8 @@ public class SessionTrackerTest {
 
     @Test
     public void zeroSessionCount() {
-        CustomDelivery sessionDelivery = new CustomDelivery() {};
+        CustomDelivery sessionDelivery = new CustomDelivery() {
+        };
         configuration.sessionDelivery = sessionDelivery;
         sessionTracker.flushSessions(new Date(10120000L));
         sessionTracker.flushSessions(new Date(14000000L));
@@ -300,7 +297,8 @@ public class SessionTrackerTest {
 
     @Test
     public void testSessionShutdownDelivers() {
-        CustomDelivery delivery = new CustomDelivery() {};
+        CustomDelivery delivery = new CustomDelivery() {
+        };
         configuration.sessionDelivery = delivery;
 
         sessionTracker.startSession(new Date(), true);
@@ -311,7 +309,8 @@ public class SessionTrackerTest {
 
     @Test
     public void testMultiShutdown() {
-        CustomDelivery delivery = new CustomDelivery() {};
+        CustomDelivery delivery = new CustomDelivery() {
+        };
         configuration.sessionDelivery = delivery;
 
         sessionTracker.startSession(new Date(), true);
