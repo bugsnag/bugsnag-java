@@ -188,11 +188,12 @@ public class BugsnagTest {
         });
         assertTrue(bugsnag.notify(new Throwable(), new Callback() {
             @Override
-            public void onError(Report report) {
+            public Boolean onError(Report report) {
                 report.addToTab("firsttab", "testredact1", "secretpassword");
                 report.addToTab("firsttab", "testredact2", "secretpassword");
                 report.addToTab("firsttab", "testredact3", "secretpassword");
                 report.addToTab("secondtab", "testredact1", "secretpassword");
+                return true;
             }
         }));
     }
@@ -223,7 +224,7 @@ public class BugsnagTest {
 
         assertTrue(bugsnag.notify(new Throwable(), new Callback() {
             @Override
-            public void onError(Report report) {
+            public Boolean onError(Report report) {
                 Map<String, String> headers = new HashMap<String, String>();
                 headers.put("Authorization", "User:Password");
                 headers.put("authorization", "User:Password");
@@ -231,6 +232,7 @@ public class BugsnagTest {
                 headers.put("cookie", "123456ABCDEF");
 
                 report.addToTab("request", "headers", headers);
+                return true;
             }
         }));
     }
@@ -252,8 +254,9 @@ public class BugsnagTest {
         });
         assertTrue(bugsnag.notify(new Throwable(), new Callback() {
             @Override
-            public void onError(Report report) {
+            public Boolean onError(Report report) {
                 report.setUser("123", "test@example.com", "test name");
+                return true;
             }
         }));
     }
@@ -262,8 +265,9 @@ public class BugsnagTest {
     public void testContext() {
         bugsnag.addCallback(new Callback() {
             @Override
-            public void onError(Report report) {
+            public Boolean onError(Report report) {
                 report.setContext("the context");
+                return true;
             }
         });
         bugsnag.setDelivery(new Delivery() {
@@ -284,8 +288,9 @@ public class BugsnagTest {
     public void testGroupingHash() {
         bugsnag.addCallback(new Callback() {
             @Override
-            public void onError(Report report) {
+            public Boolean onError(Report report) {
                 report.setGroupingHash("the grouping hash");
+                return true;
             }
         });
         bugsnag.setDelivery(new Delivery() {
@@ -306,8 +311,9 @@ public class BugsnagTest {
     public void testSingleCallback() {
         bugsnag.addCallback(new Callback() {
             @Override
-            public void onError(Report report) {
+            public Boolean onError(Report report) {
                 report.setApiKey("newapikey");
+                return true;
             }
         });
         bugsnag.setDelivery(new Delivery() {
@@ -340,8 +346,9 @@ public class BugsnagTest {
 
         assertTrue(bugsnag.notify(new Throwable(), new Callback() {
             @Override
-            public void onError(Report report) {
+            public Boolean onError(Report report) {
                 report.setApiKey("newapikey");
+                return true;
             }
         }));
     }
@@ -350,14 +357,16 @@ public class BugsnagTest {
     public void testCallbackOrder() {
         bugsnag.addCallback(new Callback() {
             @Override
-            public void onError(Report report) {
+            public Boolean onError(Report report) {
                 report.setApiKey("newapikey");
+                return true;
             }
         });
         bugsnag.addCallback(new Callback() {
             @Override
-            public void onError(Report report) {
+            public Boolean onError(Report report) {
                 report.setApiKey("secondnewapikey");
+                return true;
             }
         });
         bugsnag.setDelivery(new Delivery() {
@@ -379,8 +388,9 @@ public class BugsnagTest {
         bugsnag.setDelivery(BugsnagTestUtils.generateDelivery());
         bugsnag.addCallback(new Callback() {
             @Override
-            public void onError(Report report) {
+            public Boolean onError(Report report) {
                 report.cancel();
+                return true; // cancellation flag respected
             }
         });
         // Test the report is not sent

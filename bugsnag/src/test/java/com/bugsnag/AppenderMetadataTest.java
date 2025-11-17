@@ -111,11 +111,11 @@ public class AppenderMetadataTest {
         // Send three test logs, the first one with report metadata added
         LOGGER.warn(new BugsnagMarker(new Callback() {
             @Override
-            public void onError(Report report) {
+            public Boolean onError(Report report) {
                 report.addToTab("report", "some key", "some report value");
+                return true;
             }
         }), "Test exception", new RuntimeException("test"));
-
 
         LOGGER.warn("Test exception", new RuntimeException("test"));
         Bugsnag.clearThreadMetadata();

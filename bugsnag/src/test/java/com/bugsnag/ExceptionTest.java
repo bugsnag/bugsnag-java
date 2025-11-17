@@ -62,7 +62,7 @@ public class ExceptionTest {
         });
         assertTrue(bugsnag.notify(ogThrowable, new Callback() {
             @Override
-            public void onError(Report report) {
+            public Boolean onError(Report report) {
                 try {
                     assertEquals(ogThrowable, report.getException());
                     assertEquals("Test", report.getExceptionMessage());
@@ -70,7 +70,6 @@ public class ExceptionTest {
 
                     report.setExceptionName("Foo");
                     assertEquals("Foo", report.getExceptionName());
-
 
                     List<Exception> exceptions = report.getExceptions();
                     assertEquals(1, exceptions.size());
@@ -82,6 +81,7 @@ public class ExceptionTest {
                 } catch (Throwable throwable) {
                     report.cancel();
                 }
+                return !report.getShouldCancel();
             }
         }));
 

@@ -298,7 +298,7 @@ public class AppenderTest {
         // Setup a callback to set the user
         appender.addCallback(new Callback() {
             @Override
-            public void onError(Report report) {
+            public Boolean onError(Report report) {
                 report.setUserName("User Name");
                 report.setUserEmail("user@example.com");
                 report.setUserId("12345");
@@ -306,8 +306,8 @@ public class AppenderTest {
                 report.setContext("the context");
 
                 report.setGroupingHash("the grouping hash");
-
                 report.setApiKey("newapikey");
+                return true;
             }
         });
 

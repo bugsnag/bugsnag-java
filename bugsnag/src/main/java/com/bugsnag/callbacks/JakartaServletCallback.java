@@ -26,11 +26,11 @@ public class JakartaServletCallback implements Callback {
     }
 
     @Override
-    public void onError(Report report) {
+    public Boolean onError(Report report) {
         // Check if we have any servlet request data available
         HttpServletRequest request = BugsnagServletRequestListener.getServletRequest();
         if (request == null) {
-            return;
+            return true; // nothing to add, but do not cancel
         }
 
         // Add request information to metadata
@@ -46,6 +46,7 @@ public class JakartaServletCallback implements Callback {
         if (report.getContext() == null) {
             report.setContext(request.getMethod() + " " + request.getRequestURI());
         }
+        return true;
     }
 
     private String getClientIp(HttpServletRequest request) {

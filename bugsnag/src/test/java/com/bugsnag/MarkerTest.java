@@ -13,7 +13,6 @@ import org.slf4j.Marker;
 
 import java.util.Iterator;
 
-
 /**
  * Tests for the Bugsnag Marker internal logic
  */
@@ -29,8 +28,8 @@ public class MarkerTest {
     public void createMarker() {
         callback = new Callback() {
             @Override
-            public void onError(Report report) {
-
+            public Boolean onError(Report report) {
+                return true;
             }
         };
 

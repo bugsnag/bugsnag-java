@@ -30,14 +30,16 @@ public class ConcurrentCallbackTest {
 
         config.addCallback(new Callback() {
             @Override
-            public void onError(Report report) {
+            public Boolean onError(Report report) {
                 // modify the callback collection, when iterating to the next callback this
                 // should not crash
                 config.addCallback(new Callback() {
                     @Override
-                    public void onError(Report report) {
+                    public Boolean onError(Report report) {
+                        return true;
                     }
                 });
+                return true;
             }
         });
         bugsnag.notify(new RuntimeException());

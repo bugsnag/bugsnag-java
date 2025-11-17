@@ -71,10 +71,11 @@ public class ApplicationRestController {
         } catch (RuntimeException e) {
             bugsnag.notify(e, new Callback() {
                 @Override
-                public void onError(Report report) {
+                public Boolean onError(Report report) {
                     report.setSeverity(Severity.WARNING);
                     report.addToTab("report", "something", "that happened");
                     report.setContext("the context");
+                    return true;
                 }
             });
         }

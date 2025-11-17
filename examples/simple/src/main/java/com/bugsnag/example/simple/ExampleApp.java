@@ -22,7 +22,7 @@ public class ExampleApp {
         // the lifecyle of your application
         bugsnag.addCallback(new Callback() {
             @Override
-            public void onError(Report report) {
+            public Boolean onError(Report report) {
                 report.addToTab("diagnostics", "timestamp", new Date());
                 report.addToTab("customer", "name", "acme-inc");
                 report.addToTab("customer", "paying", true);
@@ -30,6 +30,7 @@ public class ExampleApp {
                 report.setUserName("User Name");
                 report.setUserEmail("user@example.com");
                 report.setUserId("12345");
+                return true;
             }
         });
 
@@ -53,10 +54,11 @@ public class ExampleApp {
         } catch (RuntimeException e) {
             bugsnag.notify(e, new Callback() {
                 @Override
-                public void onError(Report report) {
+                public Boolean onError(Report report) {
                     report.setSeverity(Severity.WARNING);
                     report.addToTab("report", "something", "that happened");
                     report.setContext("the context");
+                    return true;
                 }
             });
         }

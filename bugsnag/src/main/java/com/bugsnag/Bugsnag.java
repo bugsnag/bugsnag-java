@@ -455,13 +455,9 @@ public class Bugsnag implements Closeable {
         // Run all client-wide onError callbacks
         for (Callback callback : config.callbacks) {
             try {
-                // Run the callback
-                callback.onError(report);
-
-                // Check if callback cancelled delivery
-                if (report.getShouldCancel()) {
-                    LOGGER.debug("Error not reported to Bugsnag - "
-                            + "cancelled by a client-wide onError callback");
+                Boolean proceed = callback.onError(report);
+                if (Boolean.FALSE.equals(proceed) || report.getShouldCancel()) {
+                    LOGGER.debug("Error not reported to Bugsnag - cancelled by a client-wide onError callback");
                     return false;
                 }
             } catch (Throwable ex) {
@@ -475,13 +471,9 @@ public class Bugsnag implements Closeable {
         // Run the report-specific onError callback, if given
         if (reportCallback != null) {
             try {
-                // Run the callback
-                reportCallback.onError(report);
-
-                // Check if callback cancelled delivery
-                if (report.getShouldCancel()) {
-                    LOGGER.debug(
-                            "Error not reported to Bugsnag - cancelled by a report-specific callback");
+                Boolean proceed = reportCallback.onError(report);
+                if (Boolean.FALSE.equals(proceed) || report.getShouldCancel()) {
+                    LOGGER.debug("Error not reported to Bugsnag - cancelled by a report-specific callback");
                     return false;
                 }
             } catch (Throwable ex) {

@@ -3,6 +3,7 @@ package com.bugsnag;
 import com.bugsnag.delivery.Delivery;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Collection;
 import java.util.Date;
 import java.util.UUID;

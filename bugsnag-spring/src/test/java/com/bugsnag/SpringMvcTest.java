@@ -190,8 +190,9 @@ public class SpringMvcTest {
         Report report;
         Callback callback = new Callback() {
             @Override
-            public void onError(Report report) {
+            public Boolean onError(Report report) {
                 report.setSeverity(Severity.WARNING);
+                return true;
             }
         };
 
