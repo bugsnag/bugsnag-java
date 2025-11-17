@@ -85,16 +85,36 @@ class SessionTracker {
 
         if (!enqueuedSessionCounts.isEmpty() && flushingRequest.tryAcquire(1)) {
             try {
-                Collection<SessionCount> requestValues = new ArrayList<SessionCount>(enqueuedSessionCounts);
-                SessionPayload payload = new SessionPayload(requestValues, config);
+                Collection<SessionCount> requestValues =
+                        new ArrayList<SessionCount>(enqueuedSessionCounts);
 
-                for (OnSession callback : sessionCallbacks) {
-                    callback.onSession(payload);
+                Collection<SessionCount> approvedSessions = new ArrayList<SessionCount>();
+
+                for (SessionCount sessionCount : requestValues) {
+                    SessionPayload singlePayload =
+                            new SessionPayload(Collections.singleton(sessionCount), config);
+
+                    boolean sendThisSession = true;
+                    for (OnSession callback : sessionCallbacks) {
+                        if (!callback.onSession(singlePayload)) {
+                            sendThisSession = false;
+                            break;
+                        }
+                    }
+
+                    if (sendThisSession) {
+                        approvedSessions.add(sessionCount);
+                    }
                 }
 
-                Delivery delivery = config.sessionDelivery;
-                delivery.deliver(config.serializer, payload, config.getSessionApiHeaders());
+                if (!approvedSessions.isEmpty()) {
+                    SessionPayload payload = new SessionPayload(approvedSessions, config);
+                    Delivery delivery = config.sessionDelivery;
+                    delivery.deliver(config.serializer, payload, config.getSessionApiHeaders());
+                }
+
                 enqueuedSessionCounts.removeAll(requestValues);
+
             } finally {
                 flushingRequest.release(1);
             }

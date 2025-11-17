@@ -1,5 +1,6 @@
 package com.bugsnag;
 
+@FunctionalInterface
 interface OnSession {
-    void onSession(SessionPayload payload);
+    Boolean onSession(SessionPayload payload);
 }

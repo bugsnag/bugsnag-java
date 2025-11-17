@@ -321,6 +321,35 @@ public class SessionTrackerTest {
         assertEquals(1, delivery.count.get());
     }
 
+    @Test
+    public void sessionDeliverySuppressedByCallback() {
+        // Set up a delivery stub which SHOULD NOT be invoked
+        CustomDelivery delivery = new CustomDelivery() {
+            @Override
+            public void deliver(Serializer serializer, Object object, Map<String, String> headers) {
+                super.deliver(serializer, object, headers);
+                fail("Delivery should be suppressed by OnSession callback returning false");
+            }
+        };
+        configuration.sessionDelivery = delivery;
+
+        // Add callback which returns false to suppress sending
+        sessionTracker.addOnSession(new OnSession() {
+            @Override
+            public Boolean onSession(SessionPayload payload) {
+                return false; // suppress delivery
+            }
+        });
+
+        // Start a session and flush far enough in future to trigger send attempt
+        sessionTracker.startSession(new Date(10000000L), false);
+        sessionTracker.flushSessions(new Date(13600000L)); // different batch period
+
+        // Verify delivery was NOT performed
+        assertFalse(delivery.delivered);
+        assertEquals(0, delivery.count.get());
+    }
+
     abstract static class CustomDelivery implements Delivery {
         boolean delivered;
         AtomicInteger count = new AtomicInteger(0);

@@ -31,8 +31,9 @@ public class SpringBootConfiguration {
     OnSession springBootVersionSessionCallback() {
         OnSession onSession = new OnSession() {
             @Override
-            public void onSession(SessionPayload payload) {
+            public Boolean onSession(SessionPayload payload) {
                 addSpringRuntimeVersion(payload.getDevice());
+                return true;
             }
         };
         bugsnag.addOnSession(onSession);
