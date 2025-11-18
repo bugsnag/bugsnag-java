@@ -87,15 +87,15 @@ class SessionTracker {
         if (!enqueuedSessionCounts.isEmpty() && flushingRequest.tryAcquire(1)) {
             try {
                 Collection<SessionCount> requestValues = new ArrayList<SessionCount>(enqueuedSessionCounts);
-
                 Collection<SessionCount> approvedSessions = new ArrayList<SessionCount>();
+                SessionPayload firstPayload = null;
 
                 for (SessionCount sessionCount : requestValues) {
-                    SessionPayload singlePayload = new SessionPayload(Collections.singleton(sessionCount), config);
+                    SessionPayload payload = new SessionPayload(Collections.singleton(sessionCount), config);
 
                     boolean sendThisSession = true;
                     for (OnSession callback : sessionCallbacks) {
-                        if (!callback.onSession(singlePayload)) {
+                        if (!callback.onSession(payload)) {
                             sendThisSession = false;
                             break;
                         }
@@ -103,13 +103,19 @@ class SessionTracker {
 
                     if (sendThisSession) {
                         approvedSessions.add(sessionCount);
+                        if (firstPayload == null) {
+                            firstPayload = payload;
+                        }
                     }
                 }
 
                 if (!approvedSessions.isEmpty()) {
-                    SessionPayload payload = new SessionPayload(approvedSessions, config);
+                    // Reuse the device/app from the first approved payload to preserve runtime
+                    // versions
+                    SessionPayload batchPayload = new SessionPayload(approvedSessions, firstPayload.getDevice(),
+                            firstPayload.getApp());
                     Delivery delivery = config.sessionDelivery;
-                    delivery.deliver(config.serializer, payload, config.getSessionApiHeaders());
+                    delivery.deliver(config.serializer, batchPayload, config.getSessionApiHeaders());
                 }
 
                 enqueuedSessionCounts.removeAll(requestValues);
