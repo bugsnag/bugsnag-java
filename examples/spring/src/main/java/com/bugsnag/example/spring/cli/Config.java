@@ -32,7 +32,7 @@ public class Config {
         // the lifecyle of your application
         bugsnag.addCallback(new Callback() {
             @Override
-            public Boolean onError(Report report) {
+            public boolean onError(Report report) {
                 report.addToTab("diagnostics", "timestamp", new Date());
                 report.addToTab("customer", "name", "acme-inc");
                 report.addToTab("customer", "paying", true);

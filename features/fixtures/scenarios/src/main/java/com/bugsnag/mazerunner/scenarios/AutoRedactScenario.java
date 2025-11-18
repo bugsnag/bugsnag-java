@@ -17,7 +17,7 @@ public class AutoRedactScenario extends Scenario {
     public void run() {
         bugsnag.notify(generateException(), new Callback() {
             @Override
-            public Boolean onError(Report report) {
+            public boolean onError(Report report) {
                 report.addToTab("user", "password", "hunter2");
                 report.addToTab("custom", "password", "hunter2");
                 report.addToTab("custom", "foo", "hunter2");

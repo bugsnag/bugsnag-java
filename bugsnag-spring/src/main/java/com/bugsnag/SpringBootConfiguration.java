@@ -19,7 +19,7 @@ public class SpringBootConfiguration {
     Callback springBootVersionErrorCallback() {
         Callback callback = new Callback() {
             @Override
-            public Boolean onError(Report report) {
+            public boolean onError(Report report) {
                 addSpringRuntimeVersion(report.getDevice());
                 return true;
             }
@@ -32,7 +32,7 @@ public class SpringBootConfiguration {
     OnSession springBootVersionSessionCallback() {
         OnSession onSession = new OnSession() {
             @Override
-            public Boolean onSession(SessionPayload payload) {
+            public boolean onSession(SessionPayload payload) {
                 addSpringRuntimeVersion(payload.getDevice());
                 return true;
             }

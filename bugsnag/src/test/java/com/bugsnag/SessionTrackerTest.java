@@ -337,7 +337,7 @@ public class SessionTrackerTest {
         // Add callback which returns false to suppress sending
         sessionTracker.addOnSession(new OnSession() {
             @Override
-            public Boolean onSession(SessionPayload payload) {
+            public boolean onSession(SessionPayload payload) {
                 return false; // suppress delivery
             }
         });

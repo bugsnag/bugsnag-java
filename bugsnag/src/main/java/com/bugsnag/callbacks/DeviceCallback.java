@@ -84,7 +84,7 @@ public class DeviceCallback implements Callback {
     }
 
     @Override
-    public Boolean onError(Report report) {
+    public boolean onError(Report report) {
         report
                 .addToTab("device", "osArch", System.getProperty("os.arch"))
                 .addToTab("device", "locale", Locale.getDefault())

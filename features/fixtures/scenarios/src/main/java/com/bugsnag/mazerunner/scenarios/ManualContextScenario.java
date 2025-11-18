@@ -17,7 +17,7 @@ public class ManualContextScenario extends Scenario {
     public void run() {
         bugsnag.notify(generateException(), new Callback() {
             @Override
-            public Boolean onError(Report report) {
+            public boolean onError(Report report) {
                 report.setContext("FooContext");
                 return true;
             }

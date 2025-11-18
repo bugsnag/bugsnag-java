@@ -18,7 +18,7 @@ public class ThreadMetadataScenario extends Scenario {
         // Global callback metadata has lowest precedence
         bugsnag.addCallback(new Callback() {
             @Override
-            public Boolean onError(Report report) {
+            public boolean onError(Report report) {
                 report.addToTab("Custom", "test", "Global value");
                 report.addToTab("Custom", "foo", "Global value to be overwritten");
                 return true;
@@ -48,7 +48,7 @@ public class ThreadMetadataScenario extends Scenario {
         // Report-specific metadata should merge with global + thread metadata and overwrite when duplicate key
         bugsnag.notify(generateException(), new Callback() {
             @Override
-            public Boolean onError(Report report) {
+            public boolean onError(Report report) {
                 report.addToTab("Custom", "bar", "Hello World!");
                 return true;
             }

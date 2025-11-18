@@ -134,7 +134,7 @@ public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
                         calculateSeverity(event),
                         new Callback() {
                             @Override
-                            public Boolean onError(Report report) {
+                            public boolean onError(Report report) {
 
                                 // Add some data from the logging event
                                 report.addToTab("Log event data",
@@ -146,8 +146,8 @@ public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
                                 populateContextData(report, event);
 
                                 if (reportCallback != null) {
-                                    Boolean proceed = reportCallback.onError(report);
-                                    if (Boolean.FALSE.equals(proceed)) {
+                                    boolean proceed = reportCallback.onError(report);
+                                    if (!proceed) {
                                         return false; // suppress delivery
                                     }
                                 }
@@ -274,7 +274,7 @@ public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
         // Add a callback to put global metadata on every report
         bugsnag.addCallback(new Callback() {
             @Override
-            public Boolean onError(Report report) {
+            public boolean onError(Report report) {
 
                 for (LogbackMetadata metadata : globalMetadata) {
                     for (LogbackMetadataTab tab : metadata.getTabs()) {

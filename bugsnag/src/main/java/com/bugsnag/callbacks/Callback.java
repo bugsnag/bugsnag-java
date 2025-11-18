@@ -12,5 +12,5 @@ public interface Callback {
      * @param report the report to perform changes on.
      * @return true to send, false to suppress delivery
      */
-    Boolean onError(Report report);
+    boolean onError(Report report);
 }

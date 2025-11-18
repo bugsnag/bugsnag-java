@@ -11,7 +11,7 @@ public class AppCallback implements Callback {
     }
 
     @Override
-    public Boolean onError(Report report) {
+    public boolean onError(Report report) {
         if (config.appType != null) {
             report.setAppInfo("type", config.appType);
         }
