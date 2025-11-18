@@ -15,6 +15,9 @@ public class CallbackSuppressionTest {
     private Bugsnag bugsnag;
     private StubNotificationDelivery delivery;
 
+    /**
+     * Set up test fixtures.
+     */
     @Before
     public void setUp() {
         bugsnag = new Bugsnag("apikey");
