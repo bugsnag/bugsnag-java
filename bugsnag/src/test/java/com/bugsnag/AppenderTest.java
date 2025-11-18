@@ -5,7 +5,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import com.bugsnag.callbacks.Callback;
 import com.bugsnag.delivery.Delivery;
 import com.bugsnag.logback.ProxyConfiguration;
 
@@ -296,19 +295,16 @@ public class AppenderTest {
     public void testCallback() {
 
         // Setup a callback to set the user
-        appender.addCallback(new Callback() {
-            @Override
-            public Boolean onError(Report report) {
-                report.setUserName("User Name");
-                report.setUserEmail("user@example.com");
-                report.setUserId("12345");
+        appender.addCallback(report -> {
+            report.setUserName("User Name");
+            report.setUserEmail("user@example.com");
+            report.setUserId("12345");
 
-                report.setContext("the context");
+            report.setContext("the context");
 
-                report.setGroupingHash("the grouping hash");
-                report.setApiKey("newapikey");
-                return true;
-            }
+            report.setGroupingHash("the grouping hash");
+            report.setApiKey("newapikey");
+            return true;
         });
 
         // Send a log message

@@ -6,7 +6,6 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-import com.bugsnag.callbacks.Callback;
 import com.bugsnag.delivery.Delivery;
 import com.bugsnag.delivery.HttpDelivery;
 import com.bugsnag.delivery.OutputStreamDelivery;
@@ -186,15 +185,12 @@ public class BugsnagTest {
             public void close() {
             }
         });
-        assertTrue(bugsnag.notify(new Throwable(), new Callback() {
-            @Override
-            public Boolean onError(Report report) {
-                report.addToTab("firsttab", "testredact1", "secretpassword");
-                report.addToTab("firsttab", "testredact2", "secretpassword");
-                report.addToTab("firsttab", "testredact3", "secretpassword");
-                report.addToTab("secondtab", "testredact1", "secretpassword");
-                return true;
-            }
+        assertTrue(bugsnag.notify(new Throwable(), report -> {
+            report.addToTab("firsttab", "testredact1", "secretpassword");
+            report.addToTab("firsttab", "testredact2", "secretpassword");
+            report.addToTab("firsttab", "testredact3", "secretpassword");
+            report.addToTab("secondtab", "testredact1", "secretpassword");
+            return true;
         }));
     }
 
@@ -222,18 +218,15 @@ public class BugsnagTest {
             }
         });
 
-        assertTrue(bugsnag.notify(new Throwable(), new Callback() {
-            @Override
-            public Boolean onError(Report report) {
-                Map<String, String> headers = new HashMap<String, String>();
-                headers.put("Authorization", "User:Password");
-                headers.put("authorization", "User:Password");
-                headers.put("Cookie", "123456ABCDEF");
-                headers.put("cookie", "123456ABCDEF");
+        assertTrue(bugsnag.notify(new Throwable(), report -> {
+            Map<String, String> headers = new HashMap<String, String>();
+            headers.put("Authorization", "User:Password");
+            headers.put("authorization", "User:Password");
+            headers.put("Cookie", "123456ABCDEF");
+            headers.put("cookie", "123456ABCDEF");
 
-                report.addToTab("request", "headers", headers);
-                return true;
-            }
+            report.addToTab("request", "headers", headers);
+            return true;
         }));
     }
 
@@ -252,23 +245,17 @@ public class BugsnagTest {
             public void close() {
             }
         });
-        assertTrue(bugsnag.notify(new Throwable(), new Callback() {
-            @Override
-            public Boolean onError(Report report) {
-                report.setUser("123", "test@example.com", "test name");
-                return true;
-            }
+        assertTrue(bugsnag.notify(new Throwable(), report -> {
+            report.setUser("123", "test@example.com", "test name");
+            return true;
         }));
     }
 
     @Test
     public void testContext() {
-        bugsnag.addCallback(new Callback() {
-            @Override
-            public Boolean onError(Report report) {
-                report.setContext("the context");
-                return true;
-            }
+        bugsnag.addCallback(report -> {
+            report.setContext("the context");
+            return true;
         });
         bugsnag.setDelivery(new Delivery() {
             @Override
@@ -286,12 +273,9 @@ public class BugsnagTest {
 
     @Test
     public void testGroupingHash() {
-        bugsnag.addCallback(new Callback() {
-            @Override
-            public Boolean onError(Report report) {
-                report.setGroupingHash("the grouping hash");
-                return true;
-            }
+        bugsnag.addCallback(report -> {
+            report.setGroupingHash("the grouping hash");
+            return true;
         });
         bugsnag.setDelivery(new Delivery() {
             @Override
@@ -309,12 +293,9 @@ public class BugsnagTest {
 
     @Test
     public void testSingleCallback() {
-        bugsnag.addCallback(new Callback() {
-            @Override
-            public Boolean onError(Report report) {
-                report.setApiKey("newapikey");
-                return true;
-            }
+        bugsnag.addCallback(report -> {
+            report.setApiKey("newapikey");
+            return true;
         });
         bugsnag.setDelivery(new Delivery() {
             @Override
@@ -344,30 +325,21 @@ public class BugsnagTest {
             }
         });
 
-        assertTrue(bugsnag.notify(new Throwable(), new Callback() {
-            @Override
-            public Boolean onError(Report report) {
-                report.setApiKey("newapikey");
-                return true;
-            }
+        assertTrue(bugsnag.notify(new Throwable(), report -> {
+            report.setApiKey("newapikey");
+            return true;
         }));
     }
 
     @Test
     public void testCallbackOrder() {
-        bugsnag.addCallback(new Callback() {
-            @Override
-            public Boolean onError(Report report) {
-                report.setApiKey("newapikey");
-                return true;
-            }
+        bugsnag.addCallback(report -> {
+            report.setApiKey("newapikey");
+            return true;
         });
-        bugsnag.addCallback(new Callback() {
-            @Override
-            public Boolean onError(Report report) {
-                report.setApiKey("secondnewapikey");
-                return true;
-            }
+        bugsnag.addCallback(report -> {
+            report.setApiKey("secondnewapikey");
+            return true;
         });
         bugsnag.setDelivery(new Delivery() {
             @Override
@@ -386,12 +358,9 @@ public class BugsnagTest {
     @Test
     public void testCallbackCancel() {
         bugsnag.setDelivery(BugsnagTestUtils.generateDelivery());
-        bugsnag.addCallback(new Callback() {
-            @Override
-            public Boolean onError(Report report) {
-                report.cancel();
-                return true; // cancellation flag respected
-            }
+        bugsnag.addCallback(report -> {
+            report.cancel();
+            return true; // cancellation flag respected
         });
         // Test the report is not sent
         assertFalse(bugsnag.notify(new Throwable()));

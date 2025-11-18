@@ -4,8 +4,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import com.bugsnag.callbacks.Callback;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -32,12 +30,7 @@ public class CallbackSuppressionTest {
 
     @Test
     public void callbackReturningFalseSuppressesDelivery() {
-        bugsnag.addCallback(new Callback() {
-            @Override
-            public Boolean onError(Report report) {
-                return false; // explicit suppression
-            }
-        });
+        bugsnag.addCallback(report -> false); // explicit suppression
 
         boolean result = bugsnag.notify(new RuntimeException("Suppressed"));
         assertFalse("notify should return false when suppressed", result);
@@ -46,12 +39,7 @@ public class CallbackSuppressionTest {
 
     @Test
     public void callbackReturningTrueAllowsDelivery() {
-        bugsnag.addCallback(new Callback() {
-            @Override
-            public Boolean onError(Report report) {
-                return true; // allow
-            }
-        });
+        bugsnag.addCallback(report -> true); // allow
 
         boolean result = bugsnag.notify(new RuntimeException("Allowed"));
         assertTrue(result);

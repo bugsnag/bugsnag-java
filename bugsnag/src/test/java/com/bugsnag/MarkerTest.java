@@ -26,12 +26,7 @@ public class MarkerTest {
      */
     @Before
     public void createMarker() {
-        callback = new Callback() {
-            @Override
-            public Boolean onError(Report report) {
-                return true;
-            }
-        };
+        callback = report -> true;
 
         marker = new BugsnagMarker(callback);
     }

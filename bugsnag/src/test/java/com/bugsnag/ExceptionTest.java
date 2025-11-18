@@ -5,7 +5,6 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import com.bugsnag.callbacks.Callback;
 import com.bugsnag.delivery.Delivery;
 import com.bugsnag.serialization.Serializer;
 
@@ -60,29 +59,26 @@ public class ExceptionTest {
             public void close() {
             }
         });
-        assertTrue(bugsnag.notify(ogThrowable, new Callback() {
-            @Override
-            public Boolean onError(Report report) {
-                try {
-                    assertEquals(ogThrowable, report.getException());
-                    assertEquals("Test", report.getExceptionMessage());
-                    assertEquals("java.lang.RuntimeException", report.getExceptionName());
+        assertTrue(bugsnag.notify(ogThrowable, report -> {
+            try {
+                assertEquals(ogThrowable, report.getException());
+                assertEquals("Test", report.getExceptionMessage());
+                assertEquals("java.lang.RuntimeException", report.getExceptionName());
 
-                    report.setExceptionName("Foo");
-                    assertEquals("Foo", report.getExceptionName());
+                report.setExceptionName("Foo");
+                assertEquals("Foo", report.getExceptionName());
 
-                    List<Exception> exceptions = report.getExceptions();
-                    assertEquals(1, exceptions.size());
+                List<Exception> exceptions = report.getExceptions();
+                assertEquals(1, exceptions.size());
 
-                    Exception exception = exceptions.get(0);
-                    assertNotNull(exception);
-                    assertEquals("Foo", exception.getErrorClass());
-                    assertEquals("Test", exception.getMessage());
-                } catch (Throwable throwable) {
-                    report.cancel();
-                }
-                return !report.getShouldCancel();
+                Exception exception = exceptions.get(0);
+                assertNotNull(exception);
+                assertEquals("Foo", exception.getErrorClass());
+                assertEquals("Test", exception.getMessage());
+            } catch (Throwable throwable) {
+                report.cancel();
             }
+            return !report.getShouldCancel();
         }));
 
         bugsnag.close();
