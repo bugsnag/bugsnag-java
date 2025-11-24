@@ -18,7 +18,7 @@ public class SessionPayloadTest {
 
     /**
      * Initialises the session payload for serialisation
-     * 
+     *
      * @throws Throwable the throwable
      */
     @Before

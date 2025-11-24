@@ -119,7 +119,7 @@ public class ConfigurationTest {
     @Test
     public void testCustomSerializer() throws SerializationException {
         // flag to check if writeToStream was called
-        final boolean[] methodCalled = { false };
+        final boolean[] methodCalled = {false};
 
         // Anonymous class extending DefaultSerializer
         Serializer customSerializer = new DefaultSerializer() {

@@ -356,9 +356,9 @@ public class AppenderTest {
     @Test
     public void testSplit() {
         assertTrue(appender.split(null).isEmpty());
-        assertArrayEquals(new String[] { "" }, appender.split("").toArray());
+        assertArrayEquals(new String[] {""}, appender.split("").toArray());
 
-        String[] expected = { "one", "two", "three" };
+        String[] expected = {"one", "two", "three"};
         assertArrayEquals(expected, appender.split("one,two,three").toArray());
     }
 
