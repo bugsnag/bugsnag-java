@@ -37,7 +37,7 @@ public class Configuration {
     private Delivery delivery;
     private EndpointConfiguration endpoints;
     private Delivery sessionDelivery;
-    private String[] redactedKeys = new String[] { "password", "secret", "Authorization", "Cookie" };
+    private String[] redactedKeys = new String[] {"password", "secret", "Authorization", "Cookie"};
     private String[] discardClasses;
     private Set<String> enabledReleaseStages = null;
     private String[] projectPackages;
