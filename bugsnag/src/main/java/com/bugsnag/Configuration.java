@@ -35,7 +35,7 @@ public class Configuration {
     public String appType;
     public String appVersion;
     public Delivery delivery;
-    public EndpointConfiguration endpointConfiguration;
+    public EndpointConfiguration endpoints;
     public Delivery sessionDelivery;
     public String[] redactedKeys = new String[] {"password", "secret", "Authorization", "Cookie"};
     public String[] discardClasses;
@@ -56,10 +56,10 @@ public class Configuration {
         addCallback(new DeviceCallback());
         DeviceCallback.initializeCache();
 
-        endpointConfiguration = EndpointConfiguration.fromApiKey(apiKey);
+        endpoints = EndpointConfiguration.fromApiKey(apiKey);
 
-        this.delivery = new AsyncHttpDelivery(endpointConfiguration.getNotifyEndpoint());
-        this.sessionDelivery = new AsyncHttpDelivery(endpointConfiguration.getSessionEndpoint());
+        this.delivery = new AsyncHttpDelivery(endpoints.getNotifyEndpoint());
+        this.sessionDelivery = new AsyncHttpDelivery(endpoints.getSessionEndpoint());
 
         if (JakartaServletCallback.isAvailable()) {
             addCallback(new JakartaServletCallback());
