@@ -14,7 +14,6 @@ import org.junit.Test;
 import java.io.IOException;
 import java.util.Date;
 
-
 public class NotificationTest {
 
     private Report report;
@@ -29,8 +28,8 @@ public class NotificationTest {
     @Before
     public void setUp() {
         config = new Configuration("api-key");
-        config.appVersion = "1.2.3";
-        config.releaseStage = "dev";
+        config.setAppVersion("1.2.3");
+        config.setReleaseStage("dev");
         report = new Report(config, new RuntimeException());
 
         // Only include properties with non-null values
@@ -38,8 +37,8 @@ public class NotificationTest {
     }
 
     private JsonNode generateJson(ObjectMapper mapper,
-                                  Configuration config,
-                                  Report report) throws IOException {
+            Configuration config,
+            Report report) throws IOException {
         Notification notification = new Notification(config, report);
         String json = mapper.writeValueAsString(notification);
         return mapper.readTree(json);

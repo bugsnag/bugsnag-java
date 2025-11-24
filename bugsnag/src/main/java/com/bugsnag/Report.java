@@ -38,14 +38,14 @@ public class Report {
     }
 
     Report(Configuration config, Throwable throwable,
-           HandledState handledState, Thread currentThread) {
+            HandledState handledState, Thread currentThread) {
         this.config = config;
         this.exception = new Exception(config, throwable);
         this.handledState = handledState;
         this.severity = handledState.getOriginalSeverity();
         diagnostics = new Diagnostics(this.config);
 
-        if (config.sendThreads) {
+        if (config.isSendThreads()) {
             Throwable exc = handledState.isUnhandled() ? throwable : null;
             Map<Thread, StackTraceElement[]> allStackTraces = Thread.getAllStackTraces();
             threadStates = ThreadState.getLiveThreads(config, currentThread, allStackTraces, exc);
@@ -127,7 +127,7 @@ public class Report {
     @Expose
     @JsonProperty("metaData")
     public Map<String, Object> getMetadata() {
-        return new RedactedMap(diagnostics.metadata, Set.of(config.redactedKeys));
+        return new RedactedMap(diagnostics.metadata, Set.of(config.getRedactedKeys()));
     }
 
     @Expose
@@ -151,7 +151,8 @@ public class Report {
     }
 
     /**
-     * @return The {@linkplain Throwable exception} which triggered this error report.
+     * @return The {@linkplain Throwable exception} which triggered this error
+     *         report.
      */
     public Throwable getException() {
         return exception.getThrowable();
@@ -189,7 +190,7 @@ public class Report {
      * @return the modified report
      */
     public Report addToTab(String tabName, String key, Object value) {
-        diagnostics.metadata.addToTab(tabName, key, value);
+        diagnostics.metadata.addMetadata(tabName, key, value);
         return this;
     }
 
@@ -200,7 +201,7 @@ public class Report {
      * @return The message from the exception contained in this error report.
      */
     public Report clearTab(String tabName) {
-        diagnostics.metadata.clearTab(tabName);
+        diagnostics.metadata.clearMetadata(tabName);
         return this;
     }
 
@@ -264,7 +265,8 @@ public class Report {
     }
 
     /**
-     * Set the grouping hash on the report. Events will the same grouping hash will be grouped into
+     * Set the grouping hash on the report. Events will the same grouping hash will
+     * be grouped into
      * the same error in Bugsnag. For use if custom grouping is required.
      *
      * @param groupingHash the grouping hash for the error report

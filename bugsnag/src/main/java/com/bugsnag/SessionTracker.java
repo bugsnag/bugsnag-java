@@ -114,8 +114,8 @@ class SessionTracker {
                     // versions
                     SessionPayload batchPayload = new SessionPayload(approvedSessions, firstPayload.getDevice(),
                             firstPayload.getApp());
-                    Delivery delivery = config.sessionDelivery;
-                    delivery.deliver(config.serializer, batchPayload, config.getSessionApiHeaders());
+                    Delivery delivery = config.getSessionDelivery();
+                    delivery.deliver(config.getSerializer(), batchPayload, config.getSessionApiHeaders());
                 }
 
                 enqueuedSessionCounts.removeAll(requestValues);
