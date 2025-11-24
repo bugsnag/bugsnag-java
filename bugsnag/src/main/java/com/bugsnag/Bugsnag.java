@@ -151,7 +151,7 @@ public class Bugsnag implements Closeable {
      * @see Delivery
      */
     public Delivery getDelivery() {
-        return config.delivery;
+        return config.getDelivery();
     }
 
     /**
@@ -161,9 +161,8 @@ public class Bugsnag implements Closeable {
      * @see Delivery
      */
     public Delivery getSessionDelivery() {
-        return config.sessionDelivery;
+        return config.getSessionDelivery();
     }
-
 
     /**
      * Set the application type sent to Bugsnag.
@@ -171,7 +170,7 @@ public class Bugsnag implements Closeable {
      * @param appType the app type to send, eg. spring, gradleTask
      */
     public void setAppType(String appType) {
-        config.appType = appType;
+        config.setAppType(appType);
     }
 
     /**
@@ -180,7 +179,7 @@ public class Bugsnag implements Closeable {
      * @param appVersion the app version to send
      */
     public void setAppVersion(String appVersion) {
-        config.appVersion = appVersion;
+        config.setAppVersion(appVersion);
     }
 
     /**
@@ -194,9 +193,8 @@ public class Bugsnag implements Closeable {
      * @see Delivery
      */
     public void setDelivery(Delivery delivery) {
-        config.delivery = delivery;
+        config.setDelivery(delivery);
     }
-
 
     /**
      * Set the method of delivery for Bugsnag sessions. By default we'll
@@ -209,7 +207,7 @@ public class Bugsnag implements Closeable {
      * @see Delivery
      */
     public void setSessionDelivery(Delivery delivery) {
-        config.sessionDelivery = delivery;
+        config.setSessionDelivery(delivery);
     }
 
     /**
@@ -222,8 +220,8 @@ public class Bugsnag implements Closeable {
      */
     @Deprecated
     public void setEndpoint(String endpoint) {
-        if (config.delivery instanceof HttpDelivery) {
-            ((HttpDelivery) config.delivery).setEndpoint(endpoint);
+        if (config.getDelivery() instanceof HttpDelivery) {
+            ((HttpDelivery) config.getDelivery()).setEndpoint(endpoint);
         }
     }
 
@@ -237,7 +235,7 @@ public class Bugsnag implements Closeable {
      * @param redactedKeys a list of String keys to redact from metadata
      */
     public void setRedactedKeys(String... redactedKeys) {
-        config.redactedKeys = redactedKeys;
+        config.setRedactedKeys(redactedKeys);
     }
 
     /**
@@ -246,7 +244,7 @@ public class Bugsnag implements Closeable {
      * @param discardClasses a list of exception classes to ignore
      */
     public void setDiscardClasses(String... discardClasses) {
-        config.discardClasses = discardClasses;
+        config.setDiscardClasses(discardClasses);
     }
 
     /**
@@ -258,9 +256,9 @@ public class Bugsnag implements Closeable {
      */
     public void setEnabledReleaseStages(String... enabledReleaseStages) {
         if (enabledReleaseStages == null || enabledReleaseStages.length == 0) {
-            config.enabledReleaseStages = Collections.emptySet();
+            config.setEnabledReleaseStages(Collections.emptySet());
         } else {
-            config.enabledReleaseStages = Set.of(enabledReleaseStages);
+            config.setEnabledReleaseStages(Set.of(enabledReleaseStages));
         }
     }
 
@@ -271,21 +269,22 @@ public class Bugsnag implements Closeable {
      * @param projectPackages a list of package names
      */
     public void setProjectPackages(String... projectPackages) {
-        config.projectPackages = projectPackages;
+        config.setProjectPackages(projectPackages);
     }
 
     /**
-     * Set a proxy to use when delivering Bugsnag error reports and sessions. This is a convenient
+     * Set a proxy to use when delivering Bugsnag error reports and sessions. This
+     * is a convenient
      * shorthand for bugsnag.getDelivery().setProxy();
      *
      * @param proxy the proxy to use to send reports
      */
     public void setProxy(Proxy proxy) {
-        if (config.delivery instanceof HttpDelivery) {
-            ((HttpDelivery) config.delivery).setProxy(proxy);
+        if (config.getDelivery() instanceof HttpDelivery) {
+            ((HttpDelivery) config.getDelivery()).setProxy(proxy);
         }
-        if (config.sessionDelivery instanceof HttpDelivery) {
-            ((HttpDelivery) config.sessionDelivery).setProxy(proxy);
+        if (config.getSessionDelivery() instanceof HttpDelivery) {
+            ((HttpDelivery) config.getSessionDelivery()).setProxy(proxy);
         }
     }
 
@@ -296,7 +295,7 @@ public class Bugsnag implements Closeable {
      * @see #setEnabledReleaseStages
      */
     public void setReleaseStage(String releaseStage) {
-        config.releaseStage = releaseStage;
+        config.setReleaseStage(releaseStage);
     }
 
     /**
@@ -309,7 +308,7 @@ public class Bugsnag implements Closeable {
      * @see #setEnabledReleaseStages
      */
     public void setSendThreads(boolean sendThreads) {
-        config.sendThreads = sendThreads;
+        config.setSendThreads(sendThreads);
     }
 
     /**
@@ -321,14 +320,13 @@ public class Bugsnag implements Closeable {
      * @see #setDelivery
      */
     public void setTimeout(int timeout) {
-        if (config.delivery instanceof HttpDelivery) {
-            ((HttpDelivery) config.delivery).setTimeout(timeout);
+        if (config.getDelivery() instanceof HttpDelivery) {
+            ((HttpDelivery) config.getDelivery()).setTimeout(timeout);
         }
-        if (config.sessionDelivery instanceof HttpDelivery) {
-            ((HttpDelivery) config.sessionDelivery).setTimeout(timeout);
+        if (config.getSessionDelivery() instanceof HttpDelivery) {
+            ((HttpDelivery) config.getSessionDelivery()).setTimeout(timeout);
         }
     }
-
 
     //
     // Notification
@@ -416,7 +414,6 @@ public class Bugsnag implements Closeable {
         return notify(report, null);
     }
 
-
     boolean notify(Throwable throwable, HandledState handledState, Thread currentThread) {
         Report report = new Report(config, throwable, handledState, currentThread);
         return notify(report, null);
@@ -448,7 +445,7 @@ public class Bugsnag implements Closeable {
         // Don't notify unless releaseStage is in enabledReleaseStages
         if (!config.shouldNotifyForReleaseStage()) {
             LOGGER.debug("Error not reported to Bugsnag - {} is not in 'enabledReleaseStages'",
-                    config.releaseStage);
+                    config.getReleaseStage());
             return false;
         }
 
@@ -481,7 +478,7 @@ public class Bugsnag implements Closeable {
             }
         }
 
-        if (config.delivery == null) {
+        if (config.getDelivery() == null) {
             LOGGER.debug("Error not reported to Bugsnag - no delivery is set");
             return false;
         }
@@ -504,7 +501,7 @@ public class Bugsnag implements Closeable {
         // Deliver the notification
         LOGGER.debug("Reporting error to Bugsnag");
 
-        config.delivery.deliver(config.serializer, notification, config.getErrorApiHeaders());
+        config.getDelivery().deliver(config.getSerializer(), notification, config.getErrorApiHeaders());
 
         return true;
     }
@@ -556,8 +553,8 @@ public class Bugsnag implements Closeable {
      */
     @Deprecated
     public void setSessionEndpoint(String endpoint) {
-        if (config.sessionDelivery instanceof HttpDelivery) {
-            ((HttpDelivery) config.sessionDelivery).setEndpoint(endpoint);
+        if (config.getSessionDelivery() instanceof HttpDelivery) {
+            ((HttpDelivery) config.getSessionDelivery()).setEndpoint(endpoint);
         }
     }
 
@@ -595,14 +592,15 @@ public class Bugsnag implements Closeable {
         LOGGER.debug("Closing connection to Bugsnag");
         ExceptionHandler.disable(this);
 
-        // runs periodic checks, should shut down immediately as don't need to send any sessions
+        // runs periodic checks, should shut down immediately as don't need to send any
+        // sessions
         sessionExecutorService.shutdownNow();
 
         // flush remaining sessions
         sessionTracker.shutdown();
 
-        if (config.delivery != null) {
-            config.delivery.close();
+        if (config.getDelivery() != null) {
+            config.getDelivery().close();
         }
     }
 
@@ -616,7 +614,7 @@ public class Bugsnag implements Closeable {
      * @param value   the metadata value to add
      */
     public static void addThreadMetadata(String tabName, String key, Object value) {
-        THREAD_METADATA.get().addToTab(tabName, key, value);
+        THREAD_METADATA.get().addMetadata(tabName, key, value);
     }
 
     /**
@@ -632,7 +630,7 @@ public class Bugsnag implements Closeable {
      * @param tabName the name of the tab to remove
      */
     public static void clearThreadMetadata(String tabName) {
-        THREAD_METADATA.get().clearTab(tabName);
+        THREAD_METADATA.get().clearMetadata(tabName);
     }
 
     /**
@@ -642,7 +640,7 @@ public class Bugsnag implements Closeable {
      * @param key     the key of the metadata to remove
      */
     public static void clearThreadMetadata(String tabName, String key) {
-        THREAD_METADATA.get().clearKey(tabName, key);
+        THREAD_METADATA.get().clearMetadata(tabName, key);
     }
 
     Configuration getConfig() {

@@ -21,10 +21,10 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-
 /**
  * Test for the Bugsnag Appender
- * NOTE: Not called BugsnagAppenderTest because that throws away errors to prevent cycles
+ * NOTE: Not called BugsnagAppenderTest because that throws away errors to
+ * prevent cycles
  */
 public class AppenderTest {
 
@@ -44,9 +44,8 @@ public class AppenderTest {
     @Before
     public void swapDelivery() {
 
-        ch.qos.logback.classic.Logger rootLogger =
-                (ch.qos.logback.classic.Logger) LoggerFactory
-                        .getLogger(org.slf4j.Logger.ROOT_LOGGER_NAME);
+        ch.qos.logback.classic.Logger rootLogger = (ch.qos.logback.classic.Logger) LoggerFactory
+                .getLogger(org.slf4j.Logger.ROOT_LOGGER_NAME);
         appender = (BugsnagAppender) rootLogger.getAppender("BUGSNAG");
 
         Bugsnag bugsnag = appender.getClient();
@@ -138,31 +137,31 @@ public class AppenderTest {
 
         // Get the Bugsnag instance
         Configuration config = getConfig(appender.getClient());
-        assertEquals("test", config.releaseStage);
-        assertEquals("1.0.1", config.appVersion);
-        assertEquals("gradleTask", config.appType);
+        assertEquals("test", config.getReleaseStage());
+        assertEquals("1.0.1", config.getAppVersion());
+        assertEquals("gradleTask", config.getAppType());
         assertFalse(config.shouldAutoCaptureSessions());
 
-        assertEquals(2, config.redactedKeys.length);
-        ArrayList<String> redactedKeys = new ArrayList<String>(Arrays.asList(config.redactedKeys));
+        assertEquals(2, config.getRedactedKeys().length);
+        ArrayList<String> redactedKeys = new ArrayList<String>(Arrays.asList(config.getRedactedKeys()));
         assertTrue(redactedKeys.contains("password"));
         assertTrue(redactedKeys.contains("credit_card_number"));
 
-        assertEquals(2, config.discardClasses.length);
-        ArrayList<String> discardClasses = new ArrayList<String>(Arrays.asList(config.discardClasses));
+        assertEquals(2, config.getDiscardClasses().length);
+        ArrayList<String> discardClasses = new ArrayList<String>(Arrays.asList(config.getDiscardClasses()));
         assertTrue(discardClasses.contains("com.example.Custom"));
         assertTrue(discardClasses.contains("java.io.IOException"));
 
-        assertEquals(2, config.enabledReleaseStages.size());
-        assertTrue(config.enabledReleaseStages.contains("development"));
-        assertTrue(config.enabledReleaseStages.contains("test"));
+        assertEquals(2, config.getEnabledReleaseStages().size());
+        assertTrue(config.getEnabledReleaseStages().contains("development"));
+        assertTrue(config.getEnabledReleaseStages().contains("test"));
 
-        assertEquals(2, config.projectPackages.length);
-        ArrayList<String> projectPackages = new ArrayList<String>(Arrays.asList(config.projectPackages));
+        assertEquals(2, config.getProjectPackages().length);
+        ArrayList<String> projectPackages = new ArrayList<String>(Arrays.asList(config.getProjectPackages()));
         assertTrue(projectPackages.contains("com.company.package2"));
         assertTrue(projectPackages.contains("com.company.package1"));
 
-        assertTrue(config.sendThreads);
+        assertTrue(config.isSendThreads());
     }
 
     @Test
@@ -357,9 +356,9 @@ public class AppenderTest {
     @Test
     public void testSplit() {
         assertTrue(appender.split(null).isEmpty());
-        assertArrayEquals(new String[]{""}, appender.split("").toArray());
+        assertArrayEquals(new String[] { "" }, appender.split("").toArray());
 
-        String[] expected = {"one", "two", "three"};
+        String[] expected = { "one", "two", "three" };
         assertArrayEquals(expected, appender.split("one,two,three").toArray());
     }
 
@@ -367,13 +366,14 @@ public class AppenderTest {
     public void testCreateFromExistingClient() {
         Bugsnag client = new Bugsnag("testApiKey");
         BugsnagAppender appender = new BugsnagAppender(client);
-        // Make sure configuration changes are not passed through to the provided client.
+        // Make sure configuration changes are not passed through to the provided
+        // client.
         appender.setApiKey("newApiKey");
         // Make sure a new client is not created when starting the appender.
         appender.start();
 
         assertEquals(client, appender.getClient());
-        assertEquals("testApiKey", appender.getClient().getConfig().apiKey);
+        assertEquals("testApiKey", appender.getClient().getConfig().getApiKey());
     }
 
     private StackTraceElement changeClassName(StackTraceElement element, String className) {
@@ -407,10 +407,10 @@ public class AppenderTest {
      * Gets a hashmap key from the metadata in a notification
      *
      * @param notification The notification
-     * @param key The key to get
+     * @param key          The key to get
      * @return The hash map
      */
-    @SuppressWarnings (value = "unchecked")
+    @SuppressWarnings(value = "unchecked")
     private Map<String, Object> getMetadataMap(Notification notification, String key) {
         return ((Map<String, Object>) notification.getEvents().get(0).getMetadata().get(key));
     }
