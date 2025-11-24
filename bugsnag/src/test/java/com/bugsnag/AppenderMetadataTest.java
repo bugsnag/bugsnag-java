@@ -6,7 +6,6 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
-import com.bugsnag.callbacks.Callback;
 import com.bugsnag.delivery.Delivery;
 import com.bugsnag.logback.BugsnagMarker;
 
@@ -109,13 +108,10 @@ public class AppenderMetadataTest {
         Bugsnag.addThreadMetadata("thread", "some key", "some thread value");
 
         // Send three test logs, the first one with report metadata added
-        LOGGER.warn(new BugsnagMarker(new Callback() {
-            @Override
-            public void beforeNotify(Report report) {
-                report.addToTab("report", "some key", "some report value");
-            }
+        LOGGER.warn(new BugsnagMarker(report -> {
+            report.addToTab("report", "some key", "some report value");
+            return true;
         }), "Test exception", new RuntimeException("test"));
-
 
         LOGGER.warn("Test exception", new RuntimeException("test"));
         Bugsnag.clearThreadMetadata();

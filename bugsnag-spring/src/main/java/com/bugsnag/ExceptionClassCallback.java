@@ -111,7 +111,7 @@ class ExceptionClassCallback implements Callback {
     }
 
     @Override
-    public void beforeNotify(Report report) {
+    public boolean onError(Report report) {
 
         HandledState handledState = report.getHandledState();
 
@@ -119,7 +119,7 @@ class ExceptionClassCallback implements Callback {
         SeverityReasonType severityReasonType = handledState.calculateSeverityReasonType();
         if (severityReasonType == SeverityReasonType.REASON_USER_SPECIFIED
                 || severityReasonType == SeverityReasonType.REASON_CALLBACK_SPECIFIED) {
-            return;
+            return true; // do not change delivery decision
         }
 
         Class exceptionClass = report.getException().getClass();
@@ -133,5 +133,6 @@ class ExceptionClassCallback implements Callback {
                     severity,
                     handledState.isUnhandled()));
         }
+        return true;
     }
 }

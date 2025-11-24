@@ -27,9 +27,10 @@ public class ScheduledTaskExecutorScenario extends Scenario {
         final Collection<String> threadnames = ScheduledTaskExecutorService.getThreadNames();
         bugsnag.notify(new RuntimeException("Whoops"), new Callback() {
             @Override
-            public void beforeNotify(Report report) {
+            public boolean onError(Report report) {
                 report.addToTab("executor", "multiThreaded", threadnames.size() > 1);
                 report.addToTab("executor", "names", threadnames);
+                return true;
             }
         });
     }

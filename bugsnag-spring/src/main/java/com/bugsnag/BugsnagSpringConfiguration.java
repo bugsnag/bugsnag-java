@@ -28,8 +28,9 @@ public class BugsnagSpringConfiguration implements InitializingBean {
     Callback springVersionErrorCallback() {
         Callback callback = new Callback() {
             @Override
-            public void beforeNotify(Report report) {
+            public boolean onError(Report report) {
                 addSpringRuntimeVersion(report.getDevice());
+                return true;
             }
         };
         bugsnag.addCallback(callback);
@@ -37,15 +38,16 @@ public class BugsnagSpringConfiguration implements InitializingBean {
     }
 
     @Bean
-    BeforeSendSession springVersionSessionCallback() {
-        BeforeSendSession beforeSendSession = new BeforeSendSession() {
+    OnSession springVersionSessionCallback() {
+        OnSession onSession = new OnSession() {
             @Override
-            public void beforeSendSession(SessionPayload payload) {
+            public boolean onSession(SessionPayload payload) {
                 addSpringRuntimeVersion(payload.getDevice());
+                return true;
             }
         };
-        bugsnag.addBeforeSendSession(beforeSendSession);
-        return beforeSendSession;
+        bugsnag.addOnSession(onSession);
+        return onSession;
     }
 
     private void addSpringRuntimeVersion(Map<String, Object> device) {

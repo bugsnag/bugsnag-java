@@ -15,7 +15,8 @@ import java.util.Date;
 @Import(BugsnagSpringConfiguration.class)
 public class Config {
 
-    // Define singleton bean "bugsnag" which can be injected into any Spring managed class with @Autowired.
+    // Define singleton bean "bugsnag" which can be injected into any Spring managed
+    // class with @Autowired.
     @Bean
     public Bugsnag bugsnag() {
         // Create a Bugsnag client
@@ -31,7 +32,7 @@ public class Config {
         // the lifecyle of your application
         bugsnag.addCallback(new Callback() {
             @Override
-            public void beforeNotify(Report report) {
+            public boolean onError(Report report) {
                 report.addToTab("diagnostics", "timestamp", new Date());
                 report.addToTab("customer", "name", "acme-inc");
                 report.addToTab("customer", "paying", true);
@@ -39,6 +40,7 @@ public class Config {
                 report.setUserName("User Name");
                 report.setUserEmail("user@example.com");
                 report.setUserId("12345");
+                return true;
             }
         });
 

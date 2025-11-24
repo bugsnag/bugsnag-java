@@ -452,16 +452,12 @@ public class Bugsnag implements Closeable {
             return false;
         }
 
-        // Run all client-wide beforeNotify callbacks
+        // Run all client-wide onError callbacks
         for (Callback callback : config.callbacks) {
             try {
-                // Run the callback
-                callback.beforeNotify(report);
-
-                // Check if callback cancelled delivery
-                if (report.getShouldCancel()) {
-                    LOGGER.debug("Error not reported to Bugsnag - "
-                            + "cancelled by a client-wide beforeNotify callback");
+                boolean proceed = callback.onError(report);
+                if (!proceed || report.getShouldCancel()) {
+                    LOGGER.debug("Error not reported to Bugsnag - cancelled by a client-wide onError callback");
                     return false;
                 }
             } catch (Throwable ex) {
@@ -472,16 +468,12 @@ public class Bugsnag implements Closeable {
         // Add thread metadata to the report
         report.mergeMetadata(THREAD_METADATA.get());
 
-        // Run the report-specific beforeNotify callback, if given
+        // Run the report-specific onError callback, if given
         if (reportCallback != null) {
             try {
-                // Run the callback
-                reportCallback.beforeNotify(report);
-
-                // Check if callback cancelled delivery
-                if (report.getShouldCancel()) {
-                    LOGGER.debug(
-                            "Error not reported to Bugsnag - cancelled by a report-specific callback");
+                boolean proceed = reportCallback.onError(report);
+                if (!proceed || report.getShouldCancel()) {
+                    LOGGER.debug("Error not reported to Bugsnag - cancelled by a report-specific callback");
                     return false;
                 }
             } catch (Throwable ex) {
@@ -676,7 +668,7 @@ public class Bugsnag implements Closeable {
         return Collections.emptySet();
     }
 
-    void addBeforeSendSession(BeforeSendSession beforeSendSession) {
-        sessionTracker.addBeforeSendSession(beforeSendSession);
+    void addOnSession(OnSession onSession) {
+        sessionTracker.addOnSession(onSession);
     }
 }

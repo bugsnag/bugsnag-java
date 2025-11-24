@@ -1,7 +1,5 @@
 package com.bugsnag;
 
-import com.bugsnag.callbacks.Callback;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -28,16 +26,11 @@ public class ConcurrentCallbackTest {
     public void testClientNotifyModification() {
         final Configuration config = bugsnag.getConfig();
 
-        config.addCallback(new Callback() {
-            @Override
-            public void beforeNotify(Report report) {
-                // modify the callback collection, when iterating to the next callback this should not crash
-                config.addCallback(new Callback() {
-                    @Override
-                    public void beforeNotify(Report report) {
-                    }
-                });
-            }
+        config.addCallback(report -> {
+            // modify the callback collection, when iterating to the next callback this
+            // should not crash
+            config.addCallback(r -> true);
+            return true;
         });
         bugsnag.notify(new RuntimeException());
     }

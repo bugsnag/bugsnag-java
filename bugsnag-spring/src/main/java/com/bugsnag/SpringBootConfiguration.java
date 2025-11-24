@@ -19,8 +19,9 @@ public class SpringBootConfiguration {
     Callback springBootVersionErrorCallback() {
         Callback callback = new Callback() {
             @Override
-            public void beforeNotify(Report report) {
+            public boolean onError(Report report) {
                 addSpringRuntimeVersion(report.getDevice());
+                return true;
             }
         };
         bugsnag.addCallback(callback);
@@ -28,15 +29,16 @@ public class SpringBootConfiguration {
     }
 
     @Bean
-    BeforeSendSession springBootVersionSessionCallback() {
-        BeforeSendSession beforeSendSession = new BeforeSendSession() {
+    OnSession springBootVersionSessionCallback() {
+        OnSession onSession = new OnSession() {
             @Override
-            public void beforeSendSession(SessionPayload payload) {
+            public boolean onSession(SessionPayload payload) {
                 addSpringRuntimeVersion(payload.getDevice());
+                return true;
             }
         };
-        bugsnag.addBeforeSendSession(beforeSendSession);
-        return beforeSendSession;
+        bugsnag.addOnSession(onSession);
+        return onSession;
     }
 
     private void addSpringRuntimeVersion(Map<String, Object> device) {

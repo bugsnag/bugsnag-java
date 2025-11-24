@@ -22,12 +22,13 @@ public class LogbackMetadataScenario extends Scenario {
     @Override
     public void run() {
         LOGGER.warn(new BugsnagMarker(new Callback() {
-                    @Override
-                    public void beforeNotify(Report report) {
-                        report.addToTab("user", "foo", "hunter2");
-                        report.addToTab("custom", "foo", "hunter2");
-                        report.addToTab("custom", "bar", "hunter2");
-                    }
-                }),"Error sent to Bugsnag using the logback appender", generateException());
+            @Override
+            public boolean onError(Report report) {
+                report.addToTab("user", "foo", "hunter2");
+                report.addToTab("custom", "foo", "hunter2");
+                report.addToTab("custom", "bar", "hunter2");
+                return true;
+            }
+        }), "Error sent to Bugsnag using the logback appender", generateException());
     }
 }

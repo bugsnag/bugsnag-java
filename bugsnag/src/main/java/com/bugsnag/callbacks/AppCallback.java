@@ -11,7 +11,7 @@ public class AppCallback implements Callback {
     }
 
     @Override
-    public void beforeNotify(Report report) {
+    public boolean onError(Report report) {
         if (config.appType != null) {
             report.setAppInfo("type", config.appType);
         }
@@ -23,5 +23,6 @@ public class AppCallback implements Callback {
         if (config.releaseStage != null) {
             report.setAppInfo("releaseStage", config.releaseStage);
         }
+        return true;
     }
 }

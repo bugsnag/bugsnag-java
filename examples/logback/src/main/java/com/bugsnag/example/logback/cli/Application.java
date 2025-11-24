@@ -16,7 +16,8 @@ public class Application {
 
     public static void main(String[] args) throws Exception {
 
-        ch.qos.logback.classic.Logger rootLogger = (ch.qos.logback.classic.Logger)LoggerFactory.getLogger(org.slf4j.Logger.ROOT_LOGGER_NAME);
+        ch.qos.logback.classic.Logger rootLogger = (ch.qos.logback.classic.Logger) LoggerFactory
+                .getLogger(org.slf4j.Logger.ROOT_LOGGER_NAME);
         Appender appender = rootLogger.getAppender("BUGSNAG");
         if (appender instanceof BugsnagAppender) {
             // Set some global meta data (added to each report)
@@ -28,6 +29,7 @@ public class Application {
                 report.setUserName("User Name");
                 report.setUserEmail("user@example.com");
                 report.setUserId("12345");
+                return true;
             });
         }
 
@@ -58,6 +60,7 @@ public class Application {
             LOGGER.warn(new BugsnagMarker((report) -> {
                 report.addToTab("report tab", "data key 1", "data value 1");
                 report.addToTab("report tab", "data key 2", "data value 2");
+                return true;
             }), "Something bad happened", e);
         }
 
@@ -76,7 +79,8 @@ public class Application {
         // Wait for unhandled exception thread to finish before exiting
         thread.join();
 
-        // Remove the thread metadata so it won't be added to future reports on this thread
+        // Remove the thread metadata so it won't be added to future reports on this
+        // thread
         Bugsnag.clearThreadMetadata();
 
         // Exit the application

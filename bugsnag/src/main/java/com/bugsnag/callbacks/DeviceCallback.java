@@ -84,12 +84,13 @@ public class DeviceCallback implements Callback {
     }
 
     @Override
-    public void beforeNotify(Report report) {
+    public boolean onError(Report report) {
         report
                 .addToTab("device", "osArch", System.getProperty("os.arch"))
                 .addToTab("device", "locale", Locale.getDefault())
                 .setDeviceInfo("hostname", getHostnameValue())
                 .setDeviceInfo("osName", System.getProperty("os.name"))
                 .setDeviceInfo("osVersion", System.getProperty("os.version"));
+        return true;
     }
 }

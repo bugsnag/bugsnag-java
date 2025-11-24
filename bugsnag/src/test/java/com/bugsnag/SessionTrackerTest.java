@@ -21,7 +21,6 @@ import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicInteger;
 
-
 public class SessionTrackerTest {
 
     private SessionTracker sessionTracker;
@@ -185,7 +184,6 @@ public class SessionTrackerTest {
                 super.deliver(serializer, object, headers);
                 SessionPayload payload = (SessionPayload) object;
 
-
                 List<SessionCount> sessionCounts = (List<SessionCount>) payload.getSessionCounts();
                 assertEquals(3, sessionCounts.size());
 
@@ -284,7 +282,8 @@ public class SessionTrackerTest {
 
     @Test
     public void zeroSessionCount() {
-        CustomDelivery sessionDelivery = new CustomDelivery() {};
+        CustomDelivery sessionDelivery = new CustomDelivery() {
+        };
         configuration.sessionDelivery = sessionDelivery;
         sessionTracker.flushSessions(new Date(10120000L));
         sessionTracker.flushSessions(new Date(14000000L));
@@ -300,7 +299,8 @@ public class SessionTrackerTest {
 
     @Test
     public void testSessionShutdownDelivers() {
-        CustomDelivery delivery = new CustomDelivery() {};
+        CustomDelivery delivery = new CustomDelivery() {
+        };
         configuration.sessionDelivery = delivery;
 
         sessionTracker.startSession(new Date(), true);
@@ -311,7 +311,8 @@ public class SessionTrackerTest {
 
     @Test
     public void testMultiShutdown() {
-        CustomDelivery delivery = new CustomDelivery() {};
+        CustomDelivery delivery = new CustomDelivery() {
+        };
         configuration.sessionDelivery = delivery;
 
         sessionTracker.startSession(new Date(), true);
@@ -319,6 +320,35 @@ public class SessionTrackerTest {
         sessionTracker.shutdown(); // second should have no effect
         assertTrue(delivery.recentRequest instanceof SessionPayload);
         assertEquals(1, delivery.count.get());
+    }
+
+    @Test
+    public void sessionDeliverySuppressedByCallback() {
+        // Set up a delivery stub which SHOULD NOT be invoked
+        CustomDelivery delivery = new CustomDelivery() {
+            @Override
+            public void deliver(Serializer serializer, Object object, Map<String, String> headers) {
+                super.deliver(serializer, object, headers);
+                fail("Delivery should be suppressed by OnSession callback returning false");
+            }
+        };
+        configuration.sessionDelivery = delivery;
+
+        // Add callback which returns false to suppress sending
+        sessionTracker.addOnSession(new OnSession() {
+            @Override
+            public boolean onSession(SessionPayload payload) {
+                return false; // suppress delivery
+            }
+        });
+
+        // Start a session and flush far enough in future to trigger send attempt
+        sessionTracker.startSession(new Date(10000000L), false);
+        sessionTracker.flushSessions(new Date(13600000L)); // different batch period
+
+        // Verify delivery was NOT performed
+        assertFalse(delivery.delivered);
+        assertEquals(0, delivery.count.get());
     }
 
     abstract static class CustomDelivery implements Delivery {
