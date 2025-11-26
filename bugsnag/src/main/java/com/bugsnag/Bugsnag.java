@@ -220,8 +220,9 @@ public class Bugsnag implements Closeable {
      */
     @Deprecated
     public void setEndpoint(String endpoint) {
-        if (config.getDelivery() instanceof HttpDelivery) {
-            ((HttpDelivery) config.getDelivery()).setEndpoint(endpoint);
+        Delivery delivery = config.getDelivery();
+        if (delivery instanceof HttpDelivery) {
+            ((HttpDelivery) delivery).setEndpoint(endpoint);
         }
     }
 
@@ -280,11 +281,14 @@ public class Bugsnag implements Closeable {
      * @param proxy the proxy to use to send reports
      */
     public void setProxy(Proxy proxy) {
-        if (config.getDelivery() instanceof HttpDelivery) {
-            ((HttpDelivery) config.getDelivery()).setProxy(proxy);
+        Delivery delivery = config.getDelivery();
+        if (delivery instanceof HttpDelivery) {
+            ((HttpDelivery) delivery).setProxy(proxy);
         }
-        if (config.getSessionDelivery() instanceof HttpDelivery) {
-            ((HttpDelivery) config.getSessionDelivery()).setProxy(proxy);
+
+        Delivery sessionDelivery = config.getSessionDelivery();
+        if (sessionDelivery instanceof HttpDelivery) {
+            ((HttpDelivery) sessionDelivery).setProxy(proxy);
         }
     }
 
@@ -320,11 +324,14 @@ public class Bugsnag implements Closeable {
      * @see #setDelivery
      */
     public void setTimeout(int timeout) {
-        if (config.getDelivery() instanceof HttpDelivery) {
-            ((HttpDelivery) config.getDelivery()).setTimeout(timeout);
+        Delivery delivery = config.getDelivery();
+        if (delivery instanceof HttpDelivery) {
+            ((HttpDelivery) delivery).setTimeout(timeout);
         }
-        if (config.getSessionDelivery() instanceof HttpDelivery) {
-            ((HttpDelivery) config.getSessionDelivery()).setTimeout(timeout);
+
+        Delivery sessionDelivery = config.getSessionDelivery();
+        if (sessionDelivery instanceof HttpDelivery) {
+            ((HttpDelivery) sessionDelivery).setTimeout(timeout);
         }
     }
 
@@ -478,7 +485,8 @@ public class Bugsnag implements Closeable {
             }
         }
 
-        if (config.getDelivery() == null) {
+        Delivery delivery = config.getDelivery();
+        if (delivery == null) {
             LOGGER.debug("Error not reported to Bugsnag - no delivery is set");
             return false;
         }
@@ -501,7 +509,7 @@ public class Bugsnag implements Closeable {
         // Deliver the notification
         LOGGER.debug("Reporting error to Bugsnag");
 
-        config.getDelivery().deliver(config.getSerializer(), notification, config.getErrorApiHeaders());
+        delivery.deliver(config.getSerializer(), notification, config.getErrorApiHeaders());
 
         return true;
     }
@@ -553,8 +561,9 @@ public class Bugsnag implements Closeable {
      */
     @Deprecated
     public void setSessionEndpoint(String endpoint) {
-        if (config.getSessionDelivery() instanceof HttpDelivery) {
-            ((HttpDelivery) config.getSessionDelivery()).setEndpoint(endpoint);
+        Delivery sessionDelivery = config.getSessionDelivery();
+        if (sessionDelivery instanceof HttpDelivery) {
+            ((HttpDelivery) sessionDelivery).setEndpoint(endpoint);
         }
     }
 
@@ -599,8 +608,9 @@ public class Bugsnag implements Closeable {
         // flush remaining sessions
         sessionTracker.shutdown();
 
-        if (config.getDelivery() != null) {
-            config.getDelivery().close();
+        Delivery delivery = config.getDelivery();
+        if (delivery != null) {
+            delivery.close();
         }
     }
 
