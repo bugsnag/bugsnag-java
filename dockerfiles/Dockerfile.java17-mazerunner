@@ -1,4 +1,4 @@
-FROM tomcat:10-jdk17-openjdk-slim
+FROM eclipse-temurin:17.0.13_11-jdk-jammy
 WORKDIR /app
 
 RUN apt-get update && DEBIAN_FRONTEND=noninteractive \
