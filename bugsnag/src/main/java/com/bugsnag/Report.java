@@ -189,7 +189,7 @@ public class Report {
      * @param value   the metadata value to add
      * @return the modified report
      */
-    public Report addToTab(String tabName, String key, Object value) {
+    public Report addMetadata(String tabName, String key, Object value) {
         diagnostics.metadata.addMetadata(tabName, key, value);
         return this;
     }
@@ -211,7 +211,7 @@ public class Report {
      * @param key   the key of app info to add
      * @param value the value of app info to add
      * @return the modified report
-     * @deprecated use {@link #addToTab(String, String, Object)} instead
+     * @deprecated use {@link #addMetadata(String, String, Object)} instead
      */
     @Deprecated
     public Report setAppInfo(String key, Object value) {
@@ -256,7 +256,7 @@ public class Report {
      * @param key   the key of device info to add
      * @param value the value of device info to add
      * @return the modified report
-     * @deprecated use {@link #addToTab(String, String, Object)} instead
+     * @deprecated use {@link #addMetadata(String, String, Object)} instead
      */
     @Deprecated
     public Report setDeviceInfo(String key, Object value) {

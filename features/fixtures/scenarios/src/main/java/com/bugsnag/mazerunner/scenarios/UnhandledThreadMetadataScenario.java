@@ -19,8 +19,8 @@ public class UnhandledThreadMetadataScenario extends Scenario {
         bugsnag.addCallback(new Callback() {
             @Override
             public boolean onError(Report report) {
-                report.addToTab("Custom", "test", "Global value");
-                report.addToTab("Custom", "foo", "Global value to be overwritten");
+                report.addMetadata("Custom", "test", "Global value");
+                report.addMetadata("Custom", "foo", "Global value to be overwritten");
                 return true;
             }
         });

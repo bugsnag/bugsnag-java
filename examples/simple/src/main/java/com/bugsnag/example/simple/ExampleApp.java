@@ -23,10 +23,10 @@ public class ExampleApp {
         bugsnag.addCallback(new Callback() {
             @Override
             public boolean onError(Report report) {
-                report.addToTab("diagnostics", "timestamp", new Date());
-                report.addToTab("customer", "name", "acme-inc");
-                report.addToTab("customer", "paying", true);
-                report.addToTab("customer", "spent", 1234);
+                report.addMetadata("diagnostics", "timestamp", new Date());
+                report.addMetadata("customer", "name", "acme-inc");
+                report.addMetadata("customer", "paying", true);
+                report.addMetadata("customer", "spent", 1234);
                 report.setUserName("User Name");
                 report.setUserEmail("user@example.com");
                 report.setUserId("12345");
@@ -56,7 +56,7 @@ public class ExampleApp {
                 @Override
                 public boolean onError(Report report) {
                     report.setSeverity(Severity.WARNING);
-                    report.addToTab("report", "something", "that happened");
+                    report.addMetadata("report", "something", "that happened");
                     report.setContext("the context");
                     return true;
                 }

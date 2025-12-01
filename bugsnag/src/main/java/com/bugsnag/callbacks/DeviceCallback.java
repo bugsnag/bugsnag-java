@@ -86,8 +86,8 @@ public class DeviceCallback implements Callback {
     @Override
     public boolean onError(Report report) {
         report
-                .addToTab("device", "osArch", System.getProperty("os.arch"))
-                .addToTab("device", "locale", Locale.getDefault())
+                .addMetadata("device", "osArch", System.getProperty("os.arch"))
+                .addMetadata("device", "locale", Locale.getDefault())
                 .setDeviceInfo("hostname", getHostnameValue())
                 .setDeviceInfo("osName", System.getProperty("os.name"))
                 .setDeviceInfo("osVersion", System.getProperty("os.version"));

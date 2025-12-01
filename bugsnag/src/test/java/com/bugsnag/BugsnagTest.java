@@ -186,10 +186,10 @@ public class BugsnagTest {
             }
         });
         assertTrue(bugsnag.notify(new Throwable(), report -> {
-            report.addToTab("firsttab", "testredact1", "secretpassword");
-            report.addToTab("firsttab", "testredact2", "secretpassword");
-            report.addToTab("firsttab", "testredact3", "secretpassword");
-            report.addToTab("secondtab", "testredact1", "secretpassword");
+            report.addMetadata("firsttab", "testredact1", "secretpassword");
+            report.addMetadata("firsttab", "testredact2", "secretpassword");
+            report.addMetadata("firsttab", "testredact3", "secretpassword");
+            report.addMetadata("secondtab", "testredact1", "secretpassword");
             return true;
         }));
     }
@@ -225,7 +225,7 @@ public class BugsnagTest {
             headers.put("Cookie", "123456ABCDEF");
             headers.put("cookie", "123456ABCDEF");
 
-            report.addToTab("request", "headers", headers);
+            report.addMetadata("request", "headers", headers);
             return true;
         }));
     }
