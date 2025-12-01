@@ -19,7 +19,7 @@ public class MetadataTest {
     @SuppressWarnings("unchecked")
     public void testSingleTabSingleValue() {
         Metadata metadata = new Metadata();
-        metadata.addToTab("tab-name", "key-1", "value-1");
+        metadata.addMetadata("tab-name", "key-1", "value-1");
 
         assertEquals(1, metadata.size());
         assertEquals(1, ((Map<String, Object>) metadata.get("tab-name")).size());
@@ -30,8 +30,8 @@ public class MetadataTest {
     @SuppressWarnings("unchecked")
     public void testSingleTabMultipleValues() {
         Metadata metadata = new Metadata();
-        metadata.addToTab("tab-name", "key-1", "value-1");
-        metadata.addToTab("tab-name", "key-2", "value-2");
+        metadata.addMetadata("tab-name", "key-1", "value-1");
+        metadata.addMetadata("tab-name", "key-2", "value-2");
 
         assertEquals(1, metadata.size());
         assertEquals(2, ((Map<String, Object>) metadata.get("tab-name")).size());
@@ -43,8 +43,8 @@ public class MetadataTest {
     @SuppressWarnings("unchecked")
     public void testMultipleTabs() {
         Metadata metadata = new Metadata();
-        metadata.addToTab("tab-name-1", "key-1", "value-1");
-        metadata.addToTab("tab-name-2", "key-1", "value-1");
+        metadata.addMetadata("tab-name-1", "key-1", "value-1");
+        metadata.addMetadata("tab-name-2", "key-1", "value-1");
 
         assertEquals(2, metadata.size());
         assertEquals(1, ((Map<String, Object>) metadata.get("tab-name-1")).size());
@@ -57,12 +57,12 @@ public class MetadataTest {
     @SuppressWarnings("unchecked")
     public void testClearTab() {
         Metadata metadata = new Metadata();
-        metadata.addToTab("tab-name-1", "key-1", "value-1");
-        metadata.addToTab("tab-name-2", "key-1", "value-1");
+        metadata.addMetadata("tab-name-1", "key-1", "value-1");
+        metadata.addMetadata("tab-name-2", "key-1", "value-1");
 
         assertEquals(2, metadata.size());
 
-        metadata.clearTab("tab-name-1");
+        metadata.clearMetadata("tab-name-1");
 
         assertEquals(1, metadata.size());
 

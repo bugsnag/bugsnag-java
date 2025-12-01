@@ -31,19 +31,19 @@ public class Configuration {
     private static final String HEADER_API_KEY = "Bugsnag-Api-Key";
     private static final String HEADER_BUGSNAG_SENT_AT = "Bugsnag-Sent-At";
 
-    public String apiKey;
-    public String appType;
-    public String appVersion;
-    public Delivery delivery;
-    public EndpointConfiguration endpoints;
-    public Delivery sessionDelivery;
-    public String[] redactedKeys = new String[] {"password", "secret", "Authorization", "Cookie"};
-    public String[] discardClasses;
-    public Set<String> enabledReleaseStages = null;
-    public String[] projectPackages;
-    public String releaseStage;
-    public boolean sendThreads = false;
-    public Serializer serializer = new DefaultSerializer();
+    private String apiKey;
+    private String appType;
+    private String appVersion;
+    private Delivery delivery;
+    private EndpointConfiguration endpoints;
+    private Delivery sessionDelivery;
+    private String[] redactedKeys = new String[] {"password", "secret", "Authorization", "Cookie"};
+    private String[] discardClasses;
+    private Set<String> enabledReleaseStages = null;
+    private String[] projectPackages;
+    private String releaseStage;
+    private boolean sendThreads = false;
+    private Serializer serializer = new DefaultSerializer();
 
     Collection<Callback> callbacks = new ConcurrentLinkedQueue<Callback>();
     private final AtomicBoolean autoCaptureSessions = new AtomicBoolean(true);
@@ -128,15 +128,19 @@ public class Configuration {
      * Set the endpoints to send data to. Use this to override the default endpoints
      * if you are using Bugsnag Enterprise to point to your own Bugsnag endpoint.
      * <p>
-     * Please note that it is recommended that you set both endpoints. If the notify endpoint is
-     * missing, an exception will be thrown. If the session endpoint is missing, a warning will be
+     * Please note that it is recommended that you set both endpoints. If the notify
+     * endpoint is
+     * missing, an exception will be thrown. If the session endpoint is missing, a
+     * warning will be
      * logged and sessions will not be sent automatically.
      * <p>
-     * Note that if you are setting a custom {@link Delivery}, this method should be called after
+     * Note that if you are setting a custom {@link Delivery}, this method should be
+     * called after
      * the custom implementation has been set.
      *
      * @param endpointConfiguration the endpoint configuration
-     * @throws IllegalArgumentException if the endpoint configuration is null or if the notify endpoint is empty or null
+     * @throws IllegalArgumentException if the endpoint configuration is null or if
+     *                                  the notify endpoint is empty or null
      */
     public void setEndpoints(EndpointConfiguration endpointConfiguration) throws IllegalArgumentException {
         if (endpointConfiguration == null) {
@@ -189,5 +193,110 @@ public class Configuration {
         map.put(HEADER_API_KEY, apiKey);
         map.put(HEADER_BUGSNAG_SENT_AT, DateUtils.toIso8601(new Date()));
         return map;
+    }
+
+    // Accessors
+    public String getApiKey() {
+        return apiKey;
+    }
+
+    public void setApiKey(String apiKey) {
+        this.apiKey = apiKey;
+    }
+
+    public String getAppType() {
+        return appType;
+    }
+
+    public void setAppType(String appType) {
+        this.appType = appType;
+    }
+
+    public String getAppVersion() {
+        return appVersion;
+    }
+
+    public void setAppVersion(String appVersion) {
+        this.appVersion = appVersion;
+    }
+
+    public Delivery getDelivery() {
+        return delivery;
+    }
+
+    public void setDelivery(Delivery delivery) {
+        this.delivery = delivery;
+    }
+
+    public EndpointConfiguration getEndpointsConfiguration() {
+        return endpoints;
+    }
+
+    public void setEndpointsConfiguration(EndpointConfiguration endpoints) {
+        this.endpoints = endpoints;
+    }
+
+    public Delivery getSessionDelivery() {
+        return sessionDelivery;
+    }
+
+    public void setSessionDelivery(Delivery sessionDelivery) {
+        this.sessionDelivery = sessionDelivery;
+    }
+
+    public String[] getRedactedKeys() {
+        return redactedKeys;
+    }
+
+    public void setRedactedKeys(String[] redactedKeys) {
+        this.redactedKeys = redactedKeys;
+    }
+
+    public String[] getDiscardClasses() {
+        return discardClasses;
+    }
+
+    public void setDiscardClasses(String[] discardClasses) {
+        this.discardClasses = discardClasses;
+    }
+
+    public Set<String> getEnabledReleaseStages() {
+        return enabledReleaseStages;
+    }
+
+    public void setEnabledReleaseStages(Set<String> enabledReleaseStages) {
+        this.enabledReleaseStages = enabledReleaseStages;
+    }
+
+    public String[] getProjectPackages() {
+        return projectPackages;
+    }
+
+    public void setProjectPackages(String[] projectPackages) {
+        this.projectPackages = projectPackages;
+    }
+
+    public String getReleaseStage() {
+        return releaseStage;
+    }
+
+    public void setReleaseStage(String releaseStage) {
+        this.releaseStage = releaseStage;
+    }
+
+    public boolean isSendThreads() {
+        return sendThreads;
+    }
+
+    public void setSendThreads(boolean sendThreads) {
+        this.sendThreads = sendThreads;
+    }
+
+    public Serializer getSerializer() {
+        return serializer;
+    }
+
+    public void setSerializer(Serializer serializer) {
+        this.serializer = serializer;
     }
 }

@@ -6,28 +6,28 @@ import java.util.Map;
 class Metadata extends HashMap<String, Object> {
     private static final long serialVersionUID = 2530038179702722770L;
 
-    public void addToTab(String tabName, String key, Object value) {
-        Map<String, Object> tab = getTab(tabName);
+    public void addMetadata(String tabName, String key, Object value) {
+        Map<String, Object> tab = getMetadata(tabName);
         tab.put(key, value);
     }
 
-    void clearTab(String tabName) {
+    void clearMetadata(String tabName) {
         remove(tabName);
     }
 
-    void clearKey(String tabName, String key) {
-        Map<String, Object> tab = getTab(tabName);
+    void clearMetadata(String tabName, String key) {
+        Map<String, Object> tab = getMetadata(tabName);
         tab.remove(key);
     }
 
     void merge(Metadata metadata) {
         for (String tabName : metadata.keySet()) {
-            getTab(tabName).putAll(metadata.getTab(tabName));
+            getMetadata(tabName).putAll(metadata.getMetadata(tabName));
         }
     }
 
     @SuppressWarnings(value = "unchecked")
-    private Map<String, Object> getTab(String tabName) {
+    private Map<String, Object> getMetadata(String tabName) {
         Map<String, Object> tab = (Map<String, Object>) get(tabName);
         if (tab == null) {
             tab = new HashMap<String, Object>();

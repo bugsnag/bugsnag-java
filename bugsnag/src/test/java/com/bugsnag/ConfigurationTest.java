@@ -38,8 +38,8 @@ public class ConfigurationTest {
     @Before
     public void setUp() {
         config = new Configuration("foo");
-        config.delivery = new FakeHttpDelivery();
-        config.sessionDelivery = new FakeHttpDelivery();
+        config.setDelivery(new FakeHttpDelivery());
+        config.setSessionDelivery(new FakeHttpDelivery());
     }
 
     @Test
@@ -50,7 +50,7 @@ public class ConfigurationTest {
     @Test
     public void testErrorApiHeaders() {
         Map<String, String> headers = config.getErrorApiHeaders();
-        assertEquals(config.apiKey, headers.get("Bugsnag-Api-Key"));
+        assertEquals(config.getApiKey(), headers.get("Bugsnag-Api-Key"));
         assertNotNull(headers.get("Bugsnag-Sent-At"));
         assertNotNull(headers.get("Bugsnag-Payload-Version"));
     }
@@ -58,7 +58,7 @@ public class ConfigurationTest {
     @Test
     public void testSessionApiHeaders() {
         Map<String, String> headers = config.getSessionApiHeaders();
-        assertEquals(config.apiKey, headers.get("Bugsnag-Api-Key"));
+        assertEquals(config.getApiKey(), headers.get("Bugsnag-Api-Key"));
         assertNotNull(headers.get("Bugsnag-Sent-At"));
         assertNotNull(headers.get("Bugsnag-Payload-Version"));
     }
@@ -69,8 +69,8 @@ public class ConfigurationTest {
         String sessions = "https://sessions.myexample.com";
         config.setEndpoints(new EndpointConfiguration(notify, sessions));
 
-        assertEquals(notify, getDeliveryEndpoint(config.delivery));
-        assertEquals(sessions, getDeliveryEndpoint(config.sessionDelivery));
+        assertEquals(notify, getDeliveryEndpoint(config.getDelivery()));
+        assertEquals(sessions, getDeliveryEndpoint(config.getSessionDelivery()));
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -89,14 +89,14 @@ public class ConfigurationTest {
         EndpointConfiguration emptySession = new EndpointConfiguration("http://example.com", "");
         config.setEndpoints(emptySession);
         assertFalse(config.shouldAutoCaptureSessions());
-        assertNull(getDeliveryEndpoint(config.sessionDelivery));
+        assertNull(getDeliveryEndpoint(config.getSessionDelivery()));
 
         config.setAutoCaptureSessions(true);
         EndpointConfiguration validSessions = new EndpointConfiguration(
                 "http://example.com", "http://sessions.example.com");
         config.setEndpoints(validSessions);
         assertTrue(config.shouldAutoCaptureSessions());
-        assertEquals("http://sessions.example.com", getDeliveryEndpoint(config.sessionDelivery));
+        assertEquals("http://sessions.example.com", getDeliveryEndpoint(config.getSessionDelivery()));
     }
 
     @Test
@@ -121,7 +121,7 @@ public class ConfigurationTest {
         // flag to check if writeToStream was called
         final boolean[] methodCalled = {false};
 
-        //Anonymous class extending DefaultSerializer
+        // Anonymous class extending DefaultSerializer
         Serializer customSerializer = new DefaultSerializer() {
             @Override
             public void writeToStream(OutputStream stream, Object object) throws SerializationException {
@@ -150,8 +150,8 @@ public class ConfigurationTest {
             public void close() {
             }
         };
-        config.delivery = delivery;
-        config.sessionDelivery = delivery;
+        config.setDelivery(delivery);
+        config.setSessionDelivery(delivery);
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         System.setErr(new PrintStream(baos));
