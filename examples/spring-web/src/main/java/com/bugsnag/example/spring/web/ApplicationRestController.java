@@ -73,7 +73,7 @@ public class ApplicationRestController {
                 @Override
                 public boolean onError(Report report) {
                     report.setSeverity(Severity.WARNING);
-                    report.addToTab("report", "something", "that happened");
+                    report.addMetadata("report", "something", "that happened");
                     report.setContext("the context");
                     return true;
                 }

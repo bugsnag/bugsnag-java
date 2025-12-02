@@ -35,12 +35,12 @@ public class JakartaServletCallback implements Callback {
 
         // Add request information to metadata
         report
-                .addToTab("request", "url", request.getRequestURL().toString())
-                .addToTab("request", "method", request.getMethod())
-                .addToTab("request", "params",
+                .addMetadata("request", "url", request.getRequestURL().toString())
+                .addMetadata("request", "method", request.getMethod())
+                .addMetadata("request", "params",
                         new HashMap<String, String[]>(request.getParameterMap()))
-                .addToTab("request", "clientIp", getClientIp(request))
-                .addToTab("request", "headers", getHeaderMap(request));
+                .addMetadata("request", "clientIp", getClientIp(request))
+                .addMetadata("request", "headers", getHeaderMap(request));
 
         // Set default context
         if (report.getContext() == null) {

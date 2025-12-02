@@ -137,9 +137,9 @@ public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
                             public boolean onError(Report report) {
 
                                 // Add some data from the logging event
-                                report.addToTab("Log event data",
+                                report.addMetadata("Log event data",
                                         "Message", event.getFormattedMessage());
-                                report.addToTab("Log event data",
+                                report.addMetadata("Log event data",
                                         "Logger name", event.getLoggerName());
 
                                 // Add details from the logging context to the event
@@ -171,7 +171,7 @@ public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
             // Loop through all the keys and put them in the correct tabs
 
             for (Map.Entry<String, String> entry : propertyMap.entrySet()) {
-                report.addToTab("Context", entry.getKey(), entry.getValue());
+                report.addMetadata("Context", entry.getKey(), entry.getValue());
             }
         }
     }
@@ -279,7 +279,7 @@ public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
                 for (LogbackMetadata metadata : globalMetadata) {
                     for (LogbackMetadataTab tab : metadata.getTabs()) {
                         for (LogbackMetadataKey key : tab.getKeys()) {
-                            report.addToTab(tab.getName(),
+                            report.addMetadata(tab.getName(),
                                     key.getName(),
                                     key.getValue());
                         }

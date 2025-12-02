@@ -28,8 +28,8 @@ public class ScheduledTaskExecutorScenario extends Scenario {
         bugsnag.notify(new RuntimeException("Whoops"), new Callback() {
             @Override
             public boolean onError(Report report) {
-                report.addToTab("executor", "multiThreaded", threadnames.size() > 1);
-                report.addToTab("executor", "names", threadnames);
+                report.addMetadata("executor", "multiThreaded", threadnames.size() > 1);
+                report.addMetadata("executor", "names", threadnames);
                 return true;
             }
         });

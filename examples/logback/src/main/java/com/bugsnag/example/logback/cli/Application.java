@@ -22,10 +22,10 @@ public class Application {
         if (appender instanceof BugsnagAppender) {
             // Set some global meta data (added to each report)
             ((BugsnagAppender) appender).getClient().addCallback((report) -> {
-                report.addToTab("diagnostics", "timestamp", new Date());
-                report.addToTab("customer", "name", "acme-inc");
-                report.addToTab("customer", "paying", true);
-                report.addToTab("customer", "spent", 1234);
+                report.addMetadata("diagnostics", "timestamp", new Date());
+                report.addMetadata("customer", "name", "acme-inc");
+                report.addMetadata("customer", "paying", true);
+                report.addMetadata("customer", "spent", 1234);
                 report.setUserName("User Name");
                 report.setUserEmail("user@example.com");
                 report.setUserId("12345");
@@ -58,8 +58,8 @@ public class Application {
             throw new RuntimeException("Handled exception - custom metadata");
         } catch (RuntimeException e) {
             LOGGER.warn(new BugsnagMarker((report) -> {
-                report.addToTab("report tab", "data key 1", "data value 1");
-                report.addToTab("report tab", "data key 2", "data value 2");
+                report.addMetadata("report tab", "data key 1", "data value 1");
+                report.addMetadata("report tab", "data key 2", "data value 2");
                 return true;
             }), "Something bad happened", e);
         }

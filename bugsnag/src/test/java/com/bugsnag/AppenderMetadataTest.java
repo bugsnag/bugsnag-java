@@ -109,7 +109,7 @@ public class AppenderMetadataTest {
 
         // Send three test logs, the first one with report metadata added
         LOGGER.warn(new BugsnagMarker(report -> {
-            report.addToTab("report", "some key", "some report value");
+            report.addMetadata("report", "some key", "some report value");
             return true;
         }), "Test exception", new RuntimeException("test"));
 
