@@ -26,7 +26,7 @@ import java.util.Queue;
 
 public class ConfigurationTest {
 
-    private static final String HUB_KEY = "00000aaaaaaaaaaaaaaaaaaaaaaaaaaa";
+    private static final String SECONDARY_KEY = "00000aaaaaaaaaaaaaaaaaaaaaaaaaaa";
     private static final String CLASSIC_KEY = "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb";
     private Configuration config;
 
@@ -176,14 +176,14 @@ public class ConfigurationTest {
         assertEquals(defaultSessionEndpoint,
                 normalConfig.getSessionEndpoint());
 
-        String hubNotifyEndpoint = "https://notify.insighthub.smartbear.com";
-        String hubSessionEndpoint = "https://sessions.insighthub.smartbear.com";
-        EndpointConfiguration hubConfig = EndpointConfiguration.fromApiKey(HUB_KEY);
+        String secondaryNotifyEndpoint = "https://notify.bugsnag.smartbear.com";
+        String secondarySessionEndpoint = "https://sessions.bugsnag.smartbear.com";
+        EndpointConfiguration secondaryConfig = EndpointConfiguration.fromApiKey(SECONDARY_KEY);
 
-        assertEquals(hubNotifyEndpoint,
-                hubConfig.getNotifyEndpoint());
-        assertEquals(hubSessionEndpoint,
-                hubConfig.getSessionEndpoint());
+        assertEquals(secondaryNotifyEndpoint,
+                secondaryConfig.getNotifyEndpoint());
+        assertEquals(secondarySessionEndpoint,
+                secondaryConfig.getSessionEndpoint());
 
     }
 
