@@ -29,10 +29,10 @@ public class BugsnagFeatureFlagTest {
     @Test
     public void testAddFeatureFlag() {
         bugsnag.addFeatureFlag("flag1", "variant-a");
-        
+
         Report report = bugsnag.buildReport(new RuntimeException("Test"));
         List<FeatureFlag> flags = report.getFeatureFlags();
-        
+
         assertEquals(1, flags.size());
         assertEquals("flag1", flags.get(0).getName());
         assertEquals("variant-a", flags.get(0).getVariant());
@@ -41,10 +41,10 @@ public class BugsnagFeatureFlagTest {
     @Test
     public void testAddFeatureFlagWithoutVariant() {
         bugsnag.addFeatureFlag("flag1");
-        
+
         Report report = bugsnag.buildReport(new RuntimeException("Test"));
         List<FeatureFlag> flags = report.getFeatureFlags();
-        
+
         assertEquals(1, flags.size());
         assertEquals("flag1", flags.get(0).getName());
         assertEquals(null, flags.get(0).getVariant());
@@ -55,12 +55,12 @@ public class BugsnagFeatureFlagTest {
         List<FeatureFlag> flagsToAdd = new ArrayList<FeatureFlag>();
         flagsToAdd.add(new FeatureFlag("flag1", "variant-a"));
         flagsToAdd.add(new FeatureFlag("flag2", "variant-b"));
-        
+
         bugsnag.addFeatureFlags(flagsToAdd);
-        
+
         Report report = bugsnag.buildReport(new RuntimeException("Test"));
         List<FeatureFlag> flags = report.getFeatureFlags();
-        
+
         assertEquals(2, flags.size());
         assertEquals("flag1", flags.get(0).getName());
         assertEquals("flag2", flags.get(1).getName());
@@ -71,10 +71,10 @@ public class BugsnagFeatureFlagTest {
         bugsnag.addFeatureFlag("flag1", "variant-a");
         bugsnag.addFeatureFlag("flag2", "variant-b");
         bugsnag.clearFeatureFlag("flag1");
-        
+
         Report report = bugsnag.buildReport(new RuntimeException("Test"));
         List<FeatureFlag> flags = report.getFeatureFlags();
-        
+
         assertEquals(1, flags.size());
         assertEquals("flag2", flags.get(0).getName());
     }
@@ -84,10 +84,10 @@ public class BugsnagFeatureFlagTest {
         bugsnag.addFeatureFlag("flag1", "variant-a");
         bugsnag.addFeatureFlag("flag2", "variant-b");
         bugsnag.clearFeatureFlags();
-        
+
         Report report = bugsnag.buildReport(new RuntimeException("Test"));
         List<FeatureFlag> flags = report.getFeatureFlags();
-        
+
         assertEquals(0, flags.size());
     }
 
@@ -95,17 +95,17 @@ public class BugsnagFeatureFlagTest {
     public void testClientFlagsInheritFromConfiguration() {
         Configuration config = bugsnag.getConfig();
         config.addFeatureFlag("config-flag", "config-variant");
-        
+
         Bugsnag client = new Bugsnag("api-key", false);
         client.getConfig().addFeatureFlag("config-flag", "config-variant");
-        
+
         Report report = client.buildReport(new RuntimeException("Test"));
         List<FeatureFlag> flags = report.getFeatureFlags();
-        
+
         assertEquals(1, flags.size());
         assertEquals("config-flag", flags.get(0).getName());
         assertEquals("config-variant", flags.get(0).getVariant());
-        
+
         client.close();
     }
 
@@ -113,18 +113,18 @@ public class BugsnagFeatureFlagTest {
     public void testClientFlagsOverrideConfigurationFlags() {
         Configuration config = bugsnag.getConfig();
         config.addFeatureFlag("flag1", "config-variant");
-        
+
         Bugsnag client = new Bugsnag("api-key", false);
         client.getConfig().addFeatureFlag("flag1", "config-variant");
         client.addFeatureFlag("flag1", "client-variant");
-        
+
         Report report = client.buildReport(new RuntimeException("Test"));
         List<FeatureFlag> flags = report.getFeatureFlags();
-        
+
         assertEquals(1, flags.size());
         assertEquals("flag1", flags.get(0).getName());
         assertEquals("client-variant", flags.get(0).getVariant());
-        
+
         client.close();
     }
 
@@ -133,20 +133,20 @@ public class BugsnagFeatureFlagTest {
         Configuration config = bugsnag.getConfig();
         config.addFeatureFlag("flag1", "config-variant");
         config.addFeatureFlag("flag2", "config-variant");
-        
+
         Bugsnag client = new Bugsnag("api-key", false);
         client.getConfig().addFeatureFlag("flag1", "config-variant");
         client.getConfig().addFeatureFlag("flag2", "config-variant");
         client.addFeatureFlag("flag3", "client-variant");
-        
+
         Report report = client.buildReport(new RuntimeException("Test"));
         List<FeatureFlag> flags = report.getFeatureFlags();
-        
+
         assertEquals(3, flags.size());
         assertEquals("flag1", flags.get(0).getName());
         assertEquals("flag2", flags.get(1).getName());
         assertEquals("flag3", flags.get(2).getName());
-        
+
         client.close();
     }
 }
