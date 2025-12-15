@@ -51,7 +51,7 @@ public class Report {
         this.handledState = handledState;
         this.severity = handledState.getOriginalSeverity();
         diagnostics = new Diagnostics(this.config);
-        
+
         // Initialize feature flags: start with config, then merge client flags
         featureFlagStore = config.copyFeatureFlagStore();
         if (clientFeatureFlagStore != null) {
