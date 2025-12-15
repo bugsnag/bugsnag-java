@@ -3,6 +3,7 @@ package com.bugsnag;
 import com.bugsnag.callbacks.Callback;
 import com.bugsnag.delivery.Delivery;
 import com.bugsnag.logback.BugsnagMarker;
+import com.bugsnag.logback.LogbackFeatureFlag;
 import com.bugsnag.logback.LogbackMetadata;
 import com.bugsnag.logback.LogbackMetadataKey;
 import com.bugsnag.logback.LogbackMetadataTab;
@@ -74,8 +75,10 @@ public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
 
     /** Application version. */
     private String appVersion;
-
     private List<LogbackMetadata> globalMetadata = new ArrayList<LogbackMetadata>();
+
+    /** Feature flags configured via logback.xml. */
+    private List<LogbackFeatureFlag> featureFlags = new ArrayList<LogbackFeatureFlag>();
 
     /** Bugsnag client. */
     private Bugsnag bugsnag = null;
@@ -270,6 +273,11 @@ public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
 
         bugsnag.setProjectPackages(projectPackages.toArray(new String[0]));
         bugsnag.setSendThreads(sendThreads);
+
+        // Add feature flags
+        for (LogbackFeatureFlag flag : featureFlags) {
+            bugsnag.addFeatureFlag(flag.getName(), flag.getVariant());
+        }
 
         // Add a callback to put global metadata on every report
         bugsnag.addCallback(new Callback() {
@@ -591,5 +599,71 @@ public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
             }
         }
         return false;
+    }
+
+    /**
+     * Add a feature flag with a name and variant.
+     * This is typically configured via logback.xml.
+     *
+     * @param name the feature flag name
+     * @param variant the feature flag variant (can be null)
+     */
+    public void addFeatureFlag(String name, String variant) {
+        LogbackFeatureFlag flag = new LogbackFeatureFlag();
+        flag.setName(name);
+        flag.setVariant(variant);
+        featureFlags.add(flag);
+
+        if (bugsnag != null) {
+            bugsnag.addFeatureFlag(name, variant);
+        }
+    }
+
+    /**
+     * Add a feature flag with just a name (no variant).
+     * This is typically configured via logback.xml.
+     *
+     * @param name the feature flag name
+     */
+    public void addFeatureFlag(String name) {
+        addFeatureFlag(name, null);
+    }
+
+    /**
+     * Add a feature flag from logback.xml configuration.
+     * Internal use only - should only be used via the logback.xml file.
+     *
+     * @param flag the feature flag to add
+     */
+    public void setFeatureFlag(LogbackFeatureFlag flag) {
+        featureFlags.add(flag);
+
+        if (bugsnag != null) {
+            bugsnag.addFeatureFlag(flag.getName(), flag.getVariant());
+        }
+    }
+
+    /**
+     * Clear a feature flag by name.
+     *
+     * @param name the feature flag name to remove
+     */
+    public void clearFeatureFlag(String name) {
+        featureFlags.removeIf(flag -> flag.getName().equals(name));
+
+        if (bugsnag != null) {
+            bugsnag.clearFeatureFlag(name);
+        }
+    }
+
+    /**
+     * Clear all feature flags.
+     */
+    public void clearFeatureFlags() {
+        featureFlags.clear();
+
+        if (bugsnag != null) {
+            bugsnag.clearFeatureFlags();
+        }
     }
 }
