@@ -649,7 +649,7 @@ public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
      * @param name the feature flag name to remove
      */
     public void clearFeatureFlag(String name) {
-        featureFlags.removeIf(flag -> flag.getName().equals(name));
+        featureFlags.removeIf(flag -> flag.getName() != null && flag.getName().equals(name));
 
         if (bugsnag != null) {
             bugsnag.clearFeatureFlag(name);
