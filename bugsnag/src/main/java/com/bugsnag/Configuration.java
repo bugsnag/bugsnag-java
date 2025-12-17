@@ -13,15 +13,15 @@ import com.bugsnag.serialization.Serializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.regex.Pattern;
 
 @SuppressWarnings("visibilitymodifier")
 public class Configuration {
@@ -38,7 +38,8 @@ public class Configuration {
     private EndpointConfiguration endpoints;
     private Delivery sessionDelivery;
     private String[] redactedKeys = new String[] {"password", "secret", "Authorization", "Cookie"};
-    private String[] discardClasses;
+    private Set<Pattern> discardClasses = new HashSet<Pattern>();
+    private Set<String> discardClassPatterns = new HashSet<String>();
     private Set<String> enabledReleaseStages = null;
     private String[] projectPackages;
     private String releaseStage;
@@ -74,12 +75,16 @@ public class Configuration {
     }
 
     boolean shouldIgnoreClass(String className) {
-        if (discardClasses == null) {
+        if (discardClasses == null || discardClasses.isEmpty()) {
             return false;
         }
 
-        List<String> classes = Arrays.asList(discardClasses);
-        return classes.contains(className);
+        for (Pattern pattern : discardClasses) {
+            if (pattern.matcher(className).matches()) {
+                return true;
+            }
+        }
+        return false;
     }
 
     void addCallback(Callback callback) {
@@ -253,11 +258,71 @@ public class Configuration {
     }
 
     public String[] getDiscardClasses() {
-        return discardClasses;
+        return discardClassPatterns.toArray(new String[0]);
     }
 
     public void setDiscardClasses(String[] discardClasses) {
-        this.discardClasses = discardClasses;
+        this.discardClasses.clear();
+        this.discardClassPatterns.clear();
+        if (discardClasses != null) {
+            for (String pattern : discardClasses) {
+                if (pattern != null && !pattern.isEmpty()) {
+                    // Store original pattern string
+                    this.discardClassPatterns.add(pattern);
+                    // Convert glob-style wildcards to regex
+                    String regex = convertToRegex(pattern);
+                    this.discardClasses.add(Pattern.compile(regex));
+                }
+            }
+        }
+    }
+
+    /**
+     * Converts a glob-style pattern to a regex pattern.
+     * Supports * (matches any characters) and ? (matches single character).
+     * If the pattern doesn't contain wildcards, it's treated as an exact match.
+     *
+     * @param pattern the glob-style pattern
+     * @return the regex pattern
+     */
+    private String convertToRegex(String pattern) {
+        // If the pattern doesn't contain wildcards, match exactly
+        if (!pattern.contains("*") && !pattern.contains("?")) {
+            return Pattern.quote(pattern);
+        }
+
+        StringBuilder regex = new StringBuilder();
+        for (int i = 0; i < pattern.length(); i++) {
+            char c = pattern.charAt(i);
+            switch (c) {
+                case '*':
+                    regex.append(".*");
+                    break;
+                case '?':
+                    regex.append(".");
+                    break;
+                case '.':
+                case '(':
+                case ')':
+                case '+':
+                case '|':
+                case '^':
+                case '$':
+                case '@':
+                case '%':
+                case '[':
+                case ']':
+                case '{':
+                case '}':
+                case '\\':
+                    regex.append('\\').append(c);
+                    break;
+                default:
+                    regex.append(c);
+                    break;
+            }
+        }
+        return regex.toString();
     }
 
     public Set<String> getEnabledReleaseStages() {
