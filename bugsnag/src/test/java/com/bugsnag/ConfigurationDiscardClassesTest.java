@@ -1,8 +1,8 @@
 package com.bugsnag;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertEquals;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -22,7 +22,7 @@ public class ConfigurationDiscardClassesTest {
     @Test
     public void testExactMatch() {
         config.setDiscardClasses(new String[] {"com.example.CustomException"});
-        
+
         assertTrue(config.shouldIgnoreClass("com.example.CustomException"));
         assertFalse(config.shouldIgnoreClass("com.example.OtherException"));
     }
@@ -30,7 +30,7 @@ public class ConfigurationDiscardClassesTest {
     @Test
     public void testWildcardMatch() {
         config.setDiscardClasses(new String[] {"com.example.*"});
-        
+
         assertTrue(config.shouldIgnoreClass("com.example.CustomException"));
         assertTrue(config.shouldIgnoreClass("com.example.OtherException"));
         assertTrue(config.shouldIgnoreClass("com.example."));
@@ -40,7 +40,7 @@ public class ConfigurationDiscardClassesTest {
     @Test
     public void testMultipleWildcards() {
         config.setDiscardClasses(new String[] {"com.*.Exception"});
-        
+
         assertTrue(config.shouldIgnoreClass("com.example.Exception"));
         assertTrue(config.shouldIgnoreClass("com.other.Exception"));
         assertFalse(config.shouldIgnoreClass("com.example.CustomException"));
@@ -49,7 +49,7 @@ public class ConfigurationDiscardClassesTest {
     @Test
     public void testQuestionMarkWildcard() {
         config.setDiscardClasses(new String[] {"com.example.Exception?"});
-        
+
         assertTrue(config.shouldIgnoreClass("com.example.Exception1"));
         assertTrue(config.shouldIgnoreClass("com.example.ExceptionX"));
         assertFalse(config.shouldIgnoreClass("com.example.Exception"));
@@ -63,7 +63,7 @@ public class ConfigurationDiscardClassesTest {
             "com.example.CustomException",
             "org.*.SpecialException"
         });
-        
+
         assertTrue(config.shouldIgnoreClass("java.io.IOException"));
         assertTrue(config.shouldIgnoreClass("java.io.FileNotFoundException"));
         assertTrue(config.shouldIgnoreClass("com.example.CustomException"));
@@ -76,16 +76,20 @@ public class ConfigurationDiscardClassesTest {
     public void testGetDiscardClassesReturnsOriginalPatterns() {
         String[] patterns = new String[] {"com.example.*", "java.io.IOException"};
         config.setDiscardClasses(patterns);
-        
+
         String[] retrieved = config.getDiscardClasses();
         assertEquals(2, retrieved.length);
-        
+
         // Check that patterns are returned (not regex)
         boolean hasWildcard = false;
         boolean hasExact = false;
         for (String pattern : retrieved) {
-            if (pattern.equals("com.example.*")) hasWildcard = true;
-            if (pattern.equals("java.io.IOException")) hasExact = true;
+            if (pattern.equals("com.example.*")) {
+                hasWildcard = true;
+            }
+            if (pattern.equals("java.io.IOException")) {
+                hasExact = true;
+            }
         }
         assertTrue(hasWildcard);
         assertTrue(hasExact);
@@ -95,7 +99,7 @@ public class ConfigurationDiscardClassesTest {
     public void testEmptyAndNullPatterns() {
         config.setDiscardClasses(new String[] {});
         assertFalse(config.shouldIgnoreClass("com.example.Exception"));
-        
+
         config.setDiscardClasses(null);
         assertFalse(config.shouldIgnoreClass("com.example.Exception"));
     }
@@ -103,7 +107,7 @@ public class ConfigurationDiscardClassesTest {
     @Test
     public void testSpecialCharactersAreEscaped() {
         config.setDiscardClasses(new String[] {"com.example.Exception$Inner"});
-        
+
         assertTrue(config.shouldIgnoreClass("com.example.Exception$Inner"));
         assertFalse(config.shouldIgnoreClass("com.example.ExceptionXInner"));
     }

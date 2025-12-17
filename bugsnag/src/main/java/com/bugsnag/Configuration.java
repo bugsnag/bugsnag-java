@@ -261,6 +261,12 @@ public class Configuration {
         return discardClassPatterns.toArray(new String[0]);
     }
 
+    /**
+     * Set which exception classes should be ignored (not sent) by Bugsnag.
+     * Supports glob-style wildcards: * (matches any characters) and ? (matches single character).
+     *
+     * @param discardClasses a list of exception class patterns to ignore
+     */
     public void setDiscardClasses(String[] discardClasses) {
         this.discardClasses.clear();
         this.discardClassPatterns.clear();
@@ -293,8 +299,8 @@ public class Configuration {
 
         StringBuilder regex = new StringBuilder();
         for (int i = 0; i < pattern.length(); i++) {
-            char c = pattern.charAt(i);
-            switch (c) {
+            char ch = pattern.charAt(i);
+            switch (ch) {
                 case '*':
                     regex.append(".*");
                     break;
@@ -315,10 +321,10 @@ public class Configuration {
                 case '{':
                 case '}':
                 case '\\':
-                    regex.append('\\').append(c);
+                    regex.append('\\').append(ch);
                     break;
                 default:
-                    regex.append(c);
+                    regex.append(ch);
                     break;
             }
         }
