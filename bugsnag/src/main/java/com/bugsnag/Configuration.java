@@ -38,8 +38,8 @@ public class Configuration {
     private EndpointConfiguration endpoints;
     private Delivery sessionDelivery;
     private String[] redactedKeys = new String[] {"password", "secret", "Authorization", "Cookie"};
-    private Set<Pattern> discardClasses = new HashSet<Pattern>();
-    private Set<String> discardClassPatterns = new HashSet<String>();
+    private Set<Pattern> discardClassRegexPatterns = new HashSet<Pattern>();
+    private Set<String> discardClassStringPatterns = new HashSet<String>();
     private Set<String> enabledReleaseStages = null;
     private String[] projectPackages;
     private String releaseStage;
@@ -75,11 +75,11 @@ public class Configuration {
     }
 
     boolean shouldIgnoreClass(String className) {
-        if (discardClasses == null || discardClasses.isEmpty()) {
+        if (discardClassRegexPatterns == null || discardClassRegexPatterns.isEmpty()) {
             return false;
         }
 
-        for (Pattern pattern : discardClasses) {
+        for (Pattern pattern : discardClassRegexPatterns) {
             if (pattern.matcher(className).matches()) {
                 return true;
             }
@@ -258,26 +258,27 @@ public class Configuration {
     }
 
     public String[] getDiscardClasses() {
-        return discardClassPatterns.toArray(new String[0]);
+        return discardClassStringPatterns.toArray(new String[0]);
     }
 
     /**
      * Set which exception classes should be ignored (not sent) by Bugsnag.
-     * Supports glob-style wildcards: * (matches any characters) and ? (matches single character).
+     * Supports glob-style wildcards: * (matches any characters, including package
+     * separators '.') and ? (matches a single character).
      *
      * @param discardClasses a list of exception class patterns to ignore
      */
     public void setDiscardClasses(String[] discardClasses) {
-        this.discardClasses.clear();
-        this.discardClassPatterns.clear();
+        this.discardClassRegexPatterns.clear();
+        this.discardClassStringPatterns.clear();
         if (discardClasses != null) {
             for (String pattern : discardClasses) {
                 if (pattern != null && !pattern.isEmpty()) {
                     // Store original pattern string
-                    this.discardClassPatterns.add(pattern);
+                    this.discardClassStringPatterns.add(pattern);
                     // Convert glob-style wildcards to regex
                     String regex = convertToRegex(pattern);
-                    this.discardClasses.add(Pattern.compile(regex));
+                    this.discardClassRegexPatterns.add(Pattern.compile(regex));
                 }
             }
         }
