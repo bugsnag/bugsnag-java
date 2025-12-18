@@ -62,15 +62,15 @@ public class BugsnagTest {
         assertTrue(bugsnag.notify(new RuntimeException()));
         assertTrue(bugsnag.notify(new TestException()));
 
-        // Ignore just RuntimeException (escape dots for regex)
-        bugsnag.setDiscardClasses(Pattern.quote(RuntimeException.class.getName()));
+        // Ignore just RuntimeException (compile pattern for exact match)
+        bugsnag.setDiscardClasses(Pattern.compile(Pattern.quote(RuntimeException.class.getName())));
         assertFalse(bugsnag.notify(new RuntimeException()));
         assertTrue(bugsnag.notify(new TestException()));
 
-        // Ignore both (escape special regex characters)
+        // Ignore both (compile patterns for exact matches)
         bugsnag.setDiscardClasses(
-            Pattern.quote(RuntimeException.class.getName()),
-            Pattern.quote(TestException.class.getName())
+            Pattern.compile(Pattern.quote(RuntimeException.class.getName())),
+            Pattern.compile(Pattern.quote(TestException.class.getName()))
         );
         assertFalse(bugsnag.notify(new RuntimeException()));
         assertFalse(bugsnag.notify(new TestException()));

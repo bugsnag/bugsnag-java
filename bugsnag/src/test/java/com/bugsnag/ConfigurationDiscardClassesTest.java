@@ -7,6 +7,8 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.regex.Pattern;
+
 /**
  * Test for Configuration.shouldIgnoreClass with regex pattern matching
  */
@@ -21,7 +23,7 @@ public class ConfigurationDiscardClassesTest {
 
     @Test
     public void testExactMatch() {
-        config.setDiscardClasses(new String[] {"com.example.CustomException"});
+        config.setDiscardClasses(new Pattern[] {Pattern.compile("com.example.CustomException")});
 
         assertTrue(config.shouldIgnoreClass("com.example.CustomException"));
         assertFalse(config.shouldIgnoreClass("com.example.OtherException"));
@@ -29,7 +31,7 @@ public class ConfigurationDiscardClassesTest {
 
     @Test
     public void testWildcardMatch() {
-        config.setDiscardClasses(new String[] {"com\\.example\\..*"});
+        config.setDiscardClasses(new Pattern[] {Pattern.compile("com\\.example\\..*")});
 
         assertTrue(config.shouldIgnoreClass("com.example.CustomException"));
         assertTrue(config.shouldIgnoreClass("com.example.OtherException"));
@@ -39,7 +41,7 @@ public class ConfigurationDiscardClassesTest {
 
     @Test
     public void testMultipleWildcards() {
-        config.setDiscardClasses(new String[] {"com\\..*\\.Exception"});
+        config.setDiscardClasses(new Pattern[] {Pattern.compile("com\\..*\\.Exception")});
 
         assertTrue(config.shouldIgnoreClass("com.example.Exception"));
         assertTrue(config.shouldIgnoreClass("com.other.Exception"));
@@ -48,7 +50,7 @@ public class ConfigurationDiscardClassesTest {
 
     @Test
     public void testQuestionMarkWildcard() {
-        config.setDiscardClasses(new String[] {"com\\.example\\.Exception."});
+        config.setDiscardClasses(new Pattern[] {Pattern.compile("com\\.example\\.Exception.")});
 
         assertTrue(config.shouldIgnoreClass("com.example.Exception1"));
         assertTrue(config.shouldIgnoreClass("com.example.ExceptionX"));
@@ -58,10 +60,10 @@ public class ConfigurationDiscardClassesTest {
 
     @Test
     public void testMultiplePatterns() {
-        config.setDiscardClasses(new String[] {
-            "java\\.io\\..*",
-            "com\\.example\\.CustomException",
-            "org\\..*\\.SpecialException"
+        config.setDiscardClasses(new Pattern[] {
+            Pattern.compile("java\\.io\\..*"),
+            Pattern.compile("com\\.example\\.CustomException"),
+            Pattern.compile("org\\..*\\.SpecialException")
         });
 
         assertTrue(config.shouldIgnoreClass("java.io.IOException"));
@@ -74,20 +76,23 @@ public class ConfigurationDiscardClassesTest {
 
     @Test
     public void testGetDiscardClassesReturnsOriginalPatterns() {
-        String[] patterns = new String[] {"com\\.example\\..*", "java\\.io\\.IOException"};
+        Pattern[] patterns = new Pattern[] {
+            Pattern.compile("com\\.example\\..*"),
+            Pattern.compile("java\\.io\\.IOException")
+        };
         config.setDiscardClasses(patterns);
 
-        String[] retrieved = config.getDiscardClasses();
+        Pattern[] retrieved = config.getDiscardClasses();
         assertEquals(2, retrieved.length);
 
-        // Check that patterns are returned (not regex)
+        // Check that patterns are returned
         boolean hasWildcard = false;
         boolean hasExact = false;
-        for (String pattern : retrieved) {
-            if (pattern.equals("com\\.example\\..*")) {
+        for (Pattern pattern : retrieved) {
+            if (pattern.pattern().equals("com\\.example\\..*")) {
                 hasWildcard = true;
             }
-            if (pattern.equals("java\\.io\\.IOException")) {
+            if (pattern.pattern().equals("java\\.io\\.IOException")) {
                 hasExact = true;
             }
         }
@@ -97,7 +102,7 @@ public class ConfigurationDiscardClassesTest {
 
     @Test
     public void testEmptyAndNullPatterns() {
-        config.setDiscardClasses(new String[] {});
+        config.setDiscardClasses(new Pattern[] {});
         assertFalse(config.shouldIgnoreClass("com.example.Exception"));
 
         config.setDiscardClasses(null);
@@ -107,7 +112,7 @@ public class ConfigurationDiscardClassesTest {
     @Test
     public void testSpecialCharactersAreEscaped() {
         // In regex, $ is a special character (end of line), so it needs to be escaped
-        config.setDiscardClasses(new String[] {"com\\.example\\.Exception\\$Inner"});
+        config.setDiscardClasses(new Pattern[] {Pattern.compile("com\\.example\\.Exception\\$Inner")});
 
         assertTrue(config.shouldIgnoreClass("com.example.Exception$Inner"));
         assertFalse(config.shouldIgnoreClass("com.example.ExceptionXInner"));

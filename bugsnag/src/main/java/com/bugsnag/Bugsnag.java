@@ -22,6 +22,7 @@ import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+import java.util.regex.Pattern;
 
 public class Bugsnag implements Closeable {
     private static final Logger LOGGER = LoggerFactory.getLogger(Bugsnag.class);
@@ -241,10 +242,11 @@ public class Bugsnag implements Closeable {
 
     /**
      * Set which exception classes should be ignored (not sent) by Bugsnag.
+     * Uses Java regex patterns for matching exception class names.
      *
-     * @param discardClasses a list of exception classes to ignore
+     * @param discardClasses compiled regex patterns to match exception class names
      */
-    public void setDiscardClasses(String... discardClasses) {
+    public void setDiscardClasses(Pattern... discardClasses) {
         config.setDiscardClasses(discardClasses);
     }
 

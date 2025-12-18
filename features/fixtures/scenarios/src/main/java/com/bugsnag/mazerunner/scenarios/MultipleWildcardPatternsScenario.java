@@ -2,6 +2,8 @@ package com.bugsnag.mazerunner.scenarios;
 
 import com.bugsnag.Bugsnag;
 
+import java.util.regex.Pattern;
+
 /**
  * Tests multiple regex patterns working together.
  */
@@ -15,9 +17,9 @@ public class MultipleWildcardPatternsScenario extends Scenario {
     public void run() {
         // Set multiple regex patterns: matching specific packages and classes
         bugsnag.setDiscardClasses(
-            "java\\.io\\..*",                           // All java.io exceptions
-            "java\\.lang\\.IllegalStateException",      // Exact match
-            "java\\.lang\\.Illegal.*"                   // All IllegalXException classes
+            Pattern.compile("java\\.io\\..*"),                           // All java.io exceptions
+            Pattern.compile("java\\.lang\\.IllegalStateException"),      // Exact match
+            Pattern.compile("java\\.lang\\.Illegal.*")                   // All IllegalXException classes
         );
 
         // These should all be ignored

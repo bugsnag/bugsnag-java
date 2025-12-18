@@ -257,28 +257,47 @@ public class Configuration {
         this.redactedKeys = redactedKeys;
     }
 
-    public String[] getDiscardClasses() {
-        return discardClassStringPatterns.toArray(new String[0]);
+    public Pattern[] getDiscardClasses() {
+        return discardClassRegexPatterns.toArray(new Pattern[0]);
     }
 
     /**
      * Set which exception classes should be ignored (not sent) by Bugsnag.
-     * Supports Java regex patterns for matching exception class names.
-     * For exact matches, use the fully qualified class name without regex metacharacters.
-     * For pattern matching, use standard Java regex syntax (e.g., "java\\.io\\..*" to match all java.io exceptions).
+     * Uses Java regex patterns for matching exception class names.
      *
-     * @param discardClasses a list of exception class name patterns (regex) to ignore
+     * @param discardClasses a list of compiled regex patterns to match exception class names
      */
-    public void setDiscardClasses(String[] discardClasses) {
+    public void setDiscardClasses(Pattern[] discardClasses) {
         this.discardClassRegexPatterns.clear();
         this.discardClassStringPatterns.clear();
         if (discardClasses != null) {
-            for (String pattern : discardClasses) {
-                if (pattern != null && !pattern.isEmpty()) {
+            for (Pattern pattern : discardClasses) {
+                if (pattern != null) {
+                    // Store pattern
+                    this.discardClassRegexPatterns.add(pattern);
+                    // Store string representation for serialization
+                    this.discardClassStringPatterns.add(pattern.pattern());
+                }
+            }
+        }
+    }
+
+    /**
+     * Set which exception classes should be ignored (not sent) by Bugsnag.
+     * Compiles the provided strings as Java regex patterns.
+     *
+     * @param discardClasses a list of regex pattern strings to match exception class names
+     */
+    public void setDiscardClassesFromStrings(String[] discardClasses) {
+        this.discardClassRegexPatterns.clear();
+        this.discardClassStringPatterns.clear();
+        if (discardClasses != null) {
+            for (String patternStr : discardClasses) {
+                if (patternStr != null && !patternStr.isEmpty()) {
                     // Store original pattern string
-                    this.discardClassStringPatterns.add(pattern);
+                    this.discardClassStringPatterns.add(patternStr);
                     // Compile as regex pattern
-                    this.discardClassRegexPatterns.add(Pattern.compile(pattern));
+                    this.discardClassRegexPatterns.add(Pattern.compile(patternStr));
                 }
             }
         }

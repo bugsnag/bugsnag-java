@@ -262,7 +262,12 @@ public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
             bugsnag.setRedactedKeys(redactedKeys.toArray(new String[0]));
         }
 
-        bugsnag.setDiscardClasses(discardClasses.toArray(new String[0]));
+        Pattern[] discardPatterns = new Pattern[discardClasses.size()];
+        int idx = 0;
+        for (String pattern : discardClasses) {
+            discardPatterns[idx++] = Pattern.compile(pattern);
+        }
+        bugsnag.setDiscardClasses(discardPatterns);
 
         if (!enabledReleaseStages.isEmpty()) {
             bugsnag.setEnabledReleaseStages(enabledReleaseStages.toArray(new String[0]));
@@ -406,24 +411,34 @@ public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
     }
 
     /**
-     * @see Bugsnag#setDiscardClasses(String...)
+     * @see Bugsnag#setDiscardClasses(Pattern...)
      */
     public void setDiscardClass(String discardClass) {
         this.discardClasses.add(discardClass);
 
         if (bugsnag != null) {
-            bugsnag.setDiscardClasses(this.discardClasses.toArray(new String[0]));
+            Pattern[] discardPatterns = new Pattern[this.discardClasses.size()];
+            int idx = 0;
+            for (String pattern : this.discardClasses) {
+                discardPatterns[idx++] = Pattern.compile(pattern);
+            }
+            bugsnag.setDiscardClasses(discardPatterns);
         }
     }
 
     /**
-     * @see Bugsnag#setDiscardClasses(String...)
+     * @see Bugsnag#setDiscardClasses(Pattern...)
      */
     public void setDiscardClasses(String discardClasses) {
         this.discardClasses.addAll(split(discardClasses));
 
         if (bugsnag != null) {
-            bugsnag.setDiscardClasses(this.discardClasses.toArray(new String[0]));
+            Pattern[] discardPatterns = new Pattern[this.discardClasses.size()];
+            int idx = 0;
+            for (String pattern : this.discardClasses) {
+                discardPatterns[idx++] = Pattern.compile(pattern);
+            }
+            bugsnag.setDiscardClasses(discardPatterns);
         }
     }
 

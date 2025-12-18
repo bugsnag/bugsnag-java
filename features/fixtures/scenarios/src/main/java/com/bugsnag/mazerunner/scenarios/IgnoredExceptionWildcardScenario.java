@@ -2,6 +2,8 @@ package com.bugsnag.mazerunner.scenarios;
 
 import com.bugsnag.Bugsnag;
 
+import java.util.regex.Pattern;
+
 /**
  * Attempts to send ignored handled exceptions using regex patterns to Bugsnag,
  * which should not result in any operation.
@@ -15,7 +17,7 @@ public class IgnoredExceptionWildcardScenario extends Scenario {
     @Override
     public void run() {
         // Use regex pattern to ignore all java.lang exceptions
-        bugsnag.setDiscardClasses("java\\.lang\\..*");
+        bugsnag.setDiscardClasses(Pattern.compile("java\\.lang\\..*"));
 
         // These should all be ignored due to the regex pattern
         bugsnag.notify(new RuntimeException("Should never appear"));
