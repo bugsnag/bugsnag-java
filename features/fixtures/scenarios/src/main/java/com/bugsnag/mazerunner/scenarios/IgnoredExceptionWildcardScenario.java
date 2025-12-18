@@ -22,7 +22,7 @@ public class IgnoredExceptionWildcardScenario extends Scenario {
         bugsnag.notify(new IllegalArgumentException("Should never appear"));
         bugsnag.notify(new IllegalStateException("Should never appear"));
         
-        // This should also be sent but will be ignored due to pattern
+        // This is also ignored due to the wildcard pattern
         try {
             throw new NullPointerException("Should never appear");
         } catch (Exception e) {
