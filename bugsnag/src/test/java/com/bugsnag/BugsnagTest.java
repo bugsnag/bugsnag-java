@@ -23,6 +23,7 @@ import java.net.Proxy;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 public class BugsnagTest {
 
@@ -61,13 +62,16 @@ public class BugsnagTest {
         assertTrue(bugsnag.notify(new RuntimeException()));
         assertTrue(bugsnag.notify(new TestException()));
 
-        // Ignore just RuntimeException
-        bugsnag.setDiscardClasses(RuntimeException.class.getName());
+        // Ignore just RuntimeException (escape dots for regex)
+        bugsnag.setDiscardClasses(Pattern.quote(RuntimeException.class.getName()));
         assertFalse(bugsnag.notify(new RuntimeException()));
         assertTrue(bugsnag.notify(new TestException()));
 
-        // Ignore both
-        bugsnag.setDiscardClasses(RuntimeException.class.getName(), TestException.class.getName());
+        // Ignore both (escape special regex characters)
+        bugsnag.setDiscardClasses(
+            Pattern.quote(RuntimeException.class.getName()),
+            Pattern.quote(TestException.class.getName())
+        );
         assertFalse(bugsnag.notify(new RuntimeException()));
         assertFalse(bugsnag.notify(new TestException()));
     }

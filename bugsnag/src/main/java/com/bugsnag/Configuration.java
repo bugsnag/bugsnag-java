@@ -263,10 +263,11 @@ public class Configuration {
 
     /**
      * Set which exception classes should be ignored (not sent) by Bugsnag.
-     * Supports glob-style wildcards: * (matches any characters, including package
-     * separators '.') and ? (matches a single character).
+     * Supports Java regex patterns for matching exception class names.
+     * For exact matches, use the fully qualified class name without regex metacharacters.
+     * For pattern matching, use standard Java regex syntax (e.g., "java\\.io\\..*" to match all java.io exceptions).
      *
-     * @param discardClasses a list of exception class patterns to ignore
+     * @param discardClasses a list of exception class name patterns (regex) to ignore
      */
     public void setDiscardClasses(String[] discardClasses) {
         this.discardClassRegexPatterns.clear();
@@ -276,60 +277,11 @@ public class Configuration {
                 if (pattern != null && !pattern.isEmpty()) {
                     // Store original pattern string
                     this.discardClassStringPatterns.add(pattern);
-                    // Convert glob-style wildcards to regex
-                    String regex = convertToRegex(pattern);
-                    this.discardClassRegexPatterns.add(Pattern.compile(regex));
+                    // Compile as regex pattern
+                    this.discardClassRegexPatterns.add(Pattern.compile(pattern));
                 }
             }
         }
-    }
-
-    /**
-     * Converts a glob-style pattern to a regex pattern.
-     * Supports * (matches any characters) and ? (matches single character).
-     * If the pattern doesn't contain wildcards, it's treated as an exact match.
-     *
-     * @param pattern the glob-style pattern
-     * @return the regex pattern
-     */
-    private String convertToRegex(String pattern) {
-        // If the pattern doesn't contain wildcards, match exactly
-        if (!pattern.contains("*") && !pattern.contains("?")) {
-            return Pattern.quote(pattern);
-        }
-
-        StringBuilder regex = new StringBuilder();
-        for (int i = 0; i < pattern.length(); i++) {
-            char ch = pattern.charAt(i);
-            switch (ch) {
-                case '*':
-                    regex.append(".*");
-                    break;
-                case '?':
-                    regex.append(".");
-                    break;
-                case '.':
-                case '(':
-                case ')':
-                case '+':
-                case '|':
-                case '^':
-                case '$':
-                case '@':
-                case '%':
-                case '[':
-                case ']':
-                case '{':
-                case '}':
-                case '\\':
-                    regex.append('\\').append(ch);
-                    break;
-                default:
-                    regex.append(ch);
-                    break;
-            }
-        }
-        return regex.toString();
     }
 
     public Set<String> getEnabledReleaseStages() {
