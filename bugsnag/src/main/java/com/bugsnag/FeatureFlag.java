@@ -14,21 +14,12 @@ public class FeatureFlag {
     private final String variant;
 
     /**
-     * Create a feature flag with a name and no variant.
-     *
-     * @param name the name of the feature flag
-     */
-    public FeatureFlag(String name) {
-        this(name, null);
-    }
-
-    /**
      * Create a feature flag with a name and variant.
      *
-     * @param name the name of the feature flag
+     * @param name    the name of the feature flag
      * @param variant the variant of the feature flag (can be null)
      */
-    public FeatureFlag(String name, String variant) {
+    private FeatureFlag(String name, String variant) {
         if (name == null || name.isEmpty()) {
             throw new IllegalArgumentException("Feature flag name cannot be null or empty");
         }
@@ -76,5 +67,32 @@ public class FeatureFlag {
     @Override
     public String toString() {
         return "FeatureFlag{name='" + name + "', variant='" + variant + "'}";
+    }
+
+    /**
+     * Create a feature flag with a name and no vairant.
+     *
+     * @param name the name of the feature flag
+     */
+    public static FeatureFlag of(String name) {
+        if (name == null || name.isEmpty()) {
+            return null;
+        }
+
+        return new FeatureFlag(name, null);
+    }
+
+    /**
+     * Create a feature flag with a name and variant.
+     *
+     * @param name    the name of the feature flag
+     * @param variant the variant of the feature flag (can be null)
+     */
+    public static FeatureFlag of(String name, String variant) {
+        if (name == null || name.isEmpty()) {
+            return null;
+        }
+
+        return new FeatureFlag(name, variant);
     }
 }

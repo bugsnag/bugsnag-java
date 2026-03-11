@@ -53,8 +53,8 @@ public class ReportFeatureFlagTest {
     @Test
     public void testAddFeatureFlags() {
         List<FeatureFlag> flagsToAdd = new ArrayList<FeatureFlag>();
-        flagsToAdd.add(new FeatureFlag("flag1", "variant-a"));
-        flagsToAdd.add(new FeatureFlag("flag2", "variant-b"));
+        flagsToAdd.add(FeatureFlag.of("flag1", "variant-a"));
+        flagsToAdd.add(FeatureFlag.of("flag2", "variant-b"));
 
         Report report = bugsnag.buildReport(new RuntimeException("Test"));
         report.addFeatureFlags(flagsToAdd);

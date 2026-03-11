@@ -48,8 +48,8 @@ public class ConfigurationFeatureFlagTest {
     @Test
     public void testAddFeatureFlags() {
         List<FeatureFlag> flagsToAdd = new ArrayList<FeatureFlag>();
-        flagsToAdd.add(new FeatureFlag("flag1", "variant-a"));
-        flagsToAdd.add(new FeatureFlag("flag2", "variant-b"));
+        flagsToAdd.add(FeatureFlag.of("flag1", "variant-a"));
+        flagsToAdd.add(FeatureFlag.of("flag2", "variant-b"));
 
         config.addFeatureFlags(flagsToAdd);
 

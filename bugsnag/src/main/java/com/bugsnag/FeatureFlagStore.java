@@ -5,6 +5,8 @@ import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 /**
  * Internal storage for feature flags that maintains insertion order.
@@ -13,19 +15,25 @@ import java.util.Map;
 class FeatureFlagStore {
     // LinkedHashMap maintains insertion order
     private final Map<String, String> flags = new LinkedHashMap<String, String>();
+    private final ReadWriteLock lock = new ReentrantReadWriteLock();
 
     /**
      * Add a feature flag with the specified name and variant.
      * If the name already exists, the variant will be updated without changing position.
      *
-     * @param name the feature flag name
+     * @param name    the feature flag name
      * @param variant the feature flag variant (can be null)
      */
-    synchronized void addFeatureFlag(String name, String variant) {
+    void addFeatureFlag(String name, String variant) {
         if (name == null || name.isEmpty()) {
             return;
         }
-        flags.put(name, variant);
+        lock.writeLock().lock();
+        try {
+            flags.put(name, variant);
+        } finally {
+            lock.writeLock().unlock();
+        }
     }
 
     /**
@@ -34,14 +42,20 @@ class FeatureFlagStore {
      *
      * @param featureFlags the feature flags to add
      */
-    synchronized void addFeatureFlags(Collection<FeatureFlag> featureFlags) {
-        if (featureFlags == null) {
+    void addFeatureFlags(Collection<FeatureFlag> featureFlags) {
+        if (featureFlags == null || featureFlags.isEmpty()) {
             return;
         }
-        for (FeatureFlag flag : featureFlags) {
-            if (flag != null) {
-                addFeatureFlag(flag.getName(), flag.getVariant());
+
+        lock.writeLock().lock();
+        try {
+            for (FeatureFlag flag : featureFlags) {
+                if (flag != null) {
+                    flags.put(flag.getName(), flag.getVariant());
+                }
             }
+        } finally {
+            lock.writeLock().unlock();
         }
     }
 
@@ -50,17 +64,27 @@ class FeatureFlagStore {
      *
      * @param name the feature flag name to remove
      */
-    synchronized void clearFeatureFlag(String name) {
+    void clearFeatureFlag(String name) {
         if (name != null) {
-            flags.remove(name);
+            lock.writeLock().lock();
+            try {
+                flags.remove(name);
+            } finally {
+                lock.writeLock().unlock();
+            }
         }
     }
 
     /**
      * Remove all feature flags.
      */
-    synchronized void clearFeatureFlags() {
-        flags.clear();
+    void clearFeatureFlags() {
+        lock.writeLock().lock();
+        try {
+            flags.clear();
+        } finally {
+            lock.writeLock().unlock();
+        }
     }
 
     /**
@@ -68,12 +92,20 @@ class FeatureFlagStore {
      *
      * @return an unmodifiable list of feature flags
      */
-    synchronized List<FeatureFlag> toList() {
-        List<FeatureFlag> result = new ArrayList<FeatureFlag>(flags.size());
-        for (Map.Entry<String, String> entry : flags.entrySet()) {
-            result.add(new FeatureFlag(entry.getKey(), entry.getValue()));
+    List<FeatureFlag> toList() {
+        lock.readLock().lock();
+        try {
+            List<FeatureFlag> result = new ArrayList<>(flags.size());
+            for (Map.Entry<String, String> entry : flags.entrySet()) {
+                FeatureFlag flag = FeatureFlag.of(entry.getKey(), entry.getValue());
+                if (flag != null) {
+                    result.add(flag);
+                }
+            }
+            return result;
+        } finally {
+            lock.readLock().unlock();
         }
-        return result;
     }
 
     /**
@@ -81,9 +113,14 @@ class FeatureFlagStore {
      *
      * @return a new FeatureFlagStore with the same flags
      */
-    synchronized FeatureFlagStore copy() {
+    FeatureFlagStore copy() {
         FeatureFlagStore copy = new FeatureFlagStore();
-        copy.flags.putAll(this.flags);
+        lock.readLock().lock();
+        try {
+            copy.flags.putAll(this.flags);
+        } finally {
+            lock.readLock().unlock();
+        }
         return copy;
     }
 
@@ -94,14 +131,29 @@ class FeatureFlagStore {
      *
      * @param other the other store to merge from
      */
-    synchronized void merge(FeatureFlagStore other) {
-        if (other == null) {
+    void merge(FeatureFlagStore other) {
+        if (other == null || other == this) {
             return;
         }
-        synchronized (other) {
-            for (Map.Entry<String, String> entry : other.flags.entrySet()) {
-                flags.put(entry.getKey(), entry.getValue());
+
+        // Warning: this *looks* like a classic deadlock pattern, but because this method is only ever called
+        // with isolated copies of FeatureFlagStore, the locks will never actually be contended.
+        // If this method were to be called with two live stores, then it would be possible for a deadlock to occur.
+        other.lock.readLock().lock();
+        try {
+            // we don't use other.size() because it grabs a lock.readLock() again
+            if (other.flags.isEmpty()) {
+                return;
             }
+
+            lock.writeLock().lock();
+            try {
+                flags.putAll(other.flags);
+            } finally {
+                lock.writeLock().unlock();
+            }
+        } finally {
+            other.lock.readLock().unlock();
         }
     }
 
@@ -110,7 +162,12 @@ class FeatureFlagStore {
      *
      * @return the number of feature flags
      */
-    synchronized int size() {
-        return flags.size();
+    int size() {
+        lock.readLock().lock();
+        try {
+            return flags.size();
+        } finally {
+            lock.readLock().unlock();
+        }
     }
 }
