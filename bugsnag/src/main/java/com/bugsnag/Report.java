@@ -5,6 +5,7 @@ import com.bugsnag.serialization.Expose;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -25,6 +26,7 @@ public class Report {
     private boolean shouldCancel = false;
     private Map<String, Object> sessionMap;
     private final List<ThreadState> threadStates;
+    private final FeatureFlagStore featureFlagStore;
 
     /**
      * Create a report for the error.
@@ -34,16 +36,27 @@ public class Report {
      */
     protected Report(Configuration config, Throwable throwable) {
         this(config, throwable, HandledState.newInstance(
-                HandledState.SeverityReasonType.REASON_HANDLED_EXCEPTION), Thread.currentThread());
+                HandledState.SeverityReasonType.REASON_HANDLED_EXCEPTION), Thread.currentThread(), null);
     }
 
     Report(Configuration config, Throwable throwable,
             HandledState handledState, Thread currentThread) {
+        this(config, throwable, handledState, currentThread, null);
+    }
+
+    Report(Configuration config, Throwable throwable,
+            HandledState handledState, Thread currentThread, FeatureFlagStore clientFeatureFlagStore) {
         this.config = config;
         this.exception = new Exception(config, throwable);
         this.handledState = handledState;
         this.severity = handledState.getOriginalSeverity();
         diagnostics = new Diagnostics(this.config);
+
+        // Initialize feature flags: start with config, then merge client flags
+        featureFlagStore = config.copyFeatureFlagStore();
+        if (clientFeatureFlagStore != null) {
+            featureFlagStore.merge(clientFeatureFlagStore);
+        }
 
         if (config.isSendThreads()) {
             Throwable exc = handledState.isUnhandled() ? throwable : null;
@@ -338,6 +351,73 @@ public class Report {
 
     void mergeMetadata(Metadata metadata) {
         diagnostics.metadata.merge(metadata);
+    }
+
+    /**
+     * Get the list of feature flags for this report.
+     * The order reflects when flags were first added across Configuration, Client, and Event scopes.
+     *
+     * @return an unmodifiable list of feature flags
+     */
+    @Expose
+    public List<FeatureFlag> getFeatureFlags() {
+        return featureFlagStore.toList();
+    }
+
+    /**
+     * Add a feature flag with the specified name and variant.
+     * If the name already exists, the variant will be updated.
+     *
+     * @param name the feature flag name
+     * @param variant the feature flag variant (can be null)
+     * @return the modified report
+     */
+    public Report addFeatureFlag(String name, String variant) {
+        featureFlagStore.addFeatureFlag(name, variant);
+        return this;
+    }
+
+    /**
+     * Add a feature flag with the specified name and no variant.
+     *
+     * @param name the feature flag name
+     * @return the modified report
+     */
+    public Report addFeatureFlag(String name) {
+        return addFeatureFlag(name, null);
+    }
+
+    /**
+     * Add multiple feature flags.
+     * If any names already exist, their variants will be updated.
+     *
+     * @param featureFlags the feature flags to add
+     * @return the modified report
+     */
+    public Report addFeatureFlags(Collection<FeatureFlag> featureFlags) {
+        featureFlagStore.addFeatureFlags(featureFlags);
+        return this;
+    }
+
+    /**
+     * Remove the feature flag with the specified name.
+     *
+     * @param name the feature flag name to remove
+     * @return the modified report
+     */
+    public Report clearFeatureFlag(String name) {
+        featureFlagStore.clearFeatureFlag(name);
+        return this;
+    }
+
+    /**
+     * Remove all feature flags.
+     *
+     * @return the modified report
+     */
+    public Report clearFeatureFlags() {
+        featureFlagStore.clearFeatureFlags();
+        return this;
     }
 
     static class SeverityReason {

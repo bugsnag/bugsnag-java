@@ -56,6 +56,9 @@ public class AppenderTest {
         originalSessionDelivery = bugsnag.getSessionDelivery();
         sessionDelivery = new StubSessionDelivery();
         bugsnag.setSessionDelivery(sessionDelivery);
+
+        // Clear any feature flags from previous tests
+        appender.clearFeatureFlags();
     }
 
     /**
@@ -413,5 +416,99 @@ public class AppenderTest {
     @SuppressWarnings(value = "unchecked")
     private Map<String, Object> getMetadataMap(Notification notification, String key) {
         return ((Map<String, Object>) notification.getEvents().get(0).getMetadata().get(key));
+    }
+
+    @Test
+    public void testFeatureFlagConfiguration() {
+        // Add feature flags programmatically (XML configuration will be tested separately)
+        appender.addFeatureFlag("sample_group", "a");
+        appender.addFeatureFlag("another_feature");
+
+        // Send a log message
+        LOGGER.warn("Exception with feature flags", new RuntimeException("test"));
+
+        // Check that a report was sent to Bugsnag
+        assertEquals(1, delivery.getNotifications().size());
+
+        Notification notification = delivery.getNotifications().get(0);
+        List<FeatureFlag> featureFlags = notification.getEvents().get(0).getFeatureFlags();
+
+        // Check that feature flags are present
+        assertEquals(2, featureFlags.size());
+
+        // Check first feature flag
+        assertEquals("sample_group", featureFlags.get(0).getName());
+        assertEquals("a", featureFlags.get(0).getVariant());
+
+        // Check second feature flag
+        assertEquals("another_feature", featureFlags.get(1).getName());
+        assertEquals(null, featureFlags.get(1).getVariant());
+    }
+
+    @Test
+    public void testAddFeatureFlagProgrammatically() {
+        // Add a feature flag programmatically
+        appender.addFeatureFlag("runtime_feature", "variant_b");
+
+        // Send a log message
+        LOGGER.warn("Exception with runtime feature flag", new RuntimeException("test"));
+
+        // Check that a report was sent to Bugsnag
+        assertEquals(1, delivery.getNotifications().size());
+
+        Notification notification = delivery.getNotifications().get(0);
+        List<FeatureFlag> featureFlags = notification.getEvents().get(0).getFeatureFlags();
+
+        // Should have 1 programmatic feature flag
+        assertEquals(1, featureFlags.size());
+
+        // Check the programmatically added flag is present
+        assertEquals("runtime_feature", featureFlags.get(0).getName());
+        assertEquals("variant_b", featureFlags.get(0).getVariant());
+    }
+
+    @Test
+    public void testClearFeatureFlag() {
+        // Add some feature flags first
+        appender.addFeatureFlag("sample_group", "a");
+        appender.addFeatureFlag("another_feature");
+
+        // Clear a specific feature flag
+        appender.clearFeatureFlag("sample_group");
+
+        // Send a log message
+        LOGGER.warn("Exception after clearing feature flag", new RuntimeException("test"));
+
+        // Check that a report was sent to Bugsnag
+        assertEquals(1, delivery.getNotifications().size());
+
+        Notification notification = delivery.getNotifications().get(0);
+        List<FeatureFlag> featureFlags = notification.getEvents().get(0).getFeatureFlags();
+
+        // Should only have 1 feature flag (another_feature) remaining
+        assertEquals(1, featureFlags.size());
+        assertEquals("another_feature", featureFlags.get(0).getName());
+    }
+
+    @Test
+    public void testClearAllFeatureFlags() {
+        // Add some feature flags first
+        appender.addFeatureFlag("sample_group", "a");
+        appender.addFeatureFlag("another_feature");
+
+        // Clear all feature flags
+        appender.clearFeatureFlags();
+
+        // Send a log message
+        LOGGER.warn("Exception after clearing all feature flags", new RuntimeException("test"));
+
+        // Check that a report was sent to Bugsnag
+        assertEquals(1, delivery.getNotifications().size());
+
+        Notification notification = delivery.getNotifications().get(0);
+        List<FeatureFlag> featureFlags = notification.getEvents().get(0).getFeatureFlags();
+
+        // Should have no feature flags
+        assertEquals(0, featureFlags.size());
     }
 }

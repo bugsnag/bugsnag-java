@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import java.io.Closeable;
 import java.lang.Thread.UncaughtExceptionHandler;
 import java.net.Proxy;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.Set;
@@ -57,6 +58,7 @@ public class Bugsnag implements Closeable {
 
     private Configuration config;
     private final SessionTracker sessionTracker;
+    private final FeatureFlagStore featureFlagStore;
 
     private static final ThreadLocal<Metadata> THREAD_METADATA = new ThreadLocal<Metadata>() {
         @Override
@@ -91,6 +93,7 @@ public class Bugsnag implements Closeable {
 
         config = new Configuration(apiKey);
         sessionTracker = new SessionTracker(config);
+        featureFlagStore = config.copyFeatureFlagStore();
 
         // Automatically send unhandled exceptions to Bugsnag using this Bugsnag
         config.setSendUncaughtExceptions(sendUncaughtExceptions);
@@ -348,7 +351,9 @@ public class Bugsnag implements Closeable {
      * @see #notify(com.bugsnag.Report)
      */
     public Report buildReport(Throwable throwable) {
-        return new Report(config, throwable);
+        HandledState handledState = HandledState.newInstance(
+                HandledState.SeverityReasonType.REASON_HANDLED_EXCEPTION);
+        return new Report(config, throwable, handledState, Thread.currentThread(), featureFlagStore);
     }
 
     /**
@@ -404,7 +409,7 @@ public class Bugsnag implements Closeable {
 
         HandledState handledState = HandledState.newInstance(
                 HandledState.SeverityReasonType.REASON_USER_SPECIFIED, severity);
-        Report report = new Report(config, throwable, handledState, Thread.currentThread());
+        Report report = new Report(config, throwable, handledState, Thread.currentThread(), featureFlagStore);
         return notify(report, callback);
     }
 
@@ -422,7 +427,7 @@ public class Bugsnag implements Closeable {
     }
 
     boolean notify(Throwable throwable, HandledState handledState, Thread currentThread) {
-        Report report = new Report(config, throwable, handledState, currentThread);
+        Report report = new Report(config, throwable, handledState, currentThread, featureFlagStore);
         return notify(report, null);
     }
 
@@ -678,5 +683,60 @@ public class Bugsnag implements Closeable {
 
     void addOnSession(OnSession onSession) {
         sessionTracker.addOnSession(onSession);
+    }
+
+    /**
+     * Add a feature flag with the specified name and variant.
+     * If the name already exists, the variant will be updated.
+     *
+     * @param name the feature flag name
+     * @param variant the feature flag variant (can be null)
+     */
+    public void addFeatureFlag(String name, String variant) {
+        featureFlagStore.addFeatureFlag(name, variant);
+    }
+
+    /**
+     * Add a feature flag with the specified name and no variant.
+     *
+     * @param name the feature flag name
+     */
+    public void addFeatureFlag(String name) {
+        addFeatureFlag(name, null);
+    }
+
+    /**
+     * Add multiple feature flags.
+     * If any names already exist, their variants will be updated.
+     *
+     * @param featureFlags the feature flags to add
+     */
+    public void addFeatureFlags(Collection<FeatureFlag> featureFlags) {
+        featureFlagStore.addFeatureFlags(featureFlags);
+    }
+
+    /**
+     * Remove the feature flag with the specified name.
+     *
+     * @param name the feature flag name to remove
+     */
+    public void clearFeatureFlag(String name) {
+        featureFlagStore.clearFeatureFlag(name);
+    }
+
+    /**
+     * Remove all feature flags.
+     */
+    public void clearFeatureFlags() {
+        featureFlagStore.clearFeatureFlags();
+    }
+
+    /**
+     * Get a copy of the feature flag store.
+     *
+     * @return a copy of the feature flag store
+     */
+    FeatureFlagStore copyFeatureFlagStore() {
+        return featureFlagStore.copy();
     }
 }

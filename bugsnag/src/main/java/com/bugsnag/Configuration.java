@@ -48,6 +48,7 @@ public class Configuration {
     Collection<Callback> callbacks = new ConcurrentLinkedQueue<Callback>();
     private final AtomicBoolean autoCaptureSessions = new AtomicBoolean(true);
     private final AtomicBoolean sendUncaughtExceptions = new AtomicBoolean(true);
+    private final FeatureFlagStore featureFlagStore = new FeatureFlagStore();
 
     Configuration(String apiKey) {
         this.apiKey = apiKey;
@@ -298,5 +299,60 @@ public class Configuration {
 
     public void setSerializer(Serializer serializer) {
         this.serializer = serializer;
+    }
+
+    /**
+     * Add a feature flag with the specified name and variant.
+     * If the name already exists, the variant will be updated.
+     *
+     * @param name the feature flag name
+     * @param variant the feature flag variant (can be null)
+     */
+    public void addFeatureFlag(String name, String variant) {
+        featureFlagStore.addFeatureFlag(name, variant);
+    }
+
+    /**
+     * Add a feature flag with the specified name and no variant.
+     *
+     * @param name the feature flag name
+     */
+    public void addFeatureFlag(String name) {
+        addFeatureFlag(name, null);
+    }
+
+    /**
+     * Add multiple feature flags.
+     * If any names already exist, their variants will be updated.
+     *
+     * @param featureFlags the feature flags to add
+     */
+    public void addFeatureFlags(Collection<FeatureFlag> featureFlags) {
+        featureFlagStore.addFeatureFlags(featureFlags);
+    }
+
+    /**
+     * Remove the feature flag with the specified name.
+     *
+     * @param name the feature flag name to remove
+     */
+    public void clearFeatureFlag(String name) {
+        featureFlagStore.clearFeatureFlag(name);
+    }
+
+    /**
+     * Remove all feature flags.
+     */
+    public void clearFeatureFlags() {
+        featureFlagStore.clearFeatureFlags();
+    }
+
+    /**
+     * Get a copy of the feature flag store.
+     *
+     * @return a copy of the feature flag store
+     */
+    FeatureFlagStore copyFeatureFlagStore() {
+        return featureFlagStore.copy();
     }
 }
