@@ -123,25 +123,25 @@ public class AppenderMetadataTest {
         // Check the metadata is set as expected
         // Should have both report and thread metadata
         Notification notification = delivery.getNotifications().get(0);
-        Report report = notification.getEvents().get(0);
+        Event event = notification.getEvents().get(0);
 
-        assertTrue(report.getMetadata().containsKey("report"));
-        assertTrue(report.getMetadata().containsKey("thread"));
+        assertTrue(event.getMetadata().containsKey("report"));
+        assertTrue(event.getMetadata().containsKey("thread"));
         assertEquals("some report value", getMetadataMap(notification, "report").get("some key"));
         assertEquals("some thread value", getMetadataMap(notification, "thread").get("some key"));
 
         // Should have just thread metadata
         notification = delivery.getNotifications().get(1);
-        report = notification.getEvents().get(0);
-        assertFalse(report.getMetadata().containsKey("report"));
-        assertTrue(report.getMetadata().containsKey("thread"));
+        event = notification.getEvents().get(0);
+        assertFalse(event.getMetadata().containsKey("report"));
+        assertTrue(event.getMetadata().containsKey("thread"));
         assertEquals("some thread value", getMetadataMap(notification, "thread").get("some key"));
 
         // Should have neither metadata
         notification = delivery.getNotifications().get(2);
-        report = notification.getEvents().get(0);
-        assertFalse(report.getMetadata().containsKey("report"));
-        assertFalse(report.getMetadata().containsKey("thread"));
+        event = notification.getEvents().get(0);
+        assertFalse(event.getMetadata().containsKey("report"));
+        assertFalse(event.getMetadata().containsKey("thread"));
     }
 
     @Test

@@ -1,7 +1,7 @@
 package com.bugsnag.callbacks;
 
 import com.bugsnag.Configuration;
-import com.bugsnag.Report;
+import com.bugsnag.Event;
 
 public class AppCallback implements Callback {
     private Configuration config;
@@ -11,17 +11,17 @@ public class AppCallback implements Callback {
     }
 
     @Override
-    public boolean onError(Report report) {
+    public boolean onError(Event event) {
         if (config.getAppType() != null) {
-            report.setAppInfo("type", config.getAppType());
+            event.setAppInfo("type", config.getAppType());
         }
 
         if (config.getAppVersion() != null) {
-            report.setAppInfo("version", config.getAppVersion());
+            event.setAppInfo("version", config.getAppVersion());
         }
 
         if (config.getReleaseStage() != null) {
-            report.setAppInfo("releaseStage", config.getReleaseStage());
+            event.setAppInfo("releaseStage", config.getReleaseStage());
         }
         return true;
     }

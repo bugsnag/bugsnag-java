@@ -138,19 +138,19 @@ public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
                         calculateSeverity(event),
                         new Callback() {
                             @Override
-                            public boolean onError(Report report) {
+                            public boolean onError(Event event) {
 
                                 // Add some data from the logging event
-                                report.addMetadata("Log event data",
+                                event.addMetadata("Log event data",
                                         "Message", event.getFormattedMessage());
-                                report.addMetadata("Log event data",
+                                event.addMetadata("Log event data",
                                         "Logger name", event.getLoggerName());
 
                                 // Add details from the logging context to the event
-                                populateContextData(report, event);
+                                populateContextData(event, event);
 
                                 if (reportCallback != null) {
-                                    boolean proceed = reportCallback.onError(report);
+                                    boolean proceed = reportCallback.onError(event);
                                     if (!proceed) {
                                         return false; // suppress delivery
                                     }
@@ -168,7 +168,7 @@ public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
      * @param report The report being sent to Bugsnag
      * @param event The logging event
      */
-    private void populateContextData(Report report, ILoggingEvent event) {
+    private void populateContextData(Event report, ILoggingEvent event) {
         Map<String, String> propertyMap = event.getMDCPropertyMap();
 
         if (propertyMap != null) {
@@ -283,12 +283,12 @@ public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
         // Add a callback to put global metadata on every report
         bugsnag.addCallback(new Callback() {
             @Override
-            public boolean onError(Report report) {
+            public boolean onError(Event event) {
 
                 for (LogbackMetadata metadata : globalMetadata) {
                     for (LogbackMetadataTab tab : metadata.getTabs()) {
                         for (LogbackMetadataKey key : tab.getKeys()) {
-                            report.addMetadata(tab.getName(),
+                            event.addMetadata(tab.getName(),
                                     key.getName(),
                                     key.getValue());
                         }

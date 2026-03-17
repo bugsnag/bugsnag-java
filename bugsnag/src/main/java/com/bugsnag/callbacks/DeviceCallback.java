@@ -1,6 +1,6 @@
 package com.bugsnag.callbacks;
 
-import com.bugsnag.Report;
+import com.bugsnag.Event;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -84,8 +84,8 @@ public class DeviceCallback implements Callback {
     }
 
     @Override
-    public boolean onError(Report report) {
-        report
+    public boolean onError(Event event) {
+        event
                 .addMetadata("device", "osArch", System.getProperty("os.arch"))
                 .addMetadata("device", "locale", Locale.getDefault())
                 .setDeviceInfo("hostname", getHostnameValue())

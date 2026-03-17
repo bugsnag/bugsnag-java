@@ -2,7 +2,7 @@ package com.bugsnag.example.spring.cli;
 
 import com.bugsnag.Bugsnag;
 import com.bugsnag.BugsnagSpringConfiguration;
-import com.bugsnag.Report;
+import com.bugsnag.Event;
 import com.bugsnag.callbacks.Callback;
 
 import org.springframework.context.annotation.Bean;
@@ -32,14 +32,14 @@ public class Config {
         // the lifecyle of your application
         bugsnag.addCallback(new Callback() {
             @Override
-            public boolean onError(Report report) {
-                report.addMetadata("diagnostics", "timestamp", new Date());
-                report.addMetadata("customer", "name", "acme-inc");
-                report.addMetadata("customer", "paying", true);
-                report.addMetadata("customer", "spent", 1234);
-                report.setUserName("User Name");
-                report.setUserEmail("user@example.com");
-                report.setUserId("12345");
+            public boolean onError(Event event) {
+                event.addMetadata("diagnostics", "timestamp", new Date());
+                event.addMetadata("customer", "name", "acme-inc");
+                event.addMetadata("customer", "paying", true);
+                event.addMetadata("customer", "spent", 1234);
+                event.setUserName("User Name");
+                event.setUserEmail("user@example.com");
+                event.setUserId("12345");
                 return true;
             }
         });

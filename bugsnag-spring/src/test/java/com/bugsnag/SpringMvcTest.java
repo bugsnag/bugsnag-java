@@ -83,21 +83,21 @@ public class SpringMvcTest {
     public void bugsnagNotifyWhenUncaughtControllerException() {
         callRuntimeExceptionEndpoint();
 
-        Report report = verifyAndGetReport(delivery);
+        Event event = verifyAndGetReport(delivery);
 
         // Assert that the exception was detected correctly
-        assertEquals("Test", report.getExceptionMessage());
-        assertEquals("java.lang.RuntimeException", report.getExceptionName());
+        assertEquals("Test", event.getExceptionMessage());
+        assertEquals("java.lang.RuntimeException", event.getExceptionName());
 
         // Assert that the severity, severity reason and unhandled values are correct
-        assertEquals(Severity.ERROR.getValue(), report.getSeverity());
+        assertEquals(Severity.ERROR.getValue(), event.getSeverity());
         assertEquals(
                 SeverityReasonType.REASON_UNHANDLED_EXCEPTION_MIDDLEWARE.toString(),
-                report.getSeverityReason().getType());
+                event.getSeverityReason().getType());
         assertThat(
-                report.getSeverityReason().getAttributes(),
+                event.getSeverityReason().getAttributes(),
                 is(Collections.singletonMap("framework", "Spring")));
-        assertTrue(report.getUnhandled());
+        assertTrue(event.getUnhandled());
     }
 
     @Test
@@ -129,14 +129,14 @@ public class SpringMvcTest {
     public void requestMetadataSetCorrectly() {
         callRuntimeExceptionEndpoint();
 
-        Report report = verifyAndGetReport(delivery);
+        Event event = verifyAndGetReport(delivery);
 
         // Check that the context is set to the HTTP method and URI of the endpoint
-        assertEquals("GET /throw-runtime-exception", report.getContext());
+        assertEquals("GET /throw-runtime-exception", event.getContext());
 
         // Check that the request metadata is set as expected
         @SuppressWarnings(value = "unchecked") Map<String, Object> requestMetadata =
-                (Map<String, Object>) report.getMetadata().get("request");
+                (Map<String, Object>) event.getMetadata().get("request");
         assertEquals("http://localhost:" + randomServerPort + "/throw-runtime-exception",
                 requestMetadata.get("url"));
         assertEquals("GET", requestMetadata.get("method"));
@@ -161,10 +161,10 @@ public class SpringMvcTest {
     public void springVersionSetCorrectly() {
         callRuntimeExceptionEndpoint();
 
-        Report report = verifyAndGetReport(delivery);
+        Event event = verifyAndGetReport(delivery);
 
         // Check that the Spring version is set as expected
-        Map<String, Object> deviceMetadata = report.getDevice();
+        Map<String, Object> deviceMetadata = event.getDevice();
         Map<String, Object> runtimeVersions =
                 (Map<String, Object>) deviceMetadata.get("runtimeVersions");
         assertEquals(SpringVersion.getVersion(), runtimeVersions.get("springFramework"));
@@ -175,22 +175,22 @@ public class SpringMvcTest {
     public void unhandledTypeMismatchExceptionSeverityInfo() {
         callUnhandledTypeMismatchExceptionEndpoint();
 
-        Report report = verifyAndGetReport(delivery);
+        Event event = verifyAndGetReport(delivery);
 
-        assertTrue(report.getUnhandled());
-        assertEquals("info", report.getSeverity());
-        assertEquals("exceptionClass", report.getSeverityReason().getType());
-        assertThat(report.getSeverityReason().getAttributes(),
+        assertTrue(event.getUnhandled());
+        assertEquals("info", event.getSeverity());
+        assertEquals("exceptionClass", event.getSeverityReason().getType());
+        assertThat(event.getSeverityReason().getAttributes(),
                 is(Collections.singletonMap("exceptionClass", "TypeMismatchException")));
     }
 
     @Test
     public void unhandledTypeMismatchExceptionCallbackSeverity()
             throws IllegalAccessException, NoSuchFieldException {
-        Report report;
+        Event event;
         Callback callback = new Callback() {
             @Override
-            public boolean onError(Report report) {
+            public boolean onError(Event report) {
                 report.setSeverity(Severity.WARNING);
                 return true;
             }
@@ -201,7 +201,7 @@ public class SpringMvcTest {
 
             callUnhandledTypeMismatchExceptionEndpoint();
 
-            report = verifyAndGetReport(delivery);
+            event = verifyAndGetReport(delivery);
         } finally {
             // Remove the callback via reflection so that subsequent tests do not use it
             Field callbacksField = Configuration.class.getDeclaredField("callbacks");
@@ -210,32 +210,32 @@ public class SpringMvcTest {
             callbacks.remove(callback);
         }
 
-        assertTrue(report.getUnhandled());
-        assertEquals("warning", report.getSeverity());
-        assertEquals("userCallbackSetSeverity", report.getSeverityReason().getType());
+        assertTrue(event.getUnhandled());
+        assertEquals("warning", event.getSeverity());
+        assertEquals("userCallbackSetSeverity", event.getSeverityReason().getType());
     }
 
     @Test
     public void handledTypeMismatchExceptionUserSeverity() {
         callHandledTypeMismatchExceptionUserSeverityEndpoint();
 
-        Report report = verifyAndGetReport(delivery);
+        Event event = verifyAndGetReport(delivery);
 
-        assertFalse(report.getUnhandled());
-        assertEquals("warning", report.getSeverity());
-        assertEquals("userSpecifiedSeverity", report.getSeverityReason().getType());
-        assertThat(report.getSeverityReason().getAttributes(), is(Collections.EMPTY_MAP));
+        assertFalse(event.getUnhandled());
+        assertEquals("warning", event.getSeverity());
+        assertEquals("userSpecifiedSeverity", event.getSeverityReason().getType());
+        assertThat(event.getSeverityReason().getAttributes(), is(Collections.EMPTY_MAP));
     }
 
     @Test
     public void handledTypeMismatchExceptionCallbackSeverity() {
         callHandledTypeMismatchExceptionCallbackSeverityEndpoint();
 
-        Report report = verifyAndGetReport(delivery);
+        Event event = verifyAndGetReport(delivery);
 
-        assertFalse(report.getUnhandled());
-        assertEquals("warning", report.getSeverity());
-        assertEquals("userCallbackSetSeverity", report.getSeverityReason().getType());
+        assertFalse(event.getUnhandled());
+        assertEquals("warning", event.getSeverity());
+        assertEquals("userCallbackSetSeverity", event.getSeverityReason().getType());
     }
 
     private void callUnhandledTypeMismatchExceptionEndpoint() {

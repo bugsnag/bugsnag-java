@@ -1,6 +1,6 @@
 package com.bugsnag.callbacks;
 
-import com.bugsnag.Report;
+import com.bugsnag.Event;
 
 public interface Callback {
     /**
@@ -9,8 +9,8 @@ public interface Callback {
      * Implementations may also call {@code report.cancel()} for backward
      * compatibility.
      *
-     * @param report the report to perform changes on.
+     * @param event the report to perform changes on.
      * @return true to send, false to suppress delivery
      */
-    boolean onError(Report report);
+    boolean onError(Event event);
 }

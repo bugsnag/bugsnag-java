@@ -7,16 +7,16 @@ import java.util.List;
 
 class Notification {
     private Configuration config;
-    private Report report;
+    private Event event;
 
-    Notification(Configuration config, Report report) {
+    Notification(Configuration config, Event event) {
         this.config = config;
-        this.report = report;
+        this.event = event;
     }
 
     @Expose
     public String getApiKey() {
-        String reportApiKey = report.getApiKey();
+        String reportApiKey = event.getApiKey();
         return reportApiKey != null ? reportApiKey : config.getApiKey();
     }
 
@@ -26,7 +26,7 @@ class Notification {
     }
 
     @Expose
-    public List<Report> getEvents() {
-        return Collections.singletonList(report);
+    public List<Event> getEvents() {
+        return Collections.singletonList(event);
     }
 }

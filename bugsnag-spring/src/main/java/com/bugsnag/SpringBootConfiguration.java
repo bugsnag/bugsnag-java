@@ -19,7 +19,7 @@ public class SpringBootConfiguration {
     Callback springBootVersionErrorCallback() {
         Callback callback = new Callback() {
             @Override
-            public boolean onError(Report report) {
+            public boolean onError(Event report) {
                 addSpringRuntimeVersion(report.getDevice());
                 return true;
             }

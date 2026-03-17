@@ -1,7 +1,7 @@
 package com.bugsnag.example.spring.web;
 
 import com.bugsnag.Bugsnag;
-import com.bugsnag.Report;
+import com.bugsnag.Event;
 import com.bugsnag.Severity;
 import com.bugsnag.callbacks.Callback;
 
@@ -71,10 +71,10 @@ public class ApplicationRestController {
         } catch (RuntimeException e) {
             bugsnag.notify(e, new Callback() {
                 @Override
-                public boolean onError(Report report) {
-                    report.setSeverity(Severity.WARNING);
-                    report.addMetadata("report", "something", "that happened");
-                    report.setContext("the context");
+                public boolean onError(Event event) {
+                    event.setSeverity(Severity.WARNING);
+                    event.addMetadata("report", "something", "that happened");
+                    event.setContext("the context");
                     return true;
                 }
             });

@@ -111,9 +111,9 @@ class ExceptionClassCallback implements Callback {
     }
 
     @Override
-    public boolean onError(Report report) {
+    public boolean onError(Event event) {
 
-        HandledState handledState = report.getHandledState();
+        HandledState handledState = event.getHandledState();
 
         // A manually-set severity takes precedence
         SeverityReasonType severityReasonType = handledState.calculateSeverityReasonType();
@@ -122,12 +122,12 @@ class ExceptionClassCallback implements Callback {
             return true; // do not change delivery decision
         }
 
-        Class exceptionClass = report.getException().getClass();
+        Class exceptionClass = event.getException().getClass();
 
         if (EXCEPTION_TO_SEVERITY.containsKey(exceptionClass)) {
             Severity severity = EXCEPTION_TO_SEVERITY.get(exceptionClass);
-            report.setSeverity(severity);
-            report.setHandledState(HandledState.newInstance(
+            event.setSeverity(severity);
+            event.setHandledState(HandledState.newInstance(
                     SeverityReasonType.REASON_EXCEPTION_CLASS,
                     Collections.singletonMap("exceptionClass", exceptionClass.getSimpleName()),
                     severity,

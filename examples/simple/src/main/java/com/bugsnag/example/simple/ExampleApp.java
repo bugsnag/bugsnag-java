@@ -1,7 +1,7 @@
 package com.bugsnag.example.simple;
 
 import com.bugsnag.Bugsnag;
-import com.bugsnag.Report;
+import com.bugsnag.Event;
 import com.bugsnag.Severity;
 import com.bugsnag.callbacks.Callback;
 
@@ -22,14 +22,14 @@ public class ExampleApp {
         // the lifecyle of your application
         bugsnag.addCallback(new Callback() {
             @Override
-            public boolean onError(Report report) {
-                report.addMetadata("diagnostics", "timestamp", new Date());
-                report.addMetadata("customer", "name", "acme-inc");
-                report.addMetadata("customer", "paying", true);
-                report.addMetadata("customer", "spent", 1234);
-                report.setUserName("User Name");
-                report.setUserEmail("user@example.com");
-                report.setUserId("12345");
+            public boolean onError(Event event) {
+                event.addMetadata("diagnostics", "timestamp", new Date());
+                event.addMetadata("customer", "name", "acme-inc");
+                event.addMetadata("customer", "paying", true);
+                event.addMetadata("customer", "spent", 1234);
+                event.setUserName("User Name");
+                event.setUserEmail("user@example.com");
+                event.setUserId("12345");
                 return true;
             }
         });
@@ -54,10 +54,10 @@ public class ExampleApp {
         } catch (RuntimeException e) {
             bugsnag.notify(e, new Callback() {
                 @Override
-                public boolean onError(Report report) {
-                    report.setSeverity(Severity.WARNING);
-                    report.addMetadata("report", "something", "that happened");
-                    report.setContext("the context");
+                public boolean onError(Event event) {
+                    event.setSeverity(Severity.WARNING);
+                    event.addMetadata("report", "something", "that happened");
+                    event.setContext("the context");
                     return true;
                 }
             });

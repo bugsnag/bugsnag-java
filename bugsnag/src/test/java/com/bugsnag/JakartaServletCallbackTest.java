@@ -81,11 +81,11 @@ public class JakartaServletCallbackTest {
     @SuppressWarnings("unchecked")
     @Test
     public void testRequestMetadataAdded() {
-        Report report = generateReport(new java.lang.Exception("Spline reticulation failed"));
+        Event event = generateReport(new java.lang.Exception("Spline reticulation failed"));
         JakartaServletCallback callback = new JakartaServletCallback();
-        callback.onError(report);
+        callback.onError(event);
 
-        Map<String, Object> metadata = report.getMetadata();
+        Map<String, Object> metadata = event.getMetadata();
         assertTrue(metadata.containsKey("request"));
 
         Map<String, Object> request = (Map<String, Object>) metadata.get("request");
@@ -118,24 +118,24 @@ public class JakartaServletCallbackTest {
 
     @Test
     public void testRequestContextSet() {
-        Report report = generateReport(new java.lang.Exception("Spline reticulation failed"));
+        Event event = generateReport(new java.lang.Exception("Spline reticulation failed"));
         JakartaServletCallback callback = new JakartaServletCallback();
-        callback.onError(report);
+        callback.onError(event);
 
-        assertEquals("PATCH /foo/bar", report.getContext());
+        assertEquals("PATCH /foo/bar", event.getContext());
     }
 
     @Test
     public void testExistingContextNotOverridden() {
-        Report report = generateReport(new java.lang.Exception("Spline reticulation failed"));
-        report.setContext("Honey nut corn flakes");
+        Event event = generateReport(new java.lang.Exception("Spline reticulation failed"));
+        event.setContext("Honey nut corn flakes");
         JakartaServletCallback callback = new JakartaServletCallback();
-        callback.onError(report);
+        callback.onError(event);
 
-        assertEquals("Honey nut corn flakes", report.getContext());
+        assertEquals("Honey nut corn flakes", event.getContext());
     }
 
-    private Report generateReport(java.lang.Exception exception) {
+    private Event generateReport(java.lang.Exception exception) {
         return bugsnag.buildReport(exception);
     }
 

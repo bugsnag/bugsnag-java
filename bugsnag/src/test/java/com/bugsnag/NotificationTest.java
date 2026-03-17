@@ -16,7 +16,7 @@ import java.util.Date;
 
 public class NotificationTest {
 
-    private Report report;
+    private Event event;
     private Configuration config;
     private final ObjectMapper mapper = new ObjectMapper();
 
@@ -30,7 +30,7 @@ public class NotificationTest {
         config = new Configuration("api-key");
         config.setAppVersion("1.2.3");
         config.setReleaseStage("dev");
-        report = new Report(config, new RuntimeException());
+        event = new Event(config, new RuntimeException());
 
         // Only include properties with non-null values
         mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
@@ -38,16 +38,16 @@ public class NotificationTest {
 
     private JsonNode generateJson(ObjectMapper mapper,
             Configuration config,
-            Report report) throws IOException {
-        Notification notification = new Notification(config, report);
+            Event event) throws IOException {
+        Notification notification = new Notification(config, event);
         String json = mapper.writeValueAsString(notification);
         return mapper.readTree(json);
     }
 
     @Test
     public void testSessionSerialisation() throws Throwable {
-        report.setSession(new Session("123", new Date(1500000000000L)));
-        JsonNode rootNode = generateJson(mapper, config, report);
+        event.setSession(new Session("123", new Date(1500000000000L)));
+        JsonNode rootNode = generateJson(mapper, config, event);
         validateErrorReport(rootNode);
 
         // check contains a session
@@ -64,17 +64,17 @@ public class NotificationTest {
 
     @Test
     public void testWithoutSessionSerialisation() throws Throwable {
-        report.setSession(new Session("123", new Date()));
-        JsonNode rootNode = generateJson(mapper, config, report);
+        event.setSession(new Session("123", new Date()));
+        JsonNode rootNode = generateJson(mapper, config, event);
         validateErrorReport(rootNode);
         assertNull(rootNode.get("events").get("session"));
     }
 
     @Test
     public void testNullSession() throws Throwable {
-        report.setSession(null);
+        event.setSession(null);
 
-        JsonNode rootNode = generateJson(mapper, config, report);
+        JsonNode rootNode = generateJson(mapper, config, event);
         validateErrorReport(rootNode);
 
         JsonNode session = rootNode.get("events").get(0).get("session");

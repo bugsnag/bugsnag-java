@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class Report {
+public class Event {
 
     static final String PAYLOAD_VERSION = "4";
 
@@ -34,18 +34,18 @@ public class Report {
      * @param config    the configuration for the report.
      * @param throwable the error to create the report for.
      */
-    protected Report(Configuration config, Throwable throwable) {
+    protected Event(Configuration config, Throwable throwable) {
         this(config, throwable, HandledState.newInstance(
                 HandledState.SeverityReasonType.REASON_HANDLED_EXCEPTION), Thread.currentThread(), null);
     }
 
-    Report(Configuration config, Throwable throwable,
-            HandledState handledState, Thread currentThread) {
+    Event(Configuration config, Throwable throwable,
+          HandledState handledState, Thread currentThread) {
         this(config, throwable, handledState, currentThread, null);
     }
 
-    Report(Configuration config, Throwable throwable,
-            HandledState handledState, Thread currentThread, FeatureFlagStore clientFeatureFlagStore) {
+    Event(Configuration config, Throwable throwable,
+          HandledState handledState, Thread currentThread, FeatureFlagStore clientFeatureFlagStore) {
         this.config = config;
         this.exception = new Exception(config, throwable);
         this.handledState = handledState;
@@ -202,7 +202,7 @@ public class Report {
      * @param value   the metadata value to add
      * @return the modified report
      */
-    public Report addMetadata(String tabName, String key, Object value) {
+    public Event addMetadata(String tabName, String key, Object value) {
         diagnostics.metadata.addMetadata(tabName, key, value);
         return this;
     }
@@ -213,7 +213,7 @@ public class Report {
      * @param tabName the name of the tab to clear.
      * @return The message from the exception contained in this error report.
      */
-    public Report clearTab(String tabName) {
+    public Event clearTab(String tabName) {
         diagnostics.metadata.clearMetadata(tabName);
         return this;
     }
@@ -227,7 +227,7 @@ public class Report {
      * @deprecated use {@link #addMetadata(String, String, Object)} instead
      */
     @Deprecated
-    public Report setAppInfo(String key, Object value) {
+    public Event setAppInfo(String key, Object value) {
         diagnostics.app.put(key, value);
         return this;
     }
@@ -238,7 +238,7 @@ public class Report {
      * @param apiKey the API key to use in the report
      * @return the modified report
      */
-    public Report setApiKey(String apiKey) {
+    public Event setApiKey(String apiKey) {
         this.apiKey = apiKey;
         return this;
     }
@@ -258,7 +258,7 @@ public class Report {
      * @param context the context to use in the report
      * @return the modified report
      */
-    public Report setContext(String context) {
+    public Event setContext(String context) {
         diagnostics.context = context;
         return this;
     }
@@ -272,7 +272,7 @@ public class Report {
      * @deprecated use {@link #addMetadata(String, String, Object)} instead
      */
     @Deprecated
-    public Report setDeviceInfo(String key, Object value) {
+    public Event setDeviceInfo(String key, Object value) {
         diagnostics.device.put(key, value);
         return this;
     }
@@ -285,7 +285,7 @@ public class Report {
      * @param groupingHash the grouping hash for the error report
      * @return the modified report
      */
-    public Report setGroupingHash(String groupingHash) {
+    public Event setGroupingHash(String groupingHash) {
         this.groupingHash = groupingHash;
         return this;
     }
@@ -296,7 +296,7 @@ public class Report {
      * @param severity the severity for the error report
      * @return the modified report
      */
-    public Report setSeverity(Severity severity) {
+    public Event setSeverity(Severity severity) {
         this.severity = severity;
         this.handledState.setCurrentSeverity(severity);
         return this;
@@ -310,29 +310,29 @@ public class Report {
      * @param name  the name of the user.
      * @return the modified report.
      */
-    public Report setUser(String id, String email, String name) {
+    public Event setUser(String id, String email, String name) {
         diagnostics.user.put("id", id);
         diagnostics.user.put("email", email);
         diagnostics.user.put("name", name);
         return this;
     }
 
-    public Report setUserId(String id) {
+    public Event setUserId(String id) {
         diagnostics.user.put("id", id);
         return this;
     }
 
-    public Report setUserEmail(String email) {
+    public Event setUserEmail(String email) {
         diagnostics.user.put("email", email);
         return this;
     }
 
-    public Report setUserName(String name) {
+    public Event setUserName(String name) {
         diagnostics.user.put("name", name);
         return this;
     }
 
-    public Report cancel() {
+    public Event cancel() {
         this.shouldCancel = true;
         return this;
     }
@@ -372,7 +372,7 @@ public class Report {
      * @param variant the feature flag variant (can be null)
      * @return the modified report
      */
-    public Report addFeatureFlag(String name, String variant) {
+    public Event addFeatureFlag(String name, String variant) {
         featureFlagStore.addFeatureFlag(name, variant);
         return this;
     }
@@ -383,7 +383,7 @@ public class Report {
      * @param name the feature flag name
      * @return the modified report
      */
-    public Report addFeatureFlag(String name) {
+    public Event addFeatureFlag(String name) {
         return addFeatureFlag(name, null);
     }
 
@@ -394,7 +394,7 @@ public class Report {
      * @param featureFlags the feature flags to add
      * @return the modified report
      */
-    public Report addFeatureFlags(Collection<FeatureFlag> featureFlags) {
+    public Event addFeatureFlags(Collection<FeatureFlag> featureFlags) {
         featureFlagStore.addFeatureFlags(featureFlags);
         return this;
     }
@@ -405,7 +405,7 @@ public class Report {
      * @param name the feature flag name to remove
      * @return the modified report
      */
-    public Report clearFeatureFlag(String name) {
+    public Event clearFeatureFlag(String name) {
         featureFlagStore.clearFeatureFlag(name);
         return this;
     }
@@ -415,7 +415,7 @@ public class Report {
      *
      * @return the modified report
      */
-    public Report clearFeatureFlags() {
+    public Event clearFeatureFlags() {
         featureFlagStore.clearFeatureFlags();
         return this;
     }

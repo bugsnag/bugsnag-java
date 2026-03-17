@@ -50,41 +50,41 @@ public class SpringAsyncTest {
     public void bugsnagNotifyWhenAsyncVoidReturnTypeException() {
         asyncService.throwExceptionVoid();
 
-        Report report = verifyAndGetReport(delivery);
+        Event event = verifyAndGetReport(delivery);
 
         // Assert that the exception was detected correctly
-        assertEquals("Async void test", report.getExceptionMessage());
-        assertEquals("java.lang.RuntimeException", report.getExceptionName());
+        assertEquals("Async void test", event.getExceptionMessage());
+        assertEquals("java.lang.RuntimeException", event.getExceptionName());
 
         // Assert that the severity, severity reason and unhandled values are correct
-        assertEquals(Severity.ERROR.getValue(), report.getSeverity());
+        assertEquals(Severity.ERROR.getValue(), event.getSeverity());
         assertEquals(
                 SeverityReasonType.REASON_UNHANDLED_EXCEPTION_MIDDLEWARE.toString(),
-                report.getSeverityReason().getType());
+                event.getSeverityReason().getType());
         assertThat(
-                report.getSeverityReason().getAttributes(),
+                event.getSeverityReason().getAttributes(),
                 is(Collections.singletonMap("framework", "Spring")));
-        assertTrue(report.getUnhandled());
+        assertTrue(event.getUnhandled());
     }
 
     @Test
     public void bugsnagNotifyWhenAsyncFutureReturnTypeException() {
         asyncService.throwExceptionFuture();
 
-        Report report = verifyAndGetReport(delivery);
+        Event event = verifyAndGetReport(delivery);
 
         // Assert that the exception was detected correctly
-        assertEquals("Async future test", report.getExceptionMessage());
-        assertEquals("java.lang.RuntimeException", report.getExceptionName());
+        assertEquals("Async future test", event.getExceptionMessage());
+        assertEquals("java.lang.RuntimeException", event.getExceptionName());
 
         // Assert that the severity, severity reason and unhandled values are correct
-        assertEquals(Severity.ERROR.getValue(), report.getSeverity());
+        assertEquals(Severity.ERROR.getValue(), event.getSeverity());
         assertEquals(
                 SeverityReasonType.REASON_UNHANDLED_EXCEPTION_MIDDLEWARE.toString(),
-                report.getSeverityReason().getType());
+                event.getSeverityReason().getType());
         assertThat(
-                report.getSeverityReason().getAttributes(),
+                event.getSeverityReason().getAttributes(),
                 is(Collections.singletonMap("framework", "Spring")));
-        assertTrue(report.getUnhandled());
+        assertTrue(event.getUnhandled());
     }
 }

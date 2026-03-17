@@ -2,7 +2,7 @@ package com.bugsnag.testapp.springboot;
 
 import com.bugsnag.Bugsnag;
 
-import com.bugsnag.Report;
+import com.bugsnag.Event;
 import com.bugsnag.Severity;
 import com.bugsnag.callbacks.Callback;
 
@@ -67,8 +67,8 @@ public class TestController {
         } catch (TypeMismatchException ex) {
             bugsnag.notify(ex, new Callback() {
                 @Override
-                public boolean onError(Report report) {
-                    report.setSeverity(Severity.WARNING);
+                public boolean onError(Event event) {
+                    event.setSeverity(Severity.WARNING);
                     return true;
                 }
             });
