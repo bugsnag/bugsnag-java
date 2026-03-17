@@ -16,7 +16,7 @@ import java.util.Map;
 
 public class ExceptionTest {
 
-    private Exception exception;
+    private Error error;
     private RuntimeException ogThrowable;
 
     /**
@@ -28,22 +28,22 @@ public class ExceptionTest {
     public void setUp() {
         Configuration config = new Configuration("api-key");
         ogThrowable = new RuntimeException("Test");
-        exception = new Exception(config, ogThrowable);
+        error = new Error(config, ogThrowable);
     }
 
     @Test
     public void testDefaults() {
-        assertEquals("java.lang.RuntimeException", exception.getErrorClass());
-        assertEquals("Test", exception.getMessage());
-        assertEquals(ogThrowable, exception.getThrowable());
-        assertFalse(exception.getStacktrace().isEmpty());
+        assertEquals("java.lang.RuntimeException", error.getErrorClass());
+        assertEquals("Test", error.getMessage());
+        assertEquals(ogThrowable, error.getThrowable());
+        assertFalse(error.getStacktrace().isEmpty());
     }
 
     @Test
     public void testClassOverride() {
-        exception.setErrorClass("Hello");
-        assertEquals("Hello", exception.getErrorClass());
-        assertEquals("Test", exception.getMessage());
+        error.setErrorClass("Hello");
+        assertEquals("Hello", error.getErrorClass());
+        assertEquals("Test", error.getMessage());
     }
 
     @Test
@@ -68,13 +68,13 @@ public class ExceptionTest {
                 report.setExceptionName("Foo");
                 assertEquals("Foo", report.getExceptionName());
 
-                List<Exception> exceptions = report.getExceptions();
-                assertEquals(1, exceptions.size());
+                List<Error> errors = report.getErrors();
+                assertEquals(1, errors.size());
 
-                Exception exception = exceptions.get(0);
-                assertNotNull(exception);
-                assertEquals("Foo", exception.getErrorClass());
-                assertEquals("Test", exception.getMessage());
+                Error error = errors.get(0);
+                assertNotNull(error);
+                assertEquals("Foo", error.getErrorClass());
+                assertEquals("Test", error.getMessage());
             } catch (Throwable throwable) {
                 report.cancel();
             }

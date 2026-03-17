@@ -18,7 +18,7 @@ public class Event {
     private Configuration config;
 
     private String apiKey;
-    private final Exception exception;
+    private final Error error;
     private HandledState handledState;
     private Severity severity;
     private String groupingHash;
@@ -47,7 +47,7 @@ public class Event {
     Event(Configuration config, Throwable throwable,
           HandledState handledState, Thread currentThread, FeatureFlagStore clientFeatureFlagStore) {
         this.config = config;
-        this.exception = new Exception(config, throwable);
+        this.error = new Error(config, throwable);
         this.handledState = handledState;
         this.severity = handledState.getOriginalSeverity();
         diagnostics = new Diagnostics(this.config);
@@ -78,17 +78,17 @@ public class Event {
      * @return the exceptions that make up the error.
      */
     @Expose
-    protected List<Exception> getExceptions() {
-        List<Exception> exceptions = new ArrayList<Exception>();
-        exceptions.add(exception);
+    protected List<Error> getErrors() {
+        List<Error> errors = new ArrayList<Error>();
+        errors.add(error);
 
-        Throwable currentThrowable = exception.getThrowable().getCause();
+        Throwable currentThrowable = error.getThrowable().getCause();
         while (currentThrowable != null) {
-            exceptions.add(new Exception(config, currentThrowable));
+            errors.add(new Error(config, currentThrowable));
             currentThrowable = currentThrowable.getCause();
         }
 
-        return exceptions;
+        return errors;
     }
 
     @Expose
@@ -168,14 +168,14 @@ public class Event {
      *         report.
      */
     public Throwable getException() {
-        return exception.getThrowable();
+        return error.getThrowable();
     }
 
     /**
      * @return the class name from the exception contained in this error report.
      */
     public String getExceptionName() {
-        return exception.getErrorClass();
+        return error.getErrorClass();
     }
 
     /**
@@ -184,14 +184,14 @@ public class Event {
      * @param exceptionName the error name
      */
     public void setExceptionName(String exceptionName) {
-        exception.setErrorClass(exceptionName);
+        error.setErrorClass(exceptionName);
     }
 
     /**
      * @return The message from the exception contained in this error report.
      */
     public String getExceptionMessage() {
-        return exception.getThrowable().getLocalizedMessage();
+        return error.getThrowable().getLocalizedMessage();
     }
 
     /**

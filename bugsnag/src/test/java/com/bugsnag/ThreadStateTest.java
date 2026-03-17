@@ -187,7 +187,7 @@ public class ThreadStateTest {
     }
 
     /**
-     * Verifies that an unhandled error uses {@link com.bugsnag.Exception#getStacktrace()}
+     * Verifies that an unhandled error uses {@link Error#getStacktrace()}
      * for the reporting thread stacktrace
      */
     @Test

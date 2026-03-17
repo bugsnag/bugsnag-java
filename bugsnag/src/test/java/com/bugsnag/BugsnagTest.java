@@ -105,7 +105,7 @@ public class BugsnagTest {
             @Override
             public void deliver(Serializer serializer, Object object, Map<String, String> headers) {
                 Event event = ((Notification) object).getEvents().get(0);
-                assertTrue(event.getExceptions().get(0).getStacktrace().get(0).isInProject());
+                assertTrue(event.getErrors().get(0).getStacktrace().get(0).isInProject());
             }
 
             @Override
