@@ -1,6 +1,6 @@
 package com.bugsnag.callbacks;
 
-import com.bugsnag.Event;
+import com.bugsnag.BugsnagEvent;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -84,7 +84,7 @@ public class DeviceCallback implements Callback {
     }
 
     @Override
-    public boolean onError(Event event) {
+    public boolean onError(BugsnagEvent event) {
         event
                 .addMetadata("device", "osArch", System.getProperty("os.arch"))
                 .addMetadata("device", "locale", Locale.getDefault())

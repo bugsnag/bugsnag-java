@@ -1,7 +1,7 @@
 package com.bugsnag.callbacks;
 
 import com.bugsnag.Configuration;
-import com.bugsnag.Event;
+import com.bugsnag.BugsnagEvent;
 
 public class AppCallback implements Callback {
     private Configuration config;
@@ -11,7 +11,7 @@ public class AppCallback implements Callback {
     }
 
     @Override
-    public boolean onError(Event event) {
+    public boolean onError(BugsnagEvent event) {
         if (config.getAppType() != null) {
             event.setAppInfo("type", config.getAppType());
         }

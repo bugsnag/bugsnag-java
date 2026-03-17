@@ -7,9 +7,9 @@ import java.util.List;
 
 class Notification {
     private Configuration config;
-    private Event event;
+    private BugsnagEvent event;
 
-    Notification(Configuration config, Event event) {
+    Notification(Configuration config, BugsnagEvent event) {
         this.config = config;
         this.event = event;
     }
@@ -26,7 +26,7 @@ class Notification {
     }
 
     @Expose
-    public List<Event> getEvents() {
+    public List<BugsnagEvent> getEvents() {
         return Collections.singletonList(event);
     }
 }

@@ -83,7 +83,7 @@ public class SpringMvcTest {
     public void bugsnagNotifyWhenUncaughtControllerException() {
         callRuntimeExceptionEndpoint();
 
-        Event event = verifyAndGetReport(delivery);
+        BugsnagEvent event = verifyAndGetReport(delivery);
 
         // Assert that the exception was detected correctly
         assertEquals("Test", event.getExceptionMessage());
@@ -129,7 +129,7 @@ public class SpringMvcTest {
     public void requestMetadataSetCorrectly() {
         callRuntimeExceptionEndpoint();
 
-        Event event = verifyAndGetReport(delivery);
+        BugsnagEvent event = verifyAndGetReport(delivery);
 
         // Check that the context is set to the HTTP method and URI of the endpoint
         assertEquals("GET /throw-runtime-exception", event.getContext());
@@ -161,7 +161,7 @@ public class SpringMvcTest {
     public void springVersionSetCorrectly() {
         callRuntimeExceptionEndpoint();
 
-        Event event = verifyAndGetReport(delivery);
+        BugsnagEvent event = verifyAndGetReport(delivery);
 
         // Check that the Spring version is set as expected
         Map<String, Object> deviceMetadata = event.getDevice();
@@ -175,7 +175,7 @@ public class SpringMvcTest {
     public void unhandledTypeMismatchExceptionSeverityInfo() {
         callUnhandledTypeMismatchExceptionEndpoint();
 
-        Event event = verifyAndGetReport(delivery);
+        BugsnagEvent event = verifyAndGetReport(delivery);
 
         assertTrue(event.getUnhandled());
         assertEquals("info", event.getSeverity());
@@ -187,10 +187,10 @@ public class SpringMvcTest {
     @Test
     public void unhandledTypeMismatchExceptionCallbackSeverity()
             throws IllegalAccessException, NoSuchFieldException {
-        Event event;
+        BugsnagEvent event;
         Callback callback = new Callback() {
             @Override
-            public boolean onError(Event report) {
+            public boolean onError(BugsnagEvent report) {
                 report.setSeverity(Severity.WARNING);
                 return true;
             }
@@ -219,7 +219,7 @@ public class SpringMvcTest {
     public void handledTypeMismatchExceptionUserSeverity() {
         callHandledTypeMismatchExceptionUserSeverityEndpoint();
 
-        Event event = verifyAndGetReport(delivery);
+        BugsnagEvent event = verifyAndGetReport(delivery);
 
         assertFalse(event.getUnhandled());
         assertEquals("warning", event.getSeverity());
@@ -231,7 +231,7 @@ public class SpringMvcTest {
     public void handledTypeMismatchExceptionCallbackSeverity() {
         callHandledTypeMismatchExceptionCallbackSeverityEndpoint();
 
-        Event event = verifyAndGetReport(delivery);
+        BugsnagEvent event = verifyAndGetReport(delivery);
 
         assertFalse(event.getUnhandled());
         assertEquals("warning", event.getSeverity());

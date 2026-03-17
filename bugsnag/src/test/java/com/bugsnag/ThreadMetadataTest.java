@@ -53,7 +53,7 @@ public class ThreadMetadataTest {
 
         // Check the metadata is added to the first report
         Notification notification = delivery.getNotifications().get(0);
-        Event event = notification.getEvents().get(0);
+        BugsnagEvent event = notification.getEvents().get(0);
         assertTrue(event.getMetadata().containsKey("thread"));
         assertEquals("some thread value", getMetadataMap(notification, "thread").get("some key"));
 
@@ -79,7 +79,7 @@ public class ThreadMetadataTest {
 
         // Check that both tabs are populated in the first report
         Notification notification = delivery.getNotifications().get(0);
-        Event event = notification.getEvents().get(0);
+        BugsnagEvent event = notification.getEvents().get(0);
         assertTrue(event.getMetadata().containsKey("tab1"));
         assertEquals("some value", getMetadataMap(notification, "tab1").get("some key"));
         assertTrue(event.getMetadata().containsKey("tab2"));
@@ -109,7 +109,7 @@ public class ThreadMetadataTest {
 
         // Check that both keys are populated in the first report
         Notification notification = delivery.getNotifications().get(0);
-        Event event = notification.getEvents().get(0);
+        BugsnagEvent event = notification.getEvents().get(0);
         assertTrue(event.getMetadata().containsKey("tab1"));
         assertEquals("some value", getMetadataMap(notification, "tab1").get("key1"));
         assertEquals("some value", getMetadataMap(notification, "tab1").get("key2"));
@@ -149,7 +149,7 @@ public class ThreadMetadataTest {
 
         // Check that the data was included in the notification
         Notification notification = delivery.getNotifications().get(0);
-        Event event = notification.getEvents().get(0);
+        BugsnagEvent event = notification.getEvents().get(0);
 
         assertTrue(event.getMetadata().containsKey("innerthread"));
         assertEquals("value should be in report",
@@ -160,7 +160,6 @@ public class ThreadMetadataTest {
 
     @Test
     public void testUnhandledThreadMetadataRemoval() {
-
         Thread thread = new Thread(new Runnable() {
             @Override
             public void run() {
@@ -187,7 +186,7 @@ public class ThreadMetadataTest {
 
         // Check that the data was included in the notification
         Notification notification = delivery.getNotifications().get(0);
-        Event event = notification.getEvents().get(0);
+        BugsnagEvent event = notification.getEvents().get(0);
 
         assertTrue(event.getMetadata().containsKey("thread"));
         assertFalse(getMetadataMap(notification, "thread").containsKey("key1"));
@@ -222,7 +221,7 @@ public class ThreadMetadataTest {
 
         // Check that the data was included in the notification
         Notification notification = delivery.getNotifications().get(0);
-        Event event = notification.getEvents().get(0);
+        BugsnagEvent event = notification.getEvents().get(0);
 
         assertTrue(event.getMetadata().containsKey("innerthread"));
         assertEquals("value should be in report",

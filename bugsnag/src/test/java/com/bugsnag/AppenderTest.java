@@ -247,7 +247,7 @@ public class AppenderTest {
         // Check that a report was sent to Bugsnag
         assertEquals(1, delivery.getNotifications().size());
         Notification notification = delivery.getNotifications().get(0);
-        Event event = notification.getEvents().get(0);
+        BugsnagEvent event = notification.getEvents().get(0);
 
         List<Stackframe> frames = event.getErrors().get(0).getStacktrace();
         assertTrue(frames.get(0).isInProject());

@@ -50,7 +50,7 @@ public class SpringAsyncTest {
     public void bugsnagNotifyWhenAsyncVoidReturnTypeException() {
         asyncService.throwExceptionVoid();
 
-        Event event = verifyAndGetReport(delivery);
+        BugsnagEvent event = verifyAndGetReport(delivery);
 
         // Assert that the exception was detected correctly
         assertEquals("Async void test", event.getExceptionMessage());
@@ -71,7 +71,7 @@ public class SpringAsyncTest {
     public void bugsnagNotifyWhenAsyncFutureReturnTypeException() {
         asyncService.throwExceptionFuture();
 
-        Event event = verifyAndGetReport(delivery);
+        BugsnagEvent event = verifyAndGetReport(delivery);
 
         // Assert that the exception was detected correctly
         assertEquals("Async future test", event.getExceptionMessage());

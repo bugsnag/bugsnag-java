@@ -31,7 +31,7 @@ public class HandledStatePayloadTest {
 
     @Test
     public void testBasicSerialisation() throws IOException {
-        Event report = reportFromHandledState(HandledState.newInstance(
+        BugsnagEvent report = reportFromHandledState(HandledState.newInstance(
                 HandledState.SeverityReasonType.REASON_UNHANDLED_EXCEPTION));
         JsonNode payload = getJsonPayloadFromReport(report);
 
@@ -41,7 +41,7 @@ public class HandledStatePayloadTest {
 
     @Test
     public void testHandledSerialisation() throws IOException {
-        Event event = reportFromHandledState(HandledState.newInstance(
+        BugsnagEvent event = reportFromHandledState(HandledState.newInstance(
                 HandledState.SeverityReasonType.REASON_HANDLED_EXCEPTION));
         JsonNode payload = getJsonPayloadFromReport(event);
 
@@ -58,7 +58,7 @@ public class HandledStatePayloadTest {
 
     @Test
     public void testUnhandledSerialisation() throws IOException {
-        Event event = reportFromHandledState(HandledState.newInstance(
+        BugsnagEvent event = reportFromHandledState(HandledState.newInstance(
                 HandledState.SeverityReasonType.REASON_UNHANDLED_EXCEPTION));
         JsonNode payload = getJsonPayloadFromReport(event);
 
@@ -75,7 +75,7 @@ public class HandledStatePayloadTest {
 
     @Test
     public void testUserSpecifiedSerialisation() throws IOException {
-        Event event = reportFromHandledState(HandledState.newInstance(
+        BugsnagEvent event = reportFromHandledState(HandledState.newInstance(
                 HandledState.SeverityReasonType.REASON_USER_SPECIFIED, Severity.WARNING));
         JsonNode payload = getJsonPayloadFromReport(event);
 
@@ -92,7 +92,7 @@ public class HandledStatePayloadTest {
 
     @Test
     public void testCallbackSpecified() throws IOException {
-        Event event = reportFromHandledState(HandledState.newInstance(
+        BugsnagEvent event = reportFromHandledState(HandledState.newInstance(
                 HandledState.SeverityReasonType.REASON_USER_SPECIFIED));
         event.setSeverity(Severity.INFO);
         JsonNode payload = getJsonPayloadFromReport(event);
@@ -110,7 +110,7 @@ public class HandledStatePayloadTest {
 
     @Test
     public void testUnhandledMiddlewareSerialisation() throws IOException {
-        Event event = reportFromHandledState(HandledState.newInstance(
+        BugsnagEvent event = reportFromHandledState(HandledState.newInstance(
                 SeverityReasonType.REASON_UNHANDLED_EXCEPTION_MIDDLEWARE,
                 Collections.singletonMap("framework", "Spring")));
         JsonNode payload = getJsonPayloadFromReport(event);
@@ -129,7 +129,7 @@ public class HandledStatePayloadTest {
 
     @Test
     public void testUnhandledExceptionClassSerialisation() throws IOException {
-        Event event = reportFromHandledState(HandledState.newInstance(
+        BugsnagEvent event = reportFromHandledState(HandledState.newInstance(
                 SeverityReasonType.REASON_EXCEPTION_CLASS,
                 Collections.singletonMap("exceptionClass", "TypeMismatchException"),
                 Severity.INFO,
@@ -151,7 +151,7 @@ public class HandledStatePayloadTest {
 
     @Test
     public void testHandledExceptionClassSerialisation() throws java.lang.Exception {
-        Event event = reportFromHandledState(HandledState.newInstance(
+        BugsnagEvent event = reportFromHandledState(HandledState.newInstance(
                 SeverityReasonType.REASON_EXCEPTION_CLASS,
                 Collections.singletonMap("exceptionClass", "TypeMismatchException"),
                 Severity.INFO,
@@ -171,11 +171,11 @@ public class HandledStatePayloadTest {
                 severityReason.get("attributes").get("exceptionClass").asText());
     }
 
-    private Event reportFromHandledState(HandledState handledState) {
-        return new Event(config, new RuntimeException(), handledState, Thread.currentThread());
+    private BugsnagEvent reportFromHandledState(HandledState handledState) {
+        return new BugsnagEvent(config, new RuntimeException(), handledState, Thread.currentThread());
     }
 
-    private JsonNode getJsonPayloadFromReport(Event event) throws IOException {
+    private JsonNode getJsonPayloadFromReport(BugsnagEvent event) throws IOException {
         ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
         OutputStreamDelivery delivery = new OutputStreamDelivery(byteStream);
         delivery.deliver(new DefaultSerializer(), event, Collections.<String, String>emptyMap());

@@ -104,7 +104,7 @@ public class BugsnagTest {
         bugsnag.setDelivery(new Delivery() {
             @Override
             public void deliver(Serializer serializer, Object object, Map<String, String> headers) {
-                Event event = ((Notification) object).getEvents().get(0);
+                BugsnagEvent event = ((Notification) object).getEvents().get(0);
                 assertTrue(event.getErrors().get(0).getStacktrace().get(0).isInProject());
             }
 
@@ -123,7 +123,7 @@ public class BugsnagTest {
         bugsnag.setDelivery(new Delivery() {
             @Override
             public void deliver(Serializer serializer, Object object, Map<String, String> headers) {
-                Event event = ((Notification) object).getEvents().get(0);
+                BugsnagEvent event = ((Notification) object).getEvents().get(0);
                 assertEquals("1.2.3", event.getApp().get("version"));
             }
 
@@ -140,7 +140,7 @@ public class BugsnagTest {
         bugsnag.setDelivery(new Delivery() {
             @Override
             public void deliver(Serializer serializer, Object object, Map<String, String> headers) {
-                Event event = ((Notification) object).getEvents().get(0);
+                BugsnagEvent event = ((Notification) object).getEvents().get(0);
                 assertEquals("testtype", event.getApp().get("type"));
             }
 
@@ -156,7 +156,7 @@ public class BugsnagTest {
         bugsnag.setDelivery(new Delivery() {
             @Override
             public void deliver(Serializer serializer, Object object, Map<String, String> headers) {
-                Event event = ((Notification) object).getEvents().get(0);
+                BugsnagEvent event = ((Notification) object).getEvents().get(0);
                 assertEquals(Severity.INFO.getValue(), event.getSeverity());
             }
 
@@ -174,7 +174,7 @@ public class BugsnagTest {
             @SuppressWarnings("unchecked")
             @Override
             public void deliver(Serializer serializer, Object object, Map<String, String> headers) {
-                Event event = ((Notification) object).getEvents().get(0);
+                BugsnagEvent event = ((Notification) object).getEvents().get(0);
                 Map<String, Object> firstTab =
                         (Map<String, Object>) event.getMetadata().get("firsttab");
                 final Map<String, Object> secondTab =
@@ -204,7 +204,7 @@ public class BugsnagTest {
             @SuppressWarnings("unchecked")
             @Override
             public void deliver(Serializer serializer, Object object, Map<String, String> headers) {
-                Event event = ((Notification) object).getEvents().get(0);
+                BugsnagEvent event = ((Notification) object).getEvents().get(0);
                 Map<String, Object> requestTab =
                         (Map<String, Object>) event.getMetadata().get("request");
 
@@ -239,7 +239,7 @@ public class BugsnagTest {
         bugsnag.setDelivery(new Delivery() {
             @Override
             public void deliver(Serializer serializer, Object object, Map<String, String> headers) {
-                Event event = ((Notification) object).getEvents().get(0);
+                BugsnagEvent event = ((Notification) object).getEvents().get(0);
                 assertEquals("123", event.getUser().get("id"));
                 assertEquals("test@example.com", event.getUser().get("email"));
                 assertEquals("test name", event.getUser().get("name"));
@@ -264,7 +264,7 @@ public class BugsnagTest {
         bugsnag.setDelivery(new Delivery() {
             @Override
             public void deliver(Serializer serializer, Object object, Map<String, String> headers) {
-                Event event = ((Notification) object).getEvents().get(0);
+                BugsnagEvent event = ((Notification) object).getEvents().get(0);
                 assertEquals("the context", event.getContext());
             }
 
@@ -284,7 +284,7 @@ public class BugsnagTest {
         bugsnag.setDelivery(new Delivery() {
             @Override
             public void deliver(Serializer serializer, Object object, Map<String, String> headers) {
-                Event event = ((Notification) object).getEvents().get(0);
+                BugsnagEvent event = ((Notification) object).getEvents().get(0);
                 assertEquals("the grouping hash", event.getGroupingHash());
             }
 
@@ -304,7 +304,7 @@ public class BugsnagTest {
         bugsnag.setDelivery(new Delivery() {
             @Override
             public void deliver(Serializer serializer, Object object, Map<String, String> headers) {
-                Event event = ((Notification) object).getEvents().get(0);
+                BugsnagEvent event = ((Notification) object).getEvents().get(0);
                 assertEquals("newapikey", event.getApiKey());
             }
 
@@ -320,7 +320,7 @@ public class BugsnagTest {
         bugsnag.setDelivery(new Delivery() {
             @Override
             public void deliver(Serializer serializer, Object object, Map<String, String> headers) {
-                Event event = ((Notification) object).getEvents().get(0);
+                BugsnagEvent event = ((Notification) object).getEvents().get(0);
                 assertEquals("newapikey", event.getApiKey());
             }
 
@@ -348,7 +348,7 @@ public class BugsnagTest {
         bugsnag.setDelivery(new Delivery() {
             @Override
             public void deliver(Serializer serializer, Object object, Map<String, String> headers) {
-                Event event = ((Notification) object).getEvents().get(0);
+                BugsnagEvent event = ((Notification) object).getEvents().get(0);
                 assertEquals("secondnewapikey", event.getApiKey());
             }
 
@@ -442,7 +442,7 @@ public class BugsnagTest {
         bugsnag.setDelivery(new Delivery() {
             @Override
             public void deliver(Serializer serializer, Object object, Map<String, String> headers) {
-                Event event = ((Notification) object).getEvents().get(0);
+                BugsnagEvent event = ((Notification) object).getEvents().get(0);
                 // There is information about at least one thread
                 assertTrue(event.getThreads().size() > 0);
             }
@@ -459,7 +459,7 @@ public class BugsnagTest {
         bugsnag.setDelivery(new Delivery() {
             @Override
             public void deliver(Serializer serializer, Object object, Map<String, String> headers) {
-                Event event = ((Notification) object).getEvents().get(0);
+                BugsnagEvent event = ((Notification) object).getEvents().get(0);
                 assertNull(event.getSession());
             }
 
@@ -476,7 +476,7 @@ public class BugsnagTest {
         bugsnag.setDelivery(new Delivery() {
             @Override
             public void deliver(Serializer serializer, Object object, Map<String, String> headers) {
-                Event event = ((Notification) object).getEvents().get(0);
+                BugsnagEvent event = ((Notification) object).getEvents().get(0);
 
                 Map<String, Object> session = event.getSession();
                 assertNotNull(session);
@@ -505,7 +505,7 @@ public class BugsnagTest {
         assertTrue(bugsnag.notify(new Throwable()));
 
         for (int i = 0; i < testDelivery.getNotifications().size(); i++) {
-            Event event = testDelivery.getNotifications().get(i).getEvents().get(0);
+            BugsnagEvent event = testDelivery.getNotifications().get(i).getEvents().get(0);
 
             Map<String, Object> session = event.getSession();
             assertNotNull(session);

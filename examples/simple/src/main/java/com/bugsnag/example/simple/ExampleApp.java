@@ -1,7 +1,7 @@
 package com.bugsnag.example.simple;
 
 import com.bugsnag.Bugsnag;
-import com.bugsnag.Event;
+import com.bugsnag.BugsnagEvent;
 import com.bugsnag.Severity;
 import com.bugsnag.callbacks.Callback;
 
@@ -22,7 +22,7 @@ public class ExampleApp {
         // the lifecyle of your application
         bugsnag.addCallback(new Callback() {
             @Override
-            public boolean onError(Event event) {
+            public boolean onError(BugsnagEvent event) {
                 event.addMetadata("diagnostics", "timestamp", new Date());
                 event.addMetadata("customer", "name", "acme-inc");
                 event.addMetadata("customer", "paying", true);
@@ -54,7 +54,7 @@ public class ExampleApp {
         } catch (RuntimeException e) {
             bugsnag.notify(e, new Callback() {
                 @Override
-                public boolean onError(Event event) {
+                public boolean onError(BugsnagEvent event) {
                     event.setSeverity(Severity.WARNING);
                     event.addMetadata("report", "something", "that happened");
                     event.setContext("the context");

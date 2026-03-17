@@ -111,7 +111,7 @@ class ExceptionClassCallback implements Callback {
     }
 
     @Override
-    public boolean onError(Event event) {
+    public boolean onError(BugsnagEvent event) {
 
         HandledState handledState = event.getHandledState();
 

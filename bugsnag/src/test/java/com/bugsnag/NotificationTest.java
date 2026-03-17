@@ -16,7 +16,7 @@ import java.util.Date;
 
 public class NotificationTest {
 
-    private Event event;
+    private BugsnagEvent event;
     private Configuration config;
     private final ObjectMapper mapper = new ObjectMapper();
 
@@ -30,7 +30,7 @@ public class NotificationTest {
         config = new Configuration("api-key");
         config.setAppVersion("1.2.3");
         config.setReleaseStage("dev");
-        event = new Event(config, new RuntimeException());
+        event = new BugsnagEvent(config, new RuntimeException());
 
         // Only include properties with non-null values
         mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
@@ -38,7 +38,7 @@ public class NotificationTest {
 
     private JsonNode generateJson(ObjectMapper mapper,
             Configuration config,
-            Event event) throws IOException {
+            BugsnagEvent event) throws IOException {
         Notification notification = new Notification(config, event);
         String json = mapper.writeValueAsString(notification);
         return mapper.readTree(json);

@@ -11,7 +11,7 @@ import java.util.Collections;
 
 public class NotifierTest {
 
-    private Event event;
+    private BugsnagEvent event;
     private Configuration config;
     private SessionPayload sessionPayload;
 
@@ -23,7 +23,7 @@ public class NotifierTest {
     @Before
     public void setUp() throws Throwable {
         config = new Configuration("api-key");
-        event = new Event(config, new RuntimeException());
+        event = new BugsnagEvent(config, new RuntimeException());
         sessionPayload = new SessionPayload(Collections.<SessionCount>emptyList(), config);
     }
 

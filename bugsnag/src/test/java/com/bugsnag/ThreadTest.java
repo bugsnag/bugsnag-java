@@ -16,9 +16,9 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
-public class ThreadStateTest {
+public class ThreadTest {
 
-    private List<ThreadState> threadStates;
+    private List<BugsnagThread> threads;
     private Configuration config;
 
     /**
@@ -29,17 +29,17 @@ public class ThreadStateTest {
     @Before
     public void setUp() {
         config = new Configuration("apikey");
-        Map<Thread, StackTraceElement[]> stackTraces = Thread.getAllStackTraces();
-        Thread currentThread = Thread.currentThread();
-        threadStates = ThreadState.getLiveThreads(config, currentThread, stackTraces, null);
+        Map<java.lang.Thread, StackTraceElement[]> stackTraces = java.lang.Thread.getAllStackTraces();
+        java.lang.Thread currentThread = java.lang.Thread.currentThread();
+        threads = BugsnagThread.getLiveThreads(config, currentThread, stackTraces, null);
     }
 
     @Test
     public void testThreadStateContainsCurrentThread() {
         int count = 0;
 
-        for (ThreadState thread : threadStates) {
-            if (thread.getId() == Thread.currentThread().getId()) {
+        for (BugsnagThread thread : threads) {
+            if (thread.getId() == java.lang.Thread.currentThread().getId()) {
                 count++;
             }
         }
@@ -48,15 +48,15 @@ public class ThreadStateTest {
 
     @Test
     public void testThreadName() {
-        for (ThreadState threadState : threadStates) {
-            assertNotNull(threadState.getName());
+        for (BugsnagThread thread : threads) {
+            assertNotNull(thread.getName());
         }
     }
 
     @Test
     public void testThreadStacktrace() {
-        for (ThreadState threadState : threadStates) {
-            List<Stackframe> stacktrace = threadState.getStacktrace();
+        for (BugsnagThread thread : threads) {
+            List<Stackframe> stacktrace = thread.getStacktrace();
             assertNotNull(stacktrace);
         }
     }
@@ -66,7 +66,7 @@ public class ThreadStateTest {
      */
     @Test
     public void testSerialisation() throws IOException {
-        JsonNode root = serialiseThreadStateToJson(threadStates);
+        JsonNode root = serialiseThreadStateToJson(threads);
 
         for (JsonNode jsonNode : root) {
             assertNotNull(jsonNode.get("id").asText());
@@ -80,8 +80,8 @@ public class ThreadStateTest {
      */
     @Test
     public void testCurrentThread() throws IOException {
-        JsonNode root = serialiseThreadStateToJson(threadStates);
-        long currentThreadId = Thread.currentThread().getId();
+        JsonNode root = serialiseThreadStateToJson(threads);
+        long currentThreadId = java.lang.Thread.currentThread().getId();
         int currentThreadCount = 0;
 
         for (JsonNode jsonNode : root) {
@@ -101,12 +101,12 @@ public class ThreadStateTest {
      */
     @Test
     public void testDifferentThread() throws IOException {
-        Map<Thread, StackTraceElement[]> threads = Thread.getAllStackTraces();
-        threads.remove(Thread.currentThread());
-        Thread otherThread = threads.keySet().iterator().next();
-        Map<Thread, StackTraceElement[]> allStackTraces = Thread.getAllStackTraces();
-        List<ThreadState> state
-                = ThreadState.getLiveThreads(config, otherThread, allStackTraces, null);
+        Map<java.lang.Thread, StackTraceElement[]> threads = java.lang.Thread.getAllStackTraces();
+        threads.remove(java.lang.Thread.currentThread());
+        java.lang.Thread otherThread = threads.keySet().iterator().next();
+        Map<java.lang.Thread, StackTraceElement[]> allStackTraces = java.lang.Thread.getAllStackTraces();
+        List<BugsnagThread> state
+                = BugsnagThread.getLiveThreads(config, otherThread, allStackTraces, null);
 
         JsonNode root = serialiseThreadStateToJson(state);
         int currentThreadCount = 0;
@@ -124,16 +124,16 @@ public class ThreadStateTest {
 
     /**
      * Verifies that if the current thread is missing from the available traces as reported by
-     * {@link Thread#getAllStackTraces()}, its stacktrace will still be serialised
+     * {@link java.lang.Thread#getAllStackTraces()}, its stacktrace will still be serialised
      */
     @Test
     public void testMissingCurrentThread() throws IOException {
-        Map<Thread, StackTraceElement[]> threads = Thread.getAllStackTraces();
-        Thread currentThread = Thread.currentThread();
+        Map<java.lang.Thread, StackTraceElement[]> threads = java.lang.Thread.getAllStackTraces();
+        java.lang.Thread currentThread = java.lang.Thread.currentThread();
         threads.remove(currentThread);
 
-        List<ThreadState> state
-                = ThreadState.getLiveThreads(config, currentThread, threads, null);
+        List<BugsnagThread> state
+                = BugsnagThread.getLiveThreads(config, currentThread, threads, null);
 
         JsonNode root = serialiseThreadStateToJson(state);
         int currentThreadCount = 0;
@@ -150,17 +150,17 @@ public class ThreadStateTest {
 
 
     /**
-     * Verifies that a handled error uses {@link Thread#getAllStackTraces()}
+     * Verifies that a handled error uses {@link java.lang.Thread#getAllStackTraces()}
      * for the reporting thread stacktrace
      */
     @Test
     public void testHandledStacktrace() throws IOException {
-        Map<Thread, StackTraceElement[]> threads = Thread.getAllStackTraces();
-        Thread currentThread = Thread.currentThread();
+        Map<java.lang.Thread, StackTraceElement[]> threads = java.lang.Thread.getAllStackTraces();
+        java.lang.Thread currentThread = java.lang.Thread.currentThread();
         StackTraceElement[] expectedTrace = threads.get(currentThread);
 
-        List<ThreadState> state
-                = ThreadState.getLiveThreads(config, currentThread, threads, null);
+        List<BugsnagThread> state
+                = BugsnagThread.getLiveThreads(config, currentThread, threads, null);
 
         JsonNode root = serialiseThreadStateToJson(state);
         int currentThreadCount = 0;
@@ -187,18 +187,18 @@ public class ThreadStateTest {
     }
 
     /**
-     * Verifies that an unhandled error uses {@link Error#getStacktrace()}
+     * Verifies that an unhandled error uses {@link BugsnagError#getStacktrace()}
      * for the reporting thread stacktrace
      */
     @Test
     public void testUnhandledStacktrace() throws IOException {
-        Map<Thread, StackTraceElement[]> threads = Thread.getAllStackTraces();
-        Thread currentThread = Thread.currentThread();
+        Map<java.lang.Thread, StackTraceElement[]> threads = java.lang.Thread.getAllStackTraces();
+        java.lang.Thread currentThread = java.lang.Thread.currentThread();
         RuntimeException exc = new RuntimeException("Whoops");
         StackTraceElement[] expectedTrace = exc.getStackTrace();
 
-        List<ThreadState> state
-                = ThreadState.getLiveThreads(config, currentThread, threads, exc);
+        List<BugsnagThread> state
+                = BugsnagThread.getLiveThreads(config, currentThread, threads, exc);
 
         JsonNode root = serialiseThreadStateToJson(state);
         int currentThreadCount = 0;
@@ -225,14 +225,14 @@ public class ThreadStateTest {
     }
 
     @SuppressWarnings("deprecation")
-    private JsonNode serialiseThreadStateToJson(List<ThreadState> threadStates) throws IOException {
+    private JsonNode serialiseThreadStateToJson(List<BugsnagThread> threads) throws IOException {
         ObjectMapper mapper = new ObjectMapper();
         mapper
                 .setSerializationInclusion(JsonInclude.Include.NON_EMPTY)
                 .setVisibilityChecker(mapper.getVisibilityChecker()
                         .with(JsonAutoDetect.Visibility.NONE));
 
-        String json = mapper.writeValueAsString(threadStates);
+        String json = mapper.writeValueAsString(threads);
         return mapper.readTree(json);
     }
 

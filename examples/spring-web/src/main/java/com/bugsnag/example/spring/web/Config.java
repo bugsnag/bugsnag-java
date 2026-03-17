@@ -2,7 +2,7 @@ package com.bugsnag.example.spring.web;
 
 import com.bugsnag.Bugsnag;
 import com.bugsnag.BugsnagSpringConfiguration;
-import com.bugsnag.Event;
+import com.bugsnag.BugsnagEvent;
 import com.bugsnag.callbacks.Callback;
 
 import org.springframework.context.annotation.Bean;
@@ -31,7 +31,7 @@ public class Config {
         // the lifecyle of your application
         bugsnag.addCallback(new Callback() {
             @Override
-            public boolean onError(Event event) {
+            public boolean onError(BugsnagEvent event) {
                 event.addMetadata("diagnostics", "timestamp", new Date());
                 event.addMetadata("customer", "name", "acme-inc");
                 event.addMetadata("customer", "paying", true);

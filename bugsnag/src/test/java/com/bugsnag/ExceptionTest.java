@@ -16,7 +16,7 @@ import java.util.Map;
 
 public class ExceptionTest {
 
-    private Error error;
+    private BugsnagError error;
     private RuntimeException ogThrowable;
 
     /**
@@ -28,7 +28,7 @@ public class ExceptionTest {
     public void setUp() {
         Configuration config = new Configuration("api-key");
         ogThrowable = new RuntimeException("Test");
-        error = new Error(config, ogThrowable);
+        error = new BugsnagError(config, ogThrowable);
     }
 
     @Test
@@ -68,10 +68,10 @@ public class ExceptionTest {
                 report.setExceptionName("Foo");
                 assertEquals("Foo", report.getExceptionName());
 
-                List<Error> errors = report.getErrors();
+                List<BugsnagError> errors = report.getErrors();
                 assertEquals(1, errors.size());
 
-                Error error = errors.get(0);
+                BugsnagError error = errors.get(0);
                 assertNotNull(error);
                 assertEquals("Foo", error.getErrorClass());
                 assertEquals("Test", error.getMessage());

@@ -8,23 +8,23 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
-class ThreadState {
+public class BugsnagThread {
 
     private final Configuration config;
     private final Thread thread;
     private final StackTraceElement[] stackTraceElements;
     private Boolean errorReportingThread;
 
-    ThreadState(Configuration config, Thread thread, StackTraceElement[] stackTraceElements) {
+    BugsnagThread(Configuration config, Thread thread, StackTraceElement[] stackTraceElements) {
         this.config = config;
         this.thread = thread;
         this.stackTraceElements = stackTraceElements;
     }
 
-    static List<ThreadState> getLiveThreads(Configuration config,
-                                            Thread currentThread,
-                                            Map<Thread, StackTraceElement[]> liveThreads,
-                                            Throwable exc) {
+    static List<BugsnagThread> getLiveThreads(Configuration config,
+                                              Thread currentThread,
+                                              Map<Thread, StackTraceElement[]> liveThreads,
+                                              Throwable exc) {
         // Get current thread id (the crashing thread) and stacktraces for all live threads
         long crashingThreadId = currentThread.getId();
 
@@ -45,15 +45,15 @@ class ThreadState {
             }
         });
 
-        List<ThreadState> threads = new ArrayList<ThreadState>();
+        List<BugsnagThread> threads = new ArrayList<BugsnagThread>();
 
         for (Object key : keys) {
-            Thread thread = (Thread) key;
-            ThreadState threadState = new ThreadState(config, thread, liveThreads.get(thread));
-            threads.add(threadState);
+            Thread javaThread = (Thread) key;
+            BugsnagThread thread = new BugsnagThread(config, javaThread, liveThreads.get(javaThread));
+            threads.add(thread);
 
-            if (threadState.getId() == crashingThreadId) {
-                threadState.setErrorReportingThread(true);
+            if (thread.getId() == crashingThreadId) {
+                thread.setErrorReportingThread(true);
             }
         }
         return threads;

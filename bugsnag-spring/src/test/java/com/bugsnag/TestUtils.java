@@ -16,7 +16,7 @@ class TestUtils {
     /**
      * Verify that a report was received, then capture and return that report
      */
-    static Event verifyAndGetReport(Delivery delivery) {
+    static BugsnagEvent verifyAndGetReport(Delivery delivery) {
         ArgumentCaptor<Notification> notificationCaptor =
                 ArgumentCaptor.forClass(Notification.class);
         verify(delivery, timeout(100).times(1)).deliver(

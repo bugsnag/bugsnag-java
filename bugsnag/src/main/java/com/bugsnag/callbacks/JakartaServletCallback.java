@@ -1,6 +1,6 @@
 package com.bugsnag.callbacks;
 
-import com.bugsnag.Event;
+import com.bugsnag.BugsnagEvent;
 import com.bugsnag.servlet.jakarta.BugsnagServletRequestListener;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -26,7 +26,7 @@ public class JakartaServletCallback implements Callback {
     }
 
     @Override
-    public boolean onError(Event event) {
+    public boolean onError(BugsnagEvent event) {
         // Check if we have any servlet request data available
         HttpServletRequest request = BugsnagServletRequestListener.getServletRequest();
         if (request == null) {

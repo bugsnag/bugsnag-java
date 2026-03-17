@@ -4,12 +4,12 @@ import com.bugsnag.serialization.Expose;
 
 import java.util.List;
 
-public class Error {
+public class BugsnagError {
     private Configuration config;
     private Throwable throwable;
     private String errorClass;
 
-    Error(Configuration config, Throwable throwable) {
+    BugsnagError(Configuration config, Throwable throwable) {
         this.config = config;
         this.throwable = throwable;
         this.errorClass = throwable.getClass().getName();

@@ -70,7 +70,7 @@ public class SpringScheduledTaskTest {
         // Run the task now and wait for it to finish
         scheduler.submit(exampleRunnable).get();
 
-        Event event = verifyAndGetReport(delivery);
+        BugsnagEvent event = verifyAndGetReport(delivery);
 
         // Assert that the exception was detected correctly
         assertEquals("Scheduled test", event.getExceptionMessage());

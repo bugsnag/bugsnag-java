@@ -123,7 +123,7 @@ public class AppenderMetadataTest {
         // Check the metadata is set as expected
         // Should have both report and thread metadata
         Notification notification = delivery.getNotifications().get(0);
-        Event event = notification.getEvents().get(0);
+        BugsnagEvent event = notification.getEvents().get(0);
 
         assertTrue(event.getMetadata().containsKey("report"));
         assertTrue(event.getMetadata().containsKey("thread"));

@@ -81,7 +81,7 @@ public class JakartaServletCallbackTest {
     @SuppressWarnings("unchecked")
     @Test
     public void testRequestMetadataAdded() {
-        Event event = generateReport(new java.lang.Exception("Spline reticulation failed"));
+        BugsnagEvent event = generateReport(new java.lang.Exception("Spline reticulation failed"));
         JakartaServletCallback callback = new JakartaServletCallback();
         callback.onError(event);
 
@@ -118,7 +118,7 @@ public class JakartaServletCallbackTest {
 
     @Test
     public void testRequestContextSet() {
-        Event event = generateReport(new java.lang.Exception("Spline reticulation failed"));
+        BugsnagEvent event = generateReport(new java.lang.Exception("Spline reticulation failed"));
         JakartaServletCallback callback = new JakartaServletCallback();
         callback.onError(event);
 
@@ -127,7 +127,7 @@ public class JakartaServletCallbackTest {
 
     @Test
     public void testExistingContextNotOverridden() {
-        Event event = generateReport(new java.lang.Exception("Spline reticulation failed"));
+        BugsnagEvent event = generateReport(new java.lang.Exception("Spline reticulation failed"));
         event.setContext("Honey nut corn flakes");
         JakartaServletCallback callback = new JakartaServletCallback();
         callback.onError(event);
@@ -135,7 +135,7 @@ public class JakartaServletCallbackTest {
         assertEquals("Honey nut corn flakes", event.getContext());
     }
 
-    private Event generateReport(java.lang.Exception exception) {
+    private BugsnagEvent generateReport(java.lang.Exception exception) {
         return bugsnag.buildReport(exception);
     }
 

@@ -122,7 +122,7 @@ public class Bugsnag implements Closeable {
     }
 
     private void addSessionTrackingShutdownHook() {
-        Runtime.getRuntime().addShutdownHook(new Thread() {
+        Runtime.getRuntime().addShutdownHook(new java.lang.Thread() {
             @Override
             public void run() {
                 close();
@@ -349,13 +349,13 @@ public class Bugsnag implements Closeable {
      *
      * @param throwable the exception to send to Bugsnag
      * @return the report object
-     * @see Event
-     * @see #notify(Event)
+     * @see BugsnagEvent
+     * @see #notify(BugsnagEvent)
      */
-    public Event buildReport(Throwable throwable) {
+    public BugsnagEvent buildReport(Throwable throwable) {
         HandledState handledState = HandledState.newInstance(
                 HandledState.SeverityReasonType.REASON_HANDLED_EXCEPTION);
-        return new Event(config, throwable, handledState, Thread.currentThread(), featureFlagStore);
+        return new BugsnagEvent(config, throwable, handledState, java.lang.Thread.currentThread(), featureFlagStore);
     }
 
     /**
@@ -411,7 +411,7 @@ public class Bugsnag implements Closeable {
 
         HandledState handledState = HandledState.newInstance(
                 HandledState.SeverityReasonType.REASON_USER_SPECIFIED, severity);
-        Event event = new Event(config, throwable, handledState, Thread.currentThread(), featureFlagStore);
+        BugsnagEvent event = new BugsnagEvent(config, throwable, handledState, java.lang.Thread.currentThread(), featureFlagStore);
         return notify(event, callback);
     }
 
@@ -419,17 +419,17 @@ public class Bugsnag implements Closeable {
      * Notify Bugsnag of an exception and provide custom diagnostic data
      * for this particular error report.
      *
-     * @param event the {@link Event} object to send to Bugsnag
+     * @param event the {@link BugsnagEvent} object to send to Bugsnag
      * @return true unless the error report was ignored
-     * @see Event
+     * @see BugsnagEvent
      * @see #buildReport
      */
-    public boolean notify(Event event) {
+    public boolean notify(BugsnagEvent event) {
         return notify(event, null);
     }
 
-    boolean notify(Throwable throwable, HandledState handledState, Thread currentThread) {
-        Event event = new Event(config, throwable, handledState, currentThread, featureFlagStore);
+    boolean notify(Throwable throwable, HandledState handledState, java.lang.Thread currentThread) {
+        BugsnagEvent event = new BugsnagEvent(config, throwable, handledState, currentThread, featureFlagStore);
         return notify(event, null);
     }
 
@@ -437,13 +437,13 @@ public class Bugsnag implements Closeable {
      * Notify Bugsnag of an exception and provide custom diagnostic data
      * for this particular error report.
      *
-     * @param event         the {@link Event} object to send to Bugsnag
+     * @param event         the {@link BugsnagEvent} object to send to Bugsnag
      * @param reportCallback the {@link Callback} object to run for this Report
      * @return false if the error report was ignored
-     * @see Event
+     * @see BugsnagEvent
      * @see #buildReport
      */
-    public boolean notify(Event event, Callback reportCallback) {
+    public boolean notify(BugsnagEvent event, Callback reportCallback) {
         if (event == null) {
             LOGGER.warn("Tried to call notify with a null Report");
             return false;
@@ -675,7 +675,7 @@ public class Bugsnag implements Closeable {
      * @return clients which catch uncaught exceptions
      */
     public static Set<Bugsnag> uncaughtExceptionClients() {
-        UncaughtExceptionHandler handler = Thread.getDefaultUncaughtExceptionHandler();
+        UncaughtExceptionHandler handler = java.lang.Thread.getDefaultUncaughtExceptionHandler();
         if (handler instanceof ExceptionHandler) {
             ExceptionHandler bugsnagHandler = (ExceptionHandler) handler;
             return Collections.unmodifiableSet(bugsnagHandler.uncaughtExceptionClients());

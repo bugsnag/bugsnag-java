@@ -1,6 +1,6 @@
 package com.bugsnag.callbacks;
 
-import com.bugsnag.Event;
+import com.bugsnag.BugsnagEvent;
 
 public interface Callback {
     /**
@@ -12,5 +12,5 @@ public interface Callback {
      * @param event the report to perform changes on.
      * @return true to send, false to suppress delivery
      */
-    boolean onError(Event event);
+    boolean onError(BugsnagEvent event);
 }

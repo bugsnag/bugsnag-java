@@ -116,12 +116,12 @@ public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
     }
 
     @Override
-    protected void append(final ILoggingEvent event) {
+    protected void append(final ILoggingEvent loggingEvent) {
         if (bugsnag != null) {
-            Throwable throwable = extractThrowable(event);
+            Throwable throwable = extractThrowable(loggingEvent);
 
             final Callback reportCallback;
-            Marker marker = event.getMarker();
+            Marker marker = loggingEvent.getMarker();
             if (marker instanceof BugsnagMarker) {
                 reportCallback = ((BugsnagMarker) marker).getCallback();
             } else {
@@ -132,22 +132,22 @@ public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
             // from the this library and the logger is not in the list of excluded loggers.
             if (throwable != null
                     && !detectLogFromBugsnag(throwable)
-                    && !isExcludedLogger(event.getLoggerName())) {
+                    && !isExcludedLogger(loggingEvent.getLoggerName())) {
                 bugsnag.notify(
                         throwable,
-                        calculateSeverity(event),
+                        calculateSeverity(loggingEvent),
                         new Callback() {
                             @Override
-                            public boolean onError(Event event) {
+                            public boolean onError(BugsnagEvent event) {
 
                                 // Add some data from the logging event
                                 event.addMetadata("Log event data",
-                                        "Message", event.getFormattedMessage());
+                                        "Message", loggingEvent.getFormattedMessage());
                                 event.addMetadata("Log event data",
-                                        "Logger name", event.getLoggerName());
+                                        "Logger name", loggingEvent.getLoggerName());
 
                                 // Add details from the logging context to the event
-                                populateContextData(event, event);
+                                populateContextData(event, loggingEvent);
 
                                 if (reportCallback != null) {
                                     boolean proceed = reportCallback.onError(event);
@@ -168,7 +168,7 @@ public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
      * @param report The report being sent to Bugsnag
      * @param event The logging event
      */
-    private void populateContextData(Event report, ILoggingEvent event) {
+    private void populateContextData(BugsnagEvent report, ILoggingEvent event) {
         Map<String, String> propertyMap = event.getMDCPropertyMap();
 
         if (propertyMap != null) {
@@ -283,7 +283,7 @@ public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
         // Add a callback to put global metadata on every report
         bugsnag.addCallback(new Callback() {
             @Override
-            public boolean onError(Event event) {
+            public boolean onError(BugsnagEvent event) {
 
                 for (LogbackMetadata metadata : globalMetadata) {
                     for (LogbackMetadataTab tab : metadata.getTabs()) {

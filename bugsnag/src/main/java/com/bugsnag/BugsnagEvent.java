@@ -11,21 +11,21 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class Event {
+public class BugsnagEvent {
 
     static final String PAYLOAD_VERSION = "4";
 
     private Configuration config;
 
     private String apiKey;
-    private final Error error;
+    private final BugsnagError error;
     private HandledState handledState;
     private Severity severity;
     private String groupingHash;
     private Diagnostics diagnostics;
     private boolean shouldCancel = false;
     private Map<String, Object> sessionMap;
-    private final List<ThreadState> threadStates;
+    private final List<BugsnagThread> threads;
     private final FeatureFlagStore featureFlagStore;
 
     /**
@@ -34,20 +34,20 @@ public class Event {
      * @param config    the configuration for the report.
      * @param throwable the error to create the report for.
      */
-    protected Event(Configuration config, Throwable throwable) {
+    protected BugsnagEvent(Configuration config, Throwable throwable) {
         this(config, throwable, HandledState.newInstance(
-                HandledState.SeverityReasonType.REASON_HANDLED_EXCEPTION), Thread.currentThread(), null);
+                HandledState.SeverityReasonType.REASON_HANDLED_EXCEPTION), java.lang.Thread.currentThread(), null);
     }
 
-    Event(Configuration config, Throwable throwable,
-          HandledState handledState, Thread currentThread) {
+    BugsnagEvent(Configuration config, Throwable throwable,
+                 HandledState handledState, java.lang.Thread currentThread) {
         this(config, throwable, handledState, currentThread, null);
     }
 
-    Event(Configuration config, Throwable throwable,
-          HandledState handledState, Thread currentThread, FeatureFlagStore clientFeatureFlagStore) {
+    BugsnagEvent(Configuration config, Throwable throwable,
+                 HandledState handledState, java.lang.Thread currentThread, FeatureFlagStore clientFeatureFlagStore) {
         this.config = config;
-        this.error = new Error(config, throwable);
+        this.error = new BugsnagError(config, throwable);
         this.handledState = handledState;
         this.severity = handledState.getOriginalSeverity();
         diagnostics = new Diagnostics(this.config);
@@ -60,10 +60,10 @@ public class Event {
 
         if (config.isSendThreads()) {
             Throwable exc = handledState.isUnhandled() ? throwable : null;
-            Map<Thread, StackTraceElement[]> allStackTraces = Thread.getAllStackTraces();
-            threadStates = ThreadState.getLiveThreads(config, currentThread, allStackTraces, exc);
+            Map<java.lang.Thread, StackTraceElement[]> allStackTraces = java.lang.Thread.getAllStackTraces();
+            threads = BugsnagThread.getLiveThreads(config, currentThread, allStackTraces, exc);
         } else {
-            threadStates = null;
+            threads = null;
         }
     }
 
@@ -78,13 +78,13 @@ public class Event {
      * @return the exceptions that make up the error.
      */
     @Expose
-    protected List<Error> getErrors() {
-        List<Error> errors = new ArrayList<Error>();
+    protected List<BugsnagError> getErrors() {
+        List<BugsnagError> errors = new ArrayList<BugsnagError>();
         errors.add(error);
 
         Throwable currentThrowable = error.getThrowable().getCause();
         while (currentThrowable != null) {
-            errors.add(new Error(config, currentThrowable));
+            errors.add(new BugsnagError(config, currentThrowable));
             currentThrowable = currentThrowable.getCause();
         }
 
@@ -103,8 +103,8 @@ public class Event {
     }
 
     @Expose
-    protected List<ThreadState> getThreads() {
-        return threadStates;
+    protected List<BugsnagThread> getThreads() {
+        return threads;
     }
 
     @Expose
@@ -202,7 +202,7 @@ public class Event {
      * @param value   the metadata value to add
      * @return the modified report
      */
-    public Event addMetadata(String tabName, String key, Object value) {
+    public BugsnagEvent addMetadata(String tabName, String key, Object value) {
         diagnostics.metadata.addMetadata(tabName, key, value);
         return this;
     }
@@ -213,7 +213,7 @@ public class Event {
      * @param tabName the name of the tab to clear.
      * @return The message from the exception contained in this error report.
      */
-    public Event clearTab(String tabName) {
+    public BugsnagEvent clearTab(String tabName) {
         diagnostics.metadata.clearMetadata(tabName);
         return this;
     }
@@ -227,7 +227,7 @@ public class Event {
      * @deprecated use {@link #addMetadata(String, String, Object)} instead
      */
     @Deprecated
-    public Event setAppInfo(String key, Object value) {
+    public BugsnagEvent setAppInfo(String key, Object value) {
         diagnostics.app.put(key, value);
         return this;
     }
@@ -238,7 +238,7 @@ public class Event {
      * @param apiKey the API key to use in the report
      * @return the modified report
      */
-    public Event setApiKey(String apiKey) {
+    public BugsnagEvent setApiKey(String apiKey) {
         this.apiKey = apiKey;
         return this;
     }
@@ -258,7 +258,7 @@ public class Event {
      * @param context the context to use in the report
      * @return the modified report
      */
-    public Event setContext(String context) {
+    public BugsnagEvent setContext(String context) {
         diagnostics.context = context;
         return this;
     }
@@ -272,7 +272,7 @@ public class Event {
      * @deprecated use {@link #addMetadata(String, String, Object)} instead
      */
     @Deprecated
-    public Event setDeviceInfo(String key, Object value) {
+    public BugsnagEvent setDeviceInfo(String key, Object value) {
         diagnostics.device.put(key, value);
         return this;
     }
@@ -285,7 +285,7 @@ public class Event {
      * @param groupingHash the grouping hash for the error report
      * @return the modified report
      */
-    public Event setGroupingHash(String groupingHash) {
+    public BugsnagEvent setGroupingHash(String groupingHash) {
         this.groupingHash = groupingHash;
         return this;
     }
@@ -296,7 +296,7 @@ public class Event {
      * @param severity the severity for the error report
      * @return the modified report
      */
-    public Event setSeverity(Severity severity) {
+    public BugsnagEvent setSeverity(Severity severity) {
         this.severity = severity;
         this.handledState.setCurrentSeverity(severity);
         return this;
@@ -310,29 +310,29 @@ public class Event {
      * @param name  the name of the user.
      * @return the modified report.
      */
-    public Event setUser(String id, String email, String name) {
+    public BugsnagEvent setUser(String id, String email, String name) {
         diagnostics.user.put("id", id);
         diagnostics.user.put("email", email);
         diagnostics.user.put("name", name);
         return this;
     }
 
-    public Event setUserId(String id) {
+    public BugsnagEvent setUserId(String id) {
         diagnostics.user.put("id", id);
         return this;
     }
 
-    public Event setUserEmail(String email) {
+    public BugsnagEvent setUserEmail(String email) {
         diagnostics.user.put("email", email);
         return this;
     }
 
-    public Event setUserName(String name) {
+    public BugsnagEvent setUserName(String name) {
         diagnostics.user.put("name", name);
         return this;
     }
 
-    public Event cancel() {
+    public BugsnagEvent cancel() {
         this.shouldCancel = true;
         return this;
     }
@@ -372,7 +372,7 @@ public class Event {
      * @param variant the feature flag variant (can be null)
      * @return the modified report
      */
-    public Event addFeatureFlag(String name, String variant) {
+    public BugsnagEvent addFeatureFlag(String name, String variant) {
         featureFlagStore.addFeatureFlag(name, variant);
         return this;
     }
@@ -383,7 +383,7 @@ public class Event {
      * @param name the feature flag name
      * @return the modified report
      */
-    public Event addFeatureFlag(String name) {
+    public BugsnagEvent addFeatureFlag(String name) {
         return addFeatureFlag(name, null);
     }
 
@@ -394,7 +394,7 @@ public class Event {
      * @param featureFlags the feature flags to add
      * @return the modified report
      */
-    public Event addFeatureFlags(Collection<FeatureFlag> featureFlags) {
+    public BugsnagEvent addFeatureFlags(Collection<FeatureFlag> featureFlags) {
         featureFlagStore.addFeatureFlags(featureFlags);
         return this;
     }
@@ -405,7 +405,7 @@ public class Event {
      * @param name the feature flag name to remove
      * @return the modified report
      */
-    public Event clearFeatureFlag(String name) {
+    public BugsnagEvent clearFeatureFlag(String name) {
         featureFlagStore.clearFeatureFlag(name);
         return this;
     }
@@ -415,7 +415,7 @@ public class Event {
      *
      * @return the modified report
      */
-    public Event clearFeatureFlags() {
+    public BugsnagEvent clearFeatureFlags() {
         featureFlagStore.clearFeatureFlags();
         return this;
     }

@@ -1,7 +1,7 @@
 package com.bugsnag.example.spring.cli;
 
 import com.bugsnag.Bugsnag;
-import com.bugsnag.Event;
+import com.bugsnag.BugsnagEvent;
 import com.bugsnag.Severity;
 import com.bugsnag.callbacks.Callback;
 
@@ -50,7 +50,7 @@ public class ApplicationCommandLineRunner implements CommandLineRunner {
         } catch (RuntimeException e) {
             bugsnag.notify(e, new Callback() {
                 @Override
-                public boolean onError(Event event) {
+                public boolean onError(BugsnagEvent event) {
                     event.setSeverity(Severity.WARNING);
                     event.addMetadata("report", "something", "that happened");
                     event.setContext("the context");
