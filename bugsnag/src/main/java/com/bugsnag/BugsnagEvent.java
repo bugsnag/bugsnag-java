@@ -36,16 +36,16 @@ public class BugsnagEvent {
      */
     protected BugsnagEvent(Configuration config, Throwable throwable) {
         this(config, throwable, HandledState.newInstance(
-                HandledState.SeverityReasonType.REASON_HANDLED_EXCEPTION), java.lang.Thread.currentThread(), null);
+                HandledState.SeverityReasonType.REASON_HANDLED_EXCEPTION), Thread.currentThread(), null);
     }
 
     BugsnagEvent(Configuration config, Throwable throwable,
-                 HandledState handledState, java.lang.Thread currentThread) {
+                 HandledState handledState, Thread currentThread) {
         this(config, throwable, handledState, currentThread, null);
     }
 
     BugsnagEvent(Configuration config, Throwable throwable,
-                 HandledState handledState, java.lang.Thread currentThread, FeatureFlagStore clientFeatureFlagStore) {
+                 HandledState handledState, Thread currentThread, FeatureFlagStore clientFeatureFlagStore) {
         this.config = config;
         this.error = new BugsnagError(config, throwable);
         this.handledState = handledState;
@@ -58,9 +58,11 @@ public class BugsnagEvent {
             featureFlagStore.merge(clientFeatureFlagStore);
         }
 
-        if (config.isSendThreads()) {
+        boolean sendThreads = config.getSendThreads() == ThreadSendPolicy.ALWAYS ||
+                (config.getSendThreads() == ThreadSendPolicy.UNHANDLED_ONLY && handledState.isUnhandled());
+        if (sendThreads) {
             Throwable exc = handledState.isUnhandled() ? throwable : null;
-            Map<java.lang.Thread, StackTraceElement[]> allStackTraces = java.lang.Thread.getAllStackTraces();
+            Map<Thread, StackTraceElement[]> allStackTraces = Thread.getAllStackTraces();
             threads = BugsnagThread.getLiveThreads(config, currentThread, allStackTraces, exc);
         } else {
             threads = null;

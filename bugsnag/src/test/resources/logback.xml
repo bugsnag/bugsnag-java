@@ -33,7 +33,7 @@
             </tab>
         </metadata>
 
-        <sendThreads>true</sendThreads>
+        <sendThreads>ALWAYS</sendThreads>
 
 	</appender>
 

@@ -308,15 +308,13 @@ public class Bugsnag implements Closeable {
     }
 
     /**
-     * Set whether Bugsnag should capture and report thread-state for all
-     * running threads. This is often not useful for Java web apps, since
-     * there could be thousands of active threads depending on your
-     * environment.
+     * Set when Bugsnag should capture and report thread-state for all
+     * running threads.
      *
      * @param sendThreads should we send thread state with error reports
      * @see #setEnabledReleaseStages
      */
-    public void setSendThreads(boolean sendThreads) {
+    public void setSendThreads(ThreadSendPolicy sendThreads) {
         config.setSendThreads(sendThreads);
     }
 

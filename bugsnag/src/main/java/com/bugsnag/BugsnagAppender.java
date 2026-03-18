@@ -69,7 +69,7 @@ public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
     private String releaseStage;
 
     /** Whether thread state should be sent to Bugsnag. */
-    private boolean sendThreads = false;
+    private ThreadSendPolicy sendThreads = ThreadSendPolicy.NEVER;
 
     /** Bugsnag API request timeout. */
     private int timeout;
@@ -527,9 +527,9 @@ public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
     }
 
     /**
-     * @see Bugsnag#setSendThreads(boolean)
+     * @see Bugsnag#setSendThreads(ThreadSendPolicy)
      */
-    public void setSendThreads(boolean sendThreads) {
+    public void setSendThreads(ThreadSendPolicy sendThreads) {
         this.sendThreads = sendThreads;
 
         if (bugsnag != null) {

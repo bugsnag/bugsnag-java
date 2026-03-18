@@ -438,13 +438,13 @@ public class BugsnagTest {
 
     @Test
     public void testSendThreads() {
-        bugsnag.setSendThreads(true);
+        bugsnag.setSendThreads(ThreadSendPolicy.ALWAYS);
         bugsnag.setDelivery(new Delivery() {
             @Override
             public void deliver(Serializer serializer, Object object, Map<String, String> headers) {
                 BugsnagEvent event = ((Notification) object).getEvents().get(0);
                 // There is information about at least one thread
-                assertTrue(event.getThreads().size() > 0);
+                assertFalse(event.getThreads().isEmpty());
             }
 
             @Override

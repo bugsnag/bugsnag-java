@@ -43,7 +43,7 @@ public class Configuration {
     private Set<String> enabledReleaseStages = null;
     private String[] projectPackages;
     private String releaseStage;
-    private boolean sendThreads = false;
+    private ThreadSendPolicy sendThreads = ThreadSendPolicy.NEVER;
     private Serializer serializer = new DefaultSerializer();
 
     Collection<Callback> callbacks = new ConcurrentLinkedQueue<Callback>();
@@ -328,11 +328,11 @@ public class Configuration {
         this.releaseStage = releaseStage;
     }
 
-    public boolean isSendThreads() {
+    public ThreadSendPolicy getSendThreads() {
         return sendThreads;
     }
 
-    public void setSendThreads(boolean sendThreads) {
+    public void setSendThreads(ThreadSendPolicy sendThreads) {
         this.sendThreads = sendThreads;
     }
 

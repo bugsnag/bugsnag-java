@@ -138,7 +138,6 @@ public class AppenderTest {
 
     @Test
     public void testBugsnagConfig() {
-
         // Get the Bugsnag instance
         Configuration config = getConfig(appender.getClient());
         assertEquals("test", config.getReleaseStage());
@@ -175,7 +174,7 @@ public class AppenderTest {
         assertTrue(projectPackages.contains("com.company.package2"));
         assertTrue(projectPackages.contains("com.company.package1"));
 
-        assertTrue(config.isSendThreads());
+        assertEquals(ThreadSendPolicy.ALWAYS, config.getSendThreads());
     }
 
     @Test
