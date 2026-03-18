@@ -1,9 +1,9 @@
 package com.bugsnag;
 
 import com.bugsnag.callbacks.AppCallback;
-import com.bugsnag.callbacks.OnErrorCallback;
 import com.bugsnag.callbacks.DeviceCallback;
 import com.bugsnag.callbacks.JakartaServletCallback;
+import com.bugsnag.callbacks.OnErrorCallback;
 import com.bugsnag.delivery.AsyncHttpDelivery;
 import com.bugsnag.delivery.Delivery;
 import com.bugsnag.delivery.HttpDelivery;

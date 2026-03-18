@@ -57,8 +57,8 @@ public class BugsnagEvent {
             featureFlagStore.merge(clientFeatureFlagStore);
         }
 
-        boolean sendThreads = config.getSendThreads() == ThreadSendPolicy.ALWAYS ||
-                (config.getSendThreads() == ThreadSendPolicy.UNHANDLED_ONLY && handledState.isUnhandled());
+        boolean sendThreads = config.getSendThreads() == ThreadSendPolicy.ALWAYS
+                || (config.getSendThreads() == ThreadSendPolicy.UNHANDLED_ONLY && handledState.isUnhandled());
         if (sendThreads) {
             Throwable exc = handledState.isUnhandled() ? throwable : null;
             Map<Thread, StackTraceElement[]> allStackTraces = Thread.getAllStackTraces();

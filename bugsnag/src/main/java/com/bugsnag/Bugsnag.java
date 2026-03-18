@@ -122,7 +122,7 @@ public class Bugsnag implements Closeable {
     }
 
     private void addSessionTrackingShutdownHook() {
-        Runtime.getRuntime().addShutdownHook(new java.lang.Thread() {
+        Runtime.getRuntime().addShutdownHook(new Thread() {
             @Override
             public void run() {
                 close();
@@ -353,7 +353,7 @@ public class Bugsnag implements Closeable {
     public BugsnagEvent buildReport(Throwable throwable) {
         HandledState handledState = HandledState.newInstance(
                 HandledState.SeverityReasonType.REASON_HANDLED_EXCEPTION);
-        return new BugsnagEvent(config, throwable, handledState, java.lang.Thread.currentThread(), featureFlagStore);
+        return new BugsnagEvent(config, throwable, handledState, Thread.currentThread(), featureFlagStore);
     }
 
     /**
@@ -408,8 +408,17 @@ public class Bugsnag implements Closeable {
         }
 
         HandledState handledState = HandledState.newInstance(
-                HandledState.SeverityReasonType.REASON_USER_SPECIFIED, severity);
-        BugsnagEvent event = new BugsnagEvent(config, throwable, handledState, java.lang.Thread.currentThread(), featureFlagStore);
+                HandledState.SeverityReasonType.REASON_USER_SPECIFIED,
+                severity
+        );
+
+        BugsnagEvent event = new BugsnagEvent(
+                config,
+                throwable,
+                handledState,
+                Thread.currentThread(),
+                featureFlagStore
+        );
         return notify(event, callback);
     }
 
@@ -426,7 +435,7 @@ public class Bugsnag implements Closeable {
         return notify(event, null);
     }
 
-    boolean notify(Throwable throwable, HandledState handledState, java.lang.Thread currentThread) {
+    boolean notify(Throwable throwable, HandledState handledState, Thread currentThread) {
         BugsnagEvent event = new BugsnagEvent(config, throwable, handledState, currentThread, featureFlagStore);
         return notify(event, null);
     }
@@ -673,7 +682,7 @@ public class Bugsnag implements Closeable {
      * @return clients which catch uncaught exceptions
      */
     public static Set<Bugsnag> uncaughtExceptionClients() {
-        UncaughtExceptionHandler handler = java.lang.Thread.getDefaultUncaughtExceptionHandler();
+        UncaughtExceptionHandler handler = Thread.getDefaultUncaughtExceptionHandler();
         if (handler instanceof ExceptionHandler) {
             ExceptionHandler bugsnagHandler = (ExceptionHandler) handler;
             return Collections.unmodifiableSet(bugsnagHandler.uncaughtExceptionClients());

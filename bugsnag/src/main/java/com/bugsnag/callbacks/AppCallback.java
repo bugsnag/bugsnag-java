@@ -1,7 +1,7 @@
 package com.bugsnag.callbacks;
 
-import com.bugsnag.Configuration;
 import com.bugsnag.BugsnagEvent;
+import com.bugsnag.Configuration;
 
 public class AppCallback implements OnErrorCallback {
     private Configuration config;
