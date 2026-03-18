@@ -73,12 +73,16 @@ public class BugsnagEvent {
         return PAYLOAD_VERSION;
     }
 
+    @Expose
+    protected List<BugsnagError> getExceptions() {
+        return getErrors();
+    }
+
     /**
      * Get the exceptions for the report.
      *
      * @return the exceptions that make up the error.
      */
-    @Expose
     protected List<BugsnagError> getErrors() {
         List<BugsnagError> errors = new ArrayList<BugsnagError>();
         errors.add(error);
