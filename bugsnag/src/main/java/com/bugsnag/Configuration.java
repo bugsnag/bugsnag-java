@@ -20,7 +20,6 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.regex.Pattern;
 
 @SuppressWarnings("visibilitymodifier")
@@ -47,8 +46,8 @@ public class Configuration {
     private Serializer serializer = new DefaultSerializer();
 
     Set<OnErrorCallback> callbacks = new CopyOnWriteArraySet<>();
-    private final AtomicBoolean autoCaptureSessions = new AtomicBoolean(true);
-    private final AtomicBoolean sendUncaughtExceptions = new AtomicBoolean(true);
+    private volatile boolean autoCaptureSessions = true;
+    private volatile boolean sendUncaughtExceptions = true;
     private final FeatureFlagStore featureFlagStore = new FeatureFlagStore();
 
     Configuration(String apiKey) {
@@ -105,19 +104,19 @@ public class Configuration {
     }
 
     public void setAutoCaptureSessions(boolean autoCaptureSessions) {
-        this.autoCaptureSessions.set(autoCaptureSessions);
+        this.autoCaptureSessions = autoCaptureSessions;
     }
 
     public boolean shouldAutoCaptureSessions() {
-        return autoCaptureSessions.get();
+        return autoCaptureSessions;
     }
 
     public void setSendUncaughtExceptions(boolean sendUncaughtExceptions) {
-        this.sendUncaughtExceptions.set(sendUncaughtExceptions);
+        this.sendUncaughtExceptions = sendUncaughtExceptions;
     }
 
     public boolean shouldSendUncaughtExceptions() {
-        return sendUncaughtExceptions.get();
+        return sendUncaughtExceptions;
     }
 
     /**
@@ -165,10 +164,10 @@ public class Configuration {
         boolean invalidSessionsEndpoint = sessions == null || sessions.isEmpty();
         String sessionEndpoint = null;
 
-        if (invalidSessionsEndpoint && this.autoCaptureSessions.get()) {
+        if (invalidSessionsEndpoint && this.autoCaptureSessions) {
             LOGGER.warn("The session tracking endpoint has not been"
                     + " set. Session tracking is disabled");
-            this.autoCaptureSessions.set(false);
+            this.autoCaptureSessions = false;
         } else {
             sessionEndpoint = sessions;
         }
