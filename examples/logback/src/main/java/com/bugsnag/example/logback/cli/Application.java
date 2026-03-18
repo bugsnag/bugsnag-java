@@ -21,7 +21,7 @@ public class Application {
         Appender appender = rootLogger.getAppender("BUGSNAG");
         if (appender instanceof BugsnagAppender) {
             // Set some global meta data (added to each report)
-            ((BugsnagAppender) appender).getClient().addCallback((report) -> {
+            ((BugsnagAppender) appender).getClient().addOnError((report) -> {
                 report.addMetadata("diagnostics", "timestamp", new Date());
                 report.addMetadata("customer", "name", "acme-inc");
                 report.addMetadata("customer", "paying", true);

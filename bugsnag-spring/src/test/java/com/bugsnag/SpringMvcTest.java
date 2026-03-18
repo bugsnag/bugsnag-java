@@ -14,7 +14,7 @@ import static org.mockito.Mockito.verify;
 
 import com.bugsnag.HandledState.SeverityReasonType;
 
-import com.bugsnag.callbacks.Callback;
+import com.bugsnag.callbacks.OnErrorCallback;
 import com.bugsnag.delivery.Delivery;
 
 import com.bugsnag.serialization.Serializer;
@@ -188,7 +188,7 @@ public class SpringMvcTest {
     public void unhandledTypeMismatchExceptionCallbackSeverity()
             throws IllegalAccessException, NoSuchFieldException {
         BugsnagEvent event;
-        Callback callback = new Callback() {
+        OnErrorCallback callback = new OnErrorCallback() {
             @Override
             public boolean onError(BugsnagEvent report) {
                 report.setSeverity(Severity.WARNING);
@@ -197,7 +197,7 @@ public class SpringMvcTest {
         };
 
         try {
-            bugsnag.addCallback(callback);
+            bugsnag.addOnError(callback);
 
             callUnhandledTypeMismatchExceptionEndpoint();
 
@@ -205,8 +205,8 @@ public class SpringMvcTest {
         } finally {
             // Remove the callback via reflection so that subsequent tests do not use it
             Field callbacksField = Configuration.class.getDeclaredField("callbacks");
-            @SuppressWarnings(value = "unchecked") Collection<Callback> callbacks =
-                    (Collection<Callback>) callbacksField.get(bugsnag.getConfig());
+            @SuppressWarnings(value = "unchecked") Collection<OnErrorCallback> callbacks =
+                    (Collection<OnErrorCallback>) callbacksField.get(bugsnag.getConfig());
             callbacks.remove(callback);
         }
 

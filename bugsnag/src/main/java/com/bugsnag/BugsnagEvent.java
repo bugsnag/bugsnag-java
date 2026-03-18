@@ -23,7 +23,6 @@ public class BugsnagEvent {
     private Severity severity;
     private String groupingHash;
     private Diagnostics diagnostics;
-    private boolean shouldCancel = false;
     private Map<String, Object> sessionMap;
     private final List<BugsnagThread> threads;
     private final FeatureFlagStore featureFlagStore;
@@ -332,15 +331,6 @@ public class BugsnagEvent {
     public BugsnagEvent setUserName(String name) {
         diagnostics.user.put("name", name);
         return this;
-    }
-
-    public BugsnagEvent cancel() {
-        this.shouldCancel = true;
-        return this;
-    }
-
-    public boolean getShouldCancel() {
-        return this.shouldCancel;
     }
 
     HandledState getHandledState() {

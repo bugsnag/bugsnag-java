@@ -3,7 +3,7 @@ package com.bugsnag.example.spring.cli;
 import com.bugsnag.Bugsnag;
 import com.bugsnag.BugsnagEvent;
 import com.bugsnag.Severity;
-import com.bugsnag.callbacks.Callback;
+import com.bugsnag.callbacks.OnErrorCallback;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,7 +48,7 @@ public class ApplicationCommandLineRunner implements CommandLineRunner {
         try {
             throw new RuntimeException("Handled exception - custom metadata");
         } catch (RuntimeException e) {
-            bugsnag.notify(e, new Callback() {
+            bugsnag.notify(e, new OnErrorCallback() {
                 @Override
                 public boolean onError(BugsnagEvent event) {
                     event.setSeverity(Severity.WARNING);

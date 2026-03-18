@@ -3,7 +3,7 @@ package com.bugsnag.example.simple;
 import com.bugsnag.Bugsnag;
 import com.bugsnag.BugsnagEvent;
 import com.bugsnag.Severity;
-import com.bugsnag.callbacks.Callback;
+import com.bugsnag.callbacks.OnErrorCallback;
 
 import java.util.Date;
 
@@ -20,7 +20,7 @@ public class ExampleApp {
         // Create and attach a simple Bugsnag callback.
         // Use Callbacks to send custom diagnostic data which changes during
         // the lifecyle of your application
-        bugsnag.addCallback(new Callback() {
+        bugsnag.addOnError(new OnErrorCallback() {
             @Override
             public boolean onError(BugsnagEvent event) {
                 event.addMetadata("diagnostics", "timestamp", new Date());
@@ -52,7 +52,7 @@ public class ExampleApp {
         try {
             throw new RuntimeException("Handled exception - custom metadata");
         } catch (RuntimeException e) {
-            bugsnag.notify(e, new Callback() {
+            bugsnag.notify(e, new OnErrorCallback() {
                 @Override
                 public boolean onError(BugsnagEvent event) {
                     event.setSeverity(Severity.WARNING);

@@ -1,6 +1,6 @@
 package com.bugsnag;
 
-import com.bugsnag.callbacks.Callback;
+import com.bugsnag.callbacks.OnErrorCallback;
 import com.bugsnag.delivery.Delivery;
 import com.bugsnag.delivery.HttpDelivery;
 import com.bugsnag.util.DaemonThreadFactory;
@@ -142,10 +142,10 @@ public class Bugsnag implements Closeable {
      * sent to Bugsnag completely.
      *
      * @param callback a callback to run before sending errors to Bugsnag
-     * @see Callback
+     * @see OnErrorCallback
      */
-    public void addCallback(Callback callback) {
-        config.addCallback(callback);
+    public void addOnError(OnErrorCallback callback) {
+        config.addOnError(callback);
     }
 
     /**
@@ -370,10 +370,10 @@ public class Bugsnag implements Closeable {
      * Notify Bugsnag of a handled exception.
      *
      * @param throwable the exception to send to Bugsnag
-     * @param callback  the {@link Callback} object to run for this Report
+     * @param callback  the {@link OnErrorCallback} object to run for this Report
      * @return true unless the error report was ignored
      */
-    public boolean notify(Throwable throwable, Callback callback) {
+    public boolean notify(Throwable throwable, OnErrorCallback callback) {
         return notify(buildReport(throwable), callback);
     }
 
@@ -395,10 +395,10 @@ public class Bugsnag implements Closeable {
      * @param throwable the exception to send to Bugsnag
      * @param severity  the severity of the error, one of {#link Severity#ERROR},
      *                  {@link Severity#WARNING} or {@link Severity#INFO}
-     * @param callback  the {@link Callback} object to run for this Report
+     * @param callback  the {@link OnErrorCallback} object to run for this Report
      * @return true unless the error report was ignored
      */
-    public boolean notify(Throwable throwable, Severity severity, Callback callback) {
+    public boolean notify(Throwable throwable, Severity severity, OnErrorCallback callback) {
         if (throwable == null) {
             LOGGER.warn("Tried to notify with a null Throwable");
             return false;
@@ -436,12 +436,12 @@ public class Bugsnag implements Closeable {
      * for this particular error report.
      *
      * @param event         the {@link BugsnagEvent} object to send to Bugsnag
-     * @param reportCallback the {@link Callback} object to run for this Report
+     * @param reportCallback the {@link OnErrorCallback} object to run for this Report
      * @return false if the error report was ignored
      * @see BugsnagEvent
      * @see #buildReport
      */
-    public boolean notify(BugsnagEvent event, Callback reportCallback) {
+    public boolean notify(BugsnagEvent event, OnErrorCallback reportCallback) {
         if (event == null) {
             LOGGER.warn("Tried to call notify with a null Report");
             return false;
@@ -462,10 +462,10 @@ public class Bugsnag implements Closeable {
         }
 
         // Run all client-wide onError callbacks
-        for (Callback callback : config.callbacks) {
+        for (OnErrorCallback callback : config.callbacks) {
             try {
                 boolean proceed = callback.onError(event);
-                if (!proceed || event.getShouldCancel()) {
+                if (!proceed) {
                     LOGGER.debug("Error not reported to Bugsnag - cancelled by a client-wide onError callback");
                     return false;
                 }
@@ -481,7 +481,7 @@ public class Bugsnag implements Closeable {
         if (reportCallback != null) {
             try {
                 boolean proceed = reportCallback.onError(event);
-                if (!proceed || event.getShouldCancel()) {
+                if (!proceed) {
                     LOGGER.debug("Error not reported to Bugsnag - cancelled by a report-specific callback");
                     return false;
                 }

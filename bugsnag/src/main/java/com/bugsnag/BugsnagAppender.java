@@ -1,6 +1,6 @@
 package com.bugsnag;
 
-import com.bugsnag.callbacks.Callback;
+import com.bugsnag.callbacks.OnErrorCallback;
 import com.bugsnag.delivery.Delivery;
 import com.bugsnag.logback.BugsnagMarker;
 import com.bugsnag.logback.LogbackFeatureFlag;
@@ -120,7 +120,7 @@ public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
         if (bugsnag != null) {
             Throwable throwable = extractThrowable(loggingEvent);
 
-            final Callback reportCallback;
+            final OnErrorCallback reportCallback;
             Marker marker = loggingEvent.getMarker();
             if (marker instanceof BugsnagMarker) {
                 reportCallback = ((BugsnagMarker) marker).getCallback();
@@ -136,7 +136,7 @@ public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
                 bugsnag.notify(
                         throwable,
                         calculateSeverity(loggingEvent),
-                        new Callback() {
+                        new OnErrorCallback() {
                             @Override
                             public boolean onError(BugsnagEvent event) {
 
@@ -281,7 +281,7 @@ public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
         }
 
         // Add a callback to put global metadata on every report
-        bugsnag.addCallback(new Callback() {
+        bugsnag.addOnError(new OnErrorCallback() {
             @Override
             public boolean onError(BugsnagEvent event) {
 
@@ -325,11 +325,11 @@ public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
      * sent to Bugsnag completely.
      *
      * @param callback a callback to run before sending errors to Bugsnag
-     * @see Callback
+     * @see OnErrorCallback
      */
-    public void addCallback(Callback callback) {
+    public void addCallback(OnErrorCallback callback) {
         if (bugsnag != null) {
-            bugsnag.addCallback(callback);
+            bugsnag.addOnError(callback);
         }
     }
 

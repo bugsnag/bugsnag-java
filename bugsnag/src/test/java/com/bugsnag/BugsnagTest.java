@@ -257,7 +257,7 @@ public class BugsnagTest {
 
     @Test
     public void testContext() {
-        bugsnag.addCallback(report -> {
+        bugsnag.addOnError(report -> {
             report.setContext("the context");
             return true;
         });
@@ -277,7 +277,7 @@ public class BugsnagTest {
 
     @Test
     public void testGroupingHash() {
-        bugsnag.addCallback(report -> {
+        bugsnag.addOnError(report -> {
             report.setGroupingHash("the grouping hash");
             return true;
         });
@@ -297,7 +297,7 @@ public class BugsnagTest {
 
     @Test
     public void testSingleCallback() {
-        bugsnag.addCallback(report -> {
+        bugsnag.addOnError(report -> {
             report.setApiKey("newapikey");
             return true;
         });
@@ -337,11 +337,11 @@ public class BugsnagTest {
 
     @Test
     public void testCallbackOrder() {
-        bugsnag.addCallback(report -> {
+        bugsnag.addOnError(report -> {
             report.setApiKey("newapikey");
             return true;
         });
-        bugsnag.addCallback(report -> {
+        bugsnag.addOnError(report -> {
             report.setApiKey("secondnewapikey");
             return true;
         });
@@ -357,17 +357,6 @@ public class BugsnagTest {
             }
         });
         assertTrue(bugsnag.notify(new Throwable()));
-    }
-
-    @Test
-    public void testCallbackCancel() {
-        bugsnag.setDelivery(BugsnagTestUtils.generateDelivery());
-        bugsnag.addCallback(report -> {
-            report.cancel();
-            return true; // cancellation flag respected
-        });
-        // Test the report is not sent
-        assertFalse(bugsnag.notify(new Throwable()));
     }
 
     @SuppressWarnings("deprecation") // ensures deprecated setEndpoint method still works correctly

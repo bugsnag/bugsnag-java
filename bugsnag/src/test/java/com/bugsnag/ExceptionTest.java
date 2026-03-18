@@ -76,9 +76,9 @@ public class ExceptionTest {
                 assertEquals("Foo", error.getErrorClass());
                 assertEquals("Test", error.getMessage());
             } catch (Throwable throwable) {
-                report.cancel();
+                return false;
             }
-            return !report.getShouldCancel();
+            return true;
         }));
 
         bugsnag.close();

@@ -9,7 +9,7 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 
-public class JakartaServletCallback implements Callback {
+public class JakartaServletCallback implements OnErrorCallback {
     private static final String HEADER_X_FORWARDED_FOR = "X-FORWARDED-FOR";
 
     /**

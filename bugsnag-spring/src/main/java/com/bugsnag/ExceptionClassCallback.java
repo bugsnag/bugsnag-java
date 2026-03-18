@@ -1,7 +1,7 @@
 package com.bugsnag;
 
 import com.bugsnag.HandledState.SeverityReasonType;
-import com.bugsnag.callbacks.Callback;
+import com.bugsnag.callbacks.OnErrorCallback;
 
 import org.springframework.beans.ConversionNotSupportedException;
 import org.springframework.beans.TypeMismatchException;
@@ -35,7 +35,7 @@ import java.util.Map;
  * Exceptions that automatically resolve to 500 (internal server error) responses
  * map to severity to ERROR.
  */
-class ExceptionClassCallback implements Callback {
+class ExceptionClassCallback implements OnErrorCallback {
 
     private static final Map<Class<? extends java.lang.Exception>, Severity> EXCEPTION_TO_SEVERITY;
 

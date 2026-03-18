@@ -30,6 +30,6 @@ class JakartaMvcConfiguration implements InitializingBean {
      */
     @Override
     public void afterPropertiesSet() {
-        bugsnag.addCallback(new ExceptionClassCallback());
+        bugsnag.addOnError(new ExceptionClassCallback());
     }
 }

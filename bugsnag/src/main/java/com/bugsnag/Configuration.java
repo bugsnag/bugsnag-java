@@ -1,7 +1,7 @@
 package com.bugsnag;
 
 import com.bugsnag.callbacks.AppCallback;
-import com.bugsnag.callbacks.Callback;
+import com.bugsnag.callbacks.OnErrorCallback;
 import com.bugsnag.callbacks.DeviceCallback;
 import com.bugsnag.callbacks.JakartaServletCallback;
 import com.bugsnag.delivery.AsyncHttpDelivery;
@@ -19,7 +19,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.regex.Pattern;
 
@@ -37,7 +37,7 @@ public class Configuration {
     private Delivery delivery;
     private EndpointConfiguration endpoints;
     private Delivery sessionDelivery;
-    private String[] redactedKeys = new String[] {"password", "secret", "Authorization", "Cookie"};
+    private String[] redactedKeys = new String[]{"password", "secret", "Authorization", "Cookie"};
     private Set<Pattern> discardClassRegexPatterns = new HashSet<Pattern>();
     private Set<String> discardClassStringPatterns = new HashSet<String>();
     private Set<String> enabledReleaseStages = null;
@@ -46,7 +46,7 @@ public class Configuration {
     private ThreadSendPolicy sendThreads = ThreadSendPolicy.NEVER;
     private Serializer serializer = new DefaultSerializer();
 
-    Collection<Callback> callbacks = new ConcurrentLinkedQueue<Callback>();
+    Set<OnErrorCallback> callbacks = new CopyOnWriteArraySet<>();
     private final AtomicBoolean autoCaptureSessions = new AtomicBoolean(true);
     private final AtomicBoolean sendUncaughtExceptions = new AtomicBoolean(true);
     private final FeatureFlagStore featureFlagStore = new FeatureFlagStore();
@@ -54,8 +54,8 @@ public class Configuration {
     Configuration(String apiKey) {
         this.apiKey = apiKey;
         // Add built-in callbacks
-        addCallback(new AppCallback(this));
-        addCallback(new DeviceCallback());
+        addOnError(new AppCallback(this));
+        addOnError(new DeviceCallback());
         DeviceCallback.initializeCache();
 
         endpoints = EndpointConfiguration.fromApiKey(apiKey);
@@ -64,7 +64,7 @@ public class Configuration {
         this.sessionDelivery = new AsyncHttpDelivery(endpoints.getSessionEndpoint());
 
         if (JakartaServletCallback.isAvailable()) {
-            addCallback(new JakartaServletCallback());
+            addOnError(new JakartaServletCallback());
         }
     }
 
@@ -88,10 +88,8 @@ public class Configuration {
         return false;
     }
 
-    void addCallback(Callback callback) {
-        if (!callbacks.contains(callback)) {
-            callbacks.add(callback);
-        }
+    void addOnError(OnErrorCallback callback) {
+        callbacks.add(callback);
     }
 
     boolean inProject(String className) {
@@ -348,7 +346,7 @@ public class Configuration {
      * Add a feature flag with the specified name and variant.
      * If the name already exists, the variant will be updated.
      *
-     * @param name the feature flag name
+     * @param name    the feature flag name
      * @param variant the feature flag variant (can be null)
      */
     public void addFeatureFlag(String name, String variant) {

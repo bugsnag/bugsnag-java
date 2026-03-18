@@ -3,7 +3,7 @@ package com.bugsnag.callbacks;
 import com.bugsnag.Configuration;
 import com.bugsnag.BugsnagEvent;
 
-public class AppCallback implements Callback {
+public class AppCallback implements OnErrorCallback {
     private Configuration config;
 
     public AppCallback(Configuration config) {

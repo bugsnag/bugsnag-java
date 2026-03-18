@@ -4,7 +4,7 @@ import com.bugsnag.Bugsnag;
 
 import com.bugsnag.BugsnagEvent;
 import com.bugsnag.Severity;
-import com.bugsnag.callbacks.Callback;
+import com.bugsnag.callbacks.OnErrorCallback;
 
 import org.springframework.beans.TypeMismatchException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -65,7 +65,7 @@ public class TestController {
         try {
             throw new TypeMismatchException("Test", String.class);
         } catch (TypeMismatchException ex) {
-            bugsnag.notify(ex, new Callback() {
+            bugsnag.notify(ex, new OnErrorCallback() {
                 @Override
                 public boolean onError(BugsnagEvent event) {
                     event.setSeverity(Severity.WARNING);

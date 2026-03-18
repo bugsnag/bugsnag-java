@@ -3,7 +3,7 @@ package com.bugsnag.example.spring.web;
 import com.bugsnag.Bugsnag;
 import com.bugsnag.BugsnagSpringConfiguration;
 import com.bugsnag.BugsnagEvent;
-import com.bugsnag.callbacks.Callback;
+import com.bugsnag.callbacks.OnErrorCallback;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -29,7 +29,7 @@ public class Config {
         // Create and attach a simple Bugsnag callback.
         // Use Callbacks to send custom diagnostic data which changes during
         // the lifecyle of your application
-        bugsnag.addCallback(new Callback() {
+        bugsnag.addOnError(new OnErrorCallback() {
             @Override
             public boolean onError(BugsnagEvent event) {
                 event.addMetadata("diagnostics", "timestamp", new Date());

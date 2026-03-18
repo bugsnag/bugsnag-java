@@ -11,7 +11,7 @@ import java.util.concurrent.FutureTask;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-public class DeviceCallback implements Callback {
+public class DeviceCallback implements OnErrorCallback {
 
     private static volatile String hostname;
     private static volatile boolean hostnameInitialised;
