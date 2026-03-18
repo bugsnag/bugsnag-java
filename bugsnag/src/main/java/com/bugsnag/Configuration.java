@@ -13,15 +13,15 @@ import com.bugsnag.serialization.Serializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.regex.Pattern;
 
 @SuppressWarnings("visibilitymodifier")
 public class Configuration {
@@ -38,7 +38,8 @@ public class Configuration {
     private EndpointConfiguration endpoints;
     private Delivery sessionDelivery;
     private String[] redactedKeys = new String[] {"password", "secret", "Authorization", "Cookie"};
-    private String[] discardClasses;
+    private Set<Pattern> discardClassRegexPatterns = new HashSet<Pattern>();
+    private Set<String> discardClassStringPatterns = new HashSet<String>();
     private Set<String> enabledReleaseStages = null;
     private String[] projectPackages;
     private String releaseStage;
@@ -75,12 +76,16 @@ public class Configuration {
     }
 
     boolean shouldIgnoreClass(String className) {
-        if (discardClasses == null) {
+        if (discardClassRegexPatterns == null || discardClassRegexPatterns.isEmpty()) {
             return false;
         }
 
-        List<String> classes = Arrays.asList(discardClasses);
-        return classes.contains(className);
+        for (Pattern pattern : discardClassRegexPatterns) {
+            if (pattern.matcher(className).matches()) {
+                return true;
+            }
+        }
+        return false;
     }
 
     void addCallback(Callback callback) {
@@ -253,12 +258,50 @@ public class Configuration {
         this.redactedKeys = redactedKeys;
     }
 
-    public String[] getDiscardClasses() {
-        return discardClasses;
+    public Pattern[] getDiscardClasses() {
+        return discardClassRegexPatterns.toArray(new Pattern[0]);
     }
 
-    public void setDiscardClasses(String[] discardClasses) {
-        this.discardClasses = discardClasses;
+    /**
+     * Set which exception classes should be ignored (not sent) by Bugsnag.
+     * Uses Java regex patterns for matching exception class names.
+     *
+     * @param discardClasses a list of compiled regex patterns to match exception class names
+     */
+    public void setDiscardClasses(Pattern[] discardClasses) {
+        this.discardClassRegexPatterns.clear();
+        this.discardClassStringPatterns.clear();
+        if (discardClasses != null) {
+            for (Pattern pattern : discardClasses) {
+                if (pattern != null) {
+                    // Store pattern
+                    this.discardClassRegexPatterns.add(pattern);
+                    // Store string representation for serialization
+                    this.discardClassStringPatterns.add(pattern.pattern());
+                }
+            }
+        }
+    }
+
+    /**
+     * Set which exception classes should be ignored (not sent) by Bugsnag.
+     * Compiles the provided strings as Java regex patterns.
+     *
+     * @param discardClasses a list of regex pattern strings to match exception class names
+     */
+    public void setDiscardClassesFromStrings(String[] discardClasses) {
+        this.discardClassRegexPatterns.clear();
+        this.discardClassStringPatterns.clear();
+        if (discardClasses != null) {
+            for (String patternStr : discardClasses) {
+                if (patternStr != null && !patternStr.isEmpty()) {
+                    // Store original pattern string
+                    this.discardClassStringPatterns.add(patternStr);
+                    // Compile as regex pattern
+                    this.discardClassRegexPatterns.add(Pattern.compile(patternStr));
+                }
+            }
+        }
     }
 
     public Set<String> getEnabledReleaseStages() {

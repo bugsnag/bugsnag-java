@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 /**
  * Test for the Bugsnag Appender
@@ -151,9 +152,19 @@ public class AppenderTest {
         assertTrue(redactedKeys.contains("credit_card_number"));
 
         assertEquals(2, config.getDiscardClasses().length);
-        ArrayList<String> discardClasses = new ArrayList<String>(Arrays.asList(config.getDiscardClasses()));
-        assertTrue(discardClasses.contains("com.example.Custom"));
-        assertTrue(discardClasses.contains("java.io.IOException"));
+        Pattern[] discardPatterns = config.getDiscardClasses();
+        boolean hasCustom = false;
+        boolean hasIoException = false;
+        for (Pattern pattern : discardPatterns) {
+            if (pattern.pattern().equals("com.example.Custom")) {
+                hasCustom = true;
+            }
+            if (pattern.pattern().equals("java.io.IOException")) {
+                hasIoException = true;
+            }
+        }
+        assertTrue(hasCustom);
+        assertTrue(hasIoException);
 
         assertEquals(2, config.getEnabledReleaseStages().size());
         assertTrue(config.getEnabledReleaseStages().contains("development"));

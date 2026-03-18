@@ -20,6 +20,7 @@ import java.net.InetSocketAddress;
 import java.net.Proxy;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -265,7 +266,7 @@ public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
             bugsnag.setRedactedKeys(redactedKeys.toArray(new String[0]));
         }
 
-        bugsnag.setDiscardClasses(discardClasses.toArray(new String[0]));
+        bugsnag.setDiscardClasses(compileDiscardPatterns(discardClasses));
 
         if (!enabledReleaseStages.isEmpty()) {
             bugsnag.setEnabledReleaseStages(enabledReleaseStages.toArray(new String[0]));
@@ -299,6 +300,21 @@ public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
         });
 
         return bugsnag;
+    }
+
+    /**
+     * Compiles a collection of pattern strings into an array of Pattern objects.
+     *
+     * @param patternStrings the collection of pattern strings to compile
+     * @return an array of compiled Pattern objects
+     */
+    private Pattern[] compileDiscardPatterns(Collection<String> patternStrings) {
+        Pattern[] patterns = new Pattern[patternStrings.size()];
+        int idx = 0;
+        for (String pattern : patternStrings) {
+            patterns[idx++] = Pattern.compile(pattern);
+        }
+        return patterns;
     }
 
     /**
@@ -414,24 +430,24 @@ public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
     }
 
     /**
-     * @see Bugsnag#setDiscardClasses(String...)
+     * @see Bugsnag#setDiscardClasses(Pattern...)
      */
     public void setDiscardClass(String discardClass) {
         this.discardClasses.add(discardClass);
 
         if (bugsnag != null) {
-            bugsnag.setDiscardClasses(this.discardClasses.toArray(new String[0]));
+            bugsnag.setDiscardClasses(compileDiscardPatterns(this.discardClasses));
         }
     }
 
     /**
-     * @see Bugsnag#setDiscardClasses(String...)
+     * @see Bugsnag#setDiscardClasses(Pattern...)
      */
     public void setDiscardClasses(String discardClasses) {
         this.discardClasses.addAll(split(discardClasses));
 
         if (bugsnag != null) {
-            bugsnag.setDiscardClasses(this.discardClasses.toArray(new String[0]));
+            bugsnag.setDiscardClasses(compileDiscardPatterns(this.discardClasses));
         }
     }
 
