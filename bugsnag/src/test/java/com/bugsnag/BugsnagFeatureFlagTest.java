@@ -30,8 +30,8 @@ public class BugsnagFeatureFlagTest {
     public void testAddFeatureFlag() {
         bugsnag.addFeatureFlag("flag1", "variant-a");
 
-        Report report = bugsnag.buildReport(new RuntimeException("Test"));
-        List<FeatureFlag> flags = report.getFeatureFlags();
+        BugsnagEvent event = bugsnag.buildReport(new RuntimeException("Test"));
+        List<FeatureFlag> flags = event.getFeatureFlags();
 
         assertEquals(1, flags.size());
         assertEquals("flag1", flags.get(0).getName());
@@ -42,8 +42,8 @@ public class BugsnagFeatureFlagTest {
     public void testAddFeatureFlagWithoutVariant() {
         bugsnag.addFeatureFlag("flag1");
 
-        Report report = bugsnag.buildReport(new RuntimeException("Test"));
-        List<FeatureFlag> flags = report.getFeatureFlags();
+        BugsnagEvent event = bugsnag.buildReport(new RuntimeException("Test"));
+        List<FeatureFlag> flags = event.getFeatureFlags();
 
         assertEquals(1, flags.size());
         assertEquals("flag1", flags.get(0).getName());
@@ -58,8 +58,8 @@ public class BugsnagFeatureFlagTest {
 
         bugsnag.addFeatureFlags(flagsToAdd);
 
-        Report report = bugsnag.buildReport(new RuntimeException("Test"));
-        List<FeatureFlag> flags = report.getFeatureFlags();
+        BugsnagEvent event = bugsnag.buildReport(new RuntimeException("Test"));
+        List<FeatureFlag> flags = event.getFeatureFlags();
 
         assertEquals(2, flags.size());
         assertEquals("flag1", flags.get(0).getName());
@@ -72,8 +72,8 @@ public class BugsnagFeatureFlagTest {
         bugsnag.addFeatureFlag("flag2", "variant-b");
         bugsnag.clearFeatureFlag("flag1");
 
-        Report report = bugsnag.buildReport(new RuntimeException("Test"));
-        List<FeatureFlag> flags = report.getFeatureFlags();
+        BugsnagEvent event = bugsnag.buildReport(new RuntimeException("Test"));
+        List<FeatureFlag> flags = event.getFeatureFlags();
 
         assertEquals(1, flags.size());
         assertEquals("flag2", flags.get(0).getName());
@@ -85,8 +85,8 @@ public class BugsnagFeatureFlagTest {
         bugsnag.addFeatureFlag("flag2", "variant-b");
         bugsnag.clearFeatureFlags();
 
-        Report report = bugsnag.buildReport(new RuntimeException("Test"));
-        List<FeatureFlag> flags = report.getFeatureFlags();
+        BugsnagEvent event = bugsnag.buildReport(new RuntimeException("Test"));
+        List<FeatureFlag> flags = event.getFeatureFlags();
 
         assertEquals(0, flags.size());
     }
@@ -99,8 +99,8 @@ public class BugsnagFeatureFlagTest {
         Bugsnag client = new Bugsnag("api-key", false);
         client.getConfig().addFeatureFlag("config-flag", "config-variant");
 
-        Report report = client.buildReport(new RuntimeException("Test"));
-        List<FeatureFlag> flags = report.getFeatureFlags();
+        BugsnagEvent event = client.buildReport(new RuntimeException("Test"));
+        List<FeatureFlag> flags = event.getFeatureFlags();
 
         assertEquals(1, flags.size());
         assertEquals("config-flag", flags.get(0).getName());
@@ -118,8 +118,8 @@ public class BugsnagFeatureFlagTest {
         client.getConfig().addFeatureFlag("flag1", "config-variant");
         client.addFeatureFlag("flag1", "client-variant");
 
-        Report report = client.buildReport(new RuntimeException("Test"));
-        List<FeatureFlag> flags = report.getFeatureFlags();
+        BugsnagEvent event = client.buildReport(new RuntimeException("Test"));
+        List<FeatureFlag> flags = event.getFeatureFlags();
 
         assertEquals(1, flags.size());
         assertEquals("flag1", flags.get(0).getName());
@@ -139,8 +139,8 @@ public class BugsnagFeatureFlagTest {
         client.getConfig().addFeatureFlag("flag2", "config-variant");
         client.addFeatureFlag("flag3", "client-variant");
 
-        Report report = client.buildReport(new RuntimeException("Test"));
-        List<FeatureFlag> flags = report.getFeatureFlags();
+        BugsnagEvent event = client.buildReport(new RuntimeException("Test"));
+        List<FeatureFlag> flags = event.getFeatureFlags();
 
         assertEquals(3, flags.size());
         assertEquals("flag1", flags.get(0).getName());

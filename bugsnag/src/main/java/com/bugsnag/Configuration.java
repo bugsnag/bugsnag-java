@@ -1,9 +1,9 @@
 package com.bugsnag;
 
 import com.bugsnag.callbacks.AppCallback;
-import com.bugsnag.callbacks.Callback;
 import com.bugsnag.callbacks.DeviceCallback;
 import com.bugsnag.callbacks.JakartaServletCallback;
+import com.bugsnag.callbacks.OnErrorCallback;
 import com.bugsnag.delivery.AsyncHttpDelivery;
 import com.bugsnag.delivery.Delivery;
 import com.bugsnag.delivery.HttpDelivery;
@@ -19,8 +19,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.regex.Pattern;
 
 @SuppressWarnings("visibilitymodifier")
@@ -37,25 +36,25 @@ public class Configuration {
     private Delivery delivery;
     private EndpointConfiguration endpoints;
     private Delivery sessionDelivery;
-    private String[] redactedKeys = new String[] {"password", "secret", "Authorization", "Cookie"};
+    private String[] redactedKeys = new String[]{"password", "secret", "Authorization", "Cookie"};
     private Set<Pattern> discardClassRegexPatterns = new HashSet<Pattern>();
     private Set<String> discardClassStringPatterns = new HashSet<String>();
     private Set<String> enabledReleaseStages = null;
     private String[] projectPackages;
     private String releaseStage;
-    private boolean sendThreads = false;
+    private ThreadSendPolicy sendThreads = ThreadSendPolicy.NEVER;
     private Serializer serializer = new DefaultSerializer();
 
-    Collection<Callback> callbacks = new ConcurrentLinkedQueue<Callback>();
-    private final AtomicBoolean autoCaptureSessions = new AtomicBoolean(true);
-    private final AtomicBoolean sendUncaughtExceptions = new AtomicBoolean(true);
+    Set<OnErrorCallback> callbacks = new CopyOnWriteArraySet<>();
+    private volatile boolean autoCaptureSessions = true;
+    private volatile boolean sendUncaughtExceptions = true;
     private final FeatureFlagStore featureFlagStore = new FeatureFlagStore();
 
     Configuration(String apiKey) {
         this.apiKey = apiKey;
         // Add built-in callbacks
-        addCallback(new AppCallback(this));
-        addCallback(new DeviceCallback());
+        addOnError(new AppCallback(this));
+        addOnError(new DeviceCallback());
         DeviceCallback.initializeCache();
 
         endpoints = EndpointConfiguration.fromApiKey(apiKey);
@@ -64,7 +63,7 @@ public class Configuration {
         this.sessionDelivery = new AsyncHttpDelivery(endpoints.getSessionEndpoint());
 
         if (JakartaServletCallback.isAvailable()) {
-            addCallback(new JakartaServletCallback());
+            addOnError(new JakartaServletCallback());
         }
     }
 
@@ -88,10 +87,8 @@ public class Configuration {
         return false;
     }
 
-    void addCallback(Callback callback) {
-        if (!callbacks.contains(callback)) {
-            callbacks.add(callback);
-        }
+    void addOnError(OnErrorCallback callback) {
+        callbacks.add(callback);
     }
 
     boolean inProject(String className) {
@@ -107,19 +104,19 @@ public class Configuration {
     }
 
     public void setAutoCaptureSessions(boolean autoCaptureSessions) {
-        this.autoCaptureSessions.set(autoCaptureSessions);
+        this.autoCaptureSessions = autoCaptureSessions;
     }
 
     public boolean shouldAutoCaptureSessions() {
-        return autoCaptureSessions.get();
+        return autoCaptureSessions;
     }
 
     public void setSendUncaughtExceptions(boolean sendUncaughtExceptions) {
-        this.sendUncaughtExceptions.set(sendUncaughtExceptions);
+        this.sendUncaughtExceptions = sendUncaughtExceptions;
     }
 
     public boolean shouldSendUncaughtExceptions() {
-        return sendUncaughtExceptions.get();
+        return sendUncaughtExceptions;
     }
 
     /**
@@ -167,10 +164,10 @@ public class Configuration {
         boolean invalidSessionsEndpoint = sessions == null || sessions.isEmpty();
         String sessionEndpoint = null;
 
-        if (invalidSessionsEndpoint && this.autoCaptureSessions.get()) {
+        if (invalidSessionsEndpoint && this.autoCaptureSessions) {
             LOGGER.warn("The session tracking endpoint has not been"
                     + " set. Session tracking is disabled");
-            this.autoCaptureSessions.set(false);
+            this.autoCaptureSessions = false;
         } else {
             sessionEndpoint = sessions;
         }
@@ -187,7 +184,7 @@ public class Configuration {
 
     Map<String, String> getErrorApiHeaders() {
         Map<String, String> map = new HashMap<String, String>();
-        map.put(HEADER_API_PAYLOAD_VERSION, Report.PAYLOAD_VERSION);
+        map.put(HEADER_API_PAYLOAD_VERSION, BugsnagEvent.PAYLOAD_VERSION);
         map.put(HEADER_API_KEY, apiKey);
         map.put(HEADER_BUGSNAG_SENT_AT, DateUtils.toIso8601(new Date()));
         return map;
@@ -328,11 +325,11 @@ public class Configuration {
         this.releaseStage = releaseStage;
     }
 
-    public boolean isSendThreads() {
+    public ThreadSendPolicy getSendThreads() {
         return sendThreads;
     }
 
-    public void setSendThreads(boolean sendThreads) {
+    public void setSendThreads(ThreadSendPolicy sendThreads) {
         this.sendThreads = sendThreads;
     }
 
@@ -348,7 +345,7 @@ public class Configuration {
      * Add a feature flag with the specified name and variant.
      * If the name already exists, the variant will be updated.
      *
-     * @param name the feature flag name
+     * @param name    the feature flag name
      * @param variant the feature flag variant (can be null)
      */
     public void addFeatureFlag(String name, String variant) {

@@ -30,7 +30,7 @@ public class CallbackSuppressionTest {
 
     @Test
     public void callbackReturningFalseSuppressesDelivery() {
-        bugsnag.addCallback(report -> false); // explicit suppression
+        bugsnag.addOnError(report -> false); // explicit suppression
 
         boolean result = bugsnag.notify(new RuntimeException("Suppressed"));
         assertFalse("notify should return false when suppressed", result);
@@ -39,7 +39,7 @@ public class CallbackSuppressionTest {
 
     @Test
     public void callbackReturningTrueAllowsDelivery() {
-        bugsnag.addCallback(report -> true); // allow
+        bugsnag.addOnError(report -> true); // allow
 
         boolean result = bugsnag.notify(new RuntimeException("Allowed"));
         assertTrue(result);

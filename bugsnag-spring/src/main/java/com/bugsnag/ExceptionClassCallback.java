@@ -1,7 +1,7 @@
 package com.bugsnag;
 
 import com.bugsnag.HandledState.SeverityReasonType;
-import com.bugsnag.callbacks.Callback;
+import com.bugsnag.callbacks.OnErrorCallback;
 
 import org.springframework.beans.ConversionNotSupportedException;
 import org.springframework.beans.TypeMismatchException;
@@ -35,7 +35,7 @@ import java.util.Map;
  * Exceptions that automatically resolve to 500 (internal server error) responses
  * map to severity to ERROR.
  */
-class ExceptionClassCallback implements Callback {
+class ExceptionClassCallback implements OnErrorCallback {
 
     private static final Map<Class<? extends java.lang.Exception>, Severity> EXCEPTION_TO_SEVERITY;
 
@@ -111,9 +111,9 @@ class ExceptionClassCallback implements Callback {
     }
 
     @Override
-    public boolean onError(Report report) {
+    public boolean onError(BugsnagEvent event) {
 
-        HandledState handledState = report.getHandledState();
+        HandledState handledState = event.getHandledState();
 
         // A manually-set severity takes precedence
         SeverityReasonType severityReasonType = handledState.calculateSeverityReasonType();
@@ -122,12 +122,12 @@ class ExceptionClassCallback implements Callback {
             return true; // do not change delivery decision
         }
 
-        Class exceptionClass = report.getException().getClass();
+        Class exceptionClass = event.getException().getClass();
 
         if (EXCEPTION_TO_SEVERITY.containsKey(exceptionClass)) {
             Severity severity = EXCEPTION_TO_SEVERITY.get(exceptionClass);
-            report.setSeverity(severity);
-            report.setHandledState(HandledState.newInstance(
+            event.setSeverity(severity);
+            event.setHandledState(HandledState.newInstance(
                     SeverityReasonType.REASON_EXCEPTION_CLASS,
                     Collections.singletonMap("exceptionClass", exceptionClass.getSimpleName()),
                     severity,

@@ -25,8 +25,8 @@ public class ConfigurationFeatureFlagTest {
         config.addFeatureFlag("flag1", "variant-a");
 
         // Verify the config has the flag
-        Report report = new Report(config, new RuntimeException("Test"));
-        List<FeatureFlag> flags = report.getFeatureFlags();
+        BugsnagEvent event = new BugsnagEvent(config, new RuntimeException("Test"));
+        List<FeatureFlag> flags = event.getFeatureFlags();
 
         assertEquals(1, flags.size());
         assertEquals("flag1", flags.get(0).getName());
@@ -37,8 +37,8 @@ public class ConfigurationFeatureFlagTest {
     public void testAddFeatureFlagWithoutVariant() {
         config.addFeatureFlag("flag1");
 
-        Report report = new Report(config, new RuntimeException("Test"));
-        List<FeatureFlag> flags = report.getFeatureFlags();
+        BugsnagEvent event = new BugsnagEvent(config, new RuntimeException("Test"));
+        List<FeatureFlag> flags = event.getFeatureFlags();
 
         assertEquals(1, flags.size());
         assertEquals("flag1", flags.get(0).getName());
@@ -53,8 +53,8 @@ public class ConfigurationFeatureFlagTest {
 
         config.addFeatureFlags(flagsToAdd);
 
-        Report report = new Report(config, new RuntimeException("Test"));
-        List<FeatureFlag> flags = report.getFeatureFlags();
+        BugsnagEvent event = new BugsnagEvent(config, new RuntimeException("Test"));
+        List<FeatureFlag> flags = event.getFeatureFlags();
 
         assertEquals(2, flags.size());
         assertEquals("flag1", flags.get(0).getName());
@@ -67,8 +67,8 @@ public class ConfigurationFeatureFlagTest {
         config.addFeatureFlag("flag2", "variant-b");
         config.clearFeatureFlag("flag1");
 
-        Report report = new Report(config, new RuntimeException("Test"));
-        List<FeatureFlag> flags = report.getFeatureFlags();
+        BugsnagEvent event = new BugsnagEvent(config, new RuntimeException("Test"));
+        List<FeatureFlag> flags = event.getFeatureFlags();
 
         assertEquals(1, flags.size());
         assertEquals("flag2", flags.get(0).getName());
@@ -80,8 +80,8 @@ public class ConfigurationFeatureFlagTest {
         config.addFeatureFlag("flag2", "variant-b");
         config.clearFeatureFlags();
 
-        Report report = new Report(config, new RuntimeException("Test"));
-        List<FeatureFlag> flags = report.getFeatureFlags();
+        BugsnagEvent event = new BugsnagEvent(config, new RuntimeException("Test"));
+        List<FeatureFlag> flags = event.getFeatureFlags();
 
         assertEquals(0, flags.size());
     }

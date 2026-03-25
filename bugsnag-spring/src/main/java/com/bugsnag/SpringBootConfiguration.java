@@ -1,6 +1,6 @@
 package com.bugsnag;
 
-import com.bugsnag.callbacks.Callback;
+import com.bugsnag.callbacks.OnErrorCallback;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringBootVersion;
@@ -16,15 +16,15 @@ public class SpringBootConfiguration {
      * Add a callback to add the version of Spring Boot used by the application.
      */
     @Bean
-    Callback springBootVersionErrorCallback() {
-        Callback callback = new Callback() {
+    OnErrorCallback springBootVersionErrorCallback() {
+        OnErrorCallback callback = new OnErrorCallback() {
             @Override
-            public boolean onError(Report report) {
+            public boolean onError(BugsnagEvent report) {
                 addSpringRuntimeVersion(report.getDevice());
                 return true;
             }
         };
-        bugsnag.addCallback(callback);
+        bugsnag.addOnError(callback);
         return callback;
     }
 

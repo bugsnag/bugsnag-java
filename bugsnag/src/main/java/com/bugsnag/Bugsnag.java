@@ -1,6 +1,6 @@
 package com.bugsnag;
 
-import com.bugsnag.callbacks.Callback;
+import com.bugsnag.callbacks.OnErrorCallback;
 import com.bugsnag.delivery.Delivery;
 import com.bugsnag.delivery.HttpDelivery;
 import com.bugsnag.util.DaemonThreadFactory;
@@ -142,10 +142,10 @@ public class Bugsnag implements Closeable {
      * sent to Bugsnag completely.
      *
      * @param callback a callback to run before sending errors to Bugsnag
-     * @see Callback
+     * @see OnErrorCallback
      */
-    public void addCallback(Callback callback) {
-        config.addCallback(callback);
+    public void addOnError(OnErrorCallback callback) {
+        config.addOnError(callback);
     }
 
     /**
@@ -308,15 +308,13 @@ public class Bugsnag implements Closeable {
     }
 
     /**
-     * Set whether Bugsnag should capture and report thread-state for all
-     * running threads. This is often not useful for Java web apps, since
-     * there could be thousands of active threads depending on your
-     * environment.
+     * Set when Bugsnag should capture and report thread-state for all
+     * running threads.
      *
      * @param sendThreads should we send thread state with error reports
      * @see #setEnabledReleaseStages
      */
-    public void setSendThreads(boolean sendThreads) {
+    public void setSendThreads(ThreadSendPolicy sendThreads) {
         config.setSendThreads(sendThreads);
     }
 
@@ -349,13 +347,13 @@ public class Bugsnag implements Closeable {
      *
      * @param throwable the exception to send to Bugsnag
      * @return the report object
-     * @see Report
-     * @see #notify(com.bugsnag.Report)
+     * @see BugsnagEvent
+     * @see #notify(BugsnagEvent)
      */
-    public Report buildReport(Throwable throwable) {
+    public BugsnagEvent buildReport(Throwable throwable) {
         HandledState handledState = HandledState.newInstance(
                 HandledState.SeverityReasonType.REASON_HANDLED_EXCEPTION);
-        return new Report(config, throwable, handledState, Thread.currentThread(), featureFlagStore);
+        return new BugsnagEvent(config, throwable, handledState, Thread.currentThread(), featureFlagStore);
     }
 
     /**
@@ -372,10 +370,10 @@ public class Bugsnag implements Closeable {
      * Notify Bugsnag of a handled exception.
      *
      * @param throwable the exception to send to Bugsnag
-     * @param callback  the {@link Callback} object to run for this Report
+     * @param callback  the {@link OnErrorCallback} object to run for this Report
      * @return true unless the error report was ignored
      */
-    public boolean notify(Throwable throwable, Callback callback) {
+    public boolean notify(Throwable throwable, OnErrorCallback callback) {
         return notify(buildReport(throwable), callback);
     }
 
@@ -397,10 +395,10 @@ public class Bugsnag implements Closeable {
      * @param throwable the exception to send to Bugsnag
      * @param severity  the severity of the error, one of {#link Severity#ERROR},
      *                  {@link Severity#WARNING} or {@link Severity#INFO}
-     * @param callback  the {@link Callback} object to run for this Report
+     * @param callback  the {@link OnErrorCallback} object to run for this Report
      * @return true unless the error report was ignored
      */
-    public boolean notify(Throwable throwable, Severity severity, Callback callback) {
+    public boolean notify(Throwable throwable, Severity severity, OnErrorCallback callback) {
         if (throwable == null) {
             LOGGER.warn("Tried to notify with a null Throwable");
             return false;
@@ -410,49 +408,58 @@ public class Bugsnag implements Closeable {
         }
 
         HandledState handledState = HandledState.newInstance(
-                HandledState.SeverityReasonType.REASON_USER_SPECIFIED, severity);
-        Report report = new Report(config, throwable, handledState, Thread.currentThread(), featureFlagStore);
-        return notify(report, callback);
+                HandledState.SeverityReasonType.REASON_USER_SPECIFIED,
+                severity
+        );
+
+        BugsnagEvent event = new BugsnagEvent(
+                config,
+                throwable,
+                handledState,
+                Thread.currentThread(),
+                featureFlagStore
+        );
+        return notify(event, callback);
     }
 
     /**
      * Notify Bugsnag of an exception and provide custom diagnostic data
      * for this particular error report.
      *
-     * @param report the {@link Report} object to send to Bugsnag
+     * @param event the {@link BugsnagEvent} object to send to Bugsnag
      * @return true unless the error report was ignored
-     * @see Report
+     * @see BugsnagEvent
      * @see #buildReport
      */
-    public boolean notify(Report report) {
-        return notify(report, null);
+    public boolean notify(BugsnagEvent event) {
+        return notify(event, null);
     }
 
     boolean notify(Throwable throwable, HandledState handledState, Thread currentThread) {
-        Report report = new Report(config, throwable, handledState, currentThread, featureFlagStore);
-        return notify(report, null);
+        BugsnagEvent event = new BugsnagEvent(config, throwable, handledState, currentThread, featureFlagStore);
+        return notify(event, null);
     }
 
     /**
      * Notify Bugsnag of an exception and provide custom diagnostic data
      * for this particular error report.
      *
-     * @param report         the {@link Report} object to send to Bugsnag
-     * @param reportCallback the {@link Callback} object to run for this Report
+     * @param event         the {@link BugsnagEvent} object to send to Bugsnag
+     * @param reportCallback the {@link OnErrorCallback} object to run for this Report
      * @return false if the error report was ignored
-     * @see Report
+     * @see BugsnagEvent
      * @see #buildReport
      */
-    public boolean notify(Report report, Callback reportCallback) {
-        if (report == null) {
+    public boolean notify(BugsnagEvent event, OnErrorCallback reportCallback) {
+        if (event == null) {
             LOGGER.warn("Tried to call notify with a null Report");
             return false;
         }
 
         // Don't notify if this error class should be ignored
-        if (config.shouldIgnoreClass(report.getExceptionName())) {
+        if (config.shouldIgnoreClass(event.getExceptionName())) {
             LOGGER.debug("Error not reported to Bugsnag - {} is in 'discardClasses'",
-                    report.getExceptionName());
+                    event.getExceptionName());
             return false;
         }
 
@@ -464,10 +471,10 @@ public class Bugsnag implements Closeable {
         }
 
         // Run all client-wide onError callbacks
-        for (Callback callback : config.callbacks) {
+        for (OnErrorCallback callback : config.callbacks) {
             try {
-                boolean proceed = callback.onError(report);
-                if (!proceed || report.getShouldCancel()) {
+                boolean proceed = callback.onError(event);
+                if (!proceed) {
                     LOGGER.debug("Error not reported to Bugsnag - cancelled by a client-wide onError callback");
                     return false;
                 }
@@ -477,13 +484,13 @@ public class Bugsnag implements Closeable {
         }
 
         // Add thread metadata to the report
-        report.mergeMetadata(THREAD_METADATA.get());
+        event.mergeMetadata(THREAD_METADATA.get());
 
         // Run the report-specific onError callback, if given
         if (reportCallback != null) {
             try {
-                boolean proceed = reportCallback.onError(report);
-                if (!proceed || report.getShouldCancel()) {
+                boolean proceed = reportCallback.onError(event);
+                if (!proceed) {
                     LOGGER.debug("Error not reported to Bugsnag - cancelled by a report-specific callback");
                     return false;
                 }
@@ -502,16 +509,16 @@ public class Bugsnag implements Closeable {
         Session session = sessionTracker.getSession();
 
         if (session != null) {
-            if (report.getUnhandled()) {
+            if (event.getUnhandled()) {
                 session.incrementUnhandledCount();
             } else {
                 session.incrementHandledCount();
             }
-            report.setSession(session);
+            event.setSession(session);
         }
 
         // Build the notification
-        Notification notification = new Notification(config, report);
+        Notification notification = new Notification(config, event);
 
         // Deliver the notification
         LOGGER.debug("Reporting error to Bugsnag");

@@ -1,9 +1,9 @@
 package com.bugsnag.example.spring.web;
 
 import com.bugsnag.Bugsnag;
-import com.bugsnag.Report;
+import com.bugsnag.BugsnagEvent;
 import com.bugsnag.Severity;
-import com.bugsnag.callbacks.Callback;
+import com.bugsnag.callbacks.OnErrorCallback;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -69,12 +69,12 @@ public class ApplicationRestController {
         try {
             throw new RuntimeException("Handled exception - custom metadata");
         } catch (RuntimeException e) {
-            bugsnag.notify(e, new Callback() {
+            bugsnag.notify(e, new OnErrorCallback() {
                 @Override
-                public boolean onError(Report report) {
-                    report.setSeverity(Severity.WARNING);
-                    report.addMetadata("report", "something", "that happened");
-                    report.setContext("the context");
+                public boolean onError(BugsnagEvent event) {
+                    event.setSeverity(Severity.WARNING);
+                    event.addMetadata("report", "something", "that happened");
+                    event.setContext("the context");
                     return true;
                 }
             });

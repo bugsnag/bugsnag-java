@@ -1,10 +1,7 @@
 package com.bugsnag.mazerunner.scenarios;
 
 import com.bugsnag.Bugsnag;
-import com.bugsnag.Report;
-import com.bugsnag.callbacks.Callback;
 import com.bugsnag.logback.BugsnagMarker;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,14 +18,11 @@ public class LogbackMetadataScenario extends Scenario {
 
     @Override
     public void run() {
-        LOGGER.warn(new BugsnagMarker(new Callback() {
-            @Override
-            public boolean onError(Report report) {
-                report.addMetadata("user", "foo", "hunter2");
-                report.addMetadata("custom", "foo", "hunter2");
-                report.addMetadata("custom", "bar", "hunter2");
-                return true;
-            }
+        LOGGER.warn(new BugsnagMarker(event -> {
+            event.addMetadata("user", "foo", "hunter2");
+            event.addMetadata("custom", "foo", "hunter2");
+            event.addMetadata("custom", "bar", "hunter2");
+            return true;
         }), "Error sent to Bugsnag using the logback appender", generateException());
     }
 }

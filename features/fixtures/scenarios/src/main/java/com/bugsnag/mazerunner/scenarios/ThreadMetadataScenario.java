@@ -1,8 +1,6 @@
 package com.bugsnag.mazerunner.scenarios;
 
 import com.bugsnag.Bugsnag;
-import com.bugsnag.callbacks.Callback;
-import com.bugsnag.Report;
 
 /**
  * Sends an exception to Bugsnag with custom metadata on the thread
@@ -16,13 +14,10 @@ public class ThreadMetadataScenario extends Scenario {
     @Override
     public void run() {
         // Global callback metadata has lowest precedence
-        bugsnag.addCallback(new Callback() {
-            @Override
-            public boolean onError(Report report) {
-                report.addMetadata("Custom", "test", "Global value");
-                report.addMetadata("Custom", "foo", "Global value to be overwritten");
-                return true;
-            }
+        bugsnag.addOnError((event) -> {
+            event.addMetadata("Custom", "test", "Global value");
+            event.addMetadata("Custom", "foo", "Global value to be overwritten");
+            return true;
         });
 
         // Thread metadata should merge with global metadata and overwrite when duplicate key
@@ -46,12 +41,9 @@ public class ThreadMetadataScenario extends Scenario {
         }
 
         // Report-specific metadata should merge with global + thread metadata and overwrite when duplicate key
-        bugsnag.notify(generateException(), new Callback() {
-            @Override
-            public boolean onError(Report report) {
-                report.addMetadata("Custom", "bar", "Hello World!");
-                return true;
-            }
+        bugsnag.notify(generateException(), (event) -> {
+            event.addMetadata("Custom", "bar", "Hello World!");
+            return true;
         });
     }
 }

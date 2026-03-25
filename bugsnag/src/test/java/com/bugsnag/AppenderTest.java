@@ -138,7 +138,6 @@ public class AppenderTest {
 
     @Test
     public void testBugsnagConfig() {
-
         // Get the Bugsnag instance
         Configuration config = getConfig(appender.getClient());
         assertEquals("test", config.getReleaseStage());
@@ -175,7 +174,7 @@ public class AppenderTest {
         assertTrue(projectPackages.contains("com.company.package2"));
         assertTrue(projectPackages.contains("com.company.package1"));
 
-        assertTrue(config.isSendThreads());
+        assertEquals(ThreadSendPolicy.ALWAYS, config.getSendThreads());
     }
 
     @Test
@@ -247,9 +246,9 @@ public class AppenderTest {
         // Check that a report was sent to Bugsnag
         assertEquals(1, delivery.getNotifications().size());
         Notification notification = delivery.getNotifications().get(0);
-        Report report = notification.getEvents().get(0);
+        BugsnagEvent event = notification.getEvents().get(0);
 
-        List<Stackframe> frames = report.getExceptions().get(0).getStacktrace();
+        List<Stackframe> frames = event.getErrors().get(0).getStacktrace();
         assertTrue(frames.get(0).isInProject());
         assertTrue(frames.get(1).isInProject());
         for (int i = 2; i < frames.size(); i++) {

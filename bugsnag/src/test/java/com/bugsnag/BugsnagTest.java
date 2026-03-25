@@ -104,8 +104,8 @@ public class BugsnagTest {
         bugsnag.setDelivery(new Delivery() {
             @Override
             public void deliver(Serializer serializer, Object object, Map<String, String> headers) {
-                Report report = ((Notification) object).getEvents().get(0);
-                assertTrue(report.getExceptions().get(0).getStacktrace().get(0).isInProject());
+                BugsnagEvent event = ((Notification) object).getEvents().get(0);
+                assertTrue(event.getErrors().get(0).getStacktrace().get(0).isInProject());
             }
 
             @Override
@@ -123,8 +123,8 @@ public class BugsnagTest {
         bugsnag.setDelivery(new Delivery() {
             @Override
             public void deliver(Serializer serializer, Object object, Map<String, String> headers) {
-                Report report = ((Notification) object).getEvents().get(0);
-                assertEquals("1.2.3", report.getApp().get("version"));
+                BugsnagEvent event = ((Notification) object).getEvents().get(0);
+                assertEquals("1.2.3", event.getApp().get("version"));
             }
 
             @Override
@@ -140,8 +140,8 @@ public class BugsnagTest {
         bugsnag.setDelivery(new Delivery() {
             @Override
             public void deliver(Serializer serializer, Object object, Map<String, String> headers) {
-                Report report = ((Notification) object).getEvents().get(0);
-                assertEquals("testtype", report.getApp().get("type"));
+                BugsnagEvent event = ((Notification) object).getEvents().get(0);
+                assertEquals("testtype", event.getApp().get("type"));
             }
 
             @Override
@@ -156,8 +156,8 @@ public class BugsnagTest {
         bugsnag.setDelivery(new Delivery() {
             @Override
             public void deliver(Serializer serializer, Object object, Map<String, String> headers) {
-                Report report = ((Notification) object).getEvents().get(0);
-                assertEquals(Severity.INFO.getValue(), report.getSeverity());
+                BugsnagEvent event = ((Notification) object).getEvents().get(0);
+                assertEquals(Severity.INFO.getValue(), event.getSeverity());
             }
 
             @Override
@@ -174,11 +174,11 @@ public class BugsnagTest {
             @SuppressWarnings("unchecked")
             @Override
             public void deliver(Serializer serializer, Object object, Map<String, String> headers) {
-                Report report = ((Notification) object).getEvents().get(0);
+                BugsnagEvent event = ((Notification) object).getEvents().get(0);
                 Map<String, Object> firstTab =
-                        (Map<String, Object>) report.getMetadata().get("firsttab");
+                        (Map<String, Object>) event.getMetadata().get("firsttab");
                 final Map<String, Object> secondTab =
-                        (Map<String, Object>) report.getMetadata().get("secondtab");
+                        (Map<String, Object>) event.getMetadata().get("secondtab");
                 assertEquals("[REDACTED]", firstTab.get("testredact1"));
                 assertEquals("[REDACTED]", firstTab.get("testredact2"));
                 assertEquals("secretpassword", firstTab.get("testredact3"));
@@ -204,9 +204,9 @@ public class BugsnagTest {
             @SuppressWarnings("unchecked")
             @Override
             public void deliver(Serializer serializer, Object object, Map<String, String> headers) {
-                Report report = ((Notification) object).getEvents().get(0);
+                BugsnagEvent event = ((Notification) object).getEvents().get(0);
                 Map<String, Object> requestTab =
-                        (Map<String, Object>) report.getMetadata().get("request");
+                        (Map<String, Object>) event.getMetadata().get("request");
 
                 Map<String, Object> headersMap =
                         (Map<String, Object>) requestTab.get("headers");
@@ -239,10 +239,10 @@ public class BugsnagTest {
         bugsnag.setDelivery(new Delivery() {
             @Override
             public void deliver(Serializer serializer, Object object, Map<String, String> headers) {
-                Report report = ((Notification) object).getEvents().get(0);
-                assertEquals("123", report.getUser().get("id"));
-                assertEquals("test@example.com", report.getUser().get("email"));
-                assertEquals("test name", report.getUser().get("name"));
+                BugsnagEvent event = ((Notification) object).getEvents().get(0);
+                assertEquals("123", event.getUser().get("id"));
+                assertEquals("test@example.com", event.getUser().get("email"));
+                assertEquals("test name", event.getUser().get("name"));
             }
 
             @Override
@@ -257,15 +257,15 @@ public class BugsnagTest {
 
     @Test
     public void testContext() {
-        bugsnag.addCallback(report -> {
+        bugsnag.addOnError(report -> {
             report.setContext("the context");
             return true;
         });
         bugsnag.setDelivery(new Delivery() {
             @Override
             public void deliver(Serializer serializer, Object object, Map<String, String> headers) {
-                Report report = ((Notification) object).getEvents().get(0);
-                assertEquals("the context", report.getContext());
+                BugsnagEvent event = ((Notification) object).getEvents().get(0);
+                assertEquals("the context", event.getContext());
             }
 
             @Override
@@ -277,15 +277,15 @@ public class BugsnagTest {
 
     @Test
     public void testGroupingHash() {
-        bugsnag.addCallback(report -> {
+        bugsnag.addOnError(report -> {
             report.setGroupingHash("the grouping hash");
             return true;
         });
         bugsnag.setDelivery(new Delivery() {
             @Override
             public void deliver(Serializer serializer, Object object, Map<String, String> headers) {
-                Report report = ((Notification) object).getEvents().get(0);
-                assertEquals("the grouping hash", report.getGroupingHash());
+                BugsnagEvent event = ((Notification) object).getEvents().get(0);
+                assertEquals("the grouping hash", event.getGroupingHash());
             }
 
             @Override
@@ -297,15 +297,15 @@ public class BugsnagTest {
 
     @Test
     public void testSingleCallback() {
-        bugsnag.addCallback(report -> {
+        bugsnag.addOnError(report -> {
             report.setApiKey("newapikey");
             return true;
         });
         bugsnag.setDelivery(new Delivery() {
             @Override
             public void deliver(Serializer serializer, Object object, Map<String, String> headers) {
-                Report report = ((Notification) object).getEvents().get(0);
-                assertEquals("newapikey", report.getApiKey());
+                BugsnagEvent event = ((Notification) object).getEvents().get(0);
+                assertEquals("newapikey", event.getApiKey());
             }
 
             @Override
@@ -320,8 +320,8 @@ public class BugsnagTest {
         bugsnag.setDelivery(new Delivery() {
             @Override
             public void deliver(Serializer serializer, Object object, Map<String, String> headers) {
-                Report report = ((Notification) object).getEvents().get(0);
-                assertEquals("newapikey", report.getApiKey());
+                BugsnagEvent event = ((Notification) object).getEvents().get(0);
+                assertEquals("newapikey", event.getApiKey());
             }
 
             @Override
@@ -337,19 +337,19 @@ public class BugsnagTest {
 
     @Test
     public void testCallbackOrder() {
-        bugsnag.addCallback(report -> {
+        bugsnag.addOnError(report -> {
             report.setApiKey("newapikey");
             return true;
         });
-        bugsnag.addCallback(report -> {
+        bugsnag.addOnError(report -> {
             report.setApiKey("secondnewapikey");
             return true;
         });
         bugsnag.setDelivery(new Delivery() {
             @Override
             public void deliver(Serializer serializer, Object object, Map<String, String> headers) {
-                Report report = ((Notification) object).getEvents().get(0);
-                assertEquals("secondnewapikey", report.getApiKey());
+                BugsnagEvent event = ((Notification) object).getEvents().get(0);
+                assertEquals("secondnewapikey", event.getApiKey());
             }
 
             @Override
@@ -357,17 +357,6 @@ public class BugsnagTest {
             }
         });
         assertTrue(bugsnag.notify(new Throwable()));
-    }
-
-    @Test
-    public void testCallbackCancel() {
-        bugsnag.setDelivery(BugsnagTestUtils.generateDelivery());
-        bugsnag.addCallback(report -> {
-            report.cancel();
-            return true; // cancellation flag respected
-        });
-        // Test the report is not sent
-        assertFalse(bugsnag.notify(new Throwable()));
     }
 
     @SuppressWarnings("deprecation") // ensures deprecated setEndpoint method still works correctly
@@ -438,13 +427,13 @@ public class BugsnagTest {
 
     @Test
     public void testSendThreads() {
-        bugsnag.setSendThreads(true);
+        bugsnag.setSendThreads(ThreadSendPolicy.ALWAYS);
         bugsnag.setDelivery(new Delivery() {
             @Override
             public void deliver(Serializer serializer, Object object, Map<String, String> headers) {
-                Report report = ((Notification) object).getEvents().get(0);
+                BugsnagEvent event = ((Notification) object).getEvents().get(0);
                 // There is information about at least one thread
-                assertTrue(report.getThreads().size() > 0);
+                assertFalse(event.getThreads().isEmpty());
             }
 
             @Override
@@ -459,8 +448,8 @@ public class BugsnagTest {
         bugsnag.setDelivery(new Delivery() {
             @Override
             public void deliver(Serializer serializer, Object object, Map<String, String> headers) {
-                Report report = ((Notification) object).getEvents().get(0);
-                assertNull(report.getSession());
+                BugsnagEvent event = ((Notification) object).getEvents().get(0);
+                assertNull(event.getSession());
             }
 
             @Override
@@ -476,9 +465,9 @@ public class BugsnagTest {
         bugsnag.setDelivery(new Delivery() {
             @Override
             public void deliver(Serializer serializer, Object object, Map<String, String> headers) {
-                Report report = ((Notification) object).getEvents().get(0);
+                BugsnagEvent event = ((Notification) object).getEvents().get(0);
 
-                Map<String, Object> session = report.getSession();
+                Map<String, Object> session = event.getSession();
                 assertNotNull(session);
 
                 @SuppressWarnings("unchecked")
@@ -505,9 +494,9 @@ public class BugsnagTest {
         assertTrue(bugsnag.notify(new Throwable()));
 
         for (int i = 0; i < testDelivery.getNotifications().size(); i++) {
-            Report report = testDelivery.getNotifications().get(i).getEvents().get(0);
+            BugsnagEvent event = testDelivery.getNotifications().get(i).getEvents().get(0);
 
-            Map<String, Object> session = report.getSession();
+            Map<String, Object> session = event.getSession();
             assertNotNull(session);
 
             @SuppressWarnings("unchecked")

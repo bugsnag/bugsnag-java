@@ -1,6 +1,6 @@
 package com.bugsnag.callbacks;
 
-import com.bugsnag.Report;
+import com.bugsnag.BugsnagEvent;
 import com.bugsnag.servlet.jakarta.BugsnagServletRequestListener;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -9,7 +9,7 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 
-public class JakartaServletCallback implements Callback {
+public class JakartaServletCallback implements OnErrorCallback {
     private static final String HEADER_X_FORWARDED_FOR = "X-FORWARDED-FOR";
 
     /**
@@ -26,7 +26,7 @@ public class JakartaServletCallback implements Callback {
     }
 
     @Override
-    public boolean onError(Report report) {
+    public boolean onError(BugsnagEvent event) {
         // Check if we have any servlet request data available
         HttpServletRequest request = BugsnagServletRequestListener.getServletRequest();
         if (request == null) {
@@ -34,7 +34,7 @@ public class JakartaServletCallback implements Callback {
         }
 
         // Add request information to metadata
-        report
+        event
                 .addMetadata("request", "url", request.getRequestURL().toString())
                 .addMetadata("request", "method", request.getMethod())
                 .addMetadata("request", "params",
@@ -43,8 +43,8 @@ public class JakartaServletCallback implements Callback {
                 .addMetadata("request", "headers", getHeaderMap(request));
 
         // Set default context
-        if (report.getContext() == null) {
-            report.setContext(request.getMethod() + " " + request.getRequestURI());
+        if (event.getContext() == null) {
+            event.setContext(request.getMethod() + " " + request.getRequestURI());
         }
         return true;
     }

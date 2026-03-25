@@ -4,7 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import com.bugsnag.callbacks.Callback;
+import com.bugsnag.callbacks.OnErrorCallback;
 import com.bugsnag.logback.BugsnagMarker;
 
 import org.junit.Before;
@@ -19,7 +19,7 @@ import java.util.Iterator;
 public class MarkerTest {
 
     private BugsnagMarker marker;
-    private Callback callback;
+    private OnErrorCallback callback;
 
     /**
      * Create the marker before the tests

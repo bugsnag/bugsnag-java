@@ -1,6 +1,6 @@
 package com.bugsnag;
 
-import com.bugsnag.callbacks.Callback;
+import com.bugsnag.callbacks.OnErrorCallback;
 import com.bugsnag.delivery.Delivery;
 import com.bugsnag.logback.BugsnagMarker;
 import com.bugsnag.logback.LogbackFeatureFlag;
@@ -69,7 +69,7 @@ public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
     private String releaseStage;
 
     /** Whether thread state should be sent to Bugsnag. */
-    private boolean sendThreads = false;
+    private ThreadSendPolicy sendThreads = ThreadSendPolicy.NEVER;
 
     /** Bugsnag API request timeout. */
     private int timeout;
@@ -116,12 +116,12 @@ public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
     }
 
     @Override
-    protected void append(final ILoggingEvent event) {
+    protected void append(final ILoggingEvent loggingEvent) {
         if (bugsnag != null) {
-            Throwable throwable = extractThrowable(event);
+            Throwable throwable = extractThrowable(loggingEvent);
 
-            final Callback reportCallback;
-            Marker marker = event.getMarker();
+            final OnErrorCallback reportCallback;
+            Marker marker = loggingEvent.getMarker();
             if (marker instanceof BugsnagMarker) {
                 reportCallback = ((BugsnagMarker) marker).getCallback();
             } else {
@@ -132,25 +132,25 @@ public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
             // from the this library and the logger is not in the list of excluded loggers.
             if (throwable != null
                     && !detectLogFromBugsnag(throwable)
-                    && !isExcludedLogger(event.getLoggerName())) {
+                    && !isExcludedLogger(loggingEvent.getLoggerName())) {
                 bugsnag.notify(
                         throwable,
-                        calculateSeverity(event),
-                        new Callback() {
+                        calculateSeverity(loggingEvent),
+                        new OnErrorCallback() {
                             @Override
-                            public boolean onError(Report report) {
+                            public boolean onError(BugsnagEvent event) {
 
                                 // Add some data from the logging event
-                                report.addMetadata("Log event data",
-                                        "Message", event.getFormattedMessage());
-                                report.addMetadata("Log event data",
-                                        "Logger name", event.getLoggerName());
+                                event.addMetadata("Log event data",
+                                        "Message", loggingEvent.getFormattedMessage());
+                                event.addMetadata("Log event data",
+                                        "Logger name", loggingEvent.getLoggerName());
 
                                 // Add details from the logging context to the event
-                                populateContextData(report, event);
+                                populateContextData(event, loggingEvent);
 
                                 if (reportCallback != null) {
-                                    boolean proceed = reportCallback.onError(report);
+                                    boolean proceed = reportCallback.onError(event);
                                     if (!proceed) {
                                         return false; // suppress delivery
                                     }
@@ -168,7 +168,7 @@ public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
      * @param report The report being sent to Bugsnag
      * @param event The logging event
      */
-    private void populateContextData(Report report, ILoggingEvent event) {
+    private void populateContextData(BugsnagEvent report, ILoggingEvent event) {
         Map<String, String> propertyMap = event.getMDCPropertyMap();
 
         if (propertyMap != null) {
@@ -281,14 +281,14 @@ public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
         }
 
         // Add a callback to put global metadata on every report
-        bugsnag.addCallback(new Callback() {
+        bugsnag.addOnError(new OnErrorCallback() {
             @Override
-            public boolean onError(Report report) {
+            public boolean onError(BugsnagEvent event) {
 
                 for (LogbackMetadata metadata : globalMetadata) {
                     for (LogbackMetadataTab tab : metadata.getTabs()) {
                         for (LogbackMetadataKey key : tab.getKeys()) {
-                            report.addMetadata(tab.getName(),
+                            event.addMetadata(tab.getName(),
                                     key.getName(),
                                     key.getValue());
                         }
@@ -325,11 +325,11 @@ public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
      * sent to Bugsnag completely.
      *
      * @param callback a callback to run before sending errors to Bugsnag
-     * @see Callback
+     * @see OnErrorCallback
      */
-    public void addCallback(Callback callback) {
+    public void addCallback(OnErrorCallback callback) {
         if (bugsnag != null) {
-            bugsnag.addCallback(callback);
+            bugsnag.addOnError(callback);
         }
     }
 
@@ -527,9 +527,9 @@ public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
     }
 
     /**
-     * @see Bugsnag#setSendThreads(boolean)
+     * @see Bugsnag#setSendThreads(ThreadSendPolicy)
      */
-    public void setSendThreads(boolean sendThreads) {
+    public void setSendThreads(ThreadSendPolicy sendThreads) {
         this.sendThreads = sendThreads;
 
         if (bugsnag != null) {

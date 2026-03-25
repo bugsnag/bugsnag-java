@@ -53,14 +53,14 @@ public class ThreadMetadataTest {
 
         // Check the metadata is added to the first report
         Notification notification = delivery.getNotifications().get(0);
-        Report report = notification.getEvents().get(0);
-        assertTrue(report.getMetadata().containsKey("thread"));
+        BugsnagEvent event = notification.getEvents().get(0);
+        assertTrue(event.getMetadata().containsKey("thread"));
         assertEquals("some thread value", getMetadataMap(notification, "thread").get("some key"));
 
         // Check the metadata is not added to the second report
         notification = delivery.getNotifications().get(1);
-        report = notification.getEvents().get(0);
-        assertFalse(report.getMetadata().containsKey("thread"));
+        event = notification.getEvents().get(0);
+        assertFalse(event.getMetadata().containsKey("thread"));
     }
 
     @Test
@@ -79,18 +79,18 @@ public class ThreadMetadataTest {
 
         // Check that both tabs are populated in the first report
         Notification notification = delivery.getNotifications().get(0);
-        Report report = notification.getEvents().get(0);
-        assertTrue(report.getMetadata().containsKey("tab1"));
+        BugsnagEvent event = notification.getEvents().get(0);
+        assertTrue(event.getMetadata().containsKey("tab1"));
         assertEquals("some value", getMetadataMap(notification, "tab1").get("some key"));
-        assertTrue(report.getMetadata().containsKey("tab2"));
+        assertTrue(event.getMetadata().containsKey("tab2"));
         assertEquals("some value", getMetadataMap(notification, "tab2").get("some key"));
 
         // Check that only the first tab is in the second tab
         notification = delivery.getNotifications().get(1);
-        report = notification.getEvents().get(0);
-        assertTrue(report.getMetadata().containsKey("tab1"));
+        event = notification.getEvents().get(0);
+        assertTrue(event.getMetadata().containsKey("tab1"));
         assertEquals("some value", getMetadataMap(notification, "tab1").get("some key"));
-        assertFalse(report.getMetadata().containsKey("tab2"));
+        assertFalse(event.getMetadata().containsKey("tab2"));
     }
 
     @Test
@@ -109,15 +109,15 @@ public class ThreadMetadataTest {
 
         // Check that both keys are populated in the first report
         Notification notification = delivery.getNotifications().get(0);
-        Report report = notification.getEvents().get(0);
-        assertTrue(report.getMetadata().containsKey("tab1"));
+        BugsnagEvent event = notification.getEvents().get(0);
+        assertTrue(event.getMetadata().containsKey("tab1"));
         assertEquals("some value", getMetadataMap(notification, "tab1").get("key1"));
         assertEquals("some value", getMetadataMap(notification, "tab1").get("key2"));
 
         // Check that only the first tab is in the second tab
         notification = delivery.getNotifications().get(1);
-        report = notification.getEvents().get(0);
-        assertTrue(report.getMetadata().containsKey("tab1"));
+        event = notification.getEvents().get(0);
+        assertTrue(event.getMetadata().containsKey("tab1"));
         assertEquals("some value", getMetadataMap(notification, "tab1").get("key1"));
         assertFalse(getMetadataMap(notification, "tab1").containsKey("key2"));
     }
@@ -149,18 +149,17 @@ public class ThreadMetadataTest {
 
         // Check that the data was included in the notification
         Notification notification = delivery.getNotifications().get(0);
-        Report report = notification.getEvents().get(0);
+        BugsnagEvent event = notification.getEvents().get(0);
 
-        assertTrue(report.getMetadata().containsKey("innerthread"));
+        assertTrue(event.getMetadata().containsKey("innerthread"));
         assertEquals("value should be in report",
                 getMetadataMap(notification, "innerthread").get("some key"));
 
-        assertFalse(report.getMetadata().containsKey("outerthread"));
+        assertFalse(event.getMetadata().containsKey("outerthread"));
     }
 
     @Test
     public void testUnhandledThreadMetadataRemoval() {
-
         Thread thread = new Thread(new Runnable() {
             @Override
             public void run() {
@@ -187,9 +186,9 @@ public class ThreadMetadataTest {
 
         // Check that the data was included in the notification
         Notification notification = delivery.getNotifications().get(0);
-        Report report = notification.getEvents().get(0);
+        BugsnagEvent event = notification.getEvents().get(0);
 
-        assertTrue(report.getMetadata().containsKey("thread"));
+        assertTrue(event.getMetadata().containsKey("thread"));
         assertFalse(getMetadataMap(notification, "thread").containsKey("key1"));
         assertEquals("should be included in metadata",
                 getMetadataMap(notification, "thread").get("key2"));
@@ -222,13 +221,13 @@ public class ThreadMetadataTest {
 
         // Check that the data was included in the notification
         Notification notification = delivery.getNotifications().get(0);
-        Report report = notification.getEvents().get(0);
+        BugsnagEvent event = notification.getEvents().get(0);
 
-        assertTrue(report.getMetadata().containsKey("innerthread"));
+        assertTrue(event.getMetadata().containsKey("innerthread"));
         assertEquals("value should be in report",
                 getMetadataMap(notification, "innerthread").get("some key"));
 
-        assertFalse(report.getMetadata().containsKey("outerthread"));
+        assertFalse(event.getMetadata().containsKey("outerthread"));
     }
 
     /**

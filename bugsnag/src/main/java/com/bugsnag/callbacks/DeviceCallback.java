@@ -1,6 +1,6 @@
 package com.bugsnag.callbacks;
 
-import com.bugsnag.Report;
+import com.bugsnag.BugsnagEvent;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -11,7 +11,7 @@ import java.util.concurrent.FutureTask;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-public class DeviceCallback implements Callback {
+public class DeviceCallback implements OnErrorCallback {
 
     private static volatile String hostname;
     private static volatile boolean hostnameInitialised;
@@ -84,8 +84,8 @@ public class DeviceCallback implements Callback {
     }
 
     @Override
-    public boolean onError(Report report) {
-        report
+    public boolean onError(BugsnagEvent event) {
+        event
                 .addMetadata("device", "osArch", System.getProperty("os.arch"))
                 .addMetadata("device", "locale", Locale.getDefault())
                 .setDeviceInfo("hostname", getHostnameValue())

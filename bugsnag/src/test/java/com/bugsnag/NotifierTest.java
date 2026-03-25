@@ -11,7 +11,7 @@ import java.util.Collections;
 
 public class NotifierTest {
 
-    private Report report;
+    private BugsnagEvent event;
     private Configuration config;
     private SessionPayload sessionPayload;
 
@@ -23,13 +23,13 @@ public class NotifierTest {
     @Before
     public void setUp() throws Throwable {
         config = new Configuration("api-key");
-        report = new Report(config, new RuntimeException());
+        event = new BugsnagEvent(config, new RuntimeException());
         sessionPayload = new SessionPayload(Collections.<SessionCount>emptyList(), config);
     }
 
     @Test
     public void testNotificationSerialisation() throws Throwable {
-        JsonNode payload = BugsnagTestUtils.mapReportToJson(config, this.report);
+        JsonNode payload = BugsnagTestUtils.mapReportToJson(config, this.event);
         JsonNode notifier = payload.get("notifier");
 
         assertEquals("Bugsnag Java", notifier.get("name").asText());

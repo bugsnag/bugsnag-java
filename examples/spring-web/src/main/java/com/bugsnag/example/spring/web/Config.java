@@ -2,8 +2,8 @@ package com.bugsnag.example.spring.web;
 
 import com.bugsnag.Bugsnag;
 import com.bugsnag.BugsnagSpringConfiguration;
-import com.bugsnag.Report;
-import com.bugsnag.callbacks.Callback;
+import com.bugsnag.BugsnagEvent;
+import com.bugsnag.callbacks.OnErrorCallback;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -29,16 +29,16 @@ public class Config {
         // Create and attach a simple Bugsnag callback.
         // Use Callbacks to send custom diagnostic data which changes during
         // the lifecyle of your application
-        bugsnag.addCallback(new Callback() {
+        bugsnag.addOnError(new OnErrorCallback() {
             @Override
-            public boolean onError(Report report) {
-                report.addMetadata("diagnostics", "timestamp", new Date());
-                report.addMetadata("customer", "name", "acme-inc");
-                report.addMetadata("customer", "paying", true);
-                report.addMetadata("customer", "spent", 1234);
-                report.setUserName("User Name");
-                report.setUserEmail("user@example.com");
-                report.setUserId("12345");
+            public boolean onError(BugsnagEvent event) {
+                event.addMetadata("diagnostics", "timestamp", new Date());
+                event.addMetadata("customer", "name", "acme-inc");
+                event.addMetadata("customer", "paying", true);
+                event.addMetadata("customer", "spent", 1234);
+                event.setUserName("User Name");
+                event.setUserEmail("user@example.com");
+                event.setUserId("12345");
                 return true;
             }
         });

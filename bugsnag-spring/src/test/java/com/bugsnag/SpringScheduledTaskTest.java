@@ -70,21 +70,21 @@ public class SpringScheduledTaskTest {
         // Run the task now and wait for it to finish
         scheduler.submit(exampleRunnable).get();
 
-        Report report = verifyAndGetReport(delivery);
+        BugsnagEvent event = verifyAndGetReport(delivery);
 
         // Assert that the exception was detected correctly
-        assertEquals("Scheduled test", report.getExceptionMessage());
-        assertEquals("java.lang.RuntimeException", report.getExceptionName());
+        assertEquals("Scheduled test", event.getExceptionMessage());
+        assertEquals("java.lang.RuntimeException", event.getExceptionName());
 
         // Assert that the severity, severity reason and unhandled values are correct
-        assertEquals(Severity.ERROR.getValue(), report.getSeverity());
+        assertEquals(Severity.ERROR.getValue(), event.getSeverity());
         assertEquals(
                 SeverityReasonType.REASON_UNHANDLED_EXCEPTION_MIDDLEWARE.toString(),
-                report.getSeverityReason().getType());
+                event.getSeverityReason().getType());
         assertThat(
-                report.getSeverityReason().getAttributes(),
+                event.getSeverityReason().getAttributes(),
                 is(Collections.singletonMap("framework", "Spring")));
-        assertTrue(report.getUnhandled());
+        assertTrue(event.getUnhandled());
 
         // Assert that the exception is passed to an existing exception handler
         ArgumentCaptor<RuntimeException> exceptionCaptor =

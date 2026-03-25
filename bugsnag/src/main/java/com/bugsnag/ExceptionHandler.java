@@ -49,7 +49,7 @@ class ExceptionHandler implements UncaughtExceptionHandler {
     }
 
     @Override
-    public void uncaughtException(Thread thread, Throwable throwable) {
+    public void uncaughtException(java.lang.Thread thread, Throwable throwable) {
         // Notify any subscribed clients of the uncaught exception
         for (Bugsnag bugsnag : clientMap.keySet()) {
             if (bugsnag.getConfig().shouldSendUncaughtExceptions()) {

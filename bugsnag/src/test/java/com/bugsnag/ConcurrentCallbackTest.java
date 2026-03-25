@@ -26,10 +26,10 @@ public class ConcurrentCallbackTest {
     public void testClientNotifyModification() {
         final Configuration config = bugsnag.getConfig();
 
-        config.addCallback(report -> {
+        config.addOnError(report -> {
             // modify the callback collection, when iterating to the next callback this
             // should not crash
-            config.addCallback(r -> true);
+            config.addOnError(r -> true);
             return true;
         });
         bugsnag.notify(new RuntimeException());

@@ -12,7 +12,7 @@ import java.util.List;
 /**
  * Tests for feature flags in Report (Event)
  */
-public class ReportFeatureFlagTest {
+public class EventFeatureFlagTest {
 
     private Bugsnag bugsnag;
 
@@ -28,10 +28,10 @@ public class ReportFeatureFlagTest {
 
     @Test
     public void testAddFeatureFlagOnReport() {
-        Report report = bugsnag.buildReport(new RuntimeException("Test"));
-        report.addFeatureFlag("report-flag", "report-variant");
+        BugsnagEvent event = bugsnag.buildReport(new RuntimeException("Test"));
+        event.addFeatureFlag("report-flag", "report-variant");
 
-        List<FeatureFlag> flags = report.getFeatureFlags();
+        List<FeatureFlag> flags = event.getFeatureFlags();
 
         assertEquals(1, flags.size());
         assertEquals("report-flag", flags.get(0).getName());
@@ -40,10 +40,10 @@ public class ReportFeatureFlagTest {
 
     @Test
     public void testAddFeatureFlagWithoutVariant() {
-        Report report = bugsnag.buildReport(new RuntimeException("Test"));
-        report.addFeatureFlag("report-flag");
+        BugsnagEvent event = bugsnag.buildReport(new RuntimeException("Test"));
+        event.addFeatureFlag("report-flag");
 
-        List<FeatureFlag> flags = report.getFeatureFlags();
+        List<FeatureFlag> flags = event.getFeatureFlags();
 
         assertEquals(1, flags.size());
         assertEquals("report-flag", flags.get(0).getName());
@@ -56,10 +56,10 @@ public class ReportFeatureFlagTest {
         flagsToAdd.add(FeatureFlag.of("flag1", "variant-a"));
         flagsToAdd.add(FeatureFlag.of("flag2", "variant-b"));
 
-        Report report = bugsnag.buildReport(new RuntimeException("Test"));
-        report.addFeatureFlags(flagsToAdd);
+        BugsnagEvent event = bugsnag.buildReport(new RuntimeException("Test"));
+        event.addFeatureFlags(flagsToAdd);
 
-        List<FeatureFlag> flags = report.getFeatureFlags();
+        List<FeatureFlag> flags = event.getFeatureFlags();
 
         assertEquals(2, flags.size());
         assertEquals("flag1", flags.get(0).getName());
@@ -68,12 +68,12 @@ public class ReportFeatureFlagTest {
 
     @Test
     public void testClearFeatureFlag() {
-        Report report = bugsnag.buildReport(new RuntimeException("Test"));
-        report.addFeatureFlag("flag1", "variant-a");
-        report.addFeatureFlag("flag2", "variant-b");
-        report.clearFeatureFlag("flag1");
+        BugsnagEvent event = bugsnag.buildReport(new RuntimeException("Test"));
+        event.addFeatureFlag("flag1", "variant-a");
+        event.addFeatureFlag("flag2", "variant-b");
+        event.clearFeatureFlag("flag1");
 
-        List<FeatureFlag> flags = report.getFeatureFlags();
+        List<FeatureFlag> flags = event.getFeatureFlags();
 
         assertEquals(1, flags.size());
         assertEquals("flag2", flags.get(0).getName());
@@ -81,12 +81,12 @@ public class ReportFeatureFlagTest {
 
     @Test
     public void testClearFeatureFlags() {
-        Report report = bugsnag.buildReport(new RuntimeException("Test"));
-        report.addFeatureFlag("flag1", "variant-a");
-        report.addFeatureFlag("flag2", "variant-b");
-        report.clearFeatureFlags();
+        BugsnagEvent event = bugsnag.buildReport(new RuntimeException("Test"));
+        event.addFeatureFlag("flag1", "variant-a");
+        event.addFeatureFlag("flag2", "variant-b");
+        event.clearFeatureFlags();
 
-        List<FeatureFlag> flags = report.getFeatureFlags();
+        List<FeatureFlag> flags = event.getFeatureFlags();
 
         assertEquals(0, flags.size());
     }
@@ -95,8 +95,8 @@ public class ReportFeatureFlagTest {
     public void testReportFlagsInheritFromClient() {
         bugsnag.addFeatureFlag("client-flag", "client-variant");
 
-        Report report = bugsnag.buildReport(new RuntimeException("Test"));
-        List<FeatureFlag> flags = report.getFeatureFlags();
+        BugsnagEvent event = bugsnag.buildReport(new RuntimeException("Test"));
+        List<FeatureFlag> flags = event.getFeatureFlags();
 
         assertEquals(1, flags.size());
         assertEquals("client-flag", flags.get(0).getName());
@@ -107,10 +107,10 @@ public class ReportFeatureFlagTest {
     public void testReportFlagsOverrideClientFlags() {
         bugsnag.addFeatureFlag("flag1", "client-variant");
 
-        Report report = bugsnag.buildReport(new RuntimeException("Test"));
-        report.addFeatureFlag("flag1", "report-variant");
+        BugsnagEvent event = bugsnag.buildReport(new RuntimeException("Test"));
+        event.addFeatureFlag("flag1", "report-variant");
 
-        List<FeatureFlag> flags = report.getFeatureFlags();
+        List<FeatureFlag> flags = event.getFeatureFlags();
 
         assertEquals(1, flags.size());
         assertEquals("flag1", flags.get(0).getName());
@@ -128,11 +128,11 @@ public class ReportFeatureFlagTest {
         bugsnag.addFeatureFlag("flag3", "client-variant");
 
         // Add flags to report (one new, one override)
-        Report report = bugsnag.buildReport(new RuntimeException("Test"));
-        report.addFeatureFlag("flag3", "report-variant");
-        report.addFeatureFlag("flag4", "report-variant");
+        BugsnagEvent event = bugsnag.buildReport(new RuntimeException("Test"));
+        event.addFeatureFlag("flag3", "report-variant");
+        event.addFeatureFlag("flag4", "report-variant");
 
-        List<FeatureFlag> flags = report.getFeatureFlags();
+        List<FeatureFlag> flags = event.getFeatureFlags();
 
         // Should have all 4 flags in the order they were first added
         assertEquals(4, flags.size());
@@ -152,10 +152,10 @@ public class ReportFeatureFlagTest {
         bugsnag.getConfig().addFeatureFlag("flag2", "value2");
         bugsnag.getConfig().clearFeatureFlag("flag1");
 
-        Report report = bugsnag.buildReport(new RuntimeException("Test"));
-        report.addFeatureFlag("flag1", "value1-readded");
+        BugsnagEvent event = bugsnag.buildReport(new RuntimeException("Test"));
+        event.addFeatureFlag("flag1", "value1-readded");
 
-        List<FeatureFlag> flags = report.getFeatureFlags();
+        List<FeatureFlag> flags = event.getFeatureFlags();
 
         // flag1 should now be at the end since it was removed and re-added
         assertEquals(2, flags.size());
@@ -166,13 +166,13 @@ public class ReportFeatureFlagTest {
 
     @Test
     public void testFeatureFlagChaining() {
-        Report report = bugsnag.buildReport(new RuntimeException("Test"));
+        BugsnagEvent event = bugsnag.buildReport(new RuntimeException("Test"));
 
-        report.addFeatureFlag("flag1", "variant-a")
+        event.addFeatureFlag("flag1", "variant-a")
               .addFeatureFlag("flag2", "variant-b")
               .addFeatureFlag("flag3");
 
-        List<FeatureFlag> flags = report.getFeatureFlags();
+        List<FeatureFlag> flags = event.getFeatureFlags();
 
         assertEquals(3, flags.size());
         assertEquals("flag1", flags.get(0).getName());
@@ -192,11 +192,11 @@ public class ReportFeatureFlagTest {
 
         // Report adds flag1 with updated value (overrides config value but keeps position)
         // and adds flag2 with updated value
-        Report report = bugsnag.buildReport(new RuntimeException("Test"));
-        report.addFeatureFlag("flag1", "value1-updated");
-        report.addFeatureFlag("flag2", "value2-updated");
+        BugsnagEvent event = bugsnag.buildReport(new RuntimeException("Test"));
+        event.addFeatureFlag("flag1", "value1-updated");
+        event.addFeatureFlag("flag2", "value2-updated");
 
-        List<FeatureFlag> flags = report.getFeatureFlags();
+        List<FeatureFlag> flags = event.getFeatureFlags();
 
         // Both flags should maintain their original order from config
         assertEquals(2, flags.size());
