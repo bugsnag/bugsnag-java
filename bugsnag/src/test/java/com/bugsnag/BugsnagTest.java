@@ -23,7 +23,6 @@ import java.net.Proxy;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Set;
 import java.util.regex.Pattern;
 
 public class BugsnagTest {
