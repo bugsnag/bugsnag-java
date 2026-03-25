@@ -24,7 +24,7 @@ public class BugsnagAsyncExceptionHandler implements AsyncUncaughtExceptionHandl
 
     @Override
     public void handleUncaughtException(Throwable throwable, Method method, Object... obj) {
-        if (bugsnag.getConfig().shouldSendUncaughtExceptions()) {
+        if (bugsnag.getConfig().getAutoDetectErrors()) {
             HandledState handledState = HandledState.newInstance(
                     SeverityReasonType.REASON_UNHANDLED_EXCEPTION_MIDDLEWARE,
                     Collections.singletonMap("framework", "Spring"),
