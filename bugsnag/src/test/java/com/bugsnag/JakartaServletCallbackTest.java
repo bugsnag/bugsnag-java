@@ -81,8 +81,7 @@ public class JakartaServletCallbackTest {
     @SuppressWarnings("unchecked")
     @Test
     public void testRequestMetadataAdded() {
-        java.lang.Exception exception = new java.lang.Exception("Spline reticulation failed");
-        Report report = new Report(bugsnag.getConfig(), exception);
+        Report report = new Report(bugsnag.getConfig(), new java.lang.Exception("Spline reticulation failed"));
         JakartaServletCallback callback = new JakartaServletCallback();
         callback.beforeNotify(report);
 
@@ -119,8 +118,7 @@ public class JakartaServletCallbackTest {
 
     @Test
     public void testRequestContextSet() {
-        java.lang.Exception exception = new java.lang.Exception("Spline reticulation failed");
-        Report report = new Report(bugsnag.getConfig(), exception);
+        Report report = new Report(bugsnag.getConfig(), new java.lang.Exception("Spline reticulation failed"));
         JakartaServletCallback callback = new JakartaServletCallback();
         callback.beforeNotify(report);
 
@@ -129,8 +127,7 @@ public class JakartaServletCallbackTest {
 
     @Test
     public void testExistingContextNotOverridden() {
-        java.lang.Exception exception = new java.lang.Exception("Spline reticulation failed");
-        Report report = new Report(bugsnag.getConfig(), exception);
+        Report report = new Report(bugsnag.getConfig(), new java.lang.Exception("Spline reticulation failed"));
         report.setContext("Honey nut corn flakes");
         JakartaServletCallback callback = new JakartaServletCallback();
         callback.beforeNotify(report);

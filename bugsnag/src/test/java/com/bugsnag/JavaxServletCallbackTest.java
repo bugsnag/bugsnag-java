@@ -81,8 +81,7 @@ public class JavaxServletCallbackTest {
     @SuppressWarnings("unchecked")
     @Test
     public void testRequestMetadataAdded() {
-        java.lang.Exception exception = new java.lang.Exception("Spline reticulation failed");
-        Report report = new Report(bugsnag.getConfig(), exception);
+        Report report = new Report(bugsnag.getConfig(), new java.lang.Exception("Spline reticulation failed"));
         JavaxServletCallback callback = new JavaxServletCallback();
         callback.beforeNotify(report);
 
@@ -119,8 +118,7 @@ public class JavaxServletCallbackTest {
 
     @Test
     public void testRequestContextSet() {
-        java.lang.Exception exception = new java.lang.Exception("Spline reticulation failed");
-        Report report = new Report(bugsnag.getConfig(), exception);
+        Report report = new Report(bugsnag.getConfig(), new java.lang.Exception("Spline reticulation failed"));
         JavaxServletCallback callback = new JavaxServletCallback();
         callback.beforeNotify(report);
 
@@ -129,8 +127,7 @@ public class JavaxServletCallbackTest {
 
     @Test
     public void testExistingContextNotOverridden() {
-        java.lang.Exception exception = new java.lang.Exception("Spline reticulation failed");
-        Report report = new Report(bugsnag.getConfig(), exception);
+        Report report = new Report(bugsnag.getConfig(), new java.lang.Exception("Spline reticulation failed"));
         report.setContext("Honey nut corn flakes");
         JavaxServletCallback callback = new JavaxServletCallback();
         callback.beforeNotify(report);
