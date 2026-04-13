@@ -81,7 +81,8 @@ public class JavaxServletCallbackTest {
     @SuppressWarnings("unchecked")
     @Test
     public void testRequestMetadataAdded() {
-        Report report = generateReport(new java.lang.Exception("Spline reticulation failed"));
+        java.lang.Exception exception = new java.lang.Exception("Spline reticulation failed");
+        Report report = new Report(bugsnag.getConfig(), exception);
         JavaxServletCallback callback = new JavaxServletCallback();
         callback.beforeNotify(report);
 
@@ -118,7 +119,8 @@ public class JavaxServletCallbackTest {
 
     @Test
     public void testRequestContextSet() {
-        Report report = generateReport(new java.lang.Exception("Spline reticulation failed"));
+        java.lang.Exception exception = new java.lang.Exception("Spline reticulation failed");
+        Report report = new Report(bugsnag.getConfig(), exception);
         JavaxServletCallback callback = new JavaxServletCallback();
         callback.beforeNotify(report);
 
@@ -127,7 +129,8 @@ public class JavaxServletCallbackTest {
 
     @Test
     public void testExistingContextNotOverridden() {
-        Report report = generateReport(new java.lang.Exception("Spline reticulation failed"));
+        java.lang.Exception exception = new java.lang.Exception("Spline reticulation failed");
+        Report report = new Report(bugsnag.getConfig(), exception);
         report.setContext("Honey nut corn flakes");
         JavaxServletCallback callback = new JavaxServletCallback();
         callback.beforeNotify(report);
@@ -135,9 +138,6 @@ public class JavaxServletCallbackTest {
         assertEquals("Honey nut corn flakes", report.getContext());
     }
 
-    private Report generateReport(java.lang.Exception exception) {
-        return bugsnag.buildReport(exception);
-    }
 
     private Enumeration<String> stringsToEnumeration(String... strings) {
         return Collections.enumeration(Arrays.asList(strings));

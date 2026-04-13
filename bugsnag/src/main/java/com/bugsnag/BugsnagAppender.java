@@ -250,9 +250,6 @@ public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
             bugsnag.setReleaseStage(releaseStage);
         }
 
-        if (timeout > 0) {
-            bugsnag.setTimeout(timeout);
-        }
 
         if (filteredProperties.size() > 0) {
             bugsnag.setFilters(filteredProperties.toArray(new String[0]));
@@ -503,10 +500,6 @@ public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
      */
     public void setTimeout(int timeout) {
         this.timeout = timeout;
-
-        if (bugsnag != null) {
-            bugsnag.setTimeout(timeout);
-        }
     }
 
     /**
