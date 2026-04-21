@@ -16,23 +16,25 @@ public class Application {
 
     public static void main(String[] args) throws Exception {
 
-        ch.qos.logback.classic.Logger rootLogger = (ch.qos.logback.classic.Logger)LoggerFactory.getLogger(org.slf4j.Logger.ROOT_LOGGER_NAME);
+        ch.qos.logback.classic.Logger rootLogger = (ch.qos.logback.classic.Logger) LoggerFactory
+                .getLogger(org.slf4j.Logger.ROOT_LOGGER_NAME);
         Appender appender = rootLogger.getAppender("BUGSNAG");
         if (appender instanceof BugsnagAppender) {
             // Set some global meta data (added to each report)
-            ((BugsnagAppender) appender).getClient().addCallback((report) -> {
-                report.addToTab("diagnostics", "timestamp", new Date());
-                report.addToTab("customer", "name", "acme-inc");
-                report.addToTab("customer", "paying", true);
-                report.addToTab("customer", "spent", 1234);
+            ((BugsnagAppender) appender).getClient().addOnError((report) -> {
+                report.addMetadata("diagnostics", "timestamp", new Date());
+                report.addMetadata("customer", "name", "acme-inc");
+                report.addMetadata("customer", "paying", true);
+                report.addMetadata("customer", "spent", 1234);
                 report.setUserName("User Name");
                 report.setUserEmail("user@example.com");
                 report.setUserId("12345");
+                return true;
             });
         }
 
-        // Add meta data that will be added to all reports on the current thread
-        Bugsnag.addThreadMetaData("thread tab", "thread key 1", "thread value 1");
+        // Add metadata that will be added to all reports on the current thread
+        Bugsnag.addThreadMetadata("thread tab", "thread key 1", "thread value 1");
 
         // Send a handled exception to Bugsnag
         LOGGER.info("Sending a handled exception to Bugsnag");
@@ -50,14 +52,15 @@ public class Application {
             LOGGER.info(e.getMessage(), e);
         }
 
-        // Send a handled exception with custom MetaData
-        LOGGER.info("Sending a handled exception to Bugsnag with custom MetaData");
+        // Send a handled exception with custom Metadata
+        LOGGER.info("Sending a handled exception to Bugsnag with custom Metadata");
         try {
             throw new RuntimeException("Handled exception - custom metadata");
         } catch (RuntimeException e) {
             LOGGER.warn(new BugsnagMarker((report) -> {
-                report.addToTab("report tab", "data key 1", "data value 1");
-                report.addToTab("report tab", "data key 2", "data value 2");
+                report.addMetadata("report tab", "data key 1", "data value 1");
+                report.addMetadata("report tab", "data key 2", "data value 2");
+                return true;
             }), "Something bad happened", e);
         }
 
@@ -76,8 +79,9 @@ public class Application {
         // Wait for unhandled exception thread to finish before exiting
         thread.join();
 
-        // Remove the thread meta data so it won't be added to future reports on this thread
-        Bugsnag.clearThreadMetaData();
+        // Remove the thread metadata so it won't be added to future reports on this
+        // thread
+        Bugsnag.clearThreadMetadata();
 
         // Exit the application
         System.exit(0);

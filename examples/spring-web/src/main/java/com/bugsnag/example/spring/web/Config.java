@@ -2,8 +2,8 @@ package com.bugsnag.example.spring.web;
 
 import com.bugsnag.Bugsnag;
 import com.bugsnag.BugsnagSpringConfiguration;
-import com.bugsnag.Report;
-import com.bugsnag.callbacks.Callback;
+import com.bugsnag.BugsnagEvent;
+import com.bugsnag.callbacks.OnErrorCallback;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -29,16 +29,17 @@ public class Config {
         // Create and attach a simple Bugsnag callback.
         // Use Callbacks to send custom diagnostic data which changes during
         // the lifecyle of your application
-        bugsnag.addCallback(new Callback() {
+        bugsnag.addOnError(new OnErrorCallback() {
             @Override
-            public void beforeNotify(Report report) {
-                report.addToTab("diagnostics", "timestamp", new Date());
-                report.addToTab("customer", "name", "acme-inc");
-                report.addToTab("customer", "paying", true);
-                report.addToTab("customer", "spent", 1234);
-                report.setUserName("User Name");
-                report.setUserEmail("user@example.com");
-                report.setUserId("12345");
+            public boolean onError(BugsnagEvent event) {
+                event.addMetadata("diagnostics", "timestamp", new Date());
+                event.addMetadata("customer", "name", "acme-inc");
+                event.addMetadata("customer", "paying", true);
+                event.addMetadata("customer", "spent", 1234);
+                event.setUserName("User Name");
+                event.setUserEmail("user@example.com");
+                event.setUserId("12345");
+                return true;
             }
         });
 
@@ -50,7 +51,7 @@ public class Config {
     public String exampleWebsiteLinks() {
         return "<a href=\"/send-handled-exception\">Send a handled exception to Bugsnag</a><br/>"
                 + "<a href=\"/send-handled-exception-info\">Send a handled exception to Bugsnag with INFO severity</a><br/>"
-                + "<a href=\"/send-handled-exception-with-metadata\">Send a handled exception to Bugsnag with custom MetaData</a><br/>"
+                + "<a href=\"/send-handled-exception-with-metadata\">Send a handled exception to Bugsnag with custom Metadata</a><br/>"
                 + "<a href=\"/send-unhandled-exception\">Send an unhandled exception to Bugsnag</a><br/>"
                 + "<a href=\"/send-unhandled-exception-async\">Send an unhandled exception to Bugsnag from an async method</a><br/>"
                 + "<a href=\"/send-unhandled-exception-async-future\">Send an unhandled exception to Bugsnag from an async method that returns a Future</a><br/>"

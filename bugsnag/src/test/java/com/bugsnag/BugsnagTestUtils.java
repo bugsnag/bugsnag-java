@@ -25,9 +25,9 @@ class BugsnagTestUtils {
         };
     }
 
-    static JsonNode mapReportToJson(Configuration config, Report report) throws IOException {
+    static JsonNode mapReportToJson(Configuration config, BugsnagEvent event) throws IOException {
         ObjectMapper mapper = new ObjectMapper();
-        Notification notification = new Notification(config, report);
+        Notification notification = new Notification(config, event);
         String json = mapper.writeValueAsString(notification);
         return mapper.readTree(json);
     }

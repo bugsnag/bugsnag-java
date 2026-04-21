@@ -1,6 +1,6 @@
 package com.bugsnag;
 
-import com.bugsnag.callbacks.Callback;
+import com.bugsnag.callbacks.OnErrorCallback;
 import com.bugsnag.delivery.Delivery;
 import com.bugsnag.delivery.HttpDelivery;
 import com.bugsnag.util.DaemonThreadFactory;
@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import java.io.Closeable;
 import java.lang.Thread.UncaughtExceptionHandler;
 import java.net.Proxy;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.Set;
@@ -22,6 +23,7 @@ import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+import java.util.regex.Pattern;
 
 public class Bugsnag implements Closeable {
     private static final Logger LOGGER = LoggerFactory.getLogger(Bugsnag.class);
@@ -57,11 +59,12 @@ public class Bugsnag implements Closeable {
 
     private Configuration config;
     private final SessionTracker sessionTracker;
+    private final FeatureFlagStore featureFlagStore;
 
-    private static final ThreadLocal<MetaData> THREAD_METADATA = new ThreadLocal<MetaData>() {
+    private static final ThreadLocal<Metadata> THREAD_METADATA = new ThreadLocal<Metadata>() {
         @Override
-        public MetaData initialValue() {
-            return new MetaData();
+        public Metadata initialValue() {
+            return new Metadata();
         }
     };
 
@@ -91,6 +94,7 @@ public class Bugsnag implements Closeable {
 
         config = new Configuration(apiKey);
         sessionTracker = new SessionTracker(config);
+        featureFlagStore = config.copyFeatureFlagStore();
 
         // Automatically send unhandled exceptions to Bugsnag using this Bugsnag
         config.setSendUncaughtExceptions(sendUncaughtExceptions);
@@ -138,10 +142,10 @@ public class Bugsnag implements Closeable {
      * sent to Bugsnag completely.
      *
      * @param callback a callback to run before sending errors to Bugsnag
-     * @see Callback
+     * @see OnErrorCallback
      */
-    public void addCallback(Callback callback) {
-        config.addCallback(callback);
+    public void addOnError(OnErrorCallback callback) {
+        config.addOnError(callback);
     }
 
     /**
@@ -151,7 +155,7 @@ public class Bugsnag implements Closeable {
      * @see Delivery
      */
     public Delivery getDelivery() {
-        return config.delivery;
+        return config.getDelivery();
     }
 
     /**
@@ -161,9 +165,8 @@ public class Bugsnag implements Closeable {
      * @see Delivery
      */
     public Delivery getSessionDelivery() {
-        return config.sessionDelivery;
+        return config.getSessionDelivery();
     }
-
 
     /**
      * Set the application type sent to Bugsnag.
@@ -171,7 +174,7 @@ public class Bugsnag implements Closeable {
      * @param appType the app type to send, eg. spring, gradleTask
      */
     public void setAppType(String appType) {
-        config.appType = appType;
+        config.setAppType(appType);
     }
 
     /**
@@ -180,7 +183,7 @@ public class Bugsnag implements Closeable {
      * @param appVersion the app version to send
      */
     public void setAppVersion(String appVersion) {
-        config.appVersion = appVersion;
+        config.setAppVersion(appVersion);
     }
 
     /**
@@ -194,9 +197,8 @@ public class Bugsnag implements Closeable {
      * @see Delivery
      */
     public void setDelivery(Delivery delivery) {
-        config.delivery = delivery;
+        config.setDelivery(delivery);
     }
-
 
     /**
      * Set the method of delivery for Bugsnag sessions. By default we'll
@@ -209,7 +211,7 @@ public class Bugsnag implements Closeable {
      * @see Delivery
      */
     public void setSessionDelivery(Delivery delivery) {
-        config.sessionDelivery = delivery;
+        config.setSessionDelivery(delivery);
     }
 
     /**
@@ -222,42 +224,48 @@ public class Bugsnag implements Closeable {
      */
     @Deprecated
     public void setEndpoint(String endpoint) {
-        if (config.delivery instanceof HttpDelivery) {
-            ((HttpDelivery) config.delivery).setEndpoint(endpoint);
+        Delivery delivery = config.getDelivery();
+        if (delivery instanceof HttpDelivery) {
+            ((HttpDelivery) delivery).setEndpoint(endpoint);
         }
     }
 
     /**
-     * Set which keys should be filtered when sending metaData to Bugsnag.
+     * Set which keys should be redacted when sending metadata to Bugsnag.
      * Use this when you want to ensure sensitive information, such as passwords
-     * or credit card information is stripped from metaData you send to Bugsnag.
-     * Any keys in metaData which contain these strings will be marked as
-     * [FILTERED] when send to Bugsnag.
+     * or credit card information is stripped from metadata you send to Bugsnag.
+     * Any keys in metadata which contain these strings will be marked as
+     * [REDACTED] when send to Bugsnag.
      *
-     * @param filters a list of String keys to filter from metaData
+     * @param redactedKeys a list of String keys to redact from metadata
      */
-    public void setFilters(String... filters) {
-        config.filters = filters;
+    public void setRedactedKeys(String... redactedKeys) {
+        config.setRedactedKeys(redactedKeys);
     }
 
     /**
      * Set which exception classes should be ignored (not sent) by Bugsnag.
+     * Uses Java regex patterns for matching exception class names.
      *
-     * @param ignoreClasses a list of exception classes to ignore
+     * @param discardClasses compiled regex patterns to match exception class names
      */
-    public void setIgnoreClasses(String... ignoreClasses) {
-        config.ignoreClasses = ignoreClasses;
+    public void setDiscardClasses(Pattern... discardClasses) {
+        config.setDiscardClasses(discardClasses);
     }
 
     /**
      * Set for which releaseStages errors should be sent to Bugsnag.
      * Use this to stop errors from development builds being sent.
      *
-     * @param notifyReleaseStages a list of releaseStages to notify for
+     * @param enabledReleaseStages a list of releaseStages to notify for
      * @see #setReleaseStage
      */
-    public void setNotifyReleaseStages(String... notifyReleaseStages) {
-        config.notifyReleaseStages = notifyReleaseStages;
+    public void setEnabledReleaseStages(String... enabledReleaseStages) {
+        if (enabledReleaseStages == null || enabledReleaseStages.length == 0) {
+            config.setEnabledReleaseStages(Collections.emptySet());
+        } else {
+            config.setEnabledReleaseStages(Set.of(enabledReleaseStages));
+        }
     }
 
     /**
@@ -267,21 +275,25 @@ public class Bugsnag implements Closeable {
      * @param projectPackages a list of package names
      */
     public void setProjectPackages(String... projectPackages) {
-        config.projectPackages = projectPackages;
+        config.setProjectPackages(projectPackages);
     }
 
     /**
-     * Set a proxy to use when delivering Bugsnag error reports and sessions. This is a convenient
+     * Set a proxy to use when delivering Bugsnag error reports and sessions. This
+     * is a convenient
      * shorthand for bugsnag.getDelivery().setProxy();
      *
      * @param proxy the proxy to use to send reports
      */
     public void setProxy(Proxy proxy) {
-        if (config.delivery instanceof HttpDelivery) {
-            ((HttpDelivery) config.delivery).setProxy(proxy);
+        Delivery delivery = config.getDelivery();
+        if (delivery instanceof HttpDelivery) {
+            ((HttpDelivery) delivery).setProxy(proxy);
         }
-        if (config.sessionDelivery instanceof HttpDelivery) {
-            ((HttpDelivery) config.sessionDelivery).setProxy(proxy);
+
+        Delivery sessionDelivery = config.getSessionDelivery();
+        if (sessionDelivery instanceof HttpDelivery) {
+            ((HttpDelivery) sessionDelivery).setProxy(proxy);
         }
     }
 
@@ -289,41 +301,42 @@ public class Bugsnag implements Closeable {
      * Set the current "release stage" of your application.
      *
      * @param releaseStage the release stage of the app
-     * @see #setNotifyReleaseStages
+     * @see #setEnabledReleaseStages
      */
     public void setReleaseStage(String releaseStage) {
-        config.releaseStage = releaseStage;
+        config.setReleaseStage(releaseStage);
     }
 
     /**
-     * Set whether Bugsnag should capture and report thread-state for all
-     * running threads. This is often not useful for Java web apps, since
-     * there could be thousands of active threads depending on your
-     * environment.
+     * Set when Bugsnag should capture and report thread-state for all
+     * running threads.
      *
      * @param sendThreads should we send thread state with error reports
-     * @see #setNotifyReleaseStages
+     * @see #setEnabledReleaseStages
      */
-    public void setSendThreads(boolean sendThreads) {
-        config.sendThreads = sendThreads;
+    public void setSendThreads(ThreadSendPolicy sendThreads) {
+        config.setSendThreads(sendThreads);
     }
 
     /**
-     * Set a timeout (in ms) to use when delivering Bugsnag error reports and sessions.
+     * Set a timeout (in ms) to use when delivering Bugsnag error reports and
+     * sessions.
      * This is a convenient shorthand for bugsnag.getDelivery().setTimeout();
      *
      * @param timeout the timeout to set (in ms)
      * @see #setDelivery
      */
     public void setTimeout(int timeout) {
-        if (config.delivery instanceof HttpDelivery) {
-            ((HttpDelivery) config.delivery).setTimeout(timeout);
+        Delivery delivery = config.getDelivery();
+        if (delivery instanceof HttpDelivery) {
+            ((HttpDelivery) delivery).setTimeout(timeout);
         }
-        if (config.sessionDelivery instanceof HttpDelivery) {
-            ((HttpDelivery) config.sessionDelivery).setTimeout(timeout);
+
+        Delivery sessionDelivery = config.getSessionDelivery();
+        if (sessionDelivery instanceof HttpDelivery) {
+            ((HttpDelivery) sessionDelivery).setTimeout(timeout);
         }
     }
-
 
     //
     // Notification
@@ -334,11 +347,13 @@ public class Bugsnag implements Closeable {
      *
      * @param throwable the exception to send to Bugsnag
      * @return the report object
-     * @see Report
-     * @see #notify(com.bugsnag.Report)
+     * @see BugsnagEvent
+     * @see #notify(BugsnagEvent)
      */
-    public Report buildReport(Throwable throwable) {
-        return new Report(config, throwable);
+    public BugsnagEvent buildReport(Throwable throwable) {
+        HandledState handledState = HandledState.newInstance(
+                HandledState.SeverityReasonType.REASON_HANDLED_EXCEPTION);
+        return new BugsnagEvent(config, throwable, handledState, Thread.currentThread(), featureFlagStore);
     }
 
     /**
@@ -355,10 +370,10 @@ public class Bugsnag implements Closeable {
      * Notify Bugsnag of a handled exception.
      *
      * @param throwable the exception to send to Bugsnag
-     * @param callback  the {@link Callback} object to run for this Report
+     * @param callback  the {@link OnErrorCallback} object to run for this Report
      * @return true unless the error report was ignored
      */
-    public boolean notify(Throwable throwable, Callback callback) {
+    public boolean notify(Throwable throwable, OnErrorCallback callback) {
         return notify(buildReport(throwable), callback);
     }
 
@@ -380,10 +395,10 @@ public class Bugsnag implements Closeable {
      * @param throwable the exception to send to Bugsnag
      * @param severity  the severity of the error, one of {#link Severity#ERROR},
      *                  {@link Severity#WARNING} or {@link Severity#INFO}
-     * @param callback  the {@link Callback} object to run for this Report
+     * @param callback  the {@link OnErrorCallback} object to run for this Report
      * @return true unless the error report was ignored
      */
-    public boolean notify(Throwable throwable, Severity severity, Callback callback) {
+    public boolean notify(Throwable throwable, Severity severity, OnErrorCallback callback) {
         if (throwable == null) {
             LOGGER.warn("Tried to notify with a null Throwable");
             return false;
@@ -393,70 +408,74 @@ public class Bugsnag implements Closeable {
         }
 
         HandledState handledState = HandledState.newInstance(
-                HandledState.SeverityReasonType.REASON_USER_SPECIFIED, severity);
-        Report report = new Report(config, throwable, handledState, Thread.currentThread());
-        return notify(report, callback);
+                HandledState.SeverityReasonType.REASON_USER_SPECIFIED,
+                severity
+        );
+
+        BugsnagEvent event = new BugsnagEvent(
+                config,
+                throwable,
+                handledState,
+                Thread.currentThread(),
+                featureFlagStore
+        );
+        return notify(event, callback);
     }
 
     /**
      * Notify Bugsnag of an exception and provide custom diagnostic data
      * for this particular error report.
      *
-     * @param report the {@link Report} object to send to Bugsnag
+     * @param event the {@link BugsnagEvent} object to send to Bugsnag
      * @return true unless the error report was ignored
-     * @see Report
+     * @see BugsnagEvent
      * @see #buildReport
      */
-    public boolean notify(Report report) {
-        return notify(report, null);
+    public boolean notify(BugsnagEvent event) {
+        return notify(event, null);
     }
-
 
     boolean notify(Throwable throwable, HandledState handledState, Thread currentThread) {
-        Report report = new Report(config, throwable, handledState, currentThread);
-        return notify(report, null);
+        BugsnagEvent event = new BugsnagEvent(config, throwable, handledState, currentThread, featureFlagStore);
+        return notify(event, null);
     }
 
     /**
      * Notify Bugsnag of an exception and provide custom diagnostic data
      * for this particular error report.
      *
-     * @param report         the {@link Report} object to send to Bugsnag
-     * @param reportCallback the {@link Callback} object to run for this Report
+     * @param event         the {@link BugsnagEvent} object to send to Bugsnag
+     * @param reportCallback the {@link OnErrorCallback} object to run for this Report
      * @return false if the error report was ignored
-     * @see Report
+     * @see BugsnagEvent
      * @see #buildReport
      */
-    public boolean notify(Report report, Callback reportCallback) {
-        if (report == null) {
+    public boolean notify(BugsnagEvent event, OnErrorCallback reportCallback) {
+        if (event == null) {
             LOGGER.warn("Tried to call notify with a null Report");
             return false;
         }
 
         // Don't notify if this error class should be ignored
-        if (config.shouldIgnoreClass(report.getExceptionName())) {
-            LOGGER.debug("Error not reported to Bugsnag - {} is in 'ignoreClasses'",
-                    report.getExceptionName());
+        if (config.shouldIgnoreClass(event.getExceptionName())) {
+            LOGGER.debug("Error not reported to Bugsnag - {} is in 'discardClasses'",
+                    event.getExceptionName());
             return false;
         }
 
-        // Don't notify unless releaseStage is in notifyReleaseStages
+        // Don't notify unless releaseStage is in enabledReleaseStages
         if (!config.shouldNotifyForReleaseStage()) {
-            LOGGER.debug("Error not reported to Bugsnag - {} is not in 'notifyReleaseStages'",
-                    config.releaseStage);
+            LOGGER.debug("Error not reported to Bugsnag - {} is not in 'enabledReleaseStages'",
+                    config.getReleaseStage());
             return false;
         }
 
-        // Run all client-wide beforeNotify callbacks
-        for (Callback callback : config.callbacks) {
+        // Run all client-wide onError callbacks
+        for (OnErrorCallback callback : config.callbacks) {
             try {
-                // Run the callback
-                callback.beforeNotify(report);
-
-                // Check if callback cancelled delivery
-                if (report.getShouldCancel()) {
-                    LOGGER.debug("Error not reported to Bugsnag - "
-                            + "cancelled by a client-wide beforeNotify callback");
+                boolean proceed = callback.onError(event);
+                if (!proceed) {
+                    LOGGER.debug("Error not reported to Bugsnag - cancelled by a client-wide onError callback");
                     return false;
                 }
             } catch (Throwable ex) {
@@ -465,18 +484,14 @@ public class Bugsnag implements Closeable {
         }
 
         // Add thread metadata to the report
-        report.mergeMetaData(THREAD_METADATA.get());
+        event.mergeMetadata(THREAD_METADATA.get());
 
-        // Run the report-specific beforeNotify callback, if given
+        // Run the report-specific onError callback, if given
         if (reportCallback != null) {
             try {
-                // Run the callback
-                reportCallback.beforeNotify(report);
-
-                // Check if callback cancelled delivery
-                if (report.getShouldCancel()) {
-                    LOGGER.debug(
-                            "Error not reported to Bugsnag - cancelled by a report-specific callback");
+                boolean proceed = reportCallback.onError(event);
+                if (!proceed) {
+                    LOGGER.debug("Error not reported to Bugsnag - cancelled by a report-specific callback");
                     return false;
                 }
             } catch (Throwable ex) {
@@ -484,7 +499,8 @@ public class Bugsnag implements Closeable {
             }
         }
 
-        if (config.delivery == null) {
+        Delivery delivery = config.getDelivery();
+        if (delivery == null) {
             LOGGER.debug("Error not reported to Bugsnag - no delivery is set");
             return false;
         }
@@ -493,21 +509,21 @@ public class Bugsnag implements Closeable {
         Session session = sessionTracker.getSession();
 
         if (session != null) {
-            if (report.getUnhandled()) {
+            if (event.getUnhandled()) {
                 session.incrementUnhandledCount();
             } else {
                 session.incrementHandledCount();
             }
-            report.setSession(session);
+            event.setSession(session);
         }
 
         // Build the notification
-        Notification notification = new Notification(config, report);
+        Notification notification = new Notification(config, event);
 
         // Deliver the notification
         LOGGER.debug("Reporting error to Bugsnag");
 
-        config.delivery.deliver(config.serializer, notification, config.getErrorApiHeaders());
+        delivery.deliver(config.getSerializer(), notification, config.getErrorApiHeaders());
 
         return true;
     }
@@ -559,8 +575,9 @@ public class Bugsnag implements Closeable {
      */
     @Deprecated
     public void setSessionEndpoint(String endpoint) {
-        if (config.sessionDelivery instanceof HttpDelivery) {
-            ((HttpDelivery) config.sessionDelivery).setEndpoint(endpoint);
+        Delivery sessionDelivery = config.getSessionDelivery();
+        if (sessionDelivery instanceof HttpDelivery) {
+            ((HttpDelivery) sessionDelivery).setEndpoint(endpoint);
         }
     }
 
@@ -598,14 +615,16 @@ public class Bugsnag implements Closeable {
         LOGGER.debug("Closing connection to Bugsnag");
         ExceptionHandler.disable(this);
 
-        // runs periodic checks, should shut down immediately as don't need to send any sessions
+        // runs periodic checks, should shut down immediately as don't need to send any
+        // sessions
         sessionExecutorService.shutdownNow();
 
         // flush remaining sessions
         sessionTracker.shutdown();
 
-        if (config.delivery != null) {
-            config.delivery.close();
+        Delivery delivery = config.getDelivery();
+        if (delivery != null) {
+            delivery.close();
         }
     }
 
@@ -618,14 +637,14 @@ public class Bugsnag implements Closeable {
      * @param key     the key of the metadata to add
      * @param value   the metadata value to add
      */
-    public static void addThreadMetaData(String tabName, String key, Object value) {
-        THREAD_METADATA.get().addToTab(tabName, key, value);
+    public static void addThreadMetadata(String tabName, String key, Object value) {
+        THREAD_METADATA.get().addMetadata(tabName, key, value);
     }
 
     /**
      * Clears all metadata added to the current thread
      */
-    public static void clearThreadMetaData() {
+    public static void clearThreadMetadata() {
         THREAD_METADATA.get().clear();
     }
 
@@ -634,8 +653,8 @@ public class Bugsnag implements Closeable {
      *
      * @param tabName the name of the tab to remove
      */
-    public static void clearThreadMetaData(String tabName) {
-        THREAD_METADATA.get().clearTab(tabName);
+    public static void clearThreadMetadata(String tabName) {
+        THREAD_METADATA.get().clearMetadata(tabName);
     }
 
     /**
@@ -644,8 +663,8 @@ public class Bugsnag implements Closeable {
      * @param tabName the name of the tab to that the metadata is in
      * @param key     the key of the metadata to remove
      */
-    public static void clearThreadMetaData(String tabName, String key) {
-        THREAD_METADATA.get().clearKey(tabName, key);
+    public static void clearThreadMetadata(String tabName, String key) {
+        THREAD_METADATA.get().clearMetadata(tabName, key);
     }
 
     Configuration getConfig() {
@@ -671,7 +690,62 @@ public class Bugsnag implements Closeable {
         return Collections.emptySet();
     }
 
-    void addBeforeSendSession(BeforeSendSession beforeSendSession) {
-        sessionTracker.addBeforeSendSession(beforeSendSession);
+    void addOnSession(OnSession onSession) {
+        sessionTracker.addOnSession(onSession);
+    }
+
+    /**
+     * Add a feature flag with the specified name and variant.
+     * If the name already exists, the variant will be updated.
+     *
+     * @param name the feature flag name
+     * @param variant the feature flag variant (can be null)
+     */
+    public void addFeatureFlag(String name, String variant) {
+        featureFlagStore.addFeatureFlag(name, variant);
+    }
+
+    /**
+     * Add a feature flag with the specified name and no variant.
+     *
+     * @param name the feature flag name
+     */
+    public void addFeatureFlag(String name) {
+        addFeatureFlag(name, null);
+    }
+
+    /**
+     * Add multiple feature flags.
+     * If any names already exist, their variants will be updated.
+     *
+     * @param featureFlags the feature flags to add
+     */
+    public void addFeatureFlags(Collection<FeatureFlag> featureFlags) {
+        featureFlagStore.addFeatureFlags(featureFlags);
+    }
+
+    /**
+     * Remove the feature flag with the specified name.
+     *
+     * @param name the feature flag name to remove
+     */
+    public void clearFeatureFlag(String name) {
+        featureFlagStore.clearFeatureFlag(name);
+    }
+
+    /**
+     * Remove all feature flags.
+     */
+    public void clearFeatureFlags() {
+        featureFlagStore.clearFeatureFlags();
+    }
+
+    /**
+     * Get a copy of the feature flag store.
+     *
+     * @return a copy of the feature flag store
+     */
+    FeatureFlagStore copyFeatureFlagStore() {
+        return featureFlagStore.copy();
     }
 }

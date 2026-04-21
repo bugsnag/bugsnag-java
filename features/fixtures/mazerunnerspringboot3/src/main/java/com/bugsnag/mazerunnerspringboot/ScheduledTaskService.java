@@ -22,12 +22,16 @@ public class ScheduledTaskService {
     @Scheduled(fixedDelay = 3000)
     public void doSomething() {
         if (throwException) {
-            // Add some thread meta data
-            Bugsnag.addThreadMetaData("thread", "key1", "should be cleared from meta data");
-            Bugsnag.clearThreadMetaData();
-            Bugsnag.addThreadMetaData("thread", "key2", "should be included in meta data");
+            // Reset the flag so we only throw once
+            throwException = false;
+
+            // Add some thread metadata
+            Bugsnag.addThreadMetadata("thread", "key1", "should be cleared from metadata");
+            Bugsnag.clearThreadMetadata();
+            Bugsnag.addThreadMetadata("thread", "key2", "should be included in metadata");
 
             throw new RuntimeException("Unhandled exception from ScheduledTaskService");
         }
     }
 }
+

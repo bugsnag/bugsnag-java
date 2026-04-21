@@ -11,7 +11,7 @@ class Diagnostics {
     Map<String, Object> app;
     Map<String, Object> device;
     Map<String, String> user = new HashMap<String, String>();
-    MetaData metaData = new MetaData();
+    Metadata metadata = new Metadata();
 
     Diagnostics(Configuration configuration) {
         app = getDefaultAppInfo(configuration);
@@ -37,11 +37,11 @@ class Diagnostics {
     private Map<String, Object> getDefaultAppInfo(Configuration configuration) {
         Map<String, Object> map = new HashMap<String, Object>();
 
-        if (configuration.releaseStage != null) {
-            map.put("releaseStage", configuration.releaseStage);
+        if (configuration.getReleaseStage() != null) {
+            map.put("releaseStage", configuration.getReleaseStage());
         }
-        if (configuration.appVersion != null) {
-            map.put("version", configuration.appVersion);
+        if (configuration.getAppVersion() != null) {
+            map.put("version", configuration.getAppVersion());
         }
         return map;
     }

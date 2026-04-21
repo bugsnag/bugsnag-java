@@ -17,27 +17,27 @@
 
 		<!--<endpoint>https://notify.example.com</notifyEndpoint></endpoint>-->
 
-        <!--<filteredProperty>password</filteredProperty>-->
-        <!--<filteredProperty>credit_card_number</filteredProperty>-->
+        <!--<redactedKey>password</redactedKey>-->
+        <!--<redactedKey>credit_card_number</redactedKey>-->
 
-        <!--<ignoredClass>java.io.IOException</ignoredClass>-->
-        <!--<ignoredClass>com.example.Custom</ignoredClass>-->
+        <!--<discardClass>java.io.IOException</discardClass>-->
+        <!--<discardClass>com.example.Custom</discardClass>-->
 
-        <!--<notifyReleaseStage>production</notifyReleaseStage>-->
-        <!--<notifyReleaseStage>development</notifyReleaseStage>-->
+        <!--<enabledReleaseStage>production</enabledReleaseStage>-->
+        <!--<enabledReleaseStage>development</enabledReleaseStage>-->
 
         <!--<projectPackage>com.company.package1</projectPackage>-->
         <!--<projectPackage>com.company.package2</projectPackage>-->
 
-		<!--<metaData>-->
+		<!--<metadata>-->
 			<!--<tab>-->
-				<!--<name>myTab</name>-->
+				<!--<name>customMetadata</name>-->
 				<!--<key>-->
-					<!--<name>myKey</name>-->
-					<!--<value>myValue</value>-->
+					<!--<name>somedata</name>-->
+					<!--<value>value</value>-->
 				<!--</key>-->
 			<!--</tab>-->
-		<!--</metaData>-->
+		<!--</metadata>-->
 
         <!--<proxy>-->
             <!--<type>HTTP</type>-->

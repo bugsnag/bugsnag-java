@@ -1,9 +1,9 @@
 package com.bugsnag.example.simple;
 
 import com.bugsnag.Bugsnag;
-import com.bugsnag.Report;
+import com.bugsnag.BugsnagEvent;
 import com.bugsnag.Severity;
-import com.bugsnag.callbacks.Callback;
+import com.bugsnag.callbacks.OnErrorCallback;
 
 import java.util.Date;
 
@@ -20,16 +20,17 @@ public class ExampleApp {
         // Create and attach a simple Bugsnag callback.
         // Use Callbacks to send custom diagnostic data which changes during
         // the lifecyle of your application
-        bugsnag.addCallback(new Callback() {
+        bugsnag.addOnError(new OnErrorCallback() {
             @Override
-            public void beforeNotify(Report report) {
-                report.addToTab("diagnostics", "timestamp", new Date());
-                report.addToTab("customer", "name", "acme-inc");
-                report.addToTab("customer", "paying", true);
-                report.addToTab("customer", "spent", 1234);
-                report.setUserName("User Name");
-                report.setUserEmail("user@example.com");
-                report.setUserId("12345");
+            public boolean onError(BugsnagEvent event) {
+                event.addMetadata("diagnostics", "timestamp", new Date());
+                event.addMetadata("customer", "name", "acme-inc");
+                event.addMetadata("customer", "paying", true);
+                event.addMetadata("customer", "spent", 1234);
+                event.setUserName("User Name");
+                event.setUserEmail("user@example.com");
+                event.setUserId("12345");
+                return true;
             }
         });
 
@@ -47,16 +48,17 @@ public class ExampleApp {
             bugsnag.notify(e, Severity.INFO);
         }
 
-        // Send a handled exception with custom MetaData
+        // Send a handled exception with custom Metadata
         try {
             throw new RuntimeException("Handled exception - custom metadata");
         } catch (RuntimeException e) {
-            bugsnag.notify(e, new Callback() {
+            bugsnag.notify(e, new OnErrorCallback() {
                 @Override
-                public void beforeNotify(Report report) {
-                    report.setSeverity(Severity.WARNING);
-                    report.addToTab("report", "something", "that happened");
-                    report.setContext("the context");
+                public boolean onError(BugsnagEvent event) {
+                    event.setSeverity(Severity.WARNING);
+                    event.addMetadata("report", "something", "that happened");
+                    event.setContext("the context");
+                    return true;
                 }
             });
         }

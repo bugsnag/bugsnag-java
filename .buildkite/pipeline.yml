@@ -22,32 +22,6 @@ steps:
           run: java-common
     command: './gradlew check test'
 
-  - label: ':docker: Mazerunner java8 tests batch 1'
-    key: 'java-mazerunner-tests-1'
-    depends_on: 'java-jvm-build'
-    timeout_in_minutes: 30
-    plugins:
-      - docker-compose#v3.7.0:
-          run: java8-mazerunner
-      - artifacts#v1.9.0:
-          download: "maven-repository.zip"
-    command:
-      - 'features/scripts/assemble-fixtures.sh'
-      - 'bundle exec maze-runner --exclude=features/[^a-m].*.feature'
-
-  - label: ':docker: Mazerunner java8 tests batch 2'
-    key: 'java-mazerunner-tests-2'
-    depends_on: 'java-jvm-build'
-    timeout_in_minutes: 30
-    plugins:
-      - docker-compose#v3.7.0:
-          run: java8-mazerunner
-      - artifacts#v1.9.0:
-          download: "maven-repository.zip"
-    command:
-      - 'features/scripts/assemble-fixtures.sh'
-      - 'bundle exec maze-runner --exclude=features/[^n-z].*.feature'
-
   - label: ':docker: Mazerunner java17 tests batch 1'
     key: 'java-mazerunner-tests-3'
     depends_on: 'java-jvm-build'
@@ -57,6 +31,7 @@ steps:
           run: java17-mazerunner
       - artifacts#v1.9.0:
           download: "maven-repository.zip"
+          upload: "maze_output/maze_output.zip"
     command:
       - 'features/scripts/assemble-fixtures.sh'
       - 'bundle exec maze-runner --exclude=features/[^a-m].*.feature'
@@ -70,6 +45,7 @@ steps:
           run: java17-mazerunner
       - artifacts#v1.9.0:
           download: "maven-repository.zip"
+          upload: "maze_output/maze_output.zip"
     command:
       - 'features/scripts/assemble-fixtures.sh'
       - 'bundle exec maze-runner --exclude=features/[^n-z].*.feature'

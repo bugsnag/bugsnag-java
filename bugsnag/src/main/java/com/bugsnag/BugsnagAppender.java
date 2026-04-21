@@ -1,11 +1,12 @@
 package com.bugsnag;
 
-import com.bugsnag.callbacks.Callback;
+import com.bugsnag.callbacks.OnErrorCallback;
 import com.bugsnag.delivery.Delivery;
 import com.bugsnag.logback.BugsnagMarker;
-import com.bugsnag.logback.LogbackMetaData;
-import com.bugsnag.logback.LogbackMetaDataKey;
-import com.bugsnag.logback.LogbackMetaDataTab;
+import com.bugsnag.logback.LogbackFeatureFlag;
+import com.bugsnag.logback.LogbackMetadata;
+import com.bugsnag.logback.LogbackMetadataKey;
+import com.bugsnag.logback.LogbackMetadataTab;
 import com.bugsnag.logback.ProxyConfiguration;
 
 import ch.qos.logback.classic.Level;
@@ -19,6 +20,7 @@ import java.net.InetSocketAddress;
 import java.net.Proxy;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -48,14 +50,14 @@ public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
     /** Bugsnag error server endpoint. */
     private String endpoint;
 
-    /** Property names that should be filtered out before sending to Bugsnag servers. */
-    private Set<String> filteredProperties = new HashSet<String>();
+    /** Property names that should be redacted before sending to Bugsnag servers. */
+    private Set<String> redactedKeys = new HashSet<String>();
 
     /** Exception classes to be ignored. */
-    private Set<String> ignoredClasses = new HashSet<String>();
+    private Set<String> discardClasses = new HashSet<String>();
 
     /** Release stages that should be notified. */
-    private Set<String> notifyReleaseStages = new HashSet<String>();
+    private Set<String> enabledReleaseStages = new HashSet<String>();
 
     /** Project packages. */
     private Set<String> projectPackages = new HashSet<String>();
@@ -67,15 +69,17 @@ public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
     private String releaseStage;
 
     /** Whether thread state should be sent to Bugsnag. */
-    private boolean sendThreads = false;
+    private ThreadSendPolicy sendThreads = ThreadSendPolicy.NEVER;
 
     /** Bugsnag API request timeout. */
     private int timeout;
 
     /** Application version. */
     private String appVersion;
+    private List<LogbackMetadata> globalMetadata = new ArrayList<LogbackMetadata>();
 
-    private List<LogbackMetaData> globalMetaData = new ArrayList<LogbackMetaData>();
+    /** Feature flags configured via logback.xml. */
+    private List<LogbackFeatureFlag> featureFlags = new ArrayList<LogbackFeatureFlag>();
 
     /** Bugsnag client. */
     private Bugsnag bugsnag = null;
@@ -112,12 +116,12 @@ public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
     }
 
     @Override
-    protected void append(final ILoggingEvent event) {
+    protected void append(final ILoggingEvent loggingEvent) {
         if (bugsnag != null) {
-            Throwable throwable = extractThrowable(event);
+            Throwable throwable = extractThrowable(loggingEvent);
 
-            final Callback reportCallback;
-            Marker marker = event.getMarker();
+            final OnErrorCallback reportCallback;
+            Marker marker = loggingEvent.getMarker();
             if (marker instanceof BugsnagMarker) {
                 reportCallback = ((BugsnagMarker) marker).getCallback();
             } else {
@@ -128,26 +132,30 @@ public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
             // from the this library and the logger is not in the list of excluded loggers.
             if (throwable != null
                     && !detectLogFromBugsnag(throwable)
-                    && !isExcludedLogger(event.getLoggerName())) {
+                    && !isExcludedLogger(loggingEvent.getLoggerName())) {
                 bugsnag.notify(
                         throwable,
-                        calculateSeverity(event),
-                        new Callback() {
+                        calculateSeverity(loggingEvent),
+                        new OnErrorCallback() {
                             @Override
-                            public void beforeNotify(Report report) {
+                            public boolean onError(BugsnagEvent event) {
 
                                 // Add some data from the logging event
-                                report.addToTab("Log event data",
-                                        "Message", event.getFormattedMessage());
-                                report.addToTab("Log event data",
-                                        "Logger name", event.getLoggerName());
+                                event.addMetadata("Log event data",
+                                        "Message", loggingEvent.getFormattedMessage());
+                                event.addMetadata("Log event data",
+                                        "Logger name", loggingEvent.getLoggerName());
 
                                 // Add details from the logging context to the event
-                                populateContextData(report, event);
+                                populateContextData(event, loggingEvent);
 
                                 if (reportCallback != null) {
-                                    reportCallback.beforeNotify(report);
+                                    boolean proceed = reportCallback.onError(event);
+                                    if (!proceed) {
+                                        return false; // suppress delivery
+                                    }
                                 }
+                                return true;
                             }
                         });
             }
@@ -160,14 +168,14 @@ public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
      * @param report The report being sent to Bugsnag
      * @param event The logging event
      */
-    private void populateContextData(Report report, ILoggingEvent event) {
+    private void populateContextData(BugsnagEvent report, ILoggingEvent event) {
         Map<String, String> propertyMap = event.getMDCPropertyMap();
 
         if (propertyMap != null) {
             // Loop through all the keys and put them in the correct tabs
 
             for (Map.Entry<String, String> entry : propertyMap.entrySet()) {
-                report.addToTab("Context", entry.getKey(), entry.getValue());
+                report.addMetadata("Context", entry.getKey(), entry.getValue());
             }
         }
     }
@@ -251,38 +259,59 @@ public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
         }
 
 
-        if (filteredProperties.size() > 0) {
-            bugsnag.setFilters(filteredProperties.toArray(new String[0]));
+        if (!redactedKeys.isEmpty()) {
+            bugsnag.setRedactedKeys(redactedKeys.toArray(new String[0]));
         }
 
-        bugsnag.setIgnoreClasses(ignoredClasses.toArray(new String[0]));
+        bugsnag.setDiscardClasses(compileDiscardPatterns(discardClasses));
 
-        if (notifyReleaseStages.size() > 0) {
-            bugsnag.setNotifyReleaseStages(notifyReleaseStages.toArray(new String[0]));
+        if (!enabledReleaseStages.isEmpty()) {
+            bugsnag.setEnabledReleaseStages(enabledReleaseStages.toArray(new String[0]));
         }
 
         bugsnag.setProjectPackages(projectPackages.toArray(new String[0]));
         bugsnag.setSendThreads(sendThreads);
 
-        // Add a callback to put global meta data on every report
-        bugsnag.addCallback(new Callback() {
-            @Override
-            public void beforeNotify(Report report) {
+        // Add feature flags
+        for (LogbackFeatureFlag flag : featureFlags) {
+            bugsnag.addFeatureFlag(flag.getName(), flag.getVariant());
+        }
 
-                for (LogbackMetaData metaData : globalMetaData) {
-                    for (LogbackMetaDataTab tab : metaData.getTabs()) {
-                        for (LogbackMetaDataKey key : tab.getKeys()) {
-                            report.addToTab(tab.getName(),
+        // Add a callback to put global metadata on every report
+        bugsnag.addOnError(new OnErrorCallback() {
+            @Override
+            public boolean onError(BugsnagEvent event) {
+
+                for (LogbackMetadata metadata : globalMetadata) {
+                    for (LogbackMetadataTab tab : metadata.getTabs()) {
+                        for (LogbackMetadataKey key : tab.getKeys()) {
+                            event.addMetadata(tab.getName(),
                                     key.getName(),
                                     key.getValue());
                         }
                     }
 
                 }
+                return true;
             }
         });
 
         return bugsnag;
+    }
+
+    /**
+     * Compiles a collection of pattern strings into an array of Pattern objects.
+     *
+     * @param patternStrings the collection of pattern strings to compile
+     * @return an array of compiled Pattern objects
+     */
+    private Pattern[] compileDiscardPatterns(Collection<String> patternStrings) {
+        Pattern[] patterns = new Pattern[patternStrings.size()];
+        int idx = 0;
+        for (String pattern : patternStrings) {
+            patterns[idx++] = Pattern.compile(pattern);
+        }
+        return patterns;
     }
 
     /**
@@ -293,11 +322,11 @@ public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
      * sent to Bugsnag completely.
      *
      * @param callback a callback to run before sending errors to Bugsnag
-     * @see Callback
+     * @see OnErrorCallback
      */
-    public void addCallback(Callback callback) {
+    public void addCallback(OnErrorCallback callback) {
         if (bugsnag != null) {
-            bugsnag.addCallback(callback);
+            bugsnag.addOnError(callback);
         }
     }
 
@@ -371,68 +400,78 @@ public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
     }
 
     /**
-     * @see Bugsnag#setFilters(String...)
+     * @see Bugsnag#setRedactedKeys(String...)
      */
-    public void setFilteredProperty(String filter) {
-        this.filteredProperties.add(filter);
+    public void setRedactedKey(String key) {
+        this.redactedKeys.add(key);
 
         if (bugsnag != null) {
-            bugsnag.setFilters(this.filteredProperties.toArray(new String[0]));
+            bugsnag.setRedactedKeys(this.redactedKeys.toArray(new String[0]));
         }
     }
 
     /**
-     * @see Bugsnag#setFilters(String...)
+     * @see Bugsnag#setRedactedKeys(String...)
      */
-    public void setFilteredProperties(String filters) {
-        this.filteredProperties.addAll(split(filters));
+    public void setRedactedKeys(String key) {
+        this.redactedKeys.addAll(split(key));
 
         if (bugsnag != null) {
-            bugsnag.setFilters(this.filteredProperties.toArray(new String[0]));
+            bugsnag.setRedactedKeys(this.redactedKeys.toArray(new String[0]));
         }
     }
 
-    /**
-     * @see Bugsnag#setIgnoreClasses(String...)
-     */
+    @Deprecated
     public void setIgnoredClass(String ignoredClass) {
-        this.ignoredClasses.add(ignoredClass);
+        setDiscardClass(ignoredClass);
+    }
+
+    /**
+     * @see Bugsnag#setDiscardClasses(Pattern...)
+     */
+    public void setDiscardClass(String discardClass) {
+        this.discardClasses.add(discardClass);
 
         if (bugsnag != null) {
-            bugsnag.setIgnoreClasses(this.ignoredClasses.toArray(new String[0]));
+            bugsnag.setDiscardClasses(compileDiscardPatterns(this.discardClasses));
         }
     }
 
     /**
-     * @see Bugsnag#setIgnoreClasses(String...)
+     * @see Bugsnag#setDiscardClasses(Pattern...)
      */
-    public void setIgnoredClasses(String ignoredClasses) {
-        this.ignoredClasses.addAll(split(ignoredClasses));
+    public void setDiscardClasses(String discardClasses) {
+        this.discardClasses.addAll(split(discardClasses));
 
         if (bugsnag != null) {
-            bugsnag.setIgnoreClasses(this.ignoredClasses.toArray(new String[0]));
+            bugsnag.setDiscardClasses(compileDiscardPatterns(this.discardClasses));
         }
     }
 
-    /**
-     * @see Bugsnag#setNotifyReleaseStages(String...)
-     */
+    @Deprecated
     public void setNotifyReleaseStage(String notifyReleaseStage) {
-        this.notifyReleaseStages.add(notifyReleaseStage);
+        setEnabledReleaseStage(notifyReleaseStage);
+    }
+
+    /**
+     * @see Bugsnag#setEnabledReleaseStages(String...)
+     */
+    public void setEnabledReleaseStage(String enabledReleaseStage) {
+        this.enabledReleaseStages.add(enabledReleaseStage);
 
         if (bugsnag != null) {
-            bugsnag.setNotifyReleaseStages(this.notifyReleaseStages.toArray(new String[0]));
+            bugsnag.setEnabledReleaseStages(this.enabledReleaseStages.toArray(new String[0]));
         }
     }
 
     /**
-     * @see Bugsnag#setNotifyReleaseStages(String...)
+     * @see Bugsnag#setEnabledReleaseStages(String...)
      */
-    public void setNotifyReleaseStages(String notifyReleaseStages) {
-        this.notifyReleaseStages.addAll(split(notifyReleaseStages));
+    public void setEnabledReleaseStages(String enabledReleaseStages) {
+        this.enabledReleaseStages.addAll(split(enabledReleaseStages));
 
         if (bugsnag != null) {
-            bugsnag.setNotifyReleaseStages(this.notifyReleaseStages.toArray(new String[0]));
+            bugsnag.setEnabledReleaseStages(this.enabledReleaseStages.toArray(new String[0]));
         }
     }
 
@@ -485,9 +524,9 @@ public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
     }
 
     /**
-     * @see Bugsnag#setSendThreads(boolean)
+     * @see Bugsnag#setSendThreads(ThreadSendPolicy)
      */
-    public void setSendThreads(boolean sendThreads) {
+    public void setSendThreads(ThreadSendPolicy sendThreads) {
         this.sendThreads = sendThreads;
 
         if (bugsnag != null) {
@@ -517,10 +556,15 @@ public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
      * Internal use only
      * Should only be used via the logback.xml file
      *
-     * @param metaData Adds meta data to every report
+     * @param metadata Adds metadata to every report
      */
-    public void setMetaData(LogbackMetaData metaData) {
-        this.globalMetaData.add(metaData);
+    public void setMetadata(LogbackMetadata metadata) {
+        this.globalMetadata.add(metadata);
+    }
+
+    @Deprecated
+    public void setMetaData(LogbackMetadata metadata) {
+        setMetadata(metadata);
     }
 
     /**
@@ -564,5 +608,71 @@ public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
             }
         }
         return false;
+    }
+
+    /**
+     * Add a feature flag with a name and variant.
+     * This is typically configured via logback.xml.
+     *
+     * @param name the feature flag name
+     * @param variant the feature flag variant (can be null)
+     */
+    public void addFeatureFlag(String name, String variant) {
+        LogbackFeatureFlag flag = new LogbackFeatureFlag();
+        flag.setName(name);
+        flag.setVariant(variant);
+        featureFlags.add(flag);
+
+        if (bugsnag != null) {
+            bugsnag.addFeatureFlag(name, variant);
+        }
+    }
+
+    /**
+     * Add a feature flag with just a name (no variant).
+     * This is typically configured via logback.xml.
+     *
+     * @param name the feature flag name
+     */
+    public void addFeatureFlag(String name) {
+        addFeatureFlag(name, null);
+    }
+
+    /**
+     * Add a feature flag from logback.xml configuration.
+     * Internal use only - should only be used via the logback.xml file.
+     *
+     * @param flag the feature flag to add
+     */
+    public void setFeatureFlag(LogbackFeatureFlag flag) {
+        featureFlags.add(flag);
+
+        if (bugsnag != null) {
+            bugsnag.addFeatureFlag(flag.getName(), flag.getVariant());
+        }
+    }
+
+    /**
+     * Clear a feature flag by name.
+     *
+     * @param name the feature flag name to remove
+     */
+    public void clearFeatureFlag(String name) {
+        featureFlags.removeIf(flag -> flag.getName() != null && flag.getName().equals(name));
+
+        if (bugsnag != null) {
+            bugsnag.clearFeatureFlag(name);
+        }
+    }
+
+    /**
+     * Clear all feature flags.
+     */
+    public void clearFeatureFlags() {
+        featureFlags.clear();
+
+        if (bugsnag != null) {
+            bugsnag.clearFeatureFlags();
+        }
     }
 }
