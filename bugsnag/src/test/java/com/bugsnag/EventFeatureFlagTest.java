@@ -26,9 +26,16 @@ public class EventFeatureFlagTest {
         bugsnag.close();
     }
 
+    private BugsnagEvent createEvent(Bugsnag client, Exception exception) {
+        HandledState handledState = HandledState.newInstance(
+                HandledState.SeverityReasonType.REASON_HANDLED_EXCEPTION);
+        return new BugsnagEvent(client.getConfig(), exception, handledState,
+                Thread.currentThread(), client.getFeatureFlagStoreCopy());
+    }
+
     @Test
     public void testAddFeatureFlagOnReport() {
-        BugsnagEvent event = bugsnag.buildReport(new RuntimeException("Test"));
+        BugsnagEvent event = createEvent(bugsnag, new RuntimeException("Test"));
         event.addFeatureFlag("report-flag", "report-variant");
 
         List<FeatureFlag> flags = event.getFeatureFlags();
@@ -40,7 +47,7 @@ public class EventFeatureFlagTest {
 
     @Test
     public void testAddFeatureFlagWithoutVariant() {
-        BugsnagEvent event = bugsnag.buildReport(new RuntimeException("Test"));
+        BugsnagEvent event = createEvent(bugsnag, new RuntimeException("Test"));
         event.addFeatureFlag("report-flag");
 
         List<FeatureFlag> flags = event.getFeatureFlags();
@@ -56,7 +63,7 @@ public class EventFeatureFlagTest {
         flagsToAdd.add(FeatureFlag.of("flag1", "variant-a"));
         flagsToAdd.add(FeatureFlag.of("flag2", "variant-b"));
 
-        BugsnagEvent event = bugsnag.buildReport(new RuntimeException("Test"));
+        BugsnagEvent event = createEvent(bugsnag, new RuntimeException("Test"));
         event.addFeatureFlags(flagsToAdd);
 
         List<FeatureFlag> flags = event.getFeatureFlags();
@@ -68,7 +75,7 @@ public class EventFeatureFlagTest {
 
     @Test
     public void testClearFeatureFlag() {
-        BugsnagEvent event = bugsnag.buildReport(new RuntimeException("Test"));
+        BugsnagEvent event = createEvent(bugsnag, new RuntimeException("Test"));
         event.addFeatureFlag("flag1", "variant-a");
         event.addFeatureFlag("flag2", "variant-b");
         event.clearFeatureFlag("flag1");
@@ -81,7 +88,7 @@ public class EventFeatureFlagTest {
 
     @Test
     public void testClearFeatureFlags() {
-        BugsnagEvent event = bugsnag.buildReport(new RuntimeException("Test"));
+        BugsnagEvent event = createEvent(bugsnag, new RuntimeException("Test"));
         event.addFeatureFlag("flag1", "variant-a");
         event.addFeatureFlag("flag2", "variant-b");
         event.clearFeatureFlags();
@@ -95,7 +102,7 @@ public class EventFeatureFlagTest {
     public void testReportFlagsInheritFromClient() {
         bugsnag.addFeatureFlag("client-flag", "client-variant");
 
-        BugsnagEvent event = bugsnag.buildReport(new RuntimeException("Test"));
+        BugsnagEvent event = createEvent(bugsnag, new RuntimeException("Test"));
         List<FeatureFlag> flags = event.getFeatureFlags();
 
         assertEquals(1, flags.size());
@@ -107,7 +114,7 @@ public class EventFeatureFlagTest {
     public void testReportFlagsOverrideClientFlags() {
         bugsnag.addFeatureFlag("flag1", "client-variant");
 
-        BugsnagEvent event = bugsnag.buildReport(new RuntimeException("Test"));
+        BugsnagEvent event = createEvent(bugsnag, new RuntimeException("Test"));
         event.addFeatureFlag("flag1", "report-variant");
 
         List<FeatureFlag> flags = event.getFeatureFlags();
@@ -128,7 +135,7 @@ public class EventFeatureFlagTest {
         bugsnag.addFeatureFlag("flag3", "client-variant");
 
         // Add flags to report (one new, one override)
-        BugsnagEvent event = bugsnag.buildReport(new RuntimeException("Test"));
+        BugsnagEvent event = createEvent(bugsnag, new RuntimeException("Test"));
         event.addFeatureFlag("flag3", "report-variant");
         event.addFeatureFlag("flag4", "report-variant");
 
@@ -152,7 +159,7 @@ public class EventFeatureFlagTest {
         bugsnag.getConfig().addFeatureFlag("flag2", "value2");
         bugsnag.getConfig().clearFeatureFlag("flag1");
 
-        BugsnagEvent event = bugsnag.buildReport(new RuntimeException("Test"));
+        BugsnagEvent event = createEvent(bugsnag, new RuntimeException("Test"));
         event.addFeatureFlag("flag1", "value1-readded");
 
         List<FeatureFlag> flags = event.getFeatureFlags();
@@ -166,7 +173,7 @@ public class EventFeatureFlagTest {
 
     @Test
     public void testFeatureFlagChaining() {
-        BugsnagEvent event = bugsnag.buildReport(new RuntimeException("Test"));
+        BugsnagEvent event = createEvent(bugsnag, new RuntimeException("Test"));
 
         event.addFeatureFlag("flag1", "variant-a")
               .addFeatureFlag("flag2", "variant-b")
@@ -192,7 +199,7 @@ public class EventFeatureFlagTest {
 
         // Report adds flag1 with updated value (overrides config value but keeps position)
         // and adds flag2 with updated value
-        BugsnagEvent event = bugsnag.buildReport(new RuntimeException("Test"));
+        BugsnagEvent event = createEvent(bugsnag, new RuntimeException("Test"));
         event.addFeatureFlag("flag1", "value1-updated");
         event.addFeatureFlag("flag2", "value2-updated");
 

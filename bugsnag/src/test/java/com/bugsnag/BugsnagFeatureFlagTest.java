@@ -26,11 +26,18 @@ public class BugsnagFeatureFlagTest {
         bugsnag.close();
     }
 
+    private BugsnagEvent createEvent(Bugsnag client, Exception exception) {
+        HandledState handledState = HandledState.newInstance(
+                HandledState.SeverityReasonType.REASON_HANDLED_EXCEPTION);
+        return new BugsnagEvent(client.getConfig(), exception, handledState,
+                Thread.currentThread(), client.getFeatureFlagStoreCopy());
+    }
+
     @Test
     public void testAddFeatureFlag() {
         bugsnag.addFeatureFlag("flag1", "variant-a");
 
-        BugsnagEvent event = bugsnag.buildReport(new RuntimeException("Test"));
+        BugsnagEvent event = createEvent(bugsnag, new RuntimeException("Test"));
         List<FeatureFlag> flags = event.getFeatureFlags();
 
         assertEquals(1, flags.size());
@@ -42,7 +49,7 @@ public class BugsnagFeatureFlagTest {
     public void testAddFeatureFlagWithoutVariant() {
         bugsnag.addFeatureFlag("flag1");
 
-        BugsnagEvent event = bugsnag.buildReport(new RuntimeException("Test"));
+        BugsnagEvent event = createEvent(bugsnag, new RuntimeException("Test"));
         List<FeatureFlag> flags = event.getFeatureFlags();
 
         assertEquals(1, flags.size());
@@ -58,7 +65,7 @@ public class BugsnagFeatureFlagTest {
 
         bugsnag.addFeatureFlags(flagsToAdd);
 
-        BugsnagEvent event = bugsnag.buildReport(new RuntimeException("Test"));
+        BugsnagEvent event = createEvent(bugsnag, new RuntimeException("Test"));
         List<FeatureFlag> flags = event.getFeatureFlags();
 
         assertEquals(2, flags.size());
@@ -72,7 +79,7 @@ public class BugsnagFeatureFlagTest {
         bugsnag.addFeatureFlag("flag2", "variant-b");
         bugsnag.clearFeatureFlag("flag1");
 
-        BugsnagEvent event = bugsnag.buildReport(new RuntimeException("Test"));
+        BugsnagEvent event = createEvent(bugsnag, new RuntimeException("Test"));
         List<FeatureFlag> flags = event.getFeatureFlags();
 
         assertEquals(1, flags.size());
@@ -85,7 +92,7 @@ public class BugsnagFeatureFlagTest {
         bugsnag.addFeatureFlag("flag2", "variant-b");
         bugsnag.clearFeatureFlags();
 
-        BugsnagEvent event = bugsnag.buildReport(new RuntimeException("Test"));
+        BugsnagEvent event = createEvent(bugsnag, new RuntimeException("Test"));
         List<FeatureFlag> flags = event.getFeatureFlags();
 
         assertEquals(0, flags.size());
@@ -99,7 +106,7 @@ public class BugsnagFeatureFlagTest {
         Bugsnag client = new Bugsnag("api-key", false);
         client.getConfig().addFeatureFlag("config-flag", "config-variant");
 
-        BugsnagEvent event = client.buildReport(new RuntimeException("Test"));
+        BugsnagEvent event = createEvent(client, new RuntimeException("Test"));
         List<FeatureFlag> flags = event.getFeatureFlags();
 
         assertEquals(1, flags.size());
@@ -118,7 +125,7 @@ public class BugsnagFeatureFlagTest {
         client.getConfig().addFeatureFlag("flag1", "config-variant");
         client.addFeatureFlag("flag1", "client-variant");
 
-        BugsnagEvent event = client.buildReport(new RuntimeException("Test"));
+        BugsnagEvent event = createEvent(client, new RuntimeException("Test"));
         List<FeatureFlag> flags = event.getFeatureFlags();
 
         assertEquals(1, flags.size());
@@ -139,7 +146,7 @@ public class BugsnagFeatureFlagTest {
         client.getConfig().addFeatureFlag("flag2", "config-variant");
         client.addFeatureFlag("flag3", "client-variant");
 
-        BugsnagEvent event = client.buildReport(new RuntimeException("Test"));
+        BugsnagEvent event = createEvent(client, new RuntimeException("Test"));
         List<FeatureFlag> flags = event.getFeatureFlags();
 
         assertEquals(3, flags.size());

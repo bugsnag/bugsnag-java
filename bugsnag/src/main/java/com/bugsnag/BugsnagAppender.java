@@ -71,8 +71,6 @@ public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
     /** Whether thread state should be sent to Bugsnag. */
     private ThreadSendPolicy sendThreads = ThreadSendPolicy.NEVER;
 
-    /** Bugsnag API request timeout. */
-    private int timeout;
 
     /** Application version. */
     private String appVersion;
@@ -534,12 +532,6 @@ public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
         }
     }
 
-    /**
-     * @see Bugsnag#setTimeout(int)
-     */
-    public void setTimeout(int timeout) {
-        this.timeout = timeout;
-    }
 
     /**
      * @see Bugsnag#setAppVersion(String)
