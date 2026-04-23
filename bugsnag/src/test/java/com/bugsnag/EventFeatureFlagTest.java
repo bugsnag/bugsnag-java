@@ -1,6 +1,7 @@
 package com.bugsnag;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 import org.junit.After;
 import org.junit.Before;
@@ -54,12 +55,12 @@ public class EventFeatureFlagTest {
 
         assertEquals(1, flags.size());
         assertEquals("report-flag", flags.get(0).getName());
-        assertEquals(null, flags.get(0).getVariant());
+        assertNull(flags.get(0).getVariant());
     }
 
     @Test
     public void testAddFeatureFlags() {
-        List<FeatureFlag> flagsToAdd = new ArrayList<FeatureFlag>();
+        List<FeatureFlag> flagsToAdd = new ArrayList<>();
         flagsToAdd.add(FeatureFlag.of("flag1", "variant-a"));
         flagsToAdd.add(FeatureFlag.of("flag2", "variant-b"));
 
