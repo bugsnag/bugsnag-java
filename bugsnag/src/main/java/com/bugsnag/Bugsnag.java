@@ -409,6 +409,35 @@ public class Bugsnag implements Closeable {
         return notify(event, null);
     }
 
+    /**
+     * Creates a BugsnagEvent for a handled exception (visible for testing).
+     *
+     * @param throwable the exception to create an event for
+     * @return a BugsnagEvent with REASON_HANDLED_EXCEPTION severity
+     */
+    BugsnagEvent createEvent(Throwable throwable) {
+        HandledState handledState = HandledState.newInstance(
+                HandledState.SeverityReasonType.REASON_HANDLED_EXCEPTION);
+        return new BugsnagEvent(config, throwable, handledState,
+                Thread.currentThread(), featureFlagStore);
+    }
+
+    /**
+     * Creates a BugsnagEvent for a handled exception with custom severity (visible for testing).
+     *
+     * @param throwable the exception to create an event for
+     * @param severity  the severity of the error
+     * @return a BugsnagEvent with the specified severity
+     */
+    BugsnagEvent createEvent(Throwable throwable, Severity severity) {
+        HandledState handledState = HandledState.newInstance(
+                HandledState.SeverityReasonType.REASON_USER_SPECIFIED,
+                severity
+        );
+        return new BugsnagEvent(config, throwable, handledState,
+                Thread.currentThread(), featureFlagStore);
+    }
+
     boolean notify(Throwable throwable, HandledState handledState, Thread currentThread) {
         BugsnagEvent event = new BugsnagEvent(config, throwable, handledState, currentThread, featureFlagStore);
         return notify(event, null);
