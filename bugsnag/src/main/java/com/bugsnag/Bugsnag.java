@@ -330,11 +330,7 @@ public class Bugsnag implements Closeable {
      * @return true unless the error report was ignored
      */
     public boolean notify(Throwable throwable) {
-        HandledState handledState = HandledState.newInstance(
-                HandledState.SeverityReasonType.REASON_HANDLED_EXCEPTION);
-        BugsnagEvent event = new BugsnagEvent(config, throwable, handledState,
-                Thread.currentThread(), featureFlagStore);
-        return notify(event);
+        return notify(createEvent(throwable));
     }
 
     /**
@@ -345,11 +341,7 @@ public class Bugsnag implements Closeable {
      * @return true unless the error report was ignored
      */
     public boolean notify(Throwable throwable, OnErrorCallback callback) {
-        HandledState handledState = HandledState.newInstance(
-                HandledState.SeverityReasonType.REASON_HANDLED_EXCEPTION);
-        BugsnagEvent event = new BugsnagEvent(config, throwable, handledState,
-                Thread.currentThread(), featureFlagStore);
-        return notify(event, callback);
+        return notify(createEvent(throwable), callback);
     }
 
     /**
@@ -381,20 +373,7 @@ public class Bugsnag implements Closeable {
         if (severity == null) {
             return notify(throwable, callback);
         }
-
-        HandledState handledState = HandledState.newInstance(
-                HandledState.SeverityReasonType.REASON_USER_SPECIFIED,
-                severity
-        );
-
-        BugsnagEvent event = new BugsnagEvent(
-                config,
-                throwable,
-                handledState,
-                Thread.currentThread(),
-                featureFlagStore
-        );
-        return notify(event, callback);
+        return notify(createEvent(throwable, severity), callback);
     }
 
     /**
