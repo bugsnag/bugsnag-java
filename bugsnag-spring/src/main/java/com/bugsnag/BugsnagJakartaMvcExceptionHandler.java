@@ -33,7 +33,7 @@ class BugsnagJakartaMvcExceptionHandler implements HandlerExceptionResolver {
                                          Object handler,
                                          java.lang.Exception ex) {
 
-        if (bugsnag.getConfig().shouldSendUncaughtExceptions()) {
+        if (bugsnag.getConfig().getAutoDetectErrors()) {
             HandledState handledState = HandledState.newInstance(
                     SeverityReasonType.REASON_UNHANDLED_EXCEPTION_MIDDLEWARE,
                     Collections.singletonMap("framework", "Spring"),

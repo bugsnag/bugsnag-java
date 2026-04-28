@@ -9,7 +9,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.Closeable;
-import java.lang.Thread.UncaughtExceptionHandler;
 import java.net.Proxy;
 import java.util.Collection;
 import java.util.Collections;
@@ -61,12 +60,7 @@ public class Bugsnag implements Closeable {
     private final SessionTracker sessionTracker;
     private final FeatureFlagStore featureFlagStore;
 
-    private static final ThreadLocal<Metadata> THREAD_METADATA = new ThreadLocal<Metadata>() {
-        @Override
-        public Metadata initialValue() {
-            return new Metadata();
-        }
-    };
+    private static final ThreadLocal<Metadata> THREAD_METADATA = ThreadLocal.withInitial(Metadata::new);
 
     //
     // Constructors
@@ -97,7 +91,7 @@ public class Bugsnag implements Closeable {
         featureFlagStore = config.copyFeatureFlagStore();
 
         // Automatically send unhandled exceptions to Bugsnag using this Bugsnag
-        config.setSendUncaughtExceptions(sendUncaughtExceptions);
+        config.setAutoDetectErrors(sendUncaughtExceptions);
         if (sendUncaughtExceptions) {
             ExceptionHandler.enable(this);
         }
@@ -681,13 +675,13 @@ public class Bugsnag implements Closeable {
      *
      * @return clients which catch uncaught exceptions
      */
-    public static Set<Bugsnag> uncaughtExceptionClients() {
-        UncaughtExceptionHandler handler = Thread.getDefaultUncaughtExceptionHandler();
-        if (handler instanceof ExceptionHandler) {
-            ExceptionHandler bugsnagHandler = (ExceptionHandler) handler;
-            return Collections.unmodifiableSet(bugsnagHandler.uncaughtExceptionClients());
+    public static Iterable<Bugsnag> uncaughtExceptionClients() {
+        ExceptionHandler handler = ExceptionHandler.getGlobalOrNull();
+        if (handler == null) {
+            return Collections.emptyList();
         }
-        return Collections.emptySet();
+
+        return handler.uncaughtExceptionClients();
     }
 
     void addOnSession(OnSession onSession) {

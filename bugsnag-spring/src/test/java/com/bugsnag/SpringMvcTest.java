@@ -71,7 +71,7 @@ public class SpringMvcTest {
         delivery = mock(Delivery.class);
 
         bugsnag.setDelivery(delivery);
-        bugsnag.getConfig().setSendUncaughtExceptions(true);
+        bugsnag.getConfig().setAutoDetectErrors(true);
         bugsnag.getConfig().setAutoCaptureSessions(true);
 
         // Cannot reset the session count on the bugsnag bean for each test, so note
@@ -102,7 +102,7 @@ public class SpringMvcTest {
 
     @Test
     public void noBugsnagNotifyWhenSendUncaughtExceptionsFalse() {
-        bugsnag.getConfig().setSendUncaughtExceptions(false);
+        bugsnag.getConfig().setAutoDetectErrors(false);
 
         callRuntimeExceptionEndpoint();
 

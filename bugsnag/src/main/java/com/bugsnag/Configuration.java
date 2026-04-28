@@ -47,7 +47,7 @@ public class Configuration {
 
     Set<OnErrorCallback> callbacks = new CopyOnWriteArraySet<>();
     private volatile boolean autoCaptureSessions = true;
-    private volatile boolean sendUncaughtExceptions = true;
+    private volatile boolean autoDetectErrors = true;
     private final FeatureFlagStore featureFlagStore = new FeatureFlagStore();
 
     Configuration(String apiKey) {
@@ -111,12 +111,12 @@ public class Configuration {
         return autoCaptureSessions;
     }
 
-    public void setSendUncaughtExceptions(boolean sendUncaughtExceptions) {
-        this.sendUncaughtExceptions = sendUncaughtExceptions;
+    public void setAutoDetectErrors(boolean autoDetectErrors) {
+        this.autoDetectErrors = autoDetectErrors;
     }
 
-    public boolean shouldSendUncaughtExceptions() {
-        return sendUncaughtExceptions;
+    public boolean getAutoDetectErrors() {
+        return autoDetectErrors;
     }
 
     /**

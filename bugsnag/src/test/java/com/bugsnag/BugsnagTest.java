@@ -21,8 +21,8 @@ import java.net.InetSocketAddress;
 import java.net.Proxy;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
-import java.util.Set;
 import java.util.regex.Pattern;
 
 public class BugsnagTest {
@@ -69,8 +69,8 @@ public class BugsnagTest {
 
         // Ignore both (compile patterns for exact matches)
         bugsnag.setDiscardClasses(
-            Pattern.compile(Pattern.quote(RuntimeException.class.getName())),
-            Pattern.compile(Pattern.quote(TestException.class.getName()))
+                Pattern.compile(Pattern.quote(RuntimeException.class.getName())),
+                Pattern.compile(Pattern.quote(TestException.class.getName()))
         );
         assertFalse(bugsnag.notify(new RuntimeException()));
         assertFalse(bugsnag.notify(new TestException()));
@@ -519,8 +519,12 @@ public class BugsnagTest {
 
     @Test(expected = UnsupportedOperationException.class)
     public void testUncaughtHandlerModification() {
-        Set<Bugsnag> bugsnags = Bugsnag.uncaughtExceptionClients();
-        bugsnags.clear();
+        Iterator<Bugsnag> iterator = Bugsnag.uncaughtExceptionClients().iterator();
+        while (iterator.hasNext()) {
+            //noinspection resource
+            iterator.next();
+            iterator.remove(); // not supported
+        }
     }
 
     // Test exception class
