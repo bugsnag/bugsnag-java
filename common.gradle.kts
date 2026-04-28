@@ -1,9 +1,6 @@
 // Version catalog is now used - see gradle/libs.versions.toml
 apply(plugin = "checkstyle")
 
-if (project.hasProperty("releasing") && project.depth <= 1) {
-    apply(from = "../release.gradle.kts")
-}
 tasks.named<Test>("test") {
     testLogging {
         events("passed", "skipped", "failed", "standardOut", "standardError")
