@@ -1,6 +1,6 @@
 # Changelog
 
-## 4.0.0 - 2025-08-04
+## 4.0.0 - 2026-04-29
 
 * This major release modernises the Java notifier with breaking changes to align with current Bugsnag conventions, drop legacy Java/Servlet support, and add new capabilities like feature flags. [#254](https://github.com/bugsnag/bugsnag-java/pull/254)
 * @see [UPGRADING](UPGRADING.md) for upgrade details.
