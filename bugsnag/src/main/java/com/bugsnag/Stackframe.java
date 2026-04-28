@@ -5,7 +5,7 @@ import com.bugsnag.serialization.Expose;
 import java.util.ArrayList;
 import java.util.List;
 
-class Stackframe {
+public class Stackframe {
     private Configuration config;
     private StackTraceElement el;
 

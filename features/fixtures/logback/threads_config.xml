@@ -9,7 +9,7 @@
 
 		<endpoint>http://localhost:9339/notify</endpoint>
 
-        <sendThreads>true</sendThreads>
+        <sendThreads>ALWAYS</sendThreads>
 	</appender>
 
 	<root level="INFO">

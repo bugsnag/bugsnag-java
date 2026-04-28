@@ -5,7 +5,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import com.bugsnag.callbacks.Callback;
 import com.bugsnag.delivery.Delivery;
 import com.bugsnag.logback.ProxyConfiguration;
 
@@ -21,11 +20,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-
+import java.util.regex.Pattern;
 
 /**
  * Test for the Bugsnag Appender
- * NOTE: Not called BugsnagAppenderTest because that throws away errors to prevent cycles
+ * NOTE: Not called BugsnagAppenderTest because that throws away errors to
+ * prevent cycles
  */
 public class AppenderTest {
 
@@ -45,9 +45,8 @@ public class AppenderTest {
     @Before
     public void swapDelivery() {
 
-        ch.qos.logback.classic.Logger rootLogger =
-                (ch.qos.logback.classic.Logger) LoggerFactory
-                        .getLogger(org.slf4j.Logger.ROOT_LOGGER_NAME);
+        ch.qos.logback.classic.Logger rootLogger = (ch.qos.logback.classic.Logger) LoggerFactory
+                .getLogger(org.slf4j.Logger.ROOT_LOGGER_NAME);
         appender = (BugsnagAppender) rootLogger.getAppender("BUGSNAG");
 
         Bugsnag bugsnag = appender.getClient();
@@ -58,6 +57,9 @@ public class AppenderTest {
         originalSessionDelivery = bugsnag.getSessionDelivery();
         sessionDelivery = new StubSessionDelivery();
         bugsnag.setSessionDelivery(sessionDelivery);
+
+        // Clear any feature flags from previous tests
+        appender.clearFeatureFlags();
     }
 
     /**
@@ -87,7 +89,7 @@ public class AppenderTest {
         assertEquals("test", notification.getEvents().get(0).getExceptionMessage());
         assertEquals(Severity.WARNING.getValue(), notification.getEvents().get(0).getSeverity());
         assertEquals("Test exception",
-                getMetaDataMap(notification, "Log event data").get("Message"));
+                getMetadataMap(notification, "Log event data").get("Message"));
     }
 
     @Test
@@ -109,7 +111,7 @@ public class AppenderTest {
         assertEquals("test", notification.getEvents().get(0).getExceptionMessage());
         assertEquals(Severity.WARNING.getValue(), notification.getEvents().get(0).getSeverity());
         assertEquals("Test exception, errorCode: " + value,
-                getMetaDataMap(notification, "Log event data").get("Message"));
+                getMetadataMap(notification, "Log event data").get("Message"));
     }
 
     @Test
@@ -136,38 +138,43 @@ public class AppenderTest {
 
     @Test
     public void testBugsnagConfig() {
-
         // Get the Bugsnag instance
         Configuration config = getConfig(appender.getClient());
-        assertEquals("test", config.releaseStage);
-        assertEquals("1.0.1", config.appVersion);
-        assertEquals("gradleTask", config.appType);
+        assertEquals("test", config.getReleaseStage());
+        assertEquals("1.0.1", config.getAppVersion());
+        assertEquals("gradleTask", config.getAppType());
         assertFalse(config.shouldAutoCaptureSessions());
 
-        assertEquals(2, config.filters.length);
-        ArrayList<String> filters = new ArrayList<String>(Arrays.asList(config.filters));
-        assertTrue(filters.contains("password"));
-        assertTrue(filters.contains("credit_card_number"));
+        assertEquals(2, config.getRedactedKeys().length);
+        ArrayList<String> redactedKeys = new ArrayList<String>(Arrays.asList(config.getRedactedKeys()));
+        assertTrue(redactedKeys.contains("password"));
+        assertTrue(redactedKeys.contains("credit_card_number"));
 
-        assertEquals(2, config.ignoreClasses.length);
-        ArrayList<String> ignoreClasses
-                = new ArrayList<String>(Arrays.asList(config.ignoreClasses));
-        assertTrue(ignoreClasses.contains("com.example.Custom"));
-        assertTrue(ignoreClasses.contains("java.io.IOException"));
+        assertEquals(2, config.getDiscardClasses().length);
+        Pattern[] discardPatterns = config.getDiscardClasses();
+        boolean hasCustom = false;
+        boolean hasIoException = false;
+        for (Pattern pattern : discardPatterns) {
+            if (pattern.pattern().equals("com.example.Custom")) {
+                hasCustom = true;
+            }
+            if (pattern.pattern().equals("java.io.IOException")) {
+                hasIoException = true;
+            }
+        }
+        assertTrue(hasCustom);
+        assertTrue(hasIoException);
 
-        assertEquals(2, config.notifyReleaseStages.length);
-        ArrayList<String> notifyReleaseStages
-                = new ArrayList<String>(Arrays.asList(config.notifyReleaseStages));
-        assertTrue(notifyReleaseStages.contains("development"));
-        assertTrue(notifyReleaseStages.contains("test"));
+        assertEquals(2, config.getEnabledReleaseStages().size());
+        assertTrue(config.getEnabledReleaseStages().contains("development"));
+        assertTrue(config.getEnabledReleaseStages().contains("test"));
 
-        assertEquals(2, config.projectPackages.length);
-        ArrayList<String> projectPackages
-                = new ArrayList<String>(Arrays.asList(config.projectPackages));
+        assertEquals(2, config.getProjectPackages().length);
+        ArrayList<String> projectPackages = new ArrayList<String>(Arrays.asList(config.getProjectPackages()));
         assertTrue(projectPackages.contains("com.company.package2"));
         assertTrue(projectPackages.contains("com.company.package1"));
 
-        assertTrue(config.sendThreads);
+        assertEquals(ThreadSendPolicy.ALWAYS, config.getSendThreads());
     }
 
     @Test
@@ -208,7 +215,7 @@ public class AppenderTest {
     }
 
     @Test
-    public void testNotifyReleaseStages() {
+    public void testEnabledReleaseStages() {
         // Send a log with the release stage set to an excluded one
         appender.setReleaseStage("ignoredReleaseStage");
         LOGGER.warn("Release stage ignored", new RuntimeException("test"));
@@ -239,9 +246,9 @@ public class AppenderTest {
         // Check that a report was sent to Bugsnag
         assertEquals(1, delivery.getNotifications().size());
         Notification notification = delivery.getNotifications().get(0);
-        Report report = notification.getEvents().get(0);
+        BugsnagEvent event = notification.getEvents().get(0);
 
-        List<Stackframe> frames = report.getExceptions().get(0).getStacktrace();
+        List<Stackframe> frames = event.getErrors().get(0).getStacktrace();
         assertTrue(frames.get(0).isInProject());
         assertTrue(frames.get(1).isInProject());
         for (int i = 2; i < frames.size(); i++) {
@@ -274,49 +281,46 @@ public class AppenderTest {
     }
 
     @Test
-    public void testFilters() {
+    public void testRedactedKeys() {
 
-        // Add some meta data which should be filtered by key name
-        Bugsnag.addThreadMetaData("myTab", "password", "password value");
-        Bugsnag.addThreadMetaData("myTab", "credit_card_number", "card number");
-        Bugsnag.addThreadMetaData("myTab", "mysecret", "not filtered");
+        // Add some metadata which should be redacted by key name
+        Bugsnag.addThreadMetadata("myTab", "password", "password value");
+        Bugsnag.addThreadMetadata("myTab", "credit_card_number", "card number");
+        Bugsnag.addThreadMetadata("myTab", "mysecret", "not redacted");
 
         // Send a log message
-        LOGGER.warn("Exception with filtered meta data", new RuntimeException("test"));
+        LOGGER.warn("Exception with redacted metadata", new RuntimeException("test"));
 
         // Check that a report was sent to Bugsnag
         assertEquals(1, delivery.getNotifications().size());
 
         Notification notification = delivery.getNotifications().get(0);
-        assertTrue(notification.getEvents().get(0).getMetaData().containsKey("myTab"));
-        Map<String, Object> myTab = getMetaDataMap(notification, "myTab");
+        assertTrue(notification.getEvents().get(0).getMetadata().containsKey("myTab"));
+        Map<String, Object> myTab = getMetadataMap(notification, "myTab");
 
-        assertEquals("[FILTERED]", myTab.get("password"));
-        assertEquals("[FILTERED]", myTab.get("credit_card_number"));
-        assertEquals("not filtered", myTab.get("mysecret"));
+        assertEquals("[REDACTED]", myTab.get("password"));
+        assertEquals("[REDACTED]", myTab.get("credit_card_number"));
+        assertEquals("not redacted", myTab.get("mysecret"));
     }
 
     @Test
     public void testCallback() {
 
         // Setup a callback to set the user
-        appender.addCallback(new Callback() {
-            @Override
-            public void beforeNotify(Report report) {
-                report.setUserName("User Name");
-                report.setUserEmail("user@example.com");
-                report.setUserId("12345");
+        appender.addCallback(report -> {
+            report.setUserName("User Name");
+            report.setUserEmail("user@example.com");
+            report.setUserId("12345");
 
-                report.setContext("the context");
+            report.setContext("the context");
 
-                report.setGroupingHash("the grouping hash");
-
-                report.setApiKey("newapikey");
-            }
+            report.setGroupingHash("the grouping hash");
+            report.setApiKey("newapikey");
+            return true;
         });
 
         // Send a log message
-        LOGGER.warn("Exception with filtered meta data", new RuntimeException("test"));
+        LOGGER.warn("Exception with redacted meta data", new RuntimeException("test"));
 
         // Check that a report was sent to Bugsnag
         assertEquals(1, delivery.getNotifications().size());
@@ -365,7 +369,7 @@ public class AppenderTest {
     @Test
     public void testSplit() {
         assertTrue(appender.split(null).isEmpty());
-        assertArrayEquals(new String[]{""}, appender.split("").toArray());
+        assertArrayEquals(new String[] {""}, appender.split("").toArray());
 
         String[] expected = {"one", "two", "three"};
         assertArrayEquals(expected, appender.split("one,two,three").toArray());
@@ -375,13 +379,14 @@ public class AppenderTest {
     public void testCreateFromExistingClient() {
         Bugsnag client = new Bugsnag("testApiKey");
         BugsnagAppender appender = new BugsnagAppender(client);
-        // Make sure configuration changes are not passed through to the provided client.
+        // Make sure configuration changes are not passed through to the provided
+        // client.
         appender.setApiKey("newApiKey");
         // Make sure a new client is not created when starting the appender.
         appender.start();
 
         assertEquals(client, appender.getClient());
-        assertEquals("testApiKey", appender.getClient().getConfig().apiKey);
+        assertEquals("testApiKey", appender.getClient().getConfig().getApiKey());
     }
 
     private StackTraceElement changeClassName(StackTraceElement element, String className) {
@@ -412,14 +417,108 @@ public class AppenderTest {
     }
 
     /**
-     * Gets a hashmap key from the meta data in a notification
+     * Gets a hashmap key from the metadata in a notification
      *
      * @param notification The notification
-     * @param key The key to get
+     * @param key          The key to get
      * @return The hash map
      */
-    @SuppressWarnings (value = "unchecked")
-    private Map<String, Object> getMetaDataMap(Notification notification, String key) {
-        return ((Map<String, Object>) notification.getEvents().get(0).getMetaData().get(key));
+    @SuppressWarnings(value = "unchecked")
+    private Map<String, Object> getMetadataMap(Notification notification, String key) {
+        return ((Map<String, Object>) notification.getEvents().get(0).getMetadata().get(key));
+    }
+
+    @Test
+    public void testFeatureFlagConfiguration() {
+        // Add feature flags programmatically (XML configuration will be tested separately)
+        appender.addFeatureFlag("sample_group", "a");
+        appender.addFeatureFlag("another_feature");
+
+        // Send a log message
+        LOGGER.warn("Exception with feature flags", new RuntimeException("test"));
+
+        // Check that a report was sent to Bugsnag
+        assertEquals(1, delivery.getNotifications().size());
+
+        Notification notification = delivery.getNotifications().get(0);
+        List<FeatureFlag> featureFlags = notification.getEvents().get(0).getFeatureFlags();
+
+        // Check that feature flags are present
+        assertEquals(2, featureFlags.size());
+
+        // Check first feature flag
+        assertEquals("sample_group", featureFlags.get(0).getName());
+        assertEquals("a", featureFlags.get(0).getVariant());
+
+        // Check second feature flag
+        assertEquals("another_feature", featureFlags.get(1).getName());
+        assertEquals(null, featureFlags.get(1).getVariant());
+    }
+
+    @Test
+    public void testAddFeatureFlagProgrammatically() {
+        // Add a feature flag programmatically
+        appender.addFeatureFlag("runtime_feature", "variant_b");
+
+        // Send a log message
+        LOGGER.warn("Exception with runtime feature flag", new RuntimeException("test"));
+
+        // Check that a report was sent to Bugsnag
+        assertEquals(1, delivery.getNotifications().size());
+
+        Notification notification = delivery.getNotifications().get(0);
+        List<FeatureFlag> featureFlags = notification.getEvents().get(0).getFeatureFlags();
+
+        // Should have 1 programmatic feature flag
+        assertEquals(1, featureFlags.size());
+
+        // Check the programmatically added flag is present
+        assertEquals("runtime_feature", featureFlags.get(0).getName());
+        assertEquals("variant_b", featureFlags.get(0).getVariant());
+    }
+
+    @Test
+    public void testClearFeatureFlag() {
+        // Add some feature flags first
+        appender.addFeatureFlag("sample_group", "a");
+        appender.addFeatureFlag("another_feature");
+
+        // Clear a specific feature flag
+        appender.clearFeatureFlag("sample_group");
+
+        // Send a log message
+        LOGGER.warn("Exception after clearing feature flag", new RuntimeException("test"));
+
+        // Check that a report was sent to Bugsnag
+        assertEquals(1, delivery.getNotifications().size());
+
+        Notification notification = delivery.getNotifications().get(0);
+        List<FeatureFlag> featureFlags = notification.getEvents().get(0).getFeatureFlags();
+
+        // Should only have 1 feature flag (another_feature) remaining
+        assertEquals(1, featureFlags.size());
+        assertEquals("another_feature", featureFlags.get(0).getName());
+    }
+
+    @Test
+    public void testClearAllFeatureFlags() {
+        // Add some feature flags first
+        appender.addFeatureFlag("sample_group", "a");
+        appender.addFeatureFlag("another_feature");
+
+        // Clear all feature flags
+        appender.clearFeatureFlags();
+
+        // Send a log message
+        LOGGER.warn("Exception after clearing all feature flags", new RuntimeException("test"));
+
+        // Check that a report was sent to Bugsnag
+        assertEquals(1, delivery.getNotifications().size());
+
+        Notification notification = delivery.getNotifications().get(0);
+        List<FeatureFlag> featureFlags = notification.getEvents().get(0).getFeatureFlags();
+
+        // Should have no feature flags
+        assertEquals(0, featureFlags.size());
     }
 }

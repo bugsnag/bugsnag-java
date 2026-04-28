@@ -1,6 +1,6 @@
 package com.bugsnag.logback;
 
-import com.bugsnag.callbacks.Callback;
+import com.bugsnag.callbacks.OnErrorCallback;
 
 import org.slf4j.Marker;
 
@@ -17,15 +17,15 @@ public class BugsnagMarker implements Marker {
 
     private static final String BUGSNAG_MARKER_NAME = "BUGSNAG_MARKER";
 
-    private Callback callback;
+    private OnErrorCallback callback;
 
     private List<Marker> references = new ArrayList<Marker>();
 
-    public BugsnagMarker(Callback callback) {
+    public BugsnagMarker(OnErrorCallback callback) {
         this.callback = callback;
     }
 
-    public Callback getCallback() {
+    public OnErrorCallback getCallback() {
         return callback;
     }
 

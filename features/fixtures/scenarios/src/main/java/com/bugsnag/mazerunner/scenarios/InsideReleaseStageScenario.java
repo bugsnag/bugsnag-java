@@ -14,7 +14,7 @@ public class InsideReleaseStageScenario extends Scenario {
     @Override
     public void run() {
         bugsnag.setReleaseStage("prod");
-        bugsnag.setNotifyReleaseStages("prod");
+        bugsnag.setEnabledReleaseStages("prod");
         bugsnag.notify(generateException());
     }
 }
