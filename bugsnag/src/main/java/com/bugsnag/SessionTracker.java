@@ -4,6 +4,7 @@ import com.bugsnag.delivery.Delivery;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -16,12 +17,11 @@ class SessionTracker {
     private final Configuration config;
     private final ThreadLocal<Session> session = new ThreadLocal<Session>();
     private final AtomicReference<SessionCount> batchCount = new AtomicReference<SessionCount>();
-    private final Collection<SessionCount>
-            enqueuedSessionCounts = new ConcurrentLinkedQueue<SessionCount>();
+    private final Collection<SessionCount> enqueuedSessionCounts = new ConcurrentLinkedQueue<SessionCount>();
 
     private final Semaphore flushingRequest = new Semaphore(1);
     private final AtomicBoolean shuttingDown = new AtomicBoolean();
-    private final Collection<BeforeSendSession> sessionCallbacks = new ConcurrentLinkedQueue<BeforeSendSession>();
+    private final Collection<OnSession> sessionCallbacks = new ConcurrentLinkedQueue<OnSession>();
 
     SessionTracker(Configuration configuration) {
         this.config = configuration;
@@ -86,17 +86,40 @@ class SessionTracker {
 
         if (!enqueuedSessionCounts.isEmpty() && flushingRequest.tryAcquire(1)) {
             try {
-                Collection<SessionCount> requestValues
-                        = new ArrayList<SessionCount>(enqueuedSessionCounts);
-                SessionPayload payload = new SessionPayload(requestValues, config);
+                Collection<SessionCount> requestValues = new ArrayList<SessionCount>(enqueuedSessionCounts);
+                Collection<SessionCount> approvedSessions = new ArrayList<SessionCount>();
+                SessionPayload firstPayload = null;
 
-                for (BeforeSendSession callback : sessionCallbacks) {
-                    callback.beforeSendSession(payload);
+                for (SessionCount sessionCount : requestValues) {
+                    SessionPayload payload = new SessionPayload(Collections.singleton(sessionCount), config);
+
+                    boolean sendThisSession = true;
+                    for (OnSession callback : sessionCallbacks) {
+                        if (!callback.onSession(payload)) {
+                            sendThisSession = false;
+                            break;
+                        }
+                    }
+
+                    if (sendThisSession) {
+                        approvedSessions.add(sessionCount);
+                        if (firstPayload == null) {
+                            firstPayload = payload;
+                        }
+                    }
                 }
 
-                Delivery delivery = config.sessionDelivery;
-                delivery.deliver(config.serializer, payload, config.getSessionApiHeaders());
+                if (!approvedSessions.isEmpty()) {
+                    // Reuse the device/app from the first approved payload to preserve runtime
+                    // versions
+                    SessionPayload batchPayload = new SessionPayload(approvedSessions, firstPayload.getDevice(),
+                            firstPayload.getApp());
+                    Delivery delivery = config.getSessionDelivery();
+                    delivery.deliver(config.getSerializer(), batchPayload, config.getSessionApiHeaders());
+                }
+
                 enqueuedSessionCounts.removeAll(requestValues);
+
             } finally {
                 flushingRequest.release(1);
             }
@@ -109,7 +132,7 @@ class SessionTracker {
         }
     }
 
-    void addBeforeSendSession(BeforeSendSession beforeSendSession) {
-        sessionCallbacks.add(beforeSendSession);
+    void addOnSession(OnSession onSession) {
+        sessionCallbacks.add(onSession);
     }
 }

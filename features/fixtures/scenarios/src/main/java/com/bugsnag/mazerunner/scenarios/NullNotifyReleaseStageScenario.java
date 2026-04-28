@@ -3,7 +3,8 @@ package com.bugsnag.mazerunner.scenarios;
 import com.bugsnag.Bugsnag;
 
 /**
- * Attempts to send a handled exception to Bugsnag, when the notifyReleaseStages is null.
+ * Attempts to send a handled exception to Bugsnag, when the
+ * enabledReleaseStages is null.
  */
 public class NullNotifyReleaseStageScenario extends Scenario {
 

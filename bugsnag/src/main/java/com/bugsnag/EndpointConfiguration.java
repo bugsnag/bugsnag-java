@@ -4,9 +4,9 @@ public class EndpointConfiguration {
 
     private static final String DEFAULT_NOTIFY_ENDPOINT = "https://notify.bugsnag.com";
     private static final String DEFAULT_SESSION_ENDPOINT = "https://sessions.bugsnag.com";
-    private static final String HUB_NOTIFY_ENDPOINT = "https://notify.insighthub.smartbear.com";
-    private static final String HUB_SESSION_ENDPOINT = "https://sessions.insighthub.smartbear.com";
-    private static final String HUB_KEY_PREFIX = "00000";
+    private static final String SECONDARY_NOTIFY_ENDPOINT = "https://notify.bugsnag.smartbear.com";
+    private static final String SECONDARY_SESSION_ENDPOINT = "https://sessions.bugsnag.smartbear.com";
+    private static final String SECONDARY_KEY_PREFIX = "00000";
 
     private final String notifyEndpoint;
     private final String sessionEndpoint;
@@ -30,8 +30,8 @@ public class EndpointConfiguration {
      * Constructs an EndpointConfiguration with default notify and session endpoints.
      */
     public static EndpointConfiguration fromApiKey(String apiKey) {
-        if (apiKey != null && apiKey.startsWith(HUB_KEY_PREFIX)) {
-            return new EndpointConfiguration(HUB_NOTIFY_ENDPOINT, HUB_SESSION_ENDPOINT);
+        if (apiKey != null && apiKey.startsWith(SECONDARY_KEY_PREFIX)) {
+            return new EndpointConfiguration(SECONDARY_NOTIFY_ENDPOINT, SECONDARY_SESSION_ENDPOINT);
         } else {
             return new EndpointConfiguration(DEFAULT_NOTIFY_ENDPOINT, DEFAULT_SESSION_ENDPOINT);
         }

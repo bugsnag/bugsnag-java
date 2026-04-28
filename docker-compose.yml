@@ -9,16 +9,12 @@ services:
       dockerfile: dockerfiles/Dockerfile.java-common
     volumes:
       - .:/app
-  java8-mazerunner:
-    build:
-      context: .
-      dockerfile: dockerfiles/Dockerfile.java8-mazerunner
-    volumes:
-      - .:/app
   java17-mazerunner:
     build:
       context: .
       dockerfile: dockerfiles/Dockerfile.java17-mazerunner
+    volumes:
+      - ./maze_output:/app/maze_output
   java-publisher:
     build:
       context: .

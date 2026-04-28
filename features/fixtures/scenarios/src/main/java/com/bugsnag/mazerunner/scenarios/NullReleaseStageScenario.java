@@ -14,7 +14,7 @@ public class NullReleaseStageScenario extends Scenario {
     @Override
     public void run() {
         bugsnag.setReleaseStage(null);
-        bugsnag.setNotifyReleaseStages("dev");
+        bugsnag.setEnabledReleaseStages("dev");
         bugsnag.notify(generateException());
     }
 }

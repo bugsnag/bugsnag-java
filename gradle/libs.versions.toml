@@ -1,0 +1,68 @@
+[versions]
+# Build plugins
+gradleLicense = "0.16.1"
+checkstyle = "8.18"
+gretty = "4.0.3"
+
+# Java/Kotlin toolchain
+java = "17"
+
+# Main dependencies
+jackson = "2.14.1"
+slf4j = "1.7.25"
+logback = "1.2.3"
+jakartaServlet = "5.0.0"
+
+# Spring
+spring = "6.0.0"
+springBoot2 = "2.5.14"
+springBoot3 = "3.0.0"
+
+# Testing
+junit = "4.13.2"
+junitJupiter = "5.8.2"
+mockito = "5.0.0"
+mockitoLegacy = "2.10.0"
+
+[libraries]
+# Jackson
+jackson-databind = { module = "com.fasterxml.jackson.core:jackson-databind", version.ref = "jackson" }
+
+# SLF4J
+slf4j-api = { module = "org.slf4j:slf4j-api", version.ref = "slf4j" }
+slf4j-simple = { module = "org.slf4j:slf4j-simple", version.ref = "slf4j" }
+log4j-over-slf4j = { module = "org.slf4j:log4j-over-slf4j", version.ref = "slf4j" }
+
+# Logback
+logback-core = { module = "ch.qos.logback:logback-core", version.ref = "logback" }
+logback-classic = { module = "ch.qos.logback:logback-classic", version.ref = "logback" }
+
+# Jakarta
+jakarta-servlet-api = { module = "jakarta.servlet:jakarta.servlet-api", version.ref = "jakartaServlet" }
+
+# Spring Framework
+spring-webmvc = { module = "org.springframework:spring-webmvc", version.ref = "spring" }
+spring-aop = { module = "org.springframework:spring-aop", version.ref = "spring" }
+
+# Spring Boot 2.x
+springBoot2-gradle-plugin = { module = "org.springframework.boot:spring-boot-gradle-plugin", version.ref = "springBoot2" }
+springBoot2-starter = { module = "org.springframework.boot:spring-boot-starter", version.ref = "springBoot2" }
+springBoot2-starter-web = { module = "org.springframework.boot:spring-boot-starter-web", version.ref = "springBoot2" }
+
+# Spring Boot 3.x
+springBoot3-boot = { module = "org.springframework.boot:spring-boot", version.ref = "springBoot3" }
+springBoot3-starter-test = { module = "org.springframework.boot:spring-boot-starter-test", version.ref = "springBoot3" }
+springBoot3-starter-web = { module = "org.springframework.boot:spring-boot-starter-web", version.ref = "springBoot3" }
+
+# Testing
+junit = { module = "junit:junit", version.ref = "junit" }
+junit-jupiter = { module = "org.junit.jupiter:junit-jupiter", version.ref = "junitJupiter" }
+mockito-core = { module = "org.mockito:mockito-core", version.ref = "mockito" }
+mockito-core-legacy = { module = "org.mockito:mockito-core", version.ref = "mockitoLegacy" }
+
+# Build tools
+gretty = { module = "org.gretty:gretty", version.ref = "gretty" }
+
+[plugins]
+license = { id = "com.github.hierynomus.license", version.ref = "gradleLicense" }
+

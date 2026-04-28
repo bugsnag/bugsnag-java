@@ -1,9 +1,9 @@
 package com.bugsnag.example.spring.cli;
 
 import com.bugsnag.Bugsnag;
-import com.bugsnag.Report;
+import com.bugsnag.BugsnagEvent;
 import com.bugsnag.Severity;
-import com.bugsnag.callbacks.Callback;
+import com.bugsnag.callbacks.OnErrorCallback;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,17 +43,18 @@ public class ApplicationCommandLineRunner implements CommandLineRunner {
             bugsnag.notify(e, Severity.INFO);
         }
 
-        // Send a handled exception with custom MetaData
-        LOGGER.info("Sending a handled exception to Bugsnag with custom MetaData");
+        // Send a handled exception with custom Metadata
+        LOGGER.info("Sending a handled exception to Bugsnag with custom Metadata");
         try {
             throw new RuntimeException("Handled exception - custom metadata");
         } catch (RuntimeException e) {
-            bugsnag.notify(e, new Callback() {
+            bugsnag.notify(e, new OnErrorCallback() {
                 @Override
-                public void beforeNotify(Report report) {
-                    report.setSeverity(Severity.WARNING);
-                    report.addToTab("report", "something", "that happened");
-                    report.setContext("the context");
+                public boolean onError(BugsnagEvent event) {
+                    event.setSeverity(Severity.WARNING);
+                    event.addMetadata("report", "something", "that happened");
+                    event.setContext("the context");
+                    return true;
                 }
             });
         }

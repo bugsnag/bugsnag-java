@@ -15,7 +15,7 @@ public class OutsideReleaseStageScenario extends Scenario {
     @Override
     public void run() {
         bugsnag.setReleaseStage("prod");
-        bugsnag.setNotifyReleaseStages("dev");
+        bugsnag.setEnabledReleaseStages("dev");
         bugsnag.notify(generateException());
     }
 }

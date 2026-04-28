@@ -14,12 +14,12 @@ import com.bugsnag.serialization.Serializer;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicInteger;
-
 
 public class SessionTrackerTest {
 
@@ -36,7 +36,7 @@ public class SessionTrackerTest {
     public void setUp() {
         configuration = new Configuration("api-key");
         sessionDelivery = new ConfigurationTest.FakeHttpDelivery();
-        configuration.sessionDelivery = sessionDelivery;
+        configuration.setSessionDelivery(sessionDelivery);
         sessionTracker = new SessionTracker(configuration);
         assertNull(sessionTracker.getSession());
     }
@@ -133,16 +133,16 @@ public class SessionTrackerTest {
 
     @Test
     public void disabledReleaseStage() {
-        configuration.notifyReleaseStages = new String[]{"prod"};
-        configuration.releaseStage = "dev";
+        configuration.setEnabledReleaseStages(Collections.singleton("prod"));
+        configuration.setReleaseStage("dev");
         sessionTracker.startSession(new Date(), false);
         assertNull(sessionTracker.getSession());
     }
 
     @Test
     public void enabledReleaseStage() {
-        configuration.notifyReleaseStages = new String[]{"prod"};
-        configuration.releaseStage = "prod";
+        configuration.setEnabledReleaseStages(Collections.singleton("prod"));
+        configuration.setReleaseStage("prod");
         sessionTracker.startSession(new Date(), false);
         assertNotNull(sessionTracker.getSession());
     }
@@ -156,7 +156,7 @@ public class SessionTrackerTest {
                 fail("Should not be called if no sessions enqueued");
             }
         };
-        configuration.sessionDelivery = sessionDelivery;
+        configuration.setSessionDelivery(sessionDelivery);
         sessionTracker.flushSessions(new Date());
         assertFalse(sessionDelivery.delivered);
     }
@@ -170,7 +170,7 @@ public class SessionTrackerTest {
                 fail("Should not be called if date has not exceeded batch period");
             }
         };
-        configuration.sessionDelivery = sessionDelivery;
+        configuration.setSessionDelivery(sessionDelivery);
         sessionTracker.startSession(new Date(1309209859), false);
         sessionTracker.flushSessions(new Date(1309209859));
         assertFalse(sessionDelivery.delivered);
@@ -183,7 +183,6 @@ public class SessionTrackerTest {
             public void deliver(Serializer serializer, Object object, Map<String, String> headers) {
                 super.deliver(serializer, object, headers);
                 SessionPayload payload = (SessionPayload) object;
-
 
                 List<SessionCount> sessionCounts = (List<SessionCount>) payload.getSessionCounts();
                 assertEquals(3, sessionCounts.size());
@@ -201,7 +200,7 @@ public class SessionTrackerTest {
                 assertEquals("1970-01-18T11:13:00Z", sessionCount.getStartedAt());
             }
         };
-        configuration.sessionDelivery = sessionDelivery;
+        configuration.setSessionDelivery(sessionDelivery);
         sessionTracker.startSession(new Date(5092340L), false);
         sessionTracker.startSession(new Date(125098234L), false);
         sessionTracker.startSession(new Date(1509207501L), false);
@@ -225,7 +224,7 @@ public class SessionTrackerTest {
                 assertEquals("1970-01-01T02:46:00Z", sessionCount.getStartedAt());
             }
         };
-        configuration.sessionDelivery = sessionDelivery;
+        configuration.setSessionDelivery(sessionDelivery);
 
         // 2 mins apart
         sessionTracker.startSession(new Date(10000000L), false);
@@ -248,7 +247,7 @@ public class SessionTrackerTest {
                 assertEquals("1970-01-01T02:46:00Z", sessionCount.getStartedAt());
             }
         };
-        configuration.sessionDelivery = sessionDelivery;
+        configuration.setSessionDelivery(sessionDelivery);
 
         // 1 hour apart
         sessionTracker.startSession(new Date(10000000L), false);
@@ -271,7 +270,7 @@ public class SessionTrackerTest {
                 assertEquals("1970-01-01T02:46:00Z", sessionCount.getStartedAt());
             }
         };
-        configuration.sessionDelivery = sessionDelivery;
+        configuration.setSessionDelivery(sessionDelivery);
 
         // 1 hour apart
         sessionTracker.startSession(new Date(10000000L), false);
@@ -283,8 +282,9 @@ public class SessionTrackerTest {
 
     @Test
     public void zeroSessionCount() {
-        CustomDelivery sessionDelivery = new CustomDelivery() {};
-        configuration.sessionDelivery = sessionDelivery;
+        CustomDelivery sessionDelivery = new CustomDelivery() {
+        };
+        configuration.setSessionDelivery(sessionDelivery);
         sessionTracker.flushSessions(new Date(10120000L));
         sessionTracker.flushSessions(new Date(14000000L));
         assertFalse(sessionDelivery.delivered);
@@ -299,8 +299,9 @@ public class SessionTrackerTest {
 
     @Test
     public void testSessionShutdownDelivers() {
-        CustomDelivery delivery = new CustomDelivery() {};
-        configuration.sessionDelivery = delivery;
+        CustomDelivery delivery = new CustomDelivery() {
+        };
+        configuration.setSessionDelivery(delivery);
 
         sessionTracker.startSession(new Date(), true);
         sessionTracker.shutdown();
@@ -310,14 +311,44 @@ public class SessionTrackerTest {
 
     @Test
     public void testMultiShutdown() {
-        CustomDelivery delivery = new CustomDelivery() {};
-        configuration.sessionDelivery = delivery;
+        CustomDelivery delivery = new CustomDelivery() {
+        };
+        configuration.setSessionDelivery(delivery);
 
         sessionTracker.startSession(new Date(), true);
         sessionTracker.shutdown();
         sessionTracker.shutdown(); // second should have no effect
         assertTrue(delivery.recentRequest instanceof SessionPayload);
         assertEquals(1, delivery.count.get());
+    }
+
+    @Test
+    public void sessionDeliverySuppressedByCallback() {
+        // Set up a delivery stub which SHOULD NOT be invoked
+        CustomDelivery delivery = new CustomDelivery() {
+            @Override
+            public void deliver(Serializer serializer, Object object, Map<String, String> headers) {
+                super.deliver(serializer, object, headers);
+                fail("Delivery should be suppressed by OnSession callback returning false");
+            }
+        };
+        configuration.setSessionDelivery(delivery);
+
+        // Add callback which returns false to suppress sending
+        sessionTracker.addOnSession(new OnSession() {
+            @Override
+            public boolean onSession(SessionPayload payload) {
+                return false; // suppress delivery
+            }
+        });
+
+        // Start a session and flush far enough in future to trigger send attempt
+        sessionTracker.startSession(new Date(10000000L), false);
+        sessionTracker.flushSessions(new Date(13600000L)); // different batch period
+
+        // Verify delivery was NOT performed
+        assertFalse(delivery.delivered);
+        assertEquals(0, delivery.count.get());
     }
 
     abstract static class CustomDelivery implements Delivery {

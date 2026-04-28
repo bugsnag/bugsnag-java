@@ -81,11 +81,12 @@ public class JakartaServletCallbackTest {
     @SuppressWarnings("unchecked")
     @Test
     public void testRequestMetadataAdded() {
-        Report report = generateReport(new java.lang.Exception("Spline reticulation failed"));
+        BugsnagEvent event = new BugsnagEvent(bugsnag.getConfig(),
+                new java.lang.Exception("Spline reticulation failed"));
         JakartaServletCallback callback = new JakartaServletCallback();
-        callback.beforeNotify(report);
+        callback.onError(event);
 
-        Map<String, Object> metadata = report.getMetaData();
+        Map<String, Object> metadata = event.getMetadata();
         assertTrue(metadata.containsKey("request"));
 
         Map<String, Object> request = (Map<String, Object>) metadata.get("request");
@@ -100,10 +101,10 @@ public class JakartaServletCallbackTest {
         assertEquals("some-data-1,some-data-2", headers.get("X-Custom-Header"));
 
         // Make sure that actual Authorization header value is not in the report
-        assertEquals("[FILTERED]", headers.get("Authorization"));
+        assertEquals("[REDACTED]", headers.get("Authorization"));
 
         // Make sure that actual cookies are not in the report
-        assertEquals("[FILTERED]", headers.get("Cookie"));
+        assertEquals("[REDACTED]", headers.get("Cookie"));
 
         assertTrue(request.containsKey("params"));
         Map<String, String[]> params = (Map<String, String[]>) request.get("params");
@@ -118,25 +119,23 @@ public class JakartaServletCallbackTest {
 
     @Test
     public void testRequestContextSet() {
-        Report report = generateReport(new java.lang.Exception("Spline reticulation failed"));
+        BugsnagEvent event = new BugsnagEvent(bugsnag.getConfig(),
+                new java.lang.Exception("Spline reticulation failed"));
         JakartaServletCallback callback = new JakartaServletCallback();
-        callback.beforeNotify(report);
+        callback.onError(event);
 
-        assertEquals("PATCH /foo/bar", report.getContext());
+        assertEquals("PATCH /foo/bar", event.getContext());
     }
 
     @Test
     public void testExistingContextNotOverridden() {
-        Report report = generateReport(new java.lang.Exception("Spline reticulation failed"));
-        report.setContext("Honey nut corn flakes");
+        BugsnagEvent event = new BugsnagEvent(bugsnag.getConfig(),
+                new java.lang.Exception("Spline reticulation failed"));
+        event.setContext("Honey nut corn flakes");
         JakartaServletCallback callback = new JakartaServletCallback();
-        callback.beforeNotify(report);
+        callback.onError(event);
 
-        assertEquals("Honey nut corn flakes", report.getContext());
-    }
-
-    private Report generateReport(java.lang.Exception exception) {
-        return bugsnag.buildReport(exception);
+        assertEquals("Honey nut corn flakes", event.getContext());
     }
 
     private Enumeration<String> stringsToEnumeration(String... strings) {

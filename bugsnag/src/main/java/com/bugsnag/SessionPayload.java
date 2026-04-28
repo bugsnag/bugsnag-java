@@ -9,10 +9,21 @@ final class SessionPayload {
 
     private final Collection<SessionCount> sessionCounts;
     private final Diagnostics diagnostics;
+    private final Map<String, Object> device;
+    private final Map<String, Object> app;
 
     SessionPayload(Collection<SessionCount> sessionCounts, Configuration configuration) {
         this.sessionCounts = sessionCounts;
         diagnostics = new Diagnostics(configuration);
+        this.device = null;
+        this.app = null;
+    }
+
+    SessionPayload(Collection<SessionCount> sessionCounts, Map<String, Object> device, Map<String, Object> app) {
+        this.sessionCounts = sessionCounts;
+        this.diagnostics = null;
+        this.device = device;
+        this.app = app;
     }
 
     @Expose
@@ -22,12 +33,12 @@ final class SessionPayload {
 
     @Expose
     Map<String, Object> getDevice() {
-        return diagnostics.device;
+        return device != null ? device : diagnostics.device;
     }
 
     @Expose
     Map<String, Object> getApp() {
-        return diagnostics.app;
+        return app != null ? app : diagnostics.app;
     }
 
     @Expose

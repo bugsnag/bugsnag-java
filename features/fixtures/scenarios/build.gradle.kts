@@ -1,0 +1,25 @@
+plugins {
+    java
+}
+
+group = "com.bugsnag.mazerunner"
+
+java {
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(17))
+    }
+}
+
+repositories {
+    mavenCentral()
+    maven {
+        url = file("../libs").toURI()
+    }
+}
+
+dependencies {
+    implementation("ch.qos.logback:logback-classic:1.5.18")
+    implementation("org.codehaus.janino:janino:3.1.10")
+    implementation("com.bugsnag:bugsnag:9.9.9-test")
+}
+

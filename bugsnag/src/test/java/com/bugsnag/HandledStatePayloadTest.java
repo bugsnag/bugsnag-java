@@ -31,7 +31,7 @@ public class HandledStatePayloadTest {
 
     @Test
     public void testBasicSerialisation() throws IOException {
-        Report report = reportFromHandledState(HandledState.newInstance(
+        BugsnagEvent report = reportFromHandledState(HandledState.newInstance(
                 HandledState.SeverityReasonType.REASON_UNHANDLED_EXCEPTION));
         JsonNode payload = getJsonPayloadFromReport(report);
 
@@ -41,9 +41,9 @@ public class HandledStatePayloadTest {
 
     @Test
     public void testHandledSerialisation() throws IOException {
-        Report report = reportFromHandledState(HandledState.newInstance(
+        BugsnagEvent event = reportFromHandledState(HandledState.newInstance(
                 HandledState.SeverityReasonType.REASON_HANDLED_EXCEPTION));
-        JsonNode payload = getJsonPayloadFromReport(report);
+        JsonNode payload = getJsonPayloadFromReport(event);
 
         assertEquals("warning", payload.get("severity").asText());
         assertFalse(payload.get("unhandled").booleanValue());
@@ -58,9 +58,9 @@ public class HandledStatePayloadTest {
 
     @Test
     public void testUnhandledSerialisation() throws IOException {
-        Report report = reportFromHandledState(HandledState.newInstance(
+        BugsnagEvent event = reportFromHandledState(HandledState.newInstance(
                 HandledState.SeverityReasonType.REASON_UNHANDLED_EXCEPTION));
-        JsonNode payload = getJsonPayloadFromReport(report);
+        JsonNode payload = getJsonPayloadFromReport(event);
 
         assertEquals("error", payload.get("severity").asText());
         assertTrue(payload.get("unhandled").booleanValue());
@@ -75,9 +75,9 @@ public class HandledStatePayloadTest {
 
     @Test
     public void testUserSpecifiedSerialisation() throws IOException {
-        Report report = reportFromHandledState(HandledState.newInstance(
+        BugsnagEvent event = reportFromHandledState(HandledState.newInstance(
                 HandledState.SeverityReasonType.REASON_USER_SPECIFIED, Severity.WARNING));
-        JsonNode payload = getJsonPayloadFromReport(report);
+        JsonNode payload = getJsonPayloadFromReport(event);
 
         assertEquals("warning", payload.get("severity").asText());
         assertFalse(payload.get("unhandled").booleanValue());
@@ -92,10 +92,10 @@ public class HandledStatePayloadTest {
 
     @Test
     public void testCallbackSpecified() throws IOException {
-        Report report = reportFromHandledState(HandledState.newInstance(
+        BugsnagEvent event = reportFromHandledState(HandledState.newInstance(
                 HandledState.SeverityReasonType.REASON_USER_SPECIFIED));
-        report.setSeverity(Severity.INFO);
-        JsonNode payload = getJsonPayloadFromReport(report);
+        event.setSeverity(Severity.INFO);
+        JsonNode payload = getJsonPayloadFromReport(event);
 
         assertEquals("info", payload.get("severity").asText());
         assertFalse(payload.get("unhandled").booleanValue());
@@ -110,10 +110,10 @@ public class HandledStatePayloadTest {
 
     @Test
     public void testUnhandledMiddlewareSerialisation() throws IOException {
-        Report report = reportFromHandledState(HandledState.newInstance(
+        BugsnagEvent event = reportFromHandledState(HandledState.newInstance(
                 SeverityReasonType.REASON_UNHANDLED_EXCEPTION_MIDDLEWARE,
                 Collections.singletonMap("framework", "Spring")));
-        JsonNode payload = getJsonPayloadFromReport(report);
+        JsonNode payload = getJsonPayloadFromReport(event);
 
         assertEquals("error", payload.get("severity").asText());
         assertTrue(payload.get("unhandled").booleanValue());
@@ -129,12 +129,12 @@ public class HandledStatePayloadTest {
 
     @Test
     public void testUnhandledExceptionClassSerialisation() throws IOException {
-        Report report = reportFromHandledState(HandledState.newInstance(
+        BugsnagEvent event = reportFromHandledState(HandledState.newInstance(
                 SeverityReasonType.REASON_EXCEPTION_CLASS,
                 Collections.singletonMap("exceptionClass", "TypeMismatchException"),
                 Severity.INFO,
                 true));
-        JsonNode payload = getJsonPayloadFromReport(report);
+        JsonNode payload = getJsonPayloadFromReport(event);
 
         assertEquals("info", payload.get("severity").asText());
         assertTrue(payload.get("unhandled").booleanValue());
@@ -151,12 +151,12 @@ public class HandledStatePayloadTest {
 
     @Test
     public void testHandledExceptionClassSerialisation() throws java.lang.Exception {
-        Report report = reportFromHandledState(HandledState.newInstance(
+        BugsnagEvent event = reportFromHandledState(HandledState.newInstance(
                 SeverityReasonType.REASON_EXCEPTION_CLASS,
                 Collections.singletonMap("exceptionClass", "TypeMismatchException"),
                 Severity.INFO,
                 false));
-        JsonNode payload = getJsonPayloadFromReport(report);
+        JsonNode payload = getJsonPayloadFromReport(event);
 
         assertEquals("info", payload.get("severity").asText());
         assertFalse(payload.get("unhandled").booleanValue());
@@ -171,14 +171,14 @@ public class HandledStatePayloadTest {
                 severityReason.get("attributes").get("exceptionClass").asText());
     }
 
-    private Report reportFromHandledState(HandledState handledState) {
-        return new Report(config, new RuntimeException(), handledState, Thread.currentThread());
+    private BugsnagEvent reportFromHandledState(HandledState handledState) {
+        return new BugsnagEvent(config, new RuntimeException(), handledState, Thread.currentThread());
     }
 
-    private JsonNode getJsonPayloadFromReport(Report report) throws IOException {
+    private JsonNode getJsonPayloadFromReport(BugsnagEvent event) throws IOException {
         ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
         OutputStreamDelivery delivery = new OutputStreamDelivery(byteStream);
-        delivery.deliver(new DefaultSerializer(), report, Collections.<String, String>emptyMap());
+        delivery.deliver(new DefaultSerializer(), event, Collections.<String, String>emptyMap());
 
         String data = new String(byteStream.toByteArray());
         assertNotNull(data);
