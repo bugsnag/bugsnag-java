@@ -312,43 +312,10 @@ public class Bugsnag implements Closeable {
         config.setSendThreads(sendThreads);
     }
 
-    /**
-     * Set a timeout (in ms) to use when delivering Bugsnag error reports and
-     * sessions.
-     * This is a convenient shorthand for bugsnag.getDelivery().setTimeout();
-     *
-     * @param timeout the timeout to set (in ms)
-     * @see #setDelivery
-     */
-    public void setTimeout(int timeout) {
-        Delivery delivery = config.getDelivery();
-        if (delivery instanceof HttpDelivery) {
-            ((HttpDelivery) delivery).setTimeout(timeout);
-        }
-
-        Delivery sessionDelivery = config.getSessionDelivery();
-        if (sessionDelivery instanceof HttpDelivery) {
-            ((HttpDelivery) sessionDelivery).setTimeout(timeout);
-        }
-    }
-
     //
     // Notification
     //
 
-    /**
-     * Build an Report object to send to Bugsnag.
-     *
-     * @param throwable the exception to send to Bugsnag
-     * @return the report object
-     * @see BugsnagEvent
-     * @see #notify(BugsnagEvent)
-     */
-    public BugsnagEvent buildReport(Throwable throwable) {
-        HandledState handledState = HandledState.newInstance(
-                HandledState.SeverityReasonType.REASON_HANDLED_EXCEPTION);
-        return new BugsnagEvent(config, throwable, handledState, Thread.currentThread(), featureFlagStore);
-    }
 
     /**
      * Notify Bugsnag of a handled exception.
@@ -357,7 +324,7 @@ public class Bugsnag implements Closeable {
      * @return true unless the error report was ignored
      */
     public boolean notify(Throwable throwable) {
-        return notify(buildReport(throwable));
+        return notify(createEvent(throwable));
     }
 
     /**
@@ -368,7 +335,7 @@ public class Bugsnag implements Closeable {
      * @return true unless the error report was ignored
      */
     public boolean notify(Throwable throwable, OnErrorCallback callback) {
-        return notify(buildReport(throwable), callback);
+        return notify(createEvent(throwable), callback);
     }
 
     /**
@@ -400,20 +367,7 @@ public class Bugsnag implements Closeable {
         if (severity == null) {
             return notify(throwable, callback);
         }
-
-        HandledState handledState = HandledState.newInstance(
-                HandledState.SeverityReasonType.REASON_USER_SPECIFIED,
-                severity
-        );
-
-        BugsnagEvent event = new BugsnagEvent(
-                config,
-                throwable,
-                handledState,
-                Thread.currentThread(),
-                featureFlagStore
-        );
-        return notify(event, callback);
+        return notify(createEvent(throwable, severity), callback);
     }
 
     /**
@@ -423,11 +377,11 @@ public class Bugsnag implements Closeable {
      * @param event the {@link BugsnagEvent} object to send to Bugsnag
      * @return true unless the error report was ignored
      * @see BugsnagEvent
-     * @see #buildReport
      */
     public boolean notify(BugsnagEvent event) {
         return notify(event, null);
     }
+
 
     boolean notify(Throwable throwable, HandledState handledState, Thread currentThread) {
         BugsnagEvent event = new BugsnagEvent(config, throwable, handledState, currentThread, featureFlagStore);
@@ -442,7 +396,6 @@ public class Bugsnag implements Closeable {
      * @param reportCallback the {@link OnErrorCallback} object to run for this Report
      * @return false if the error report was ignored
      * @see BugsnagEvent
-     * @see #buildReport
      */
     public boolean notify(BugsnagEvent event, OnErrorCallback reportCallback) {
         if (event == null) {
@@ -520,6 +473,35 @@ public class Bugsnag implements Closeable {
         delivery.deliver(config.getSerializer(), notification, config.getErrorApiHeaders());
 
         return true;
+    }
+
+    /**
+     * Creates a BugsnagEvent for a handled exception (visible for testing).
+     *
+     * @param throwable the exception to create an event for
+     * @return a BugsnagEvent with REASON_HANDLED_EXCEPTION severity
+     */
+    BugsnagEvent createEvent(Throwable throwable) {
+        HandledState handledState = HandledState.newInstance(
+                HandledState.SeverityReasonType.REASON_HANDLED_EXCEPTION);
+        return new BugsnagEvent(config, throwable, handledState,
+                Thread.currentThread(), featureFlagStore);
+    }
+
+    /**
+     * Creates a BugsnagEvent for a handled exception with custom severity (visible for testing).
+     *
+     * @param throwable the exception to create an event for
+     * @param severity  the severity of the error
+     * @return a BugsnagEvent with the specified severity
+     */
+    BugsnagEvent createEvent(Throwable throwable, Severity severity) {
+        HandledState handledState = HandledState.newInstance(
+                HandledState.SeverityReasonType.REASON_USER_SPECIFIED,
+                severity
+        );
+        return new BugsnagEvent(config, throwable, handledState,
+                Thread.currentThread(), featureFlagStore);
     }
 
     /**
@@ -740,6 +722,15 @@ public class Bugsnag implements Closeable {
      * @return a copy of the feature flag store
      */
     FeatureFlagStore copyFeatureFlagStore() {
+        return featureFlagStore.copy();
+    }
+
+    /**
+     * Get a copy of the feature flag store (package-private for testing).
+     *
+     * @return a copy of the feature flag store
+     */
+    FeatureFlagStore getFeatureFlagStoreCopy() {
         return featureFlagStore.copy();
     }
 }

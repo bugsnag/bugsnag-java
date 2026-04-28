@@ -81,7 +81,8 @@ public class JakartaServletCallbackTest {
     @SuppressWarnings("unchecked")
     @Test
     public void testRequestMetadataAdded() {
-        BugsnagEvent event = generateReport(new java.lang.Exception("Spline reticulation failed"));
+        BugsnagEvent event = new BugsnagEvent(bugsnag.getConfig(),
+                new java.lang.Exception("Spline reticulation failed"));
         JakartaServletCallback callback = new JakartaServletCallback();
         callback.onError(event);
 
@@ -118,7 +119,8 @@ public class JakartaServletCallbackTest {
 
     @Test
     public void testRequestContextSet() {
-        BugsnagEvent event = generateReport(new java.lang.Exception("Spline reticulation failed"));
+        BugsnagEvent event = new BugsnagEvent(bugsnag.getConfig(),
+                new java.lang.Exception("Spline reticulation failed"));
         JakartaServletCallback callback = new JakartaServletCallback();
         callback.onError(event);
 
@@ -127,16 +129,13 @@ public class JakartaServletCallbackTest {
 
     @Test
     public void testExistingContextNotOverridden() {
-        BugsnagEvent event = generateReport(new java.lang.Exception("Spline reticulation failed"));
+        BugsnagEvent event = new BugsnagEvent(bugsnag.getConfig(),
+                new java.lang.Exception("Spline reticulation failed"));
         event.setContext("Honey nut corn flakes");
         JakartaServletCallback callback = new JakartaServletCallback();
         callback.onError(event);
 
         assertEquals("Honey nut corn flakes", event.getContext());
-    }
-
-    private BugsnagEvent generateReport(java.lang.Exception exception) {
-        return bugsnag.buildReport(exception);
     }
 
     private Enumeration<String> stringsToEnumeration(String... strings) {

@@ -71,8 +71,6 @@ public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
     /** Whether thread state should be sent to Bugsnag. */
     private ThreadSendPolicy sendThreads = ThreadSendPolicy.NEVER;
 
-    /** Bugsnag API request timeout. */
-    private int timeout;
 
     /** Application version. */
     private String appVersion;
@@ -258,9 +256,6 @@ public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
             bugsnag.setReleaseStage(releaseStage);
         }
 
-        if (timeout > 0) {
-            bugsnag.setTimeout(timeout);
-        }
 
         if (!redactedKeys.isEmpty()) {
             bugsnag.setRedactedKeys(redactedKeys.toArray(new String[0]));
@@ -537,16 +532,6 @@ public class BugsnagAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
         }
     }
 
-    /**
-     * @see Bugsnag#setTimeout(int)
-     */
-    public void setTimeout(int timeout) {
-        this.timeout = timeout;
-
-        if (bugsnag != null) {
-            bugsnag.setTimeout(timeout);
-        }
-    }
 
     /**
      * @see Bugsnag#setAppVersion(String)
