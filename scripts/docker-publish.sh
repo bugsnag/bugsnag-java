@@ -25,7 +25,7 @@ mkdir -p "$GRADLE_DIR"
 } >> "$GRADLE_PROPERTIES"
 
 # === Build and Publish ===
-/app/gradlew -Preleasing=true clean publishPublicationPublicationToOssrhStagingRepository
+/app/gradlew -Preleasing=true clean publishMavenJavaPublicationToOssrhStagingRepository
 
 # === Close Staging Repository ===
 echo "--- Closing staging repository"
@@ -50,7 +50,7 @@ elif [[ "${#REPO_KEYS[@]}" -gt 1 ]]; then
   exit 1
 fi
 
-REPO_KEY="${REPO_KEYS[1]}"
+REPO_KEY="${REPO_KEYS[0]}"
 echo "Closing repository $REPO_KEY..."
 
 URL="https://ossrh-staging-api.central.sonatype.com/manual/upload/repository/$REPO_KEY?publishing_type=user_managed"
@@ -66,7 +66,4 @@ if [[ "$STATUS" != "200" ]]; then
 fi
 
 echo "Repository $REPO_KEY closed successfully."
-
 echo "Go to https://central.sonatype.com/publishing to release the final artefact."
-echo "For full release instructions, visit:"
-echo "https://github.com/bugsnag/bugsnag-java/blob/next/CONTRIBUTING.md#making-a-release"
