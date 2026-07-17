@@ -1,5 +1,9 @@
 # Changelog
 
+## 4.0.1 - 2026-07-17
+
+* Fix: Change Gradle wiring so bugsnag-spring exports com.bugsnag:bugsnag on consumers' compile classpath.
+
 ## 4.0.0 - 2026-04-29
 
 * This major release modernises the Java notifier with breaking changes to align with current Bugsnag conventions, drop legacy Java/Servlet support, and add new capabilities like feature flags. [#254](https://github.com/bugsnag/bugsnag-java/pull/254)
