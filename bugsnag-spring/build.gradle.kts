@@ -21,7 +21,7 @@ val sourceJar by tasks.registering(Jar::class) {
 apply(from = "../common.gradle.kts")
 
 dependencies {
-    implementation(project(":bugsnag"))
+    api(project(":bugsnag"))
 
     implementation(libs.logback.core)
     implementation(libs.slf4j.api)
@@ -47,4 +47,3 @@ dependencies {
  *   :bugsnag:publishMavenJavaPublicationToOssrhStagingRepository
  */
 apply(from = "${rootProject.projectDir}/release.gradle.kts")
-
