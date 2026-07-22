@@ -1,6 +1,6 @@
 # Changelog
 
-## 4.0.1 - 2026-07-17
+## 4.0.1 - 2026-07-21
 
 * Fix: Change Gradle wiring so bugsnag-spring exports com.bugsnag:bugsnag on consumers' compile classpath.
 
